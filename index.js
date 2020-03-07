@@ -17,11 +17,21 @@ class CubeStalker {
 
         this.config = require("./config.json");
 
-        // Instantiation des clients
+        // Instanciation des clients
 
         this.clients = {
             discord: new clients.Discord(this),
             redis: new clients.Redis(this)
+        };
+
+        // Instanciation et initialisation des Managers
+
+        let managers = {
+            Commands: require("./bot/CommandManager.js")
+        };
+
+        this.managers = {
+            commands: new managers.Commands(this)
         };
 
         // Initialisation du bot
@@ -33,6 +43,8 @@ class CubeStalker {
         this.clients.discord.loginClient();
         this.clients.discord.getClient().on("ready", () => {
             this.utils.Logger.log("Discord: Ready.");
+
+            this.managers.commands.init();
         });
     }
 

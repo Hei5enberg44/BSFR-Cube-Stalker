@@ -1,5 +1,7 @@
 {
   "discord": {
-    "token": "Njg1ODI4NDE3NDQyMjgzNTQx.XmOW9w.638D5NYDuuJkanHXPe7qgSkqwsI"
+    "token": "Njg1ODI4NDE3NDQyMjgzNTQx.XmOW9w.638D5NYDuuJkanHXPe7qgSkqwsI",
+    "prefix": "!",
+    "channel": "613064448009306118"
   }
 }
