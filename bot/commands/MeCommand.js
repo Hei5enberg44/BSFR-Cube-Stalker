@@ -1,7 +1,8 @@
 class MeCommand {
 
     constructor(opt) {
-        this.clients = opt.clients
+        this.clients = opt.clients;
+        this.utils = opt.utils;
     }
 
     getCommand() {
@@ -14,6 +15,7 @@ class MeCommand {
     }
 
     exec(args) {
+        this.utils.ScoreSaber.getInfo();
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
             channel.send(":ok_hand:");
         });

@@ -13,7 +13,8 @@ class CubeStalker {
 
         this.utils = {
             Logger: new (require("./utils/Logger.js")),
-            Embed: new (require("./utils/Embed.js"))
+            Embed: new (require("./utils/Embed.js")),
+            ScoreSaber: new (require("./utils/ScoreSaber.js"))
         };
 
         this.config = require("./config.json");
