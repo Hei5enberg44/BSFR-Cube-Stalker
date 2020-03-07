@@ -18,7 +18,7 @@ class HelpCommand {
         }
     }
 
-    exec(args) {
+    exec(args, message) {
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
 
             let showC = [];
