@@ -1,9 +1,23 @@
-const Discord = require('discord.js');
-const config = require('./config.json');
-const client = new Discord.Client();
+class CubeStalker {
 
-client.once('ready', () => {
-    console.log("Ready")
-})
+    constructor() {
+        let clients = {
+            Discord: require("./clients/DiscordClient.js")
+        };
 
-client.login(config.TOKEN);
+        this.config = require("./config.json");
+        this.discordClient = new clients.Discord(this);
+
+        this.init()
+    }
+
+    init() {
+        this.discordClient.loginClient();
+        this.discordClient.getClient().on("ready", () => {
+            console.log("DiscordClient: Ready.");
+        });
+    }
+
+}
+
+let Index = new CubeStalker();
