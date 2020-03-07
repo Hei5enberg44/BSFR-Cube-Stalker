@@ -13,6 +13,7 @@
   "author": "BSFR",
   "license": "ISC",
   "dependencies": {
+    "async-redis": "^1.1.7",
     "discord.js": "^12.0.1",
     "redis": "^3.0.2"
   }

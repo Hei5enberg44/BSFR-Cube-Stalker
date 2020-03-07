@@ -1,4 +1,5 @@
 const Redis = require("redis");
+const asyncRedis = require("async-redis");
 
 class RedisClient {
 
@@ -22,7 +23,7 @@ class RedisClient {
     }
 
     getInstance() {
-        return this.redisInstance;
+        return asyncRedis.decorate(this.redisInstance);
     }
 
 }
