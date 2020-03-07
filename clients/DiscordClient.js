@@ -8,7 +8,7 @@ class DiscordClient {
     }
 
     loginClient() {
-        this.client.login(this.config.token);
+        this.client.login(this.config.discord.token);
     }
 
     getClient() {
