@@ -12,7 +12,7 @@ class CommandManager {
 
     init() {
         Filesystem.readdirSync("./bot/commands/").forEach(file => {
-            let cmd = new (require("./commands/" + file))({ clients: this.clients, commands: this.commands });
+            let cmd = new (require("./commands/" + file))(this);
             this.registerCommand(cmd.getCommand())
         });
 

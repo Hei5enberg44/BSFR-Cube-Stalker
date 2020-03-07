@@ -12,7 +12,8 @@ class CubeStalker {
         // Déclaration des utils et de la configuration
 
         this.utils = {
-            Logger: new (require("./utils/Logger.js"))
+            Logger: new (require("./utils/Logger.js")),
+            Embed: new (require("./utils/Embed.js"))
         };
 
         this.config = require("./config.json");
