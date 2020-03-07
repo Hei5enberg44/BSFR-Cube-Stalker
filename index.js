@@ -43,8 +43,17 @@ class CubeStalker {
 
     init() {
         this.clients.discord.loginClient();
+        this.clients.redis.loginRedis();
         this.clients.discord.getClient().on("ready", () => {
             this.utils.Logger.log("Discord: Ready.");
+
+            this.clients.redis.getInstance().set("186156892379283456", "76561198278902434", function(err, reply) {
+                console.log(reply);
+            });
+
+            this.clients.redis.getInstance().get("186156892379283456", function(err, reply) {
+                console.log(reply);
+            });
 
             this.managers.commands.init();
         });
