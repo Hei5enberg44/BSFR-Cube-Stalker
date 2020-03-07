@@ -1,18 +1,20 @@
 const https = require('https');
+const Player = require('../objects/Player.js');
 
 class ScoreSaber {
-    constructor() {
+    getProfile(id) {
+        let player = new Player();
 
-    }
-
-    getInfo() {
-        https.get('https://new.scoresaber.com/api/player/2429129807113296/full', function(response) {
+        https.get('https://new.scoresaber.com/api/player/' + id + '/full', function(response) {
             response.on('data', function(data) {
-                console.log( JSON.parse(data) );
+                data = JSON.parse(data)
+                player.setPlayer(data.playerInfo.name, data.playerInfo.country, data.playerInfo.countryRank, data.playerInfo.rank, data.playerInfo.pp, data.scoreStats.averageRankedAccuracy)
             });
         }).on('error', function(e) {
             console.error(e);
         });
+
+        return player.getPlayer();
     }
 }
 

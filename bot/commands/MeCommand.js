@@ -15,13 +15,9 @@ class MeCommand {
     }
 
     exec(args) {
-
-
-        const value = await this.clients.redis.getInstance().get("186156892379283456");
-
-        let player = this.utils.ScoreSaber.getProfile(value);
+        this.utils.ScoreSaber.getInfo();
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
-            channel.send(JSON.stringify(player));
+            channel.send(":ok_hand:");
         });
     }
 
