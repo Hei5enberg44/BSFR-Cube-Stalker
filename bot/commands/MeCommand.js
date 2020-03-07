@@ -14,10 +14,14 @@ class MeCommand {
         }
     }
 
-    async exec(args) {
+    async exec(args, message) {
+        await this.clients.redis.loginRedis();
         const value = await this.clients.redis.getInstance().get("186156892379283456");
+        this.clients.redis.logoutRedis();
 
-        let player = this.utils.ScoreSaber.getProfile(value);
+        console.log(value);
+
+        let player = await this.utils.ScoreSaber.getProfile(value);
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
             channel.send(JSON.stringify(player));
         });

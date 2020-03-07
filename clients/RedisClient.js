@@ -22,6 +22,10 @@ class RedisClient {
         }
     }
 
+    logoutRedis() {
+        this.redisInstance.end(true);
+    }
+
     getInstance() {
         return asyncRedis.decorate(this.redisInstance);
     }

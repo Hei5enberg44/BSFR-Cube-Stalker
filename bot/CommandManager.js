@@ -45,7 +45,7 @@ class CommandManager {
             }
 
             let command = this.commands[args[0]];
-            command.Run(args.slice(1));
+            command.Run(args.slice(1), message);
 
             this.utils.Logger.log("CommandManager: " + message.author.username + " a run la commande " + command.Command);
         });

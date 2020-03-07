@@ -1,19 +1,12 @@
-const https = require('https');
+const axios = require('axios');
 const Player = require('../objects/Player.js');
 
 class ScoreSaber {
-    getProfile(id) {
+    async getProfile(id) {
         let player = new Player();
 
-        https.get('https://new.scoresaber.com/api/player/' + id + '/full', function(response) {
-            response.on('data', function(data) {
-                data = JSON.parse(data)
-                player.setPlayer(data.playerInfo.name, data.playerInfo.country, data.playerInfo.countryRank, data.playerInfo.rank, data.playerInfo.pp, data.scoreStats.averageRankedAccuracy)
-            });
-        }).on('error', function(e) {
-            console.error(e);
-        });
-
+        let response = await axios.get('https://new.scoresaber.com/api/player/' + id + '/full')
+        player.setPlayer(response.data.playerInfo.name, response.data.playerInfo.country, response.data.playerInfo.countryRank, response.data.playerInfo.rank, response.data.playerInfo.pp, response.data.scoreStats.averageRankedAccuracy)
         return player.getPlayer();
     }
 }
