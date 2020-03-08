@@ -12,7 +12,7 @@ class HelpCommand {
     getCommand() {
         return {
             Command: "help",
-            Usage: "!help",
+            Usage: this.config.discord.prefix + "help",
             Description: "Affiche la liste des commandes.",
             Run: (args, message) => this.exec(args, message)
         }

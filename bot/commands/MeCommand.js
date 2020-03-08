@@ -11,7 +11,7 @@ class MeCommand {
     getCommand() {
         return {
             Command: "me",
-            Usage: "!me [<mention>]",
+            Usage: this.config.discord.prefix + "me [<mention>]",
             Description: "Affiche votre profil ScoreSaber.",
             Run: (args, message) => this.exec(args, message)
         }
@@ -29,8 +29,6 @@ class MeCommand {
         }
 
         let player = await this.utils.ScoreSaber.getProfile(id);
-
-        console.log(this.config.scoresaber.apiUrl + player.avatar);
 
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
             if(args.join().toLowerCase().indexOf("bien") > -1)
