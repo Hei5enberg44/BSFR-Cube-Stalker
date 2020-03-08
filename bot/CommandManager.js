@@ -37,7 +37,7 @@ class CommandManager {
                 return;
 
             let args = message.content.split(" ");
-            args[0] = args[0].replace("!", "");
+            args[0] = args[0].replace(this.config.discord.prefix, "");
 
             if(!this.commands[args[0]]) {
                 message.react("❌");
