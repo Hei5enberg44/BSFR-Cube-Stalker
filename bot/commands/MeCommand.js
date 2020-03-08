@@ -29,7 +29,7 @@ class MeCommand {
 
         let player = await this.utils.ScoreSaber.getProfile(id);
 
-        console.log(this.config.scoresaber.apiUrl + player.avatar)
+        console.log(this.config.scoresaber.apiUrl + player.avatar);
 
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
             let embed = this.utils.Embed.embed();

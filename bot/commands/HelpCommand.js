@@ -12,7 +12,7 @@ class HelpCommand {
     getCommand() {
         return {
             Command: "help",
-            Usage: "!help [<username>]",
+            Usage: "!help",
             Description: "Affiche la liste des commandes.",
             Run: (args, message) => this.exec(args, message)
         }
@@ -23,7 +23,7 @@ class HelpCommand {
 
             let showC = [];
             for(let c in this.commands) {
-                showC.push({name: this.config.discord.prefix + this.commands[c].Command, value: this.commands[c].Description, inline: false});
+                showC.push({name: this.commands[c].Usage, value: this.commands[c].Description, inline: false});
             }
 
             let embed = this.utils.Embed.embed();

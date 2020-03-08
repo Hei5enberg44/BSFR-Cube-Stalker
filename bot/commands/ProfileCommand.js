@@ -25,6 +25,8 @@ class MeCommand {
         }
 
         let profileId = args[0].replace("https://scoresaber.com/u/", "");
+        profileId = profileId.split("?")[0];
+        profileId = profileId.split("&")[0];
 
         await this.clients.redis.loginRedis();
         await this.clients.redis.getInstance().set(message.author.id, profileId);
