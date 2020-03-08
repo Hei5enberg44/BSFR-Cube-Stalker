@@ -9,5 +9,9 @@
     "port": "1023",
     "password": "$bsabery0up1$",
     "database": "0"
+  },
+  "scoresaber": {
+    "url": "https://scoresaber.com",
+    "apiUrl": "http://new.scoresaber.com"
   }
 }
