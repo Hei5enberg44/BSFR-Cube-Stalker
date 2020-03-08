@@ -42,7 +42,7 @@ class MeCommand {
             embed.setTitle(player.name)
                 .setURL(this.config.scoresaber.url + "/u/" + id + ')')
                 .setThumbnail(this.config.scoresaber.apiUrl + player.avatar)
-                .addField("Rank", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank)
+                .addField("Rang", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank)
                 .addField("PP", ":clap: " + player.pp)
                 .addField("Précision", ":dart: " + player.accuracy.toFixed(2) + "%")
                 .addField("Best Run", ":one: " + score.songAuthorName + " " + score.songSubName + " - " + score.name + " [" + score.diff + "] by " + score.levelAuthorName)

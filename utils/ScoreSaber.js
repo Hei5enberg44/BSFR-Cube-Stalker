@@ -23,6 +23,10 @@ class ScoreSaber {
 
         return score
     }
+
+    async getLeaderboard() {
+        return (await axios.get(this.config.scoresaber.apiUrl + '/api/players/1')).data
+    }
 }
 
 module.exports = ScoreSaber;
