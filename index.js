@@ -48,8 +48,9 @@ class CubeStalker {
             this.utils.Logger.log("Discord: Ready.");
 
             const value = await this.clients.redis.getInstance().get("186156892379283456");
-            console.log(value);
-
+            this.clients.discord.getClient().user.setActivity('!help - By Krixs & JiveOff', {
+                type: "LISTENING"
+            })
             this.managers.commands.init();
         });
     }

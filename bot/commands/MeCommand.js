@@ -11,13 +11,14 @@ class MeCommand {
     getCommand() {
         return {
             Command: "me",
-            Usage: "!me [<username>]",
+            Usage: "!me [<mention>]",
             Description: "Affiche votre profil ScoreSaber.",
             Run: (args, message) => this.exec(args, message)
         }
     }
 
     async exec(args, message) {
+
         await this.clients.redis.loginRedis();
         const id = await this.clients.redis.getInstance().get(message.author.id);
         this.clients.redis.logoutRedis();
@@ -32,6 +33,12 @@ class MeCommand {
         console.log(this.config.scoresaber.apiUrl + player.avatar)
 
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
+            if(args.join().toLowerCase().indexOf("bien") > -1)
+            {
+                channel.send(":middle_finger:");
+                return;
+            }
+
             let embed = this.utils.Embed.embed();
             embed.setTitle(player.name)
                 .setURL(this.config.scoresaber.url + "/u/" + id + ')')
