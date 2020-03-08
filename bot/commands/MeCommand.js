@@ -10,13 +10,13 @@ class MeCommand {
             Command: "me",
             Usage: "!me [<username>]",
             Description: "Affiche votre profil ScoreSaber.",
-            Run: (args) => this.exec(args)
+            Run: (args, message) => this.exec(args, message)
         }
     }
 
     async exec(args, message) {
         await this.clients.redis.loginRedis();
-        const value = await this.clients.redis.getInstance().get("186156892379283456");
+        const value = await this.clients.redis.getInstance().get(message.author.id);
         this.clients.redis.logoutRedis();
 
         console.log(value);

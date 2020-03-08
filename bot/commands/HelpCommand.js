@@ -14,7 +14,7 @@ class HelpCommand {
             Command: "help",
             Usage: "!help [<username>]",
             Description: "Affiche la liste des commandes.",
-            Run: (args) => this.exec(args)
+            Run: (args, message) => this.exec(args, message)
         }
     }
 
