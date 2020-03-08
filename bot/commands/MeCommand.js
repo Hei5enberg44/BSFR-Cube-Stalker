@@ -22,11 +22,18 @@ class MeCommand {
         const id = await this.clients.redis.getInstance().get(message.author.id);
         this.clients.redis.logoutRedis();
 
+        if(id === null) {
+            await message.channel.send("> :x:  Aucun profil n'est lié ! Utilisez la commande ``!profile [lien scoresaber]``.")
+            return;
+        }
+
         let player = await this.utils.ScoreSaber.getProfile(id);
+
+        console.log(this.config.scoresaber.apiUrl + player.avatar)
 
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
             let embed = this.utils.Embed.embed();
-            let test = new Discord.MessageEmbed().setTitle(player.name)
+            embed.setTitle(player.name)
                 .setURL(this.config.scoresaber.url + "/u/" + id + ')')
                 .setThumbnail(this.config.scoresaber.apiUrl + player.avatar)
                 .addField("Rank", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank)
@@ -34,7 +41,7 @@ class MeCommand {
                 .addField("Précision", ":dart: " + player.accuracy.toFixed(2) + "%")
                 .setColor('#000000')
 
-            channel.send(test);
+            channel.send(embed);
         })
     }
 
