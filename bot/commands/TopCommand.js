@@ -17,10 +17,10 @@ class MeCommand {
 
     async exec(args, message) {
         let nb = args[0]
-        if((nb > 20 || nb < 1) || isNaN(parseInt(nb))) {
-            await message.channel.send("> :slight_smile: | Le top 10 sera affiché.")
+        if (!nb) {
             nb = 10
-        } else if (!nb) {
+        } else if((nb > 20 || nb < 1) || isNaN(parseInt(nb))) {
+            await message.channel.send("> :slight_smile: | Le top 10 sera affiché.")
             nb = 10
         }
 
