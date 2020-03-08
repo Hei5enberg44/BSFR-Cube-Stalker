@@ -16,6 +16,13 @@ class ScoreSaber {
         player.setPlayer(response.data)
         return player.getPlayer();
     }
+
+    async getTopScore(id) {
+        let score = (await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/scores/top')).data.scores[0]
+        score.diff = score.diff.split("_")[1];
+
+        return score
+    }
 }
 
 module.exports = ScoreSaber;

@@ -29,6 +29,7 @@ class MeCommand {
 
         this.utils.Logger.log("Profil mis à jour: " + await this.utils.ScoreSaber.refreshProfile(id));
         let player = await this.utils.ScoreSaber.getProfile(id);
+        let score = await this.utils.ScoreSaber.getTopScore(id);
 
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
             if(args.join().toLowerCase().indexOf("bien") > -1)
@@ -42,8 +43,10 @@ class MeCommand {
                 .setURL(this.config.scoresaber.url + "/u/" + id + ')')
                 .setThumbnail(this.config.scoresaber.apiUrl + player.avatar)
                 .addField("Rank", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank)
-                .addField("PP", "<:pepohype:686004175058108516> " + player.pp)
+                .addField("PP", ":clap: " + player.pp)
                 .addField("Précision", ":dart: " + player.accuracy.toFixed(2) + "%")
+                .addField("Best Run", ":one: " + score.songAuthorName + " " + score.songSubName + " - " + score.name + " [" + score.diff + "] by " + score.levelAuthorName)
+                .addField("Best Run Infos", ":mechanical_arm: Rank: " + score.rank + " | Score: " + score.score + " | PP: " + score.pp)
                 .setColor('#000000')
 
             channel.send(embed);
