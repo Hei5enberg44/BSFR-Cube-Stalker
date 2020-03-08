@@ -1,0 +1,17 @@
+{
+  "discord": {
+    "token": "Njg1ODI4NDE3NDQyMjgzNTQx.XmOW9w.638D5NYDuuJkanHXPe7qgSkqwsI",
+    "prefix": "!",
+    "channel": "613064448009306118"
+  },
+  "redis": {
+    "host": "91.236.254.88",
+    "port": "1023",
+    "password": "$bsabery0up1$",
+    "database": "0"
+  },
+  "scoresaber": {
+    "url": "https://scoresaber.com",
+    "apiUrl": "https://new.scoresaber.com"
+  }
+}
