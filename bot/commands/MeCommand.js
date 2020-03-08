@@ -18,7 +18,6 @@ class MeCommand {
     }
 
     async exec(args, message) {
-
         await this.clients.redis.loginRedis();
         const id = await this.clients.redis.getInstance().get(message.author.id);
         this.clients.redis.logoutRedis();
@@ -28,6 +27,7 @@ class MeCommand {
             return;
         }
 
+        this.utils.Logger.log("Profil mis à jour: " + await this.utils.ScoreSaber.refreshProfile(id));
         let player = await this.utils.ScoreSaber.getProfile(id);
 
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
