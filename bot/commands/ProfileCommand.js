@@ -2,13 +2,14 @@ class MeCommand {
 
     constructor(opt) {
         this.clients = opt.clients;
+        this.config = opt.config;
         this.utils = opt.utils;
     }
 
     getCommand() {
         return {
             Command: "profile",
-            Usage: "!profile <link>",
+            Usage: this.config.discord.prefix + "profile <link>",
             Description: "Lie votre compte ScoreSaber à votre compte Discord.",
             Run: (args, message) => this.exec(args, message)
         }

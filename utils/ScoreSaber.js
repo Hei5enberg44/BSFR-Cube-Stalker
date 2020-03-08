@@ -8,7 +8,6 @@ class ScoreSaber {
 
     async getProfile(id) {
         let player = new Player();
-        console.log(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full');
         let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full')
         player.setPlayer(response.data)
         return player.getPlayer();
