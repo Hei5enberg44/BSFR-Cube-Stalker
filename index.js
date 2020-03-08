@@ -11,13 +11,13 @@ class CubeStalker {
 
         // Déclaration des utils et de la configuration
 
+        this.config = require("./config.json");
+
         this.utils = {
             Logger: new (require("./utils/Logger.js")),
             Embed: new (require("./utils/Embed.js")),
-            ScoreSaber: new (require("./utils/ScoreSaber.js"))
+            ScoreSaber: new (require("./utils/ScoreSaber.js"))({config: this.config})
         };
-
-        this.config = require("./config.json");
 
         // Instanciation des clients
 

@@ -3,16 +3,10 @@ class Player {
         this.player = {};
     }
 
-    setPlayer(name, country, countryRank, rank, pp, accuracy)
+    setPlayer(player)
     {
-        this.player = {
-            "name": name,
-            "country": country,
-            "countryRank": countryRank,
-            "rank": rank,
-            "pp": pp,
-            "accuracy": accuracy
-        }
+        this.player = player.playerInfo
+        this.player.accuracy = player.scoreStats.averageRankedAccuracy
     }
 
     getPlayer() {
