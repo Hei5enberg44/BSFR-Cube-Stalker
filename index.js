@@ -44,16 +44,16 @@ class CubeStalker {
         this.init()
     }
 
-    init() {
+    async init() {
         this.clients.discord.loginClient();
-        this.clients.redis.loginRedis();
+        await this.clients.redis.loginRedis();
         this.clients.discord.getClient().on("ready", async () => {
             this.utils.Logger.log("Discord: Ready.");
 
             const value = await this.clients.redis.getInstance().get("186156892379283456");
-            this.clients.discord.getClient().user.setActivity(this.config.discord.prefix + 'help - By Krixs & JiveOff', {
+            await this.clients.discord.getClient().user.setActivity(this.config.discord.prefix + 'help - By Krixs & JiveOff', {
                 type: "LISTENING"
-            })
+            });
             this.managers.commands.init();
         });
     }

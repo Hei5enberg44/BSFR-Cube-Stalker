@@ -50,7 +50,7 @@ class MeCommand {
             await message.channel.send("> :x:  Le refresh forcé n'a pas pu avoir lieu. Veuillez noter que les informations ci-dessous peuvent être inexactes.")
         }
 
-        let player = await this.utils.ScoreSaber.getProfile(id, message.author, message.guild);
+        let player = await this.utils.ScoreSaber.getProfile(id, (discordSelected === message.author.id), message);
         let score = await this.utils.ScoreSaber.getTopScore(id);
 
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {

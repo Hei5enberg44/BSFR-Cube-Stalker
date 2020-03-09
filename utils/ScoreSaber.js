@@ -10,7 +10,7 @@ class ScoreSaber {
         return (await axios.get(this.config.scoresaber.apiUrl + '/api/manage/user/' + id + '/refresh')).data.updated
     }
 
-    async refreshRoles(ply, guild, user) {
+    async refreshRoles(ply, message) {
 
         let firstRoleName;
         let secondRoleName;
@@ -58,26 +58,37 @@ class ScoreSaber {
                 firstRoleName = "500pp"
         }
 
-        let member = guild.members.get(user.id);
+        let member = message.guild.members.resolve(message.author.id);
 
-        let hasRoleFirst = member.roles.some(r=>[firstRoleName].includes(r.name));
+        let hasRoleFirst = member.roles.cache.some(r=>[firstRoleName].includes(r.name));
+        let hasRoleSecond = member.roles.cache.some(r=>[secondRoleName].includes(r.name));
+
+        if(hasRoleFirst) {
+            if(!hasRoleSecond) {
+                member.roles.cache.map(async role => {
+                    if(role.name.indexOf("00pp") > -1) {
+                        await member.roles.remove(role);
+                    }
+                });
+            }
+        } else {
+            member.roles.cache.map(async role => {
+                if(role.name.indexOf("00pp") > -1) {
+                    await member.roles.remove(role);
+                }
+            });
+        }
+
         if(!hasRoleFirst) {
-            let roleFirst = guild.roles.find(role => role.name === firstRoleName);
-            await member.addRole(roleFirst).catch(console.error);
+            let roleFirst = await message.guild.roles.cache.find(role => role.name === firstRoleName);
+            await member.roles.add(roleFirst);
         }
         if(secondRoleName) {
-            let hasRoleSecond = guild.members.get(user.id).roles.some(r=>[secondRoleName].includes(r.name));
             if(!hasRoleSecond) {
-                let roleFirst = guild.roles.find(role => role.name === secondRoleName);
-                await member.addRole(roleFirst).catch(console.error);
+                let roleSecond = await message.guild.roles.cache.find(role => role.name === secondRoleName);
+                await member.roles.add(roleSecond);
             }
         }
-
-        let firstRole = guild.roles.find(role => role.name == firstRoleName);
-
-        if(secondRoleName)
-            let secondRole = guild.roles.find(role => role.name == secondRoleName);
-
 
         /*
         if(MasterGuild.members.get(user.id).roles.some(r=>["Event Notifications"].includes(r.name))) {
@@ -96,11 +107,11 @@ let role = await MasterGuild.roles.find(role => role.name == "Event Notification
 
     }
 
-    async getProfile(id, discordUser, discordGuild) {
+    async getProfile(id, roleCheck, message) {
         let player = new Player();
         let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full')
         player.setPlayer(response.data);
-        await this.refreshRoles(player.getPlayer(), discordGuild, discordUser);
+        await this.refreshRoles(player.getPlayer(), message);
         return player.getPlayer();
     }
 
