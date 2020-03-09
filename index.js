@@ -2,6 +2,10 @@ class CubeStalker {
 
     constructor() {
 
+        // Déclaration de la configuration
+
+        this.config = require("./config.json");
+
         // Déclaration des clients
 
         let clients = {
@@ -9,21 +13,20 @@ class CubeStalker {
             Redis: require("./clients/RedisClient.js")
         };
 
-        // Déclaration des utils et de la configuration
-
-        this.config = require("./config.json");
-
-        this.utils = {
-            Logger: new (require("./utils/Logger.js")),
-            Embed: new (require("./utils/Embed.js")),
-            ScoreSaber: new (require("./utils/ScoreSaber.js"))({config: this.config})
-        };
-
         // Instanciation des clients
 
         this.clients = {
             discord: new clients.Discord(this),
             redis: new clients.Redis(this)
+        };
+
+        // Déclaration des utils
+
+        this.utils = {
+            Logger: new (require("./utils/Logger.js")),
+            Embed: new (require("./utils/Embed.js")),
+            ScoreSaber: new (require("./utils/ScoreSaber.js"))({config: this.config}),
+            DiscordServer: new (require("./utils/DiscordServer.js"))({clients: this.clients})
         };
 
         // Instanciation et initialisation des Managers
