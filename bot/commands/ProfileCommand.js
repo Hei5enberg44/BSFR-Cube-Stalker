@@ -16,16 +16,25 @@ class MeCommand {
     }
 
     async exec(args, message) {
+	let url = "http"
         if(!args[0]) {
             await message.channel.send("> :x: | Veuillez indiquer un profil ScoreSaber.")
             return;
         }
-        if(!(args[0].indexOf("https://scoresaber.com/u/") > -1)) {
+
+	if(args[0].indexOf("https") > -1) {
+	    url = "https"
+	}
+
+	url += "://scoresaber.com/u/"
+
+        if(!(args[0].indexOf(url) > -1)) {
             await message.channel.send("> :x: | Veuillez indiquer un profil ScoreSaber valide.")
             return;
         }
-
-        let profileId = args[0].replace("https://scoresaber.com/u/", "");
+	    
+	let profileId = args[0].replace(url , "");
+        
         profileId = profileId.split("?")[0];
         profileId = profileId.split("&")[0];
 
