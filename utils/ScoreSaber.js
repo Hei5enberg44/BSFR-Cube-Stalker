@@ -110,6 +110,10 @@ let role = await MasterGuild.roles.find(role => role.name == "Event Notification
 
         return score
     }
+
+    async getLeaderboard() {
+        return (await axios.get(this.config.scoresaber.apiUrl + '/api/players/1')).data
+    }
 }
 
 module.exports = ScoreSaber;
