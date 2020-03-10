@@ -28,7 +28,7 @@ class MeCommand {
 
         let desc = ""
         for(let i = 0; i < nb; i++) {
-            desc += "#" + lb[i].rank + " -  :flag_" + lb[i].country.toLowerCase() + ": " + lb[i].name + " - PP: " + lb[i].pp + " - Changement: " + lb[i].difference + "\n"
+            desc += "#" + lb[i].rank + " - **" +  lb[i].name + "** :flag_" + lb[i].country.toLowerCase() + ": - " + lb[i].pp + " PP\n"
         }
         // desc += "```"
 
