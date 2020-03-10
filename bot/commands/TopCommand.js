@@ -9,7 +9,8 @@ class MeCommand {
     getCommand() {
         return {
             Command: "top",
-            Usage: this.config.discord.prefix + "top [<nb>]",
+            Aliases: ["world", "worldlead"],
+            Usage: "[<nb>]",
             Description: "Affiche le classement mondial (10 défaut, 20 max, 1 min)",
             Run: (args, message) => this.exec(args, message)
         }
@@ -20,7 +21,7 @@ class MeCommand {
         if (!nb) {
             nb = 10
         } else if((nb > 20 || nb < 1) || isNaN(parseInt(nb))) {
-            await message.channel.send("> :slight_smile: | Le top 10 sera affiché.")
+            await message.channel.send("> :slight_smile:  Le top 10 sera affiché.")
             nb = 10
         }
 
@@ -28,7 +29,7 @@ class MeCommand {
 
         let desc = ""
         for(let i = 0; i < nb; i++) {
-            desc += "#" + lb[i].rank + " - **" +  lb[i].name + "** :flag_" + lb[i].country.toLowerCase() + ": - " + lb[i].pp + " PP\n"
+            desc += "#" + lb[i].rank + " - [**" + lb[i].name + "**](https://scoresaber.com/u/" + lb[i].playerid + ") :flag_" + lb[i].country.toLowerCase() + ": - " + lb[i].pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp\n"
         }
         // desc += "```"
 

@@ -15,7 +15,6 @@ class RedisClient {
             this.redisInstance = Redis.createClient(this.port, this.host);
             this.redisInstance.auth(this.password);
             this.redisInstance.select(this.database);
-            console.log("RedisClient: Connecté.")
         } catch(err) {
             console.log("RedisClient: Erreur..");
             console.log(err);
@@ -25,12 +24,14 @@ class RedisClient {
     async quickRedis() {
         await this.loginRedis();
         return {
-            get: (async (key) => {
+            get: async (key) => {
                 let toReturn = await this.getInstance().get(key);
+                console.log("RedisClient: Commande exécuté: GET " + key);
                 this.logoutRedis();
                 return toReturn;
-            }), set: async (key, value) => {
+            }, set: async (key, value) => {
                 let toReturn = await this.getInstance().set(key, value);
+                console.log("RedisClient: Commande exécuté: SET " + key + " " + value);
                 this.logoutRedis();
                 return toReturn;
             }

@@ -12,7 +12,8 @@ class MeCommand {
     getCommand() {
         return {
             Command: "me",
-            Usage: this.config.discord.prefix + "me [<utilisateur>]",
+            Aliases: ["doisuck", "plspp"],
+            Usage: "[<utilisateur>]",
             Description: "Affiche votre profil ScoreSaber.",
             Run: (args, message) => this.exec(args, message)
         }
@@ -58,13 +59,48 @@ class MeCommand {
         const leaderboardServer = await this.clients.redis.getInstance().get("ld_" + message.guild.id);
         this.clients.redis.logoutRedis();*/
 
-        const leaderboardServer = await (await this.clients.redis.quickRedis()).get("ld_" + message.guild.id);
+        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id);
 
         if(leaderboardServer) {
-            console.log("pepega")
+            let foundInLead;
+            for(let l in leaderboardServer) {
+                if(leaderboardServer[l].playerid === player.playerid) {
+                    foundInLead = leaderboardServer[l];
+                    break;
+                }
+            }
+            if(!foundInLead) {
+                if(args[0])
+                    await message.channel.send("> :clap:  ``" + player.name + "`` a été ajouté au classement du serveur.");
+                else
+                    await message.channel.send("> :clap:  Vous avez été ajouté au classement du serveur.");
+                leaderboardServer.push(player.leaderboardEntry);
+                await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer));
+            }
         } else {
-            await message.channel.send("> :ok_hand:  Serait-ce un nouveau serveur? Je vous initialise le leaderboard.")
+            await message.channel.send("> <:discord:686990677451604050>  Serait-ce un nouveau serveur? Je vous initialise le classement tout de suite.");
+            leaderboardServer = [];
+            leaderboardServer.push(player.leaderboardEntry);
+            await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer));
+        }
 
+        leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id);
+
+        let posInLead = 1;
+        for(let l in leaderboardServer) {
+            if(leaderboardServer[l].playerid === player.playerid) {
+                break;
+            }
+            posInLead++;
+        }
+        if(posInLead === 1) {
+            posInLead = ":first_place:"
+        } else if(posInLead === 2) {
+            posInLead = ":second_place:"
+        } else if(posInLead === 3) {
+            posInLead = ":third_place:"
+        } else {
+            posInLead = "#" + posInLead;
         }
 
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
@@ -78,9 +114,9 @@ class MeCommand {
             embed.setTitle(player.name)
                 .setURL(this.config.scoresaber.url + "/u/" + id + ')')
                 .setThumbnail(this.config.scoresaber.apiUrl + player.avatar)
-                .addField("Rang", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank)
-                .addField("Points de Performance", ":clap: " + player.pp + "pp", true)
-                .addField("Précision Classé", ":dart: " + player.accuracy.toFixed(2) + "%", true)
+                .addField("Rang", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank + "\n\n<:discord:686990677451604050> " + posInLead + " (sur " + leaderboardServer.length + " joueurs)")
+                .addField("Points de performance", ":clap: " + player.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp", true)
+                .addField("Précision en classé", ":dart: " + player.accuracy.toFixed(2) + "%", true)
                 .addField("Meilleur score", ":one: " + score.songAuthorName + " " + score.songSubName + " - " + score.name + " [" + score.diff + "] by " + score.levelAuthorName)
                 .addField("Infos sur le meilleur score", ":mechanical_arm: Rank: " + score.rank + " | Score: " + score.score + " | PP: " + score.pp)
                 .setColor('#000000');

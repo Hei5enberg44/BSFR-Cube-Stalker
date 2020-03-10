@@ -9,31 +9,32 @@ class MeCommand {
     getCommand() {
         return {
             Command: "profile",
-            Usage: this.config.discord.prefix + "profile <link>",
+            Aliases: ["profilelink", "link"],
+            Usage: "<link>",
             Description: "Lie votre compte ScoreSaber à votre compte Discord.",
             Run: (args, message) => this.exec(args, message)
         }
     }
 
     async exec(args, message) {
-	let url = "http"
+        let url = "http";
         if(!args[0]) {
             await message.channel.send("> :x:  Veuillez indiquer un profil ScoreSaber.")
             return;
         }
 
-	if(args[0].indexOf("https") > -1) {
-	    url = "https"
-	}
+        if(args[0].indexOf("https") > -1) {
+            url = "https"
+        }
 
-	url += "://scoresaber.com/u/"
+        url += "://scoresaber.com/u/";
 
         if(!(args[0].indexOf(url) > -1)) {
             await message.channel.send("> :x:  Veuillez indiquer un profil ScoreSaber valide.")
             return;
         }
-	    
-	let profileId = args[0].replace(url , "");
+
+        let profileId = args[0].replace(url , "");
         
         profileId = profileId.split("?")[0];
         profileId = profileId.split("&")[0];
