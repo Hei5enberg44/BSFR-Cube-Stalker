@@ -10,13 +10,23 @@ class ScoreSaber {
         return (await axios.get(this.config.scoresaber.apiUrl + '/api/manage/user/' + id + '/refresh')).data.updated
     }
 
-    async refreshRoles(ply, message) {
+    async refreshRoles(ply, message, targetUser) {
+
+        //await message.channel.send("> :checkered_flag:  **[DEBUG]** PP: " + ply.pp);
 
         let firstRoleName;
         let secondRoleName;
 
-        if(ply.pp >= 10000) {
-            firstRoleName = "10000pp"
+        if(ply.pp >= 12000) {
+            firstRoleName = "12000pp"
+        } else if(ply.pp >= 11000 && ply.pp < 12000) {
+            firstRoleName = "11000pp";
+            if(ply.pp >= 11500)
+                secondRoleName = "11500pp"
+        } else if(ply.pp >= 10000 && ply.pp < 11000) {
+            firstRoleName = "10000pp";
+            if(ply.pp >= 10500)
+                secondRoleName = "10500pp"
         } else if(ply.pp >= 9000 && ply.pp < 10000) {
             firstRoleName = "9000pp";
             if(ply.pp >= 9500)
@@ -58,16 +68,28 @@ class ScoreSaber {
                 firstRoleName = "500pp"
         }
 
-        let member = message.guild.members.resolve(message.author.id);
+        if(!firstRoleName) {
+            return;
+        }
+
+        let member = message.guild.members.resolve(targetUser);
 
         let hasRoleFirst = member.roles.cache.some(r=>[firstRoleName].includes(r.name));
-        let hasRoleSecond = member.roles.cache.some(r=>[secondRoleName].includes(r.name));
+
+        let hasRoleSecond;
+        if(!secondRoleName)
+            hasRoleSecond = true;
+        else
+            hasRoleSecond = member.roles.cache.some(r=>[secondRoleName].includes(r.name));
+
+        //await message.channel.send("> :checkered_flag:  **[DEBUG]** hasRoleFirst: " + hasRoleFirst + " - hasRoleSecond: " + hasRoleSecond);
 
         if(hasRoleFirst) {
             if(!hasRoleSecond) {
                 member.roles.cache.map(async role => {
                     if(role.name.indexOf("00pp") > -1) {
                         await member.roles.remove(role);
+                        //await message.channel.send("> :checkered_flag:  **[DEBUG]** Retiré: " + role.name);
                     }
                 });
             }
@@ -75,6 +97,7 @@ class ScoreSaber {
             member.roles.cache.map(async role => {
                 if(role.name.indexOf("00pp") > -1) {
                     await member.roles.remove(role);
+                   // await message.channel.send("> :checkered_flag:  **[DEBUG]** Retiré: " + role.name);
                 }
             });
         }
@@ -82,11 +105,13 @@ class ScoreSaber {
         if(!hasRoleFirst) {
             let roleFirst = await message.guild.roles.cache.find(role => role.name === firstRoleName);
             await member.roles.add(roleFirst);
+           // await message.channel.send("> :checkered_flag:  **[DEBUG]** Ajouté: " + roleFirst.name);
         }
         if(secondRoleName) {
             if(!hasRoleSecond) {
                 let roleSecond = await message.guild.roles.cache.find(role => role.name === secondRoleName);
                 await member.roles.add(roleSecond);
+                //await message.channel.send("> :checkered_flag:  **[DEBUG]** Ajouté: " + roleSecond.name);
             }
         }
 
@@ -107,16 +132,16 @@ let role = await MasterGuild.roles.find(role => role.name == "Event Notification
 
     }
 
-    async getProfile(id, roleCheck, message) {
+    async getProfile(id, message, targetUser) {
         let player = new Player();
         let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full');
         player.setPlayer(response.data);
-        await this.refreshRoles(player.getPlayer(), message);
+        await this.refreshRoles(player.getPlayer(), message, targetUser);
         return player.getPlayer();
     }
 
     async getTopScore(id) {
-        let score = (await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/scores/top')).data.scores[0]
+        let score = (await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/scores/top')).data.scores[0];
         score.diff = score.diff.split("_")[1];
 
         return score

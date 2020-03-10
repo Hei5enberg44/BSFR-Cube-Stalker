@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 const util = require("util");
 
 class MeCommand {
@@ -25,6 +24,10 @@ class MeCommand {
         if(args[0]) {
             let promisifiedMember = util.promisify(this.utils.DiscordServer.getMember);
             let memberFound = await promisifiedMember(message.guild, args[0]);
+            if(!memberFound) {
+                await message.channel.send("> :x:  Aucun utilisateur trouvé.");
+                return;
+            }
             discordMember = memberFound;
             discordSelected = memberFound.user.id
         } else {
@@ -52,7 +55,7 @@ class MeCommand {
             await message.channel.send("> :x:  La mise à jour du profil n'a pas pu être réalisée, les données ci-dessous peuvent être inexactes.")
         }
 
-        let player = await this.utils.ScoreSaber.getProfile(id, (discordSelected === message.author.id), message);
+        let player = await this.utils.ScoreSaber.getProfile(id, message, discordSelected);
         let score = await this.utils.ScoreSaber.getTopScore(id);
 
         /*await this.clients.redis.loginRedis();
@@ -69,17 +72,22 @@ class MeCommand {
                     break;
                 }
             }
-            if(!foundInLead) {
+            if(foundInLead) {
+                foundInLead.pp = player.pp;
+                await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer));
+            } else {
                 if(args[0])
                     await message.channel.send("> :clap:  ``" + player.name + "`` a été ajouté au classement du serveur.");
                 else
                     await message.channel.send("> :clap:  Vous avez été ajouté au classement du serveur.");
+                player.leaderboardEntry.discordUser = discordSelected;
                 leaderboardServer.push(player.leaderboardEntry);
                 await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer));
             }
         } else {
             await message.channel.send("> <:discord:686990677451604050>  Serait-ce un nouveau serveur? Je vous initialise le classement tout de suite.");
             leaderboardServer = [];
+            player.leaderboardEntry.discordUser = discordSelected;
             leaderboardServer.push(player.leaderboardEntry);
             await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer));
         }

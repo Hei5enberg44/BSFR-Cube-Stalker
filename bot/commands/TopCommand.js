@@ -29,7 +29,17 @@ class MeCommand {
 
         let desc = ""
         for(let i = 0; i < nb; i++) {
-            desc += "#" + lb[i].rank + " - [**" + lb[i].name + "**](https://scoresaber.com/u/" + lb[i].playerid + ") :flag_" + lb[i].country.toLowerCase() + ": - " + lb[i].pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp\n"
+            let posShow;
+            if(lb[i].rank === 1) {
+                posShow = ":first_place:"
+            } else if(lb[i].rank === 2) {
+                posShow = ":second_place:"
+            } else if(lb[i].rank === 3) {
+                posShow = ":third_place:"
+            } else {
+                posShow = "#" + lb[i].rank;
+            }
+            desc += posShow + " - **" + lb[i].name + "** :flag_" + lb[i].country.toLowerCase() + ": - " + lb[i].pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp [``🔗``](https://scoresaber.com/u/" + lb[i].playerid + ")\n"
         }
         // desc += "```"
 

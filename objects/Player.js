@@ -11,7 +11,8 @@ class Player {
             playerid: this.player.playerid,
             name: this.player.name,
             pp: this.player.pp,
-            country: this.player.country
+            country: this.player.country,
+            discordUser: ""
         }
     }
 
