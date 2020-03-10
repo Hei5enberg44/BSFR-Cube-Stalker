@@ -20,7 +20,7 @@ class MeCommand {
 
     async exec(args, message) {
 
-        let discordSelected, discordMember
+        let discordSelected, discordMember;
         if(args[0]) {
             let promisifiedMember = util.promisify(this.utils.DiscordServer.getMember);
             let memberFound = await promisifiedMember(message.guild, args[0]);
@@ -31,13 +31,14 @@ class MeCommand {
             discordMember = message.author
         }
 
-        await this.clients.redis.loginRedis();
+        /*await this.clients.redis.loginRedis();
         const id = await this.clients.redis.getInstance().get(discordSelected);
-        this.clients.redis.logoutRedis();
+        this.clients.redis.logoutRedis();*/
+        const id = await (await this.clients.redis.quickRedis()).get(discordSelected);
 
         if(id === null) {
             if(args[0])
-                await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié pour le compte Discord ``" + discordMember.user.tag + "``.")
+                await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié pour le compte Discord ``" + discordMember.user.tag + "``.");
             else
                 await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié avec votre compte Discord!\nUtilisez la commande ``!profile [lien scoresaber]`` pour pouvoir en lier un.")
             return;
@@ -47,11 +48,24 @@ class MeCommand {
             let res = await this.utils.ScoreSaber.refreshProfile(id);
             this.utils.Logger.log("Profil mis à jour: " + res);
         } catch(e) {
-            await message.channel.send("> :x:  Le refresh forcé n'a pas pu avoir lieu. Veuillez noter que les informations ci-dessous peuvent être inexactes.")
+            await message.channel.send("> :x:  La mise à jour du profil n'a pas pu être réalisée, les données ci-dessous peuvent être inexactes.")
         }
 
         let player = await this.utils.ScoreSaber.getProfile(id, (discordSelected === message.author.id), message);
         let score = await this.utils.ScoreSaber.getTopScore(id);
+
+        /*await this.clients.redis.loginRedis();
+        const leaderboardServer = await this.clients.redis.getInstance().get("ld_" + message.guild.id);
+        this.clients.redis.logoutRedis();*/
+
+        const leaderboardServer = await (await this.clients.redis.quickRedis()).get("ld_" + message.guild.id);
+
+        if(leaderboardServer) {
+            console.log("pepega")
+        } else {
+            await message.channel.send("> :ok_hand:  Serait-ce un nouveau serveur? Je vous initialise le leaderboard.")
+
+        }
 
         this.clients.discord.getClient().channels.fetch("613064448009306118").then(channel => {
             if(args.join().toLowerCase().indexOf("bien") > -1)
@@ -64,12 +78,12 @@ class MeCommand {
             embed.setTitle(player.name)
                 .setURL(this.config.scoresaber.url + "/u/" + id + ')')
                 .setThumbnail(this.config.scoresaber.apiUrl + player.avatar)
-                .addField("Rank", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank)
-                .addField("Performance Points", ":clap: " + player.pp + "pp")
-                .addField("Précision moyenne en ranked", ":dart: " + player.accuracy.toFixed(2) + "%")
-                .addField("Best Run", ":one: " + score.songAuthorName + " " + score.songSubName + " - " + score.name + " [" + score.diff + "] by " + score.levelAuthorName)
-                .addField("Infos sur la Best Run", ":mechanical_arm: Rank: " + score.rank + " | Score: " + score.score + " | PP: " + score.pp)
-                .setColor('#000000')
+                .addField("Rang", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank)
+                .addField("Points de Performance", ":clap: " + player.pp + "pp", true)
+                .addField("Précision Classé", ":dart: " + player.accuracy.toFixed(2) + "%", true)
+                .addField("Meilleur score", ":one: " + score.songAuthorName + " " + score.songSubName + " - " + score.name + " [" + score.diff + "] by " + score.levelAuthorName)
+                .addField("Infos sur le meilleur score", ":mechanical_arm: Rank: " + score.rank + " | Score: " + score.score + " | PP: " + score.pp)
+                .setColor('#000000');
 
             channel.send(embed);
         })

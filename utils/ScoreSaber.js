@@ -109,7 +109,7 @@ let role = await MasterGuild.roles.find(role => role.name == "Event Notification
 
     async getProfile(id, roleCheck, message) {
         let player = new Player();
-        let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full')
+        let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full');
         player.setPlayer(response.data);
         await this.refreshRoles(player.getPlayer(), message);
         return player.getPlayer();

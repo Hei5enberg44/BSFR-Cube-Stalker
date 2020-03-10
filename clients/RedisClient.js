@@ -22,6 +22,21 @@ class RedisClient {
         }
     }
 
+    async quickRedis() {
+        await this.loginRedis();
+        return {
+            get: (async (key) => {
+                let toReturn = await this.getInstance().get(key);
+                this.logoutRedis();
+                return toReturn;
+            }), set: async (key, value) => {
+                let toReturn = await this.getInstance().set(key, value);
+                this.logoutRedis();
+                return toReturn;
+            }
+        }
+    }
+
     logoutRedis() {
         this.redisInstance.end(true);
     }

@@ -18,7 +18,7 @@ class MeCommand {
     async exec(args, message) {
 	let url = "http"
         if(!args[0]) {
-            await message.channel.send("> :x: | Veuillez indiquer un profil ScoreSaber.")
+            await message.channel.send("> :x:  Veuillez indiquer un profil ScoreSaber.")
             return;
         }
 
@@ -29,7 +29,7 @@ class MeCommand {
 	url += "://scoresaber.com/u/"
 
         if(!(args[0].indexOf(url) > -1)) {
-            await message.channel.send("> :x: | Veuillez indiquer un profil ScoreSaber valide.")
+            await message.channel.send("> :x:  Veuillez indiquer un profil ScoreSaber valide.")
             return;
         }
 	    
@@ -38,12 +38,14 @@ class MeCommand {
         profileId = profileId.split("?")[0];
         profileId = profileId.split("&")[0];
 
-        await this.clients.redis.loginRedis();
+        /*await this.clients.redis.loginRedis();
         await this.clients.redis.getInstance().set(message.author.id, profileId);
-        this.clients.redis.logoutRedis();
+        this.clients.redis.logoutRedis();*/
+
+        await (await this.clients.redis.quickRedis()).set(message.author.id, profileId);
 
         let player = await this.utils.ScoreSaber.getProfile(profileId);
-        await message.channel.send("> :white_check_mark: | Le profil ScoreSaber ``" + player.name + "`` a bien été lié avec votre compte Discord.")
+        await message.channel.send("> :white_check_mark:  Le profil ScoreSaber ``" + player.name + "`` a bien été lié avec votre compte Discord.")
     }
 
 }
