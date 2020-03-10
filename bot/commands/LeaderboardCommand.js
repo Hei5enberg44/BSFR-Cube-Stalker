@@ -41,7 +41,8 @@ class LeaderboardCommand {
             } else {
                 posShow = "#" + pos;
             }
-            desc += posShow + " - [**" + lb[i].name + "**](https://scoresaber.com/u/" + lb[i].playerid + ") :flag_" + lb[i].country.toLowerCase() + ": - " + lb[i].pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp\n"
+            //desc += posShow + " - **" + lb[i].name + "** :flag_" + lb[i].country.toLowerCase() + ": - " + lb[i].pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp [``🔗``](https://scoresaber.com/u/" + lb[i].playerid + ")\n"
+            desc += posShow + " - :flag_" + lb[i].country.toLowerCase() + ": [" + lb[i].name + "](https://scoresaber.com/u/" + lb[i].playerid + ") - " + lb[i].pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp\n"
         }
         // desc += "```"
 
