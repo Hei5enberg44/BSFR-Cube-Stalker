@@ -12,7 +12,8 @@ class LeaderboardCommand {
             Aliases: ["server", "serverlead", "lead"],
             Usage: "[<nb>]",
             Description: "Affiche le classement du serveur (10 défaut, 20 max, 1 min)",
-            Run: (args, message) => this.exec(args, message)
+            Run: (args, message) => this.exec(args, message),
+            ShowInHelp: true
         }
     }
 

@@ -14,7 +14,8 @@ class MeCommand {
             Aliases: ["doisuck", "plspp"],
             Usage: "[<utilisateur>]",
             Description: "Affiche votre profil ScoreSaber.",
-            Run: (args, message) => this.exec(args, message)
+            Run: (args, message) => this.exec(args, message),
+            ShowInHelp: true
         }
     }
 

@@ -12,12 +12,13 @@ class MeCommand {
             Aliases: ["world", "worldlead"],
             Usage: "[<nb>]",
             Description: "Affiche le classement mondial (10 défaut, 20 max, 1 min)",
-            Run: (args, message) => this.exec(args, message)
+            Run: (args, message) => this.exec(args, message),
+            ShowInHelp: true
         }
     }
 
     async exec(args, message) {
-        let nb = args[0]
+        let nb = args[0];
         if (!nb) {
             nb = 10
         } else if((nb > 20 || nb < 1) || isNaN(parseInt(nb))) {

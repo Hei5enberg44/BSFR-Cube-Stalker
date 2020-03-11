@@ -1,3 +1,5 @@
+const CronJob = require('cron').CronJob;
+
 class CubeStalker {
 
     constructor() {
@@ -17,7 +19,10 @@ class CubeStalker {
 
         this.clients = {
             discord: new clients.Discord(this),
-            redis: new clients.Redis(this)
+            redis: new clients.Redis(this),
+            raw: {
+                redis: clients.Redis
+            }
         };
 
         // Déclaration des utils
@@ -25,7 +30,7 @@ class CubeStalker {
         this.utils = {
             Logger: new (require("./utils/Logger.js")),
             Embed: new (require("./utils/Embed.js")),
-            ScoreSaber: new (require("./utils/ScoreSaber.js"))({config: this.config}),
+            ScoreSaber: new (require("./utils/ScoreSaber.js"))({config: this.config, clients: this.clients}),
             ServerLeaderboard: new (require("./utils/ServerLeaderboard.js"))({clients: this.clients}),
             DiscordServer: new (require("./utils/DiscordServer.js"))({clients: this.clients})
         };
@@ -47,15 +52,18 @@ class CubeStalker {
 
     async init() {
         this.clients.discord.loginClient();
-        await this.clients.redis.loginRedis();
+        //await this.clients.redis.loginRedis();
         this.clients.discord.getClient().on("ready", async () => {
             this.utils.Logger.log("Discord: Ready.");
-
-            const value = await this.clients.redis.getInstance().get("186156892379283456");
             await this.clients.discord.getClient().user.setActivity(this.config.discord.prefix + 'help - By Krixs & JiveOff', {
                 type: "LISTENING"
             });
             this.managers.commands.init();
+            this.utils.Logger.log("CronJob: Ready.");
+            new CronJob('0 0 * * *', async () => {
+                this.utils.Logger.log("CronJob: Refreshing.");
+                await this.utils.ScoreSaber.refreshGuild("531101359471329291");
+            }, null, true, 'Europe/London');
         });
     }
 

@@ -14,7 +14,8 @@ class ProfileCommand {
             Aliases: ["profilelink", "link"],
             Usage: "<link> (<utilisateur>)",
             Description: "Lie votre compte ScoreSaber à votre compte Discord.",
-            Run: (args, message) => this.exec(args, message)
+            Run: (args, message) => this.exec(args, message),
+            ShowInHelp: true
         }
     }
 
@@ -66,7 +67,6 @@ class ProfileCommand {
             console.log(leaderboardServer[i].playerid + " - " + profileId);
             if(parseInt(leaderboardServer[i].playerid) === parseInt(profileId)) {
                 foundProfile = true;
-                console.log("BIGOOF");
                 break;
             }
         }
