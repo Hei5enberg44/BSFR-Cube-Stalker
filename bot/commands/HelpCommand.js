@@ -1,5 +1,3 @@
-const Discord = require('discord.js');
-
 class HelpCommand {
 
     constructor(opt) {
@@ -12,9 +10,11 @@ class HelpCommand {
     getCommand() {
         return {
             Command: "help",
-            Usage: this.config.discord.prefix + "help",
+            Aliases: ["cmds", "plshelp"],
+            Usage: "",
             Description: "Affiche la liste des commandes.",
-            Run: (args, message) => this.exec(args, message)
+            Run: (args, message) => this.exec(args, message),
+            ShowInHelp: false
         }
     }
 
@@ -23,7 +23,8 @@ class HelpCommand {
 
             let showC = [];
             for(let c in this.commands) {
-                showC.push({name: this.commands[c].Usage, value: this.commands[c].Description, inline: false});
+                if(this.commands[c].ShowInHelp)
+                    showC.push({name: this.config.discord.prefix + this.commands[c].Command + " " + this.commands[c].Usage, value: this.commands[c].Description + "\nAlias: ``" + this.commands[c].Aliases.join("``, ``") + "``", inline: false});
             }
 
             let embed = this.utils.Embed.embed();

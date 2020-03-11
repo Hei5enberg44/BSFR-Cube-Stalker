@@ -39,15 +39,27 @@ class CommandManager {
             let args = message.content.split(" ");
             args[0] = args[0].replace(this.config.discord.prefix, "");
 
-            if(!this.commands[args[0]]) {
-                message.react("❌");
-                return;
+            if(this.commands[args[0]]) {
+                let command = this.commands[args[0]];
+                command.Run(args.slice(1), message);
+                this.utils.Logger.log("CommandManager: " + message.author.username + " a run la commande " + command.Command);
+            } else {
+                let foundCommand;
+                for(let i in this.commands) {
+                    if(this.commands[i].Aliases.includes(args[0])) {
+                        foundCommand = this.commands[i];
+                    }
+                }
+                if(foundCommand) {
+                    let command = foundCommand;
+                    command.Run(args.slice(1), message);
+                    this.utils.Logger.log("CommandManager: " + message.author.username + " a run un alias de la commande " + command.Command);
+                } else {
+                    message.react("❌");
+                    return;
+                }
+
             }
-
-            let command = this.commands[args[0]];
-            command.Run(args.slice(1), message);
-
-            this.utils.Logger.log("CommandManager: " + message.author.username + " a run la commande " + command.Command);
         });
     }
 
