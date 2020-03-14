@@ -1,9 +1,19 @@
 class DiscordServer {
 
+    /**
+     * Constructeur de DiscordServer
+     * @param opt
+     */
     constructor(opt) {
         this.clients = opt.clients;
     }
 
+    /**
+     * Méthode pour récupérer un utilisateur par une simple chaîne de caractères.
+     * @param guild
+     * @param name
+     * @param callback
+     */
     getMember(guild, name, callback) {
         let re = new RegExp(name.toLowerCase(), "g");
         let found = false;

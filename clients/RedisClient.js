@@ -1,14 +1,18 @@
 const Redis = require("ioredis");
-//const Redis = require("async-redis");
 
 class RedisClient {
 
+    /**
+     * Constructeur du RedisClient
+     * @param opt
+     */
     constructor(opt) {
         this.host = opt.config.redis.host;
         this.port = opt.config.redis.port;
         this.password = opt.config.redis.password;
         this.database = opt.config.redis.database;
 
+        // On instancie le client et on se connecte au serveur Redis
         this.redisInstance = new Redis({
             port: this.port,
             host: this.host,
@@ -17,17 +21,10 @@ class RedisClient {
         });
     }
 
-    /*async loginRedis() {
-        try {
-            this.redisInstance = Redis.create(this.port, this.host);
-            this.redisInstance.auth(this.password);
-            this.redisInstance.select(this.database);
-        } catch(err) {
-            console.log("RedisClient: Erreur..");
-            console.log(err);
-        }
-    }*/
-
+    /**
+     * Wrapper pour les fonctions de ioredis.
+     * @returns {Promise<{set: (function(*=, *=): *), get: (function(*=): *), del: (function(*=, *): *)}>}
+     */
     async quickRedis() {
         return {
             get: async (key) => {
@@ -46,24 +43,10 @@ class RedisClient {
         }
     }
 
-    async dirtyQuickRedis() {
-        return {
-            get: async (key) => {
-                let toReturn = await this.redisInstance.get(key);
-                console.log("RedisClient: Commande exécuté: GET " + key);
-                return toReturn;
-            }, set: async (key, value) => {
-                let toReturn = await this.redisInstance.get(key, value);
-                console.log("RedisClient: Commande exécuté: SET " + key + " " + value);
-                return toReturn;
-            }
-        }
-    }
-
-    logoutRedis() {
-        this.redisInstance.disconnect();
-    }
-
+    /**
+     * Getter pour l'instance Redis.
+     * @returns {Redis}
+     */
     getInstance() {
         return this.redisInstance;
     }
