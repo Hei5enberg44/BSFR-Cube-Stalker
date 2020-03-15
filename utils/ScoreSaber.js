@@ -34,15 +34,15 @@ class ScoreSaber {
         let secondRoleName;
 
         if(ply.pp >= 12000) {
-            firstRoleName = "12000pp"
+            firstRoleName = "12 000pp"
         } else if(ply.pp >= 11000 && ply.pp < 12000) {
-            firstRoleName = "11000pp";
+            firstRoleName = "11 000pp";
             if(ply.pp >= 11500)
-                secondRoleName = "11500pp"
+                secondRoleName = "11 500pp"
         } else if(ply.pp >= 10000 && ply.pp < 11000) {
-            firstRoleName = "10000pp";
+            firstRoleName = "10 000pp";
             if(ply.pp >= 10500)
-                secondRoleName = "10500pp"
+                secondRoleName = "10 500pp"
         } else if(ply.pp >= 9000 && ply.pp < 10000) {
             firstRoleName = "9000pp";
             if(ply.pp >= 9500)
@@ -200,15 +200,15 @@ class ScoreSaber {
         let secondRoleName;
 
         if(ply.pp >= 12000) {
-            firstRoleName = "12000pp"
+            firstRoleName = "12 000pp"
         } else if(ply.pp >= 11000 && ply.pp < 12000) {
-            firstRoleName = "11000pp";
+            firstRoleName = "11 000pp";
             if(ply.pp >= 11500)
-                secondRoleName = "11500pp"
+                secondRoleName = "11 500pp"
         } else if(ply.pp >= 10000 && ply.pp < 11000) {
-            firstRoleName = "10000pp";
+            firstRoleName = "10 000pp";
             if(ply.pp >= 10500)
-                secondRoleName = "10500pp"
+                secondRoleName = "10 500pp"
         } else if(ply.pp >= 9000 && ply.pp < 10000) {
             firstRoleName = "9000pp";
             if(ply.pp >= 9500)
