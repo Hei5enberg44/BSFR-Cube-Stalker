@@ -1,6 +1,14 @@
 const Discord = require("discord.js");
 
+/**
+ * Classe de standardisation des embeds.
+ */
 class Embed {
+
+    /**
+     * Fonction principale.
+     * @returns {module:"discord.js".MessageEmbed}
+     */
     embed() {
         return new Discord.MessageEmbed()
             .setColor('#000000')
