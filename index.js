@@ -51,14 +51,22 @@ class CubeStalker {
     }
 
     async init() {
+
+        // On fait login le bot à la gateway de Discord.
         this.clients.discord.loginClient();
-        //await this.clients.redis.loginRedis();
+
         this.clients.discord.getClient().on("ready", async () => {
             this.utils.Logger.log("Discord: Ready.");
+
+            // On change l'activité du bot.
             await this.clients.discord.getClient().user.setActivity(this.config.discord.prefix + 'help - By Krixs & JiveOff', {
                 type: "LISTENING"
             });
+
+            // On démarre le CommandManager.
             this.managers.commands.init();
+
+            // On démarre le cron job.
             this.utils.Logger.log("CronJob: Ready.");
             new CronJob('0 0 * * *', async () => {
                 this.utils.Logger.log("CronJob: Refreshing.");

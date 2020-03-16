@@ -2,32 +2,47 @@ const axios = require('axios');
 const Player = require('../objects/Player.js');
 
 class ScoreSaber {
+
+    /**
+     * Constructeur de l'util ScoreSaber.
+     * @param opt
+     */
     constructor(opt) {
         this.config = opt.config;
         this.clients = opt.clients;
     }
 
+    /**
+     * Fonction de refresh forcé du profil ScoreSaber.
+     * @param id
+     * @returns {Promise<*>}
+     */
     async refreshProfile(id) {
         return (await axios.get(this.config.scoresaber.apiUrl + '/api/manage/user/' + id + '/refresh')).data.updated
     }
 
+    /**
+     * Fonction pour refresh les rôles de la guilde.
+     * @param ply
+     * @param message
+     * @param targetUser
+     * @returns {Promise<boolean>}
+     */
     async refreshRoles(ply, message, targetUser) {
-
-        //await message.channel.send("> :checkered_flag:  **[DEBUG]** PP: " + ply.pp);
 
         let firstRoleName;
         let secondRoleName;
 
         if(ply.pp >= 12000) {
-            firstRoleName = "12000pp"
+            firstRoleName = "12 000pp"
         } else if(ply.pp >= 11000 && ply.pp < 12000) {
-            firstRoleName = "11000pp";
+            firstRoleName = "11 000pp";
             if(ply.pp >= 11500)
-                secondRoleName = "11500pp"
+                secondRoleName = "11 500pp"
         } else if(ply.pp >= 10000 && ply.pp < 11000) {
-            firstRoleName = "10000pp";
+            firstRoleName = "10 000pp";
             if(ply.pp >= 10500)
-                secondRoleName = "10500pp"
+                secondRoleName = "10 500pp"
         } else if(ply.pp >= 9000 && ply.pp < 10000) {
             firstRoleName = "9000pp";
             if(ply.pp >= 9500)
@@ -83,8 +98,6 @@ class ScoreSaber {
         else
             hasRoleSecond = member.roles.cache.some(r=>[secondRoleName].includes(r.name));
 
-        //await message.channel.send("> :checkered_flag:  **[DEBUG]** hasRoleFirst: " + hasRoleFirst + " - hasRoleSecond: " + hasRoleSecond);
-
         if(hasRoleFirst) {
             if(!hasRoleSecond) {
                 member.roles.cache.map(async role => {
@@ -120,6 +133,13 @@ class ScoreSaber {
 
     }
 
+    /**
+     * Fonction pour récupérer le profil ScoreSaber avec un snowflake ID.
+     * @param id
+     * @param message
+     * @param targetUser
+     * @returns {Promise<{}|boolean>}
+     */
     async getProfile(id, message, targetUser) {
         let player = new Player();
         let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full');
@@ -136,6 +156,11 @@ class ScoreSaber {
         }
     }
 
+    /**
+     * Fonction de récupération du meilleur score avec un snowflake id.
+     * @param id
+     * @returns {Promise<*>}
+     */
     async getTopScore(id) {
         let score = (await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/scores/top')).data.scores[0];
         score.diff = score.diff.split("_")[1];
@@ -143,11 +168,15 @@ class ScoreSaber {
         return score
     }
 
+    /**
+     * Fonction qui permet de retourner le leaderboard mondial.
+     * @returns {Promise<T>}
+     */
     async getLeaderboard() {
         return (await axios.get(this.config.scoresaber.apiUrl + '/api/players/1')).data
     }
 
-    // Refresher
+    // Fonctions faites exprès pour la crontab de refresh.
 
     async getProfileRefresher(id, guild, member) {
         let player = new Player();
@@ -171,15 +200,15 @@ class ScoreSaber {
         let secondRoleName;
 
         if(ply.pp >= 12000) {
-            firstRoleName = "12000pp"
+            firstRoleName = "12 000pp"
         } else if(ply.pp >= 11000 && ply.pp < 12000) {
-            firstRoleName = "11000pp";
+            firstRoleName = "11 000pp";
             if(ply.pp >= 11500)
-                secondRoleName = "11500pp"
+                secondRoleName = "11 500pp"
         } else if(ply.pp >= 10000 && ply.pp < 11000) {
-            firstRoleName = "10000pp";
+            firstRoleName = "10 000pp";
             if(ply.pp >= 10500)
-                secondRoleName = "10500pp"
+                secondRoleName = "10 500pp"
         } else if(ply.pp >= 9000 && ply.pp < 10000) {
             firstRoleName = "9000pp";
             if(ply.pp >= 9500)
@@ -270,6 +299,11 @@ class ScoreSaber {
 
     }
 
+    /**
+     * Fonction permettant le refresh entier d'une guilde.
+     * @param guildId
+     * @returns {Promise<void>}
+     */
     async refreshGuild(guildId) {
         let guild = this.clients.discord.getClient().guilds.resolve(guildId);
         await guild.members.cache.forEach((async (member) => {
