@@ -30,10 +30,11 @@ class CubeStalker {
         this.utils = {
             Logger: new (require("./utils/Logger.js")),
             Embed: new (require("./utils/Embed.js")),
-            ScoreSaber: new (require("./utils/ScoreSaber.js"))({config: this.config, clients: this.clients}),
             ServerLeaderboard: new (require("./utils/ServerLeaderboard.js"))({clients: this.clients}),
             DiscordServer: new (require("./utils/DiscordServer.js"))({clients: this.clients})
         };
+
+        this.utils.ScoreSaber = new (require("./utils/ScoreSaber.js"))({config: this.config, clients: this.clients, utils: this.utils });
 
         // Instanciation et initialisation des Managers
 

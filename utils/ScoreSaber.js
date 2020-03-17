@@ -10,6 +10,7 @@ class ScoreSaber {
     constructor(opt) {
         this.config = opt.config;
         this.clients = opt.clients;
+        this.utils = opt.utils;
     }
 
     /**
@@ -18,7 +19,13 @@ class ScoreSaber {
      * @returns {Promise<*>}
      */
     async refreshProfile(id) {
-        return (await axios.get(this.config.scoresaber.apiUrl + '/api/manage/user/' + id + '/refresh')).data.updated
+        try {
+            let data = (await axios.get(this.config.scoresaber.apiUrl + '/api/manage/user/' + id + '/refresh')).data.updated
+            return data;
+        } catch(e) {
+            this.utils.Logger.log("ScoreSaber refreshProfile: " + e.toString());
+            return false;
+        }
     }
 
     /**
@@ -152,6 +159,7 @@ class ScoreSaber {
                 return player.getPlayer();
             }
         } else {
+            this.utils.Logger.log("ScoreSaber getProfile: " + response.toString());
             return false;
         }
     }
@@ -162,18 +170,29 @@ class ScoreSaber {
      * @returns {Promise<*>}
      */
     async getTopScore(id) {
-        let score = (await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/scores/top')).data.scores[0];
-        score.diff = score.diff.split("_")[1];
+        try {
+            let score = (await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/scores/top')).data.scores[0];
+            score.diff = score.diff.split("_")[1];
 
-        return score
+            return score
+        } catch(e) {
+            this.utils.Logger.log("ScoreSaber getTopScore: " + e.toString());
+            return false;
+        }
     }
 
     /**
      * Fonction qui permet de retourner le leaderboard mondial.
-     * @returns {Promise<T>}
+     * @returns {Promise<T|boolean>}
      */
     async getLeaderboard() {
-        return (await axios.get(this.config.scoresaber.apiUrl + '/api/players/1')).data
+        try {
+            let data = (await axios.get(this.config.scoresaber.apiUrl + '/api/players/1')).data
+            return data;
+        } catch(e) {
+            this.utils.Logger.log("ScoreSaber getLeaderboard: " + e.toString());
+            return false;
+        }
     }
 
     // Fonctions faites exprès pour la crontab de refresh.
