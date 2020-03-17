@@ -81,6 +81,11 @@ class MeCommand {
         // On récupère le leaderboard serveur.
         let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id);
 
+        if(!player || !score || !leaderboardServer) {
+            await message.channel.send("> :x:  Le profil ScoreSaber n'a pas pu être récupéré.");
+            return;
+        }
+
         // Si le leaderboard serveur existe.
         if(leaderboardServer) {
             let foundInLead;
