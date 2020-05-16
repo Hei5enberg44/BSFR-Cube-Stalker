@@ -105,23 +105,11 @@ class ScoreSaber {
         else
             hasRoleSecond = member.roles.cache.some(r=>[secondRoleName].includes(r.name));
 
-        if(hasRoleFirst) {
-            if(!hasRoleSecond) {
-                member.roles.cache.map(async role => {
-                    if(role.name.indexOf("00pp") > -1) {
-                        await member.roles.remove(role);
-                        //await message.channel.send("> :checkered_flag:  **[DEBUG]** Retiré: " + role.name);
-                    }
-                });
+        await member.roles.cache.map(async role => {
+            if(role.name.indexOf("00pp") > -1) {
+                await member.roles.remove(role);
             }
-        } else {
-            member.roles.cache.map(async role => {
-                if(role.name.indexOf("00pp") > -1) {
-                    await member.roles.remove(role);
-                    //await message.channel.send("> :checkered_flag:  **[DEBUG]** Retiré: " + role.name);
-                }
-            });
-        }
+        });
 
         if(!hasRoleFirst) {
             let roleFirst = await message.guild.roles.cache.find(role => role.name === firstRoleName);
@@ -281,25 +269,11 @@ class ScoreSaber {
         else
             hasRoleSecond = member.roles.cache.some(r=>[secondRoleName].includes(r.name));
 
-        //await message.channel.send("> :checkered_flag:  **[DEBUG]** hasRoleFirst: " + hasRoleFirst + " - hasRoleSecond: " + hasRoleSecond);
-
-        if(hasRoleFirst) {
-            if(!hasRoleSecond) {
-                member.roles.cache.map(async role => {
-                    if(role.name.indexOf("00pp") > -1) {
-                        await member.roles.remove(role);
-                        //await message.channel.send("> :checkered_flag:  **[DEBUG]** Retiré: " + role.name);
-                    }
-                });
+        await member.roles.cache.map(async role => {
+            if(role.name.indexOf("00pp") > -1) {
+                await member.roles.remove(role);
             }
-        } else {
-            member.roles.cache.map(async role => {
-                if(role.name.indexOf("00pp") > -1) {
-                    await member.roles.remove(role);
-                    //await message.channel.send("> :checkered_flag:  **[DEBUG]** Retiré: " + role.name);
-                }
-            });
-        }
+        });
 
         if(!hasRoleFirst) {
             let roleFirst = await guild.roles.cache.find(role => role.name === firstRoleName);
