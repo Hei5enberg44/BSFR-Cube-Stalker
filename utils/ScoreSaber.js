@@ -13,6 +13,18 @@ class ScoreSaber {
         this.utils = opt.utils;
     }
 
+    async checkApiIsUp(){
+	try {
+	    let data = (await axios.get(this.config.scoresaber.apiUrl + '/api/')).data.response
+	    if(data == "hey")
+		return true
+	    else
+		return false
+	} catch (e) {
+	    return false
+	}
+    }
+
     /**
      * Fonction de refresh forcé du profil ScoreSaber.
      * @param id
@@ -95,35 +107,41 @@ class ScoreSaber {
             return;
         }
 
-        let member = message.guild.members.resolve(targetUser);
+	let member = message.guild.members.resolve(targetUser);
 
         let hasRoleFirst = member.roles.cache.some(r=>[firstRoleName].includes(r.name));
 
         let hasRoleSecond;
-        if(!secondRoleName)
+
+	if(!secondRoleName)
             hasRoleSecond = true;
         else
             hasRoleSecond = member.roles.cache.some(r=>[secondRoleName].includes(r.name));
 
-        if(!hasRoleFirst) {
-            let roles = member.roles.cache.filter(role => role.name.indexOf("000pp") > -1);
-            for(let i in roles) {
-                await member.roles.remove(roles[i]);
-                //await message.channel.send("> :checkered_flag:  **[DEBUG]** Retiré: " + roles[i].name);
-            }
+	let firstroles = member.roles.cache.filter(role => role.name.indexOf("000pp") > -1);
+	let secondroles = member.roles.cache.filter(role => role.name.indexOf("500pp") > -1);
 
+	firstroles.forEach(async function(role) {
+	    if(firstRoleName != role.name) {
+		await member.roles.remove(role);
+		//await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
+	    }
+	});
+
+	secondroles.forEach(async function(role) {
+	    if(secondRoleName != role.name) {
+	    	await member.roles.remove(role);
+		//await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
+	    }
+	})
+
+        if(!hasRoleFirst) {
             let roleFirst = await message.guild.roles.cache.find(role => role.name === firstRoleName);
             await member.roles.add(roleFirst);
             //await message.channel.send("> :checkered_flag:  **[DEBUG]** Ajouté: " + roleFirst.name);
         }
         if(secondRoleName) {
             if(!hasRoleSecond) {
-                let roles = member.roles.cache.filter(role => role.name.indexOf("500pp") > -1);
-                for(let i in roles) {
-                    await member.roles.remove(roles[i]);
-                    //await message.channel.send("> :checkered_flag:  **[DEBUG]** Retiré: " + roles[i].name);
-                }
-
                 let roleSecond = await message.guild.roles.cache.find(role => role.name === secondRoleName);
                 await member.roles.add(roleSecond);
                 //await message.channel.send("> :checkered_flag:  **[DEBUG]** Ajouté: " + roleSecond.name);
@@ -197,7 +215,7 @@ class ScoreSaber {
         if(response) {
             if(response.data.error) {
                 return false;
-            } else {
+            } else {		
                 player.setPlayer(response.data);
                 await this.refresherRole(player.getPlayer(), guild, member);
                 return player.getPlayer();
@@ -263,7 +281,7 @@ class ScoreSaber {
                 firstRoleName = "500pp"
         }
 
-        if(!firstRoleName) {
+	if(!firstRoleName) {
             return;
         }
 
@@ -275,31 +293,28 @@ class ScoreSaber {
         else
             hasRoleSecond = member.roles.cache.some(r=>[secondRoleName].includes(r.name));
 
-        /*await member.roles.cache.map(async role => {
-            if(role.name.indexOf("00pp") > -1) {
-                await member.roles.remove(role);
-            }
-        });*/
+        let firstroles = member.roles.cache.filter(role => role.name.indexOf("000pp") > -1);
+	let secondroles = member.roles.cache.filter(role => role.name.indexOf("500pp") > -1);
+
+	firstroles.forEach(async function(role) {
+	    if(firstRoleName != role.name)
+		await member.roles.remove(role)
+		//await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
+	})
+
+	secondroles.forEach(async function(role) {
+	    if(secondRoleName != role.name)
+		await member.roles.remove(role)
+		//await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
+	})
 
         if(!hasRoleFirst) {
-            let roles = member.roles.cache.filter(role => role.name.indexOf("000pp") > -1);
-            for(let i in roles) {
-                await member.roles.remove(roles[i]);
-                //await message.channel.send("> :checkered_flag:  **[DEBUG]** Retiré: " + roles[i].name);
-            }
-
             let roleFirst = await guild.roles.cache.find(role => role.name === firstRoleName);
             await member.roles.add(roleFirst);
             //await message.channel.send("> :checkered_flag:  **[DEBUG]** Ajouté: " + roleFirst.name);
         }
         if(secondRoleName) {
             if(!hasRoleSecond) {
-                let roles = member.roles.cache.filter(role => role.name.indexOf("500pp") > -1);
-                for(let i in roles) {
-                    await member.roles.remove(roles[i]);
-                    //await message.channel.send("> :checkered_flag:  **[DEBUG]** Retiré: " + roles[i].name);
-                }
-
                 let roleSecond = await guild.roles.cache.find(role => role.name === secondRoleName);
                 await member.roles.add(roleSecond);
                 //await message.channel.send("> :checkered_flag:  **[DEBUG]** Ajouté: " + roleSecond.name);
@@ -320,7 +335,7 @@ class ScoreSaber {
         await guild.members.cache.forEach((async (member) => {
             const id = await (await this.clients.redis.quickRedis()).get(member.user.id);
             if(id !== null) {
-                await this.getProfileRefresher(id, guild, member);
+		await this.getProfileRefresher(id, guild, member);
             }
         }));
     }
