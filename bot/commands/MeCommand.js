@@ -154,7 +154,7 @@ class MeCommand {
         // On prépare l'embed.
         let embed = this.utils.Embed.embed();
         embed.setTitle(player.name)
-            .setURL(this.config.scoresaber.url + "/u/" + id + ')')
+            .setURL(this.config.scoresaber.url + "/u/" + id)
             .setThumbnail(this.config.scoresaber.apiUrl + player.avatar)
             .addField("Rang", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank + "\n\n<:discord:686990677451604050> " + posInLead + " (sur " + leaderboardServer.length + " joueurs)")
             .addField("Points de performance", ":clap: " + player.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp", true)

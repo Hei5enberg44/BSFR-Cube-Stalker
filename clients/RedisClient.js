@@ -33,11 +33,11 @@ class RedisClient {
                 return toReturn;
             }, set: async (key, value) => {
                 let toReturn = await this.getInstance().set(key, value);
-                console.log("RedisClient: Commande exécuté: SET " + key + " " + value);
+                console.log("RedisClient: Commande exécuté: SET " + key);
                 return toReturn;
             }, del: async (key, value) => {
                 let toReturn = await this.getInstance().del(key);
-                console.log("RedisClient: Commande exécuté: DEL " + key + " " + value);
+                console.log("RedisClient: Commande exécuté: DEL " + key);
                 return toReturn;
             }
         }
