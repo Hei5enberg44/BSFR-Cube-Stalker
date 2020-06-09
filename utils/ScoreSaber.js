@@ -13,6 +13,18 @@ class ScoreSaber {
         this.utils = opt.utils;
     }
 
+    async checkApiIsUp(){
+	try {
+	    let data = (await axios.get(this.config.scoresaber.apiUrl + '/api/')).data.response
+	    if(data == "hey")
+		return true
+	    else
+		return false
+	} catch (e) {
+	    return false
+	}
+    }
+
     /**
      * Fonction de refresh forcé du profil ScoreSaber.
      * @param id

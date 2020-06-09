@@ -65,6 +65,13 @@ class MeCommand {
             return;
         }
 
+	// On vérifie que l'api est joignable
+	let apiStatus = await this.utils.ScoreSaber.checkApiIsUp();
+	if (apiStatus == false) {
+	    await message.channel.send("> :x:  Il semblerait que ScoreSaber soit injoignables. Veuillez réessayer plus tard.")
+	    return;
+	}
+
         // On se met dans un scope try catch au cas où le refresh ScoreSaber du profil n'a pas pu être réalisé.
         // A monitorer (issue gitlab)
         try {
