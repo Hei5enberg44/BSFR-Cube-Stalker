@@ -184,7 +184,6 @@ class ScoreSaber {
     async getTopScore(id) {
         try {
             let score = (await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/scores/top')).data.scores[0];
-            score.diff = score.diff.split("_")[1];
 
             return score
         } catch(e) {
