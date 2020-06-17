@@ -16,8 +16,8 @@ class Player {
         this.player = player.playerInfo;
         this.player.accuracy = player.scoreStats.averageRankedAccuracy;
         this.player.leaderboardEntry = {
-            playerid: this.player.playerid,
-            name: this.player.name,
+            playerid: this.player.playerId,
+            name: this.player.playerName,
             pp: this.player.pp,
             country: this.player.country,
             discordUser: ""

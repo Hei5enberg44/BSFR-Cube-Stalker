@@ -97,7 +97,7 @@ class MeCommand {
         if(leaderboardServer) {
             let foundInLead;
             for(let l in leaderboardServer) {
-                if(leaderboardServer[l].playerid === player.playerid) {
+                if(leaderboardServer[l].playerid === player.playerId) {
                     foundInLead = leaderboardServer[l];
                     break;
                 }
@@ -135,7 +135,7 @@ class MeCommand {
         // On récupère la position du joueur dans le leaderboard serveur.
         let posInLead = 1;
         for(let l in leaderboardServer) {
-            if(leaderboardServer[l].playerid === player.playerid) {
+            if(leaderboardServer[l].playerid === player.playerId) {
                 break;
             }
             posInLead++;
@@ -158,15 +158,25 @@ class MeCommand {
             return;
         }
 
+	// Récupération diff
+	
+	let difficulty = null
+
+	for (const [key, value] of Object.entries(this.config.difficulty)) {
+	    if (score.difficulty == key) {
+	        difficulty = value
+	    }
+	}
+
         // On prépare l'embed.
         let embed = this.utils.Embed.embed();
-        embed.setTitle(player.name)
+        embed.setTitle(player.playerName)
             .setURL(this.config.scoresaber.url + "/u/" + id)
             .setThumbnail(this.config.scoresaber.apiUrl + player.avatar + "?date=" + new Date().getTime())
             .addField("Rang", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank + "\n\n<:discord:686990677451604050> " + posInLead + " (sur " + leaderboardServer.length + " joueurs)")
             .addField("Points de performance", ":clap: " + player.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp", true)
             .addField("Précision en classé", ":dart: " + player.accuracy.toFixed(2) + "%", true)
-            .addField("Meilleur score", ":one: " + score.songAuthorName + " " + score.songSubName + " - " + score.name + " [" + score.diff + "] by " + score.levelAuthorName)
+            .addField("Meilleur score", ":one: " + score.songAuthorName + " " + score.songSubName + " - " + score.songName + " [" + difficulty + "] by " + score.levelAuthorName)
             .addField("Infos sur le meilleur score", ":mechanical_arm: Rank: " + score.rank + " | Score: " + score.score + " | PP: " + score.pp)
             .setColor('#000000');
 
