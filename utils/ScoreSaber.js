@@ -176,6 +176,132 @@ class ScoreSaber {
         }
     }
 
+    async getStonkerCard(id, message) {
+
+        let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full');
+        if(!response) {
+            return "L'API ScoreSaber ne répond pas.";
+        }
+        if(response.data.error) {
+            return "Une erreur est survenue.";
+        }
+
+        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id);
+
+        let ply = new Player();
+        ply.setPlayer(response.data);
+        let player = ply.getPlayer();
+
+        let foundInLb;
+        for(let l in leaderboardServer) {
+            if(leaderboardServer[l].playerid === player.playerId) {
+                foundInLb = leaderboardServer[l];
+            }
+        }
+
+        if(!foundInLb || !foundInLb.global) {
+            return "Veuillez exécuter la commande ``" + this.config.discord.prefix + "me`` au moins une fois avant de générer la card.";
+        }
+
+        let diff = player.rank - foundInLb.global;
+
+        let mode;
+        if(diff > 0) {
+            mode = "stonks";
+        } else if(diff === 0) {
+            mode = "confused";
+        } else if(diff < 0) {
+            mode = "notstonks";
+            diff = diff * -1
+        }
+
+        const { registerFont, createCanvas, loadImage } = require('canvas');
+        const countries = require('../assets/country.json');
+        registerFont('./assets/NeonTubes2.otf', { family: 'Neon Tubes' });
+
+        const canvas = createCanvas(1398, 960);
+        const ctx = canvas.getContext('2d');
+
+        const background = await loadImage('./assets/' + mode + '.png');
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+        ctx.font = '85px "Neon Tubes"';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(player.playerName, 300, canvas.height - 150);
+
+        ctx.font = '62px "Neon Tubes"';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText("#" + player.rank + " (" + player.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp)" , 400, canvas.height - 70);
+
+        console.log(player)
+
+        let countryFound;
+        for(let i in countries) {
+            if(player.country === countries[i].abbreviation) {
+                countryFound = countries[i].country.toLowerCase().replace(" ", "-")
+            }
+        }
+
+        const flag = await loadImage('./assets/flags/' + countryFound + '.png');
+        ctx.drawImage(flag, 70, canvas.height - 215, 150, 150);
+
+        ctx.globalAlpha = 0.5;
+
+        const black = await loadImage('./assets/flags/black.png');
+        ctx.drawImage(black, 70, canvas.height - 215, 150, 150);
+
+        ctx.globalAlpha = 1;
+
+        ctx.font = '58px "Neon Tubes"';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.fillText("#" + player.countryRank, 142, canvas.height - 117, 140);
+
+        ctx.save();
+        const avatar = await loadImage(this.config.scoresaber.apiUrl + player.avatar);
+        let change;
+        let color;
+        if(mode === "stonks") {
+            ctx.beginPath();
+            ctx.arc(330, 180, 150, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.clip();
+            ctx.drawImage(avatar, 180, 30, 300, 300);
+
+            change = await loadImage('./assets/flags/plus.png');
+            color = "#ffffff"
+        } else if(mode === "confused") {
+            ctx.beginPath();
+            ctx.arc(300, 180, 150, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.clip();
+            ctx.drawImage(avatar, 150, 30, 300, 300);
+
+            change = await loadImage('./assets/flags/yellow.png');
+            color = "#000000"
+        } else {
+            ctx.beginPath();
+            ctx.arc(280, 155, 150, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.clip();
+            ctx.drawImage(avatar, 130, 5, 300, 300);
+
+            change = await loadImage('./assets/flags/moins.png');
+            color = "#ffffff"
+        }
+        ctx.restore();
+        ctx.drawImage(change, 300, canvas.height - 130, 70, 70);
+
+        ctx.font = 'Bold 32px "Neon Tubes"';
+        ctx.fillStyle = color;
+        ctx.textAlign = 'center';
+
+        ctx.fillText(diff, 335, canvas.height - 83);
+
+        return canvas.toBuffer()
+
+    }
+
     /**
      * Fonction de récupération du meilleur score avec un snowflake id.
      * @param id
