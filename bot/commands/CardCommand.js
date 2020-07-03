@@ -67,7 +67,6 @@ class HelpCommand {
             return;
         }
 
-
         const stonkerProfile = await this.utils.ScoreSaber.getStonkerCard(id, message);
 
         if(typeof stonkerProfile === 'string') {

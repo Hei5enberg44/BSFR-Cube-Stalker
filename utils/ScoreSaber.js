@@ -203,7 +203,7 @@ class ScoreSaber {
             return "Veuillez exécuter la commande ``" + this.config.discord.prefix + "me`` au moins une fois avant de générer la card.";
         }
 
-        let diff = player.rank - foundInLb.global;
+        let diff = foundInLb.global - player.rank;
 
         let mode;
         if(diff > 0) {
