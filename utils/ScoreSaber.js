@@ -233,12 +233,10 @@ class ScoreSaber {
         ctx.fillStyle = '#ffffff';
         ctx.fillText("#" + player.rank + " (" + player.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp)" , 400, canvas.height - 70);
 
-        console.log(player)
-
         let countryFound;
         for(let i in countries) {
             if(player.country === countries[i].abbreviation) {
-                countryFound = countries[i].country.toLowerCase().replace(" ", "-")
+                countryFound = countries[i].country.toLowerCase().replace(/ /g, "-")
             }
         }
 
