@@ -1,5 +1,6 @@
 const { MessageAttachment } = require("discord.js")
 const util = require("util");
+const fs = require("fs");
 
 class HelpCommand {
 
@@ -36,18 +37,33 @@ class HelpCommand {
      */
     async exec(args, message) {
 
+        // On regarde si il veut un gif.
+        let gif = false;
+
         // On regarde quel utilisateur a été choisi.
         let discordSelected, discordMember;
         if(args[0]) {
-            let promisifiedMember = util.promisify(this.utils.DiscordServer.getMember);
-            let memberFound = await promisifiedMember(message.guild, args[0]);
-            if(!memberFound) {
-                await message.channel.send("> :x:  Aucun utilisateur trouvé.");
-                return;
+            if(args[0] === "-gif") {
+                discordSelected = message.author.id;
+                discordMember = message.author;
+                gif = true;
+            } else {
+                let promisifiedMember = util.promisify(this.utils.DiscordServer.getMember);
+                let memberFound = await promisifiedMember(message.guild, args[0]);
+                if(!memberFound) {
+                    await message.channel.send("> :x:  Aucun utilisateur trouvé.");
+                    return;
+                }
+                // L'utilisateur ayant été trouvé, on modifie les valeurs de "target".
+                discordMember = memberFound;
+                discordSelected = memberFound.user.id;
+
+                if(args[1]) {
+                    if (args[1] === "-gif") {
+                        gif = true
+                    }
+                }
             }
-            // L'utilisateur ayant été trouvé, on modifie les valeurs de "target".
-            discordMember = memberFound;
-            discordSelected = memberFound.user.id
         } else {
             // Aucune autre argument mentionné, donc la "target" est la personne ayant exécuté la commande.
             discordSelected = message.author.id;
@@ -67,16 +83,18 @@ class HelpCommand {
             return;
         }
 
-        const stonkerProfile = await this.utils.ScoreSaber.getStonkerCard(id, message);
+        const stonkerProfile = await this.utils.ScoreSaber.getStonkerCard(id, message, gif);
 
         if(typeof stonkerProfile === 'string') {
             await message.channel.send("> :x:  " + stonkerProfile);
             return
         }
 
-        const attachment = new MessageAttachment(stonkerProfile, 'howlargeismypp.png');
         // On envoie l'embed dans le channel ou celui-ci a été demandé.
-        await message.channel.send("> :bulb:  La remise à zero du changement de rang global se fait avec la commande ``" + this.config.discord.prefix + "me`` et seul le détenteur du profil ScoreSaber ne peut faire cela.\n‎", attachment);
+        await message.channel.send("> :bulb:  La remise à zero du changement de rang global se fait avec la commande ``" + this.config.discord.prefix + "me`` et seul le détenteur du profil ScoreSaber ne peut faire cela.\n‎", stonkerProfile);
+
+        await fs.unlinkSync(stonkerProfile.files[0]);
+
     }
 
 }
