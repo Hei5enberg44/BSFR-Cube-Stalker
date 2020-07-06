@@ -1,5 +1,11 @@
 const axios = require('axios');
+const GIFEncoder = require('gif-encoder-2');
 const Player = require('../objects/Player.js');
+const fs = require('fs');
+
+const { registerFont, createCanvas, loadImage } = require('canvas');
+const countries = require('../assets/country.json');
+registerFont('./assets/NeonTubes2.otf', { family: 'Neon Tubes' });
 
 class ScoreSaber {
 
@@ -176,6 +182,291 @@ class ScoreSaber {
         }
     }
 
+    async getStonkerCard(id, message, gif) {
+
+        let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full');
+        if (!response) {
+            return "L'API ScoreSaber ne répond pas.";
+        }
+        if (response.data.error) {
+            return "Une erreur est survenue.";
+        }
+
+        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id);
+
+        let ply = new Player();
+        ply.setPlayer(response.data);
+        let player = ply.getPlayer();
+
+        let foundInLb;
+        for (let l in leaderboardServer) {
+            if (leaderboardServer[l].playerid === player.playerId) {
+                foundInLb = leaderboardServer[l];
+            }
+        }
+
+        if (!foundInLb || !foundInLb.global) {
+            return "Veuillez exécuter la commande ``" + this.config.discord.prefix + "me`` au moins une fois avant de générer la card.";
+        }
+
+        let diff = foundInLb.global - player.rank;
+
+        let mode;
+        if (diff > 0) {
+            mode = "stonks";
+        } else if (diff === 0) {
+            mode = "confused";
+        } else if (diff < 0) {
+            mode = "notstonks";
+            diff = diff * -1
+        }
+
+        if(!gif) {
+
+            const canvas = createCanvas(1398, 960);
+            const ctx = canvas.getContext('2d');
+
+            const background = await loadImage('./assets/' + mode + '.png');
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+            ctx.font = '85px "Neon Tubes"';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(player.playerName, 400, canvas.height - 150);
+
+            let countryFound;
+            for (let i in countries) {
+                if (player.country === countries[i].abbreviation) {
+                    countryFound = countries[i].country.toLowerCase().replace(/ /g, "-")
+                }
+            }
+
+            const flag = await loadImage('./assets/flags/' + countryFound + '.png');
+            ctx.drawImage(flag, 70, canvas.height - 215, 150, 150);
+
+            ctx.globalAlpha = 0.5;
+
+            const black = await loadImage('./assets/flags/black.png');
+            ctx.drawImage(black, 70, canvas.height - 215, 150, 150);
+
+            ctx.globalAlpha = 1;
+
+            ctx.font = '58px "Neon Tubes"';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.fillText("#" + player.countryRank, 142, canvas.height - 117, 140);
+
+            ctx.save();
+            const avatar = await loadImage(this.config.scoresaber.apiUrl + player.avatar);
+            let change;
+            let color;
+            let str = "";
+            if (mode === "stonks") {
+                ctx.beginPath();
+                ctx.arc(330, 180, 150, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(avatar, 180, 30, 300, 300);
+
+                str = "+";
+                change = await loadImage('./assets/flags/plus.png');
+                color = "#ffffff"
+            } else if (mode === "confused") {
+                ctx.beginPath();
+                ctx.arc(300, 180, 150, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(avatar, 150, 30, 300, 300);
+
+                change = await loadImage('./assets/flags/yellow.png');
+                color = "#000000"
+            } else {
+                ctx.beginPath();
+                ctx.arc(280, 155, 150, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(avatar, 130, 5, 300, 300);
+
+                str = "-";
+                change = await loadImage('./assets/flags/moins.png');
+                color = "#ffffff"
+            }
+            ctx.restore();
+
+            ctx.drawImage(change, 300, canvas.height - 130, 70, 70);
+
+            ctx.font = 'Bold 32px "Neon Tubes"';
+            ctx.fillStyle = color;
+            ctx.textAlign = 'center';
+
+            ctx.fillText(str + diff, 335, canvas.height - 83);
+
+            ctx.font = '62px "Neon Tubes"';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'left';
+            ctx.fillText("#" + player.rank + " (" + player.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp)", 400, canvas.height - 70);
+
+            let grade;
+            let accuracy = parseFloat(player.accuracy.toFixed(2));
+            if (accuracy >= 90) {
+                grade = "SS"
+            } else if (accuracy >= 80 && accuracy < 90) {
+                grade = "S"
+            } else if (accuracy >= 65 && accuracy < 80) {
+                grade = "A"
+            } else if (accuracy >= 50 && accuracy < 65) {
+                grade = "B"
+            } else if (accuracy >= 35 && accuracy < 50) {
+                grade = "C"
+            } else if (accuracy >= 0 && accuracy < 35) {
+                grade = "D"
+            }
+
+            let gradePic = await loadImage('./assets/grades/' + grade + '.png');
+            ctx.drawImage(gradePic, 310, canvas.height - 220, 55, 70);
+
+            let img = canvas.toDataURL();
+            let data = img.replace(/^data:image\/\w+;base64,/, "");
+            let buffer = new Buffer.alloc(data.length, data, 'base64');
+            await fs.writeFileSync('./assets/cache/' + message.author.id + '.png', buffer);
+
+            return {files: ['./assets/cache/' + message.author.id + '.png']}
+        }
+
+        const encoder = new GIFEncoder(1398, 960, "neuquant", true);
+        encoder.createReadStream().pipe(fs.createWriteStream('./assets/cache/' + message.author.id + '.gif'));
+
+        encoder.start();
+        encoder.setRepeat(0);
+        encoder.setDelay(3000);
+        encoder.setQuality(30);
+
+        async function drawCard(modeRecord, self) {
+
+            const canvas = createCanvas(1398, 960);
+            const ctx = canvas.getContext('2d');
+
+            const background = await loadImage('./assets/' + mode + '.png');
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+            ctx.font = '85px "Neon Tubes"';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(player.playerName, 300, canvas.height - 150);
+
+            let countryFound;
+            for (let i in countries) {
+                if (player.country === countries[i].abbreviation) {
+                    countryFound = countries[i].country.toLowerCase().replace(/ /g, "-")
+                }
+            }
+
+            const flag = await loadImage('./assets/flags/' + countryFound + '.png');
+            ctx.drawImage(flag, 70, canvas.height - 215, 150, 150);
+
+            ctx.globalAlpha = 0.5;
+
+            const black = await loadImage('./assets/flags/black.png');
+            ctx.drawImage(black, 70, canvas.height - 215, 150, 150);
+
+            ctx.globalAlpha = 1;
+
+            ctx.font = '58px "Neon Tubes"';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.fillText("#" + player.countryRank, 142, canvas.height - 117, 140);
+
+            ctx.save();
+            const avatar = await loadImage(self.config.scoresaber.apiUrl + player.avatar);
+            let change;
+            let color;
+            let str = "";
+            if (mode === "stonks") {
+                ctx.beginPath();
+                ctx.arc(330, 180, 150, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(avatar, 180, 30, 300, 300);
+
+                str = "+";
+                change = await loadImage('./assets/flags/plus.png');
+                color = "#ffffff"
+            } else if (mode === "confused") {
+                ctx.beginPath();
+                ctx.arc(300, 180, 150, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(avatar, 150, 30, 300, 300);
+
+                change = await loadImage('./assets/flags/yellow.png');
+                color = "#000000"
+            } else {
+                ctx.beginPath();
+                ctx.arc(280, 155, 150, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(avatar, 130, 5, 300, 300);
+
+                str = "-";
+                change = await loadImage('./assets/flags/moins.png');
+                color = "#ffffff"
+            }
+            ctx.restore();
+
+            if (modeRecord === 1) {
+                ctx.drawImage(change, 300, canvas.height - 130, 70, 70);
+
+                ctx.font = 'Bold 32px "Neon Tubes"';
+                ctx.fillStyle = color;
+                ctx.textAlign = 'center';
+
+                ctx.fillText(str + diff, 335, canvas.height - 83);
+
+                ctx.font = '62px "Neon Tubes"';
+                ctx.fillStyle = '#ffffff';
+                ctx.textAlign = 'left';
+                ctx.fillText("#" + player.rank + " (" + player.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp)", 400, canvas.height - 70);
+
+                encoder.addFrame(ctx);
+
+            } else {
+                let grade;
+                let accuracy = parseFloat(player.accuracy.toFixed(2));
+                if (accuracy >= 90) {
+                    grade = "SS"
+                } else if (accuracy >= 80 && accuracy < 90) {
+                    grade = "S"
+                } else if (accuracy >= 65 && accuracy < 80) {
+                    grade = "A"
+                } else if (accuracy >= 50 && accuracy < 65) {
+                    grade = "B"
+                } else if (accuracy >= 35 && accuracy < 50) {
+                    grade = "C"
+                } else if (accuracy >= 0 && accuracy < 35) {
+                    grade = "D"
+                }
+
+                let gradePic = await loadImage('./assets/grades/' + grade + '.png');
+                ctx.drawImage(gradePic, 300, canvas.height - 130, 55, 70);
+
+                ctx.font = '62px "Neon Tubes"';
+                ctx.fillStyle = '#ffffff';
+                ctx.textAlign = 'left';
+                ctx.fillText(accuracy + "%", 400, canvas.height - 70);
+
+                encoder.addFrame(ctx);
+
+            }
+
+        }
+
+        await drawCard(1, this);
+        await drawCard(0, this);
+
+        encoder.finish();
+
+        return {files: ['./assets/cache/' + message.author.id + '.gif']}
+
+    }
+
     /**
      * Fonction de récupération du meilleur score avec un snowflake id.
      * @param id
@@ -184,7 +475,6 @@ class ScoreSaber {
     async getTopScore(id) {
         try {
             let score = (await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/scores/top')).data.scores[0];
-            score.diff = score.diff.split("_")[1];
 
             return score
         } catch(e) {

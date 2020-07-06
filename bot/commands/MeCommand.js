@@ -61,7 +61,7 @@ class MeCommand {
             if(args[0])
                 await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié pour le compte Discord ``" + discordMember.user.tag + "``.");
             else
-                await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié avec votre compte Discord!\nUtilisez la commande ``!profile [lien scoresaber]`` pour pouvoir en lier un.")
+                await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié avec votre compte Discord!\nUtilisez la commande ``" + this.config.discord.prefix + "profil [lien scoresaber]`` pour pouvoir en lier un.")
             return;
         }
 
@@ -97,7 +97,7 @@ class MeCommand {
         if(leaderboardServer) {
             let foundInLead;
             for(let l in leaderboardServer) {
-                if(leaderboardServer[l].playerid === player.playerid) {
+                if(leaderboardServer[l].playerid === player.playerId) {
                     foundInLead = leaderboardServer[l];
                     break;
                 }
@@ -107,13 +107,14 @@ class MeCommand {
             if(foundInLead) {
                 // Oui.
                 foundInLead.pp = player.pp;
+                if(!args[0]) foundInLead.global = player.rank;
                 await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer)); // Mise à jour du leaderboard avec le pp du profil.
             } else {
                 // Non.
 
                 // Si un autre utilisateur consulte le profil d'un autre qui n'a jamais run !me, on l'ajoute au Leaderboard.
                 if(args[0])
-                    await message.channel.send("> :clap:  ``" + player.name + "`` a été ajouté au classement du serveur.");
+                    await message.channel.send("> :clap:  ``" + player.playerName + "`` a été ajouté au classement du serveur.");
                 else
                     await message.channel.send("> :clap:  Vous avez été ajouté au classement du serveur.");
                 player.leaderboardEntry.discordUser = discordSelected;
@@ -135,7 +136,7 @@ class MeCommand {
         // On récupère la position du joueur dans le leaderboard serveur.
         let posInLead = 1;
         for(let l in leaderboardServer) {
-            if(leaderboardServer[l].playerid === player.playerid) {
+            if(leaderboardServer[l].playerid === player.playerId) {
                 break;
             }
             posInLead++;
@@ -158,15 +159,19 @@ class MeCommand {
             return;
         }
 
+	// Récupération diff
+
+        let difficulty = score.difficultyRaw.split("_")[1].replace("Plus", "+");
+
         // On prépare l'embed.
         let embed = this.utils.Embed.embed();
-        embed.setTitle(player.name)
+        embed.setTitle(player.playerName)
             .setURL(this.config.scoresaber.url + "/u/" + id)
             .setThumbnail(this.config.scoresaber.apiUrl + player.avatar + "?date=" + new Date().getTime())
             .addField("Rang", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank + "\n\n<:discord:686990677451604050> " + posInLead + " (sur " + leaderboardServer.length + " joueurs)")
             .addField("Points de performance", ":clap: " + player.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp", true)
             .addField("Précision en classé", ":dart: " + player.accuracy.toFixed(2) + "%", true)
-            .addField("Meilleur score", ":one: " + score.songAuthorName + " " + score.songSubName + " - " + score.name + " [" + score.diff + "] by " + score.levelAuthorName)
+            .addField("Meilleur score", ":one: " + score.songAuthorName + " " + score.songSubName + " - " + score.songName + " [" + difficulty + "] by " + score.levelAuthorName)
             .addField("Infos sur le meilleur score", ":mechanical_arm: Rank: " + score.rank + " | Score: " + score.score + " | PP: " + score.pp)
             .setColor('#000000');
 
