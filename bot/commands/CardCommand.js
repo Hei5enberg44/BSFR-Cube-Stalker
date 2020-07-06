@@ -23,7 +23,7 @@ class HelpCommand {
         return {
             Command: "card",
             Aliases: ["rankcard"],
-            Usage: "",
+            Usage: "[-gif]",
             Description: "Génère une carte de stonker certifié.",
             Run: (args, message) => this.exec(args, message),
             ShowInHelp: true

@@ -16,8 +16,8 @@ class LeaderboardCommand {
      */
     getCommand() {
         return {
-            Command: "ld",
-            Aliases: ["server", "serverlead", "lead", "top"],
+            Command: "leaderboard",
+            Aliases: ["ld", "server", "serverlead", "lead", "top"],
             Usage: "[<page>]",
             Description: "Affiche le classement du serveur.",
             Run: (args, message) => this.exec(args, message),
