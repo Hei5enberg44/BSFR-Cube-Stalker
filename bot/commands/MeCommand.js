@@ -61,7 +61,7 @@ class MeCommand {
             if(args[0])
                 await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié pour le compte Discord ``" + discordMember.user.tag + "``.");
             else
-                await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié avec votre compte Discord!\nUtilisez la commande ``!profile [lien scoresaber]`` pour pouvoir en lier un.")
+                await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié avec votre compte Discord!\nUtilisez la commande ``" + this.config.discord.prefix + "profil [lien scoresaber]`` pour pouvoir en lier un.")
             return;
         }
 
@@ -107,13 +107,14 @@ class MeCommand {
             if(foundInLead) {
                 // Oui.
                 foundInLead.pp = player.pp;
+                if(!args[0]) foundInLead.global = player.rank;
                 await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer)); // Mise à jour du leaderboard avec le pp du profil.
             } else {
                 // Non.
 
                 // Si un autre utilisateur consulte le profil d'un autre qui n'a jamais run !me, on l'ajoute au Leaderboard.
                 if(args[0])
-                    await message.channel.send("> :clap:  ``" + player.name + "`` a été ajouté au classement du serveur.");
+                    await message.channel.send("> :clap:  ``" + player.playerName + "`` a été ajouté au classement du serveur.");
                 else
                     await message.channel.send("> :clap:  Vous avez été ajouté au classement du serveur.");
                 player.leaderboardEntry.discordUser = discordSelected;
@@ -159,14 +160,8 @@ class MeCommand {
         }
 
 	// Récupération diff
-	
-	let difficulty = null
 
-	for (const [key, value] of Object.entries(this.config.difficulty)) {
-	    if (score.difficulty == key) {
-	        difficulty = value
-	    }
-	}
+        let difficulty = score.difficultyRaw.split("_")[1].replace("Plus", "+");
 
         // On prépare l'embed.
         let embed = this.utils.Embed.embed();

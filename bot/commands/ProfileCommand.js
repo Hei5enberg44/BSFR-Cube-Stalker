@@ -19,7 +19,7 @@ class ProfileCommand {
     getCommand() {
         return {
             Command: "profile",
-            Aliases: ["profilelink", "link"],
+            Aliases: ["profilelink", "link", "profil"],
             Usage: "<link> (<utilisateur>)",
             Description: "Lie votre compte ScoreSaber à votre compte Discord.",
             Run: (args, message) => this.exec(args, message),

@@ -20,6 +20,7 @@ class Player {
             name: this.player.playerName,
             pp: this.player.pp,
             country: this.player.country,
+            global: this.player.rank,
             discordUser: ""
         }
     }
