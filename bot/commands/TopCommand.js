@@ -42,7 +42,9 @@ class MeCommand {
         }
 
         // On récupère le leaderboard mondial.
-        let lb = await this.utils.ScoreSaber.getLeaderboard();
+        let lb = (await this.utils.ScoreSaber.getLeaderboard()).players;
+
+        console.log(lb)
 
         // On prépare la description de l'embed avec les joueurs du classement.
         let desc = "";
@@ -61,7 +63,7 @@ class MeCommand {
             }
 
             // On ajoute une ligne à la description.
-            desc += posShow + " - :flag_" + lb[i].country.toLowerCase() + ": **" + lb[i].name + "** - " + lb[i].pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp\n"
+            desc += posShow + " - :flag_" + lb[i].country.toLowerCase() + ": **" + lb[i].playerName + "** - " + lb[i].pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp\n"
         }
 
         // On prépare l'embed.
