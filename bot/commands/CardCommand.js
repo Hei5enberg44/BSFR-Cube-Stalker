@@ -23,7 +23,7 @@ class HelpCommand {
         return {
             Command: "card",
             Aliases: ["rankcard"],
-            Usage: "",
+            Usage: "[-gif]",
             Description: "Génère une carte de stonker certifié.",
             Run: (args, message) => this.exec(args, message),
             ShowInHelp: true
@@ -91,7 +91,7 @@ class HelpCommand {
         }
 
         // On envoie l'embed dans le channel ou celui-ci a été demandé.
-        await message.channel.send("> :bulb:  La remise à zero du changement de rang global se fait avec la commande ``" + this.config.discord.prefix + "me`` et seul le détenteur du profil ScoreSaber ne peut faire cela.\n‎", stonkerProfile);
+        await message.channel.send(stonkerProfile);
 
         await fs.unlinkSync(stonkerProfile.files[0]);
 

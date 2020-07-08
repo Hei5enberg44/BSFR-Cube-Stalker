@@ -19,7 +19,7 @@ class MeCommand {
     getCommand() {
         return {
             Command: "me",
-            Aliases: ["doisuck", "plspp"],
+            Aliases: ["doisuck", "plspp", "amiwashedup"],
             Usage: "[<utilisateur>]",
             Description: "Affiche votre profil ScoreSaber.",
             Run: (args, message) => this.exec(args, message),
