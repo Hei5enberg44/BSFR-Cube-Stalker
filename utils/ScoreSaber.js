@@ -192,11 +192,11 @@ class ScoreSaber {
             return "Une erreur est survenue.";
         }
 
-        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id);
-
         let ply = new Player();
         ply.setPlayer(response.data);
         let player = ply.getPlayer();
+
+        /*let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id);
 
         let foundInLb;
         for (let l in leaderboardServer) {
@@ -207,9 +207,12 @@ class ScoreSaber {
 
         if (!foundInLb || !foundInLb.global) {
             return "Veuillez exécuter la commande ``" + this.config.discord.prefix + "me`` au moins une fois avant de générer la card.";
-        }
+        }*/
 
-        let diff = foundInLb.global - player.rank;
+        let splitHistory = player.history.split(",");
+        let sevenDays = splitHistory[splitHistory.length - 7];
+
+        let diff = sevenDays - player.rank;
 
         let mode;
         if (diff > 0) {
