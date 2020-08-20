@@ -587,19 +587,19 @@ class ScoreSaber {
             hasRoleSecond = member.roles.cache.some(r=>[secondRoleName].includes(r.name));
 
         let firstroles = member.roles.cache.filter(role => role.name.indexOf("000pp") > -1);
-	let secondroles = member.roles.cache.filter(role => role.name.indexOf("500pp") > -1);
+        let secondroles = member.roles.cache.filter(role => role.name.indexOf("500pp") > -1);
 
-	firstroles.forEach(async function(role) {
-	    if(firstRoleName != role.name)
-		await member.roles.remove(role)
-		//await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
-	})
+        firstroles.forEach(async function(role) {
+            if(firstRoleName != role.name)
+            await member.roles.remove(role)
+            //await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
+        })
 
-	secondroles.forEach(async function(role) {
-	    if(secondRoleName != role.name)
-		await member.roles.remove(role)
-		//await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
-	})
+        secondroles.forEach(async function(role) {
+            if(secondRoleName != role.name)
+            await member.roles.remove(role)
+            //await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
+        })
 
         if(!hasRoleFirst) {
             let roleFirst = await guild.roles.cache.find(role => role.name === firstRoleName);
@@ -625,12 +625,24 @@ class ScoreSaber {
      */
     async refreshGuild(guildId) {
         let guild = await this.clients.discord.getClient().guilds.resolve(guildId);
+        let newLd = [];
+
         await guild.members.cache.forEach((async (member) => {
             const id = await (await this.clients.redis.quickRedis()).get(member.user.id);
             if(id !== null) {
-		await this.getProfileRefresher(id, guild, member);
+                await this.getProfileRefresher(id, guild, member);
             }
         }));
+
+        // for (const member of guild.members.cache) {
+        //     const id = await (await this.clients.redis.quickRedis()).get(member[0]);
+        //     if(id !== null) {
+        //         let player = await this.getProfileRefresher(id, guild, member);
+        //         newLd.push(player.leaderboardEntry)
+        //     }
+        // }
+
+        return newLd;
     }
 }
 

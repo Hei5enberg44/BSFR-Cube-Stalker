@@ -87,7 +87,7 @@ class ProfileCommand {
         profileId = profileId.split("&")[0];
 
         // On récupère le leaderboard serveur.
-        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id);
+        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, true);
 
         // On vérifie que le profil n'est pas déjà présent dans le leaderboard du serveur.
         let foundProfile = false;

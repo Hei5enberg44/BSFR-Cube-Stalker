@@ -49,7 +49,9 @@ class HelpCommand {
         let guild = message.guild;
         let edit = await message.channel.send("> :clock1:  **Rafraîchissement forcé** lancé pour ``" + guild.memberCount + "`` membres.");
 
-        await this.utils.ScoreSaber.refreshGuild(message.guild.id);
+        let newLd = await this.utils.ScoreSaber.refreshGuild(message.guild.id);
+
+        console.log(newLd);
 
         await edit.edit("> :clock1:  **Rafraîchissement forcé** terminé pour ``" + guild.memberCount + "`` membres.");
 
