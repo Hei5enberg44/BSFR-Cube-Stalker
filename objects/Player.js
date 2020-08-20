@@ -19,6 +19,7 @@ class Player {
             playerid: this.player.playerId,
             name: this.player.playerName,
             pp: this.player.pp,
+            acc: this.player.accuracy,
             country: this.player.country,
             global: this.player.rank,
             discordUser: ""

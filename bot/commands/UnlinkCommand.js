@@ -63,7 +63,7 @@ class ProfileCommand {
         }
 
         // On récupère le leaderboard serveur.
-        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id);
+        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, true);
 
         // On fait en sorte de filtrer le leaderboard de l'utilisateur qui vient d'être unlink.
         let leadFiltered = [];

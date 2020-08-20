@@ -13,7 +13,7 @@ class ServerLeaderboard {
      * @param discordId
      * @returns {Promise<boolean|[]>}
      */
-    async getLeaderboardServer(discordId) {
+    async getLeaderboardServer(discordId, wantPp) {
 
         // On récupère l'objet guilde.
         let guild = this.clients.discord.getClient().guilds.resolve(discordId);
@@ -38,8 +38,14 @@ class ServerLeaderboard {
         // On classe le leaderboard en fonction du pp.
         leaderboardServer.sort((a, b) => {
             if(a && b) {
-                const ppA = a.pp;
-                const ppB = b.pp;
+                let ppA = a.pp;
+                let ppB = b.pp;
+
+                if(!wantPp) {
+                    ppA = a.acc;
+                    ppB = b.acc;
+                }
+
                 if (ppB > ppA) {
                     return 1;
                 } else if (ppB < ppA) {
