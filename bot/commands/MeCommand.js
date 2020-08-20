@@ -86,7 +86,7 @@ class MeCommand {
         let score = await this.utils.ScoreSaber.getTopScore(id);
 
         // On récupère le leaderboard serveur.
-        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id);
+        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, true);
 
         if(!player || !score || !leaderboardServer) {
             await message.channel.send("> :x:  Le profil ScoreSaber n'a pas pu être récupéré.");
@@ -96,9 +96,11 @@ class MeCommand {
         // Si le leaderboard serveur existe.
         if(leaderboardServer) {
             let foundInLead;
+            let placement;
             for(let l in leaderboardServer) {
                 if(leaderboardServer[l].playerid === player.playerId) {
                     foundInLead = leaderboardServer[l];
+                    placement = l;
                     break;
                 }
             }
@@ -107,7 +109,8 @@ class MeCommand {
             if(foundInLead) {
                 // Oui.
                 foundInLead.pp = player.pp;
-                if(!args[0]) foundInLead.global = player.rank;
+                foundInLead.acc = player.accuracy;
+                leaderboardServer[placement] = foundInLead;
                 await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer)); // Mise à jour du leaderboard avec le pp du profil.
             } else {
                 // Non.
@@ -130,27 +133,48 @@ class MeCommand {
             await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer)); // Mise à jour du leaderboard.
         }
 
-        // On récupère le leaderboard du serveur.
-        leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id);
+        // On récupère le leaderboard Acc et PP du serveur.
+        let leaderboardServerPp = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, true);
+        let leaderboardServerAcc = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, false);
 
-        // On récupère la position du joueur dans le leaderboard serveur.
-        let posInLead = 1;
-        for(let l in leaderboardServer) {
-            if(leaderboardServer[l].playerid === player.playerId) {
+        // On récupère la position du joueur dans le leaderboard Pp serveur.
+        let posInLeadPp = 1;
+        for(let l in leaderboardServerPp) {
+            if(leaderboardServerPp[l].playerid === player.playerId) {
                 break;
             }
-            posInLead++;
+            posInLeadPp++;
+        }
+
+        // On récupère la position du joueur dans le leaderboard Acc serveur.
+        let posInLeadAcc = 1;
+        for(let l in leaderboardServerAcc) {
+            if(leaderboardServerAcc[l].playerid === player.playerId) {
+                break;
+            }
+            posInLeadAcc++;
         }
 
         // Petite médaille de l'amour
-        if(posInLead === 1) {
-            posInLead = ":first_place:"
-        } else if(posInLead === 2) {
-            posInLead = ":second_place:"
-        } else if(posInLead === 3) {
-            posInLead = ":third_place:"
+        if(posInLeadPp === 1) {
+            posInLeadPp = ":first_place:"
+        } else if(posInLeadPp === 2) {
+            posInLeadPp = ":second_place:"
+        } else if(posInLeadPp === 3) {
+            posInLeadPp = ":third_place:"
         } else {
-            posInLead = "#" + posInLead;
+            posInLeadPp = "#" + posInLeadPp;
+        }
+
+        // Petite médaille de l'amour
+        if(posInLeadAcc === 1) {
+            posInLeadAcc = ":first_place:"
+        } else if(posInLeadAcc === 2) {
+            posInLeadAcc = ":second_place:"
+        } else if(posInLeadAcc === 3) {
+            posInLeadAcc = ":third_place:"
+        } else {
+            posInLeadAcc = "#" + posInLeadAcc;
         }
 
         // Les blagues du genre "mention bien" :^)
@@ -168,7 +192,8 @@ class MeCommand {
         embed.setTitle(player.playerName)
             .setURL(this.config.scoresaber.url + "/u/" + id)
             .setThumbnail(this.config.scoresaber.apiUrl + player.avatar + "?date=" + new Date().getTime())
-            .addField("Rang", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank + "\n\n<:discord:686990677451604050> " + posInLead + " (sur " + leaderboardServer.length + " joueurs)")
+            .addField("Rang", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank)
+            .addField("Rang discord", "**PP**: " + posInLeadPp + " / " + leaderboardServerPp.length + "\n**Précision**: " + posInLeadAcc + " / " + leaderboardServerAcc.length)
             .addField("Points de performance", ":clap: " + player.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp", true)
             .addField("Précision en classé", ":dart: " + player.accuracy.toFixed(2) + "%", true)
             .addField("Meilleur score", ":one: " + score.songAuthorName + " " + score.songSubName + " - " + score.songName + " [" + difficulty + "] by " + score.levelAuthorName)

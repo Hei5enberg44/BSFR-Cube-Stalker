@@ -1,4 +1,4 @@
-class LeaderboardCommand {
+class LeaderboardAccuracyCommand {
 
     /**
      * Constructeur de la commande
@@ -16,10 +16,10 @@ class LeaderboardCommand {
      */
     getCommand() {
         return {
-            Command: "leaderboard",
-            Aliases: ["ld", "server", "serverlead", "lead", "top"],
+            Command: "leaderboardaccuracy",
+            Aliases: ["ldacc", "serveracc", "serverleadacc", "leadacc", "topacc"],
             Usage: "[<page>]",
-            Description: "Affiche le classement du serveur.",
+            Description: "Affiche le classement de précision du serveur.",
             Run: (args, message) => this.exec(args, message),
             ShowInHelp: true
         }
@@ -33,7 +33,7 @@ class LeaderboardCommand {
     async exec(args, message) {
 
         // On récupère le leaderboard du serveur.
-        let lb = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, true);
+        let lb = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, false);
 
         // On récupère la page et on vérifie si la page mentionnée est valide.
         let tempPage;
@@ -89,8 +89,10 @@ class LeaderboardCommand {
                     posShow = "#" + pos;
                 }
 
-                // On ajoute une ligne à la description.
-                desc += posShow + " - :flag_" + lb[i].country.toLowerCase() + ": [" + lb[i].name + "](https://scoresaber.com/u/" + lb[i].playerid + ") - " + lb[i].pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp\n"
+                if("acc" in lb[i]) {
+                    // On ajoute une ligne à la description.
+                    desc += posShow + " - :flag_" + lb[i].country.toLowerCase() + ": [" + lb[i].name + "](https://scoresaber.com/u/" + lb[i].playerid + ") - " + lb[i].acc.toFixed(2) + "%\n"
+                }
             }
         }
 
@@ -107,12 +109,12 @@ class LeaderboardCommand {
             }
 
             // On modifie l'embed standardisé.
-            embed.setTitle("Classement PP Serveur (" + lb.length + " " + j + ")")
+            embed.setTitle("Classement Précision Serveur (" + lb.length + " " + j + ")")
                 .setDescription(desc)
                 .setColor('#000000');
         } else {
             // On modifie l'embed standardisé pour afficher qu'aucun joueur n'est dans le leaderboard serveur.
-            embed.setTitle("Classement PP Serveur")
+            embed.setTitle("Classement Précision Serveur")
                 .setDescription("Aucun joueur enregistré sur ce serveur.")
                 .setColor('#000000');
         }
@@ -123,4 +125,4 @@ class LeaderboardCommand {
 
 }
 
-module.exports = LeaderboardCommand;
+module.exports = LeaderboardAccuracyCommand;
