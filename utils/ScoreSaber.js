@@ -618,6 +618,12 @@ class ScoreSaber {
 
     }
 
+    async asyncForEach(array, callback) {
+        for (let index = 0; index < array.length; index++) {
+            await callback(array[index], index, array);
+        }
+    }
+
     /**
      * Fonction permettant le refresh entier d'une guilde.
      * @param guildId
@@ -626,22 +632,15 @@ class ScoreSaber {
     async refreshGuild(guildId) {
         let guild = await this.clients.discord.getClient().guilds.resolve(guildId);
         let newLd = [];
+        let ld = await this.utils.ServerLeaderboard.getLeaderboardServer(guildId);
 
-        await guild.members.cache.forEach((async (member) => {
+        await this.asyncForEach(guild.members.cache.array(), async (member) => {
             const id = await (await this.clients.redis.quickRedis()).get(member.user.id);
             if(id !== null) {
-                await this.getProfileRefresher(id, guild, member);
+                let player = await this.getProfileRefresher(id, guild, member);
+                newLd.push(player.leaderboardEntry)
             }
-        }));
-
-        // for (const member of guild.members.cache) {
-        //     const id = await (await this.clients.redis.quickRedis()).get(member[0]);
-        //     if(id !== null) {
-        //         let player = await this.getProfileRefresher(id, guild, member);
-        //         newLd.push(player.leaderboardEntry)
-        //     }
-        // }
-
+        })
         return newLd;
     }
 }

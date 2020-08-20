@@ -71,7 +71,21 @@ class CubeStalker {
             this.utils.Logger.log("CronJob: Ready.");
             new CronJob('0 0 * * *', async () => {
                 this.utils.Logger.log("CronJob: Refreshing.");
-                await this.utils.ScoreSaber.refreshGuild("531101359471329291");
+
+                let newLd = await this.utils.ScoreSaber.refreshGuild("531101359471329291");
+                let oldLd = await this.utils.ServerLeaderboard.getLeaderboardServer("531101359471329291", true)
+                let ld = []
+
+                await this.utils.ScoreSaber.asyncForEach(oldLd, async (oldPlayer) => {
+                    await this.utils.ScoreSaber.asyncForEach(newLd, async (newPlayer) => {
+                        if(oldPlayer.playerid === newPlayer.playerid) {
+                            newPlayer.discordUser = oldPlayer.discordUser;
+                            ld.push(newPlayer);
+                        }
+                    })
+                })
+
+                await this.utils.ServerLeaderboard.setLeaderboardServer("531101359471329291", JSON.stringify(ld)); // Mise à jour du leaderboard.
             }, null, true, 'Europe/London');
         });
     }

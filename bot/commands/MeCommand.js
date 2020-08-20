@@ -193,7 +193,7 @@ class MeCommand {
             .setURL(this.config.scoresaber.url + "/u/" + id)
             .setThumbnail(this.config.scoresaber.apiUrl + player.avatar + "?date=" + new Date().getTime())
             .addField("Rang", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank)
-            .addField("Rang discord", "**PP**: " + posInLeadPp + " / " + leaderboardServerPp.length + "\n**Précision**: " + posInLeadAcc + " / " + leaderboardServerAcc.length)
+            .addField("Rang Discord", "**PP**: " + posInLeadPp + " / " + leaderboardServerPp.length + " joueurs" + "\n**Précision**: " + posInLeadAcc + " / " + leaderboardServerAcc.length + " joueurs")
             .addField("Points de performance", ":clap: " + player.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "pp", true)
             .addField("Précision en classé", ":dart: " + player.accuracy.toFixed(2) + "%", true)
             .addField("Meilleur score", ":one: " + score.songAuthorName + " " + score.songSubName + " - " + score.songName + " [" + difficulty + "] by " + score.levelAuthorName)

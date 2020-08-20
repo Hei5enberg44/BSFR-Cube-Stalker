@@ -50,8 +50,19 @@ class HelpCommand {
         let edit = await message.channel.send("> :clock1:  **Rafraîchissement forcé** lancé pour ``" + guild.memberCount + "`` membres.");
 
         let newLd = await this.utils.ScoreSaber.refreshGuild(message.guild.id);
+        let oldLd = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, true)
+        let ld = []
 
-        console.log(newLd);
+        await this.utils.ScoreSaber.asyncForEach(oldLd, async (oldPlayer) => {
+            await this.utils.ScoreSaber.asyncForEach(newLd, async (newPlayer) => {
+                if(oldPlayer.playerid === newPlayer.playerid) {
+                    newPlayer.discordUser = oldPlayer.discordUser;
+                    ld.push(newPlayer);
+                }
+            })
+        })
+
+        await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(ld)); // Mise à jour du leaderboard.
 
         await edit.edit("> :clock1:  **Rafraîchissement forcé** terminé pour ``" + guild.memberCount + "`` membres.");
 
