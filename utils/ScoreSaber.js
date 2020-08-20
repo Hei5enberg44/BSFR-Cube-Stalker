@@ -624,6 +624,10 @@ class ScoreSaber {
         }
     }
 
+    sleep(ms) {
+    	return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     /**
      * Fonction permettant le refresh entier d'une guilde.
      * @param guildId
@@ -640,6 +644,7 @@ class ScoreSaber {
                 let player = await this.getProfileRefresher(id, guild, member);
                 newLd.push(player.leaderboardEntry)
             }
+	    await this.sleep(250)
         })
         return newLd;
     }
