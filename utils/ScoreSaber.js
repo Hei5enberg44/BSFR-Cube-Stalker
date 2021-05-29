@@ -202,6 +202,7 @@ class ScoreSaber {
     async getProfile(id, message, targetUser) {
         let player = new Player();
         let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full');
+        await (await this.clients.redis.quickRedis()).set("scoresaber:" + id, targetUser)
         if(response) {
             if(response.data.error) {
                 return false;
@@ -539,6 +540,7 @@ class ScoreSaber {
     async getProfileRefresher(id, guild, member) {
         let player = new Player();
         let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full');
+        await (await this.clients.redis.quickRedis()).set("scoresaber:" + id, member.user.id)
         if(response) {
             if(response.data.error) {
                 return false;

@@ -13,7 +13,8 @@ class CubeStalker {
         let clients = {
             Discord: require("./clients/DiscordClient.js"),
             Redis: require("./clients/RedisClient.js"),
-            ScoreSaber: require("./clients/ScoreSaberClient.js")
+            ScoreSaber: require("./clients/ScoreSaberClient.js"),
+            BeatSaver: require("./clients/BeatSaverClient.js")
         };
 
         // Instanciation des clients
@@ -21,11 +22,13 @@ class CubeStalker {
         this.clients = {
             discord: new clients.Discord(this),
             redis: new clients.Redis(this),
-            scoresaber: new clients.ScoreSaber(this),
+            beatsaver: new clients.BeatSaver(this),
             raw: {
                 redis: clients.Redis
             }
         };
+
+        this.clients.scoresaber = new clients.ScoreSaber(this)
 
         // Déclaration des utils
 
@@ -47,6 +50,16 @@ class CubeStalker {
         this.managers = {
             commands: new managers.Commands(this)
         };
+
+        // Instanciation des serveurs
+
+        let servers = {
+            BSDFeed: require("./server/BSDFeed.js")
+        }
+
+        this.servers = {
+            BSDFeed: new servers.BSDFeed(this)
+        }
 
         // Initialisation du bot
 
@@ -89,11 +102,11 @@ class CubeStalker {
 
                 await this.utils.ServerLeaderboard.setLeaderboardServer("531101359471329291", JSON.stringify(ld)); // Mise à jour du leaderboard.
             }, null, true, 'Europe/London');
-
-            console.log(await (await this.clients.scoresaber.login()).getLeaderboard("499E94F2FFB162DBA02D4E499163A9CDE3B925E5", "Normal"))
         });
-    }
 
+        // Initialisation du serveur feed BSD
+        this.servers.BSDFeed.init();
+    }
 }
 
 let Index = new CubeStalker();
