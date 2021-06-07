@@ -106,6 +106,8 @@ class CubeStalker {
 
         // Initialisation du serveur feed BSD
         this.servers.BSDFeed.init();
+
+        this.clients.scoresaber.login();
     }
 }
 

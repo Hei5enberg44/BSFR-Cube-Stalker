@@ -1,5 +1,6 @@
 const Axios = require("axios")
 const Embed = new (require("../utils/Embed"))
+let retry = 0
 
 class ScoreSaberClient {
 
@@ -9,7 +10,40 @@ class ScoreSaberClient {
         this.clients = opt.clients
     }
 
+    async getNonce() {
+        try {
+            let options = {
+                method: "GET",
+                url: this.config.ingameapi.apiUrl + "/api/nonce",
+                headers: {
+                    'User-Agent': this.config.ingameapi.userAgent
+                }
+            }
+            let res = await Axios(options)
+            return res.data[0]
+        } catch(e) {
+            console.error(e)
+        }
+    }
+
+    async deleteNonce() {
+        try {
+            let options = {
+                method: "DELETE",
+                url: this.config.ingameapi.apiUrl + "/api/nonce",
+                headers: {
+                    'User-Agent': this.config.ingameapi.userAgent
+                }
+            }
+            let res = await Axios(options)
+            return this
+        } catch(e) {
+            console.error(e)
+        }
+    }
+
     async login() {
+        let nonce = await this.getNonce();
         try {
             let options = {
                 method: "POST",
@@ -19,10 +53,25 @@ class ScoreSaberClient {
                     'User-Agent': this.config.scoresaber.userAgent,
                     'X-Unity-Version': this.config.scoresaber.unityVersion
                 },
-                data: "playerid=76561198000000000"
+                data: "playerid=" + this.config.scoresaber.steamUserId + "&at=1&" + "nonce=" + nonce
             }
             let res = await Axios(options)
-            this.cookie = res.data.split("|")[1]
+            if(res.data === "Failed to authenticate" && retry < 3) {
+                console.log(res.data)
+                await this.deleteNonce()
+                await this.sleep(2000)
+                this.cookie = false
+                retry++;
+                this.login()
+            } else {
+                this.cookie = res.data.split("|")[1]
+                retry = 0;
+            }
+
+            if(retry === 2) {
+                retry = 0;
+            }
+
             return this
         } catch(e) {
             console.error(e)
@@ -57,6 +106,9 @@ class ScoreSaberClient {
     }
 
     async checkIfNewScoreIsFirst(info) {
+        // If no cookie, just return
+        if(!this.cookie) return;
+
         // Check if player is registered in Cubestalker
         const userDiscordId = await (await this.clients.redis.quickRedis()).get("scoresaber:" + info.playerID);
 
@@ -122,6 +174,11 @@ class ScoreSaberClient {
             channel.send(embed)
         }
     }
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
 }
 
 module.exports = ScoreSaberClient
