@@ -247,9 +247,13 @@ class ScoreSaber {
         let splitHistory = player.history.split(",");
         let sevenDays = splitHistory[splitHistory.length - 7];
 
-        let diff = sevenDays - player.rank;
+	let diff;
+
+	if(sevenDays) diff = sevenDays - player.rank
+	else diff = 0
 
         let mode;
+
         if (diff > 0) {
             mode = "stonks";
         } else if (diff === 0) {
