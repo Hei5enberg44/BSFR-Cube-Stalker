@@ -107,7 +107,7 @@ class ScoreSaberClient {
 
     async checkIfNewScoreIsFirst(info) {
         // If no cookie, just return
-        if(!this.cookie || !info.isAPass) return;
+        if(!this.cookie || !info["isAPass"]) return;
 
         // Check if player is registered in Cubestalker
         const userDiscordId = await (await this.clients.redis.quickRedis()).get("scoresaber:" + info.playerID);
