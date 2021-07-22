@@ -65,24 +65,26 @@ class ProfileCommand {
 
         // On prépare le parsing de l'URL.
         let url = "http";
+        let newUrl = "http";
 
         // HTTPS?
         if(args[0].indexOf("https") > -1) {
-            url = "https"
+            url = newUrl = "https"
         }
 
         // On complète l'url.
         url += "://scoresaber.com/u/";
+        newUrl += "://new.scoresaber.com/u/";
 
         // On vérifie si l'URL est valide.
-        if(!(args[0].indexOf(url) > -1)) {
+        if(!(args[0].indexOf(url) > -1) && !(args[0].indexOf(newUrl) > -1)) {
             await message.channel.send("> :x:  Veuillez indiquer un profil ScoreSaber valide.");
             return;
         }
 
         // On récupère l'ID du profil ScoreSaber.
-        let profileId = args[0].replace(url , "");
-        
+        let profileId = args[0].replace(url , "").replace(newUrl, "");
+
         profileId = profileId.split("?")[0];
         profileId = profileId.split("&")[0];
 
@@ -116,16 +118,16 @@ class ProfileCommand {
         await (await this.clients.redis.quickRedis()).set(discordSelected, profileId);
 
         // On récupère le profil enregistré et on envoie un message de confirmation.
-	try {
-        	let player = await this.utils.ScoreSaber.getProfile(profileId, message, discordSelected);
-        	if(message.author.id === discordSelected)
-            		await message.channel.send("> :white_check_mark:  Le profil ScoreSaber ``" + player.playerName + "`` a bien été lié avec votre compte Discord.\nAstuce: Tapez la commande ``" + this.config.discord.prefix + "me`` pour pouvoir être ajouté au classement du serveur.");
-        	else
-           		await message.channel.send("> :white_check_mark:  Le profil ScoreSaber ``" + player.playerName + "`` a bien été lié avec le compte Discord ``" + discordMember.user.tag + "``.");
-	} catch (error) {
-		await message.channel.send("> :x: Le profil ne semble pas encore prêt. Merci de réessayer plus tard")
-		this.utils.Logger.log("Profil indisponible: " + profileId)
-	}
+        try {
+                let player = await this.utils.ScoreSaber.getProfile(profileId, message, discordSelected);
+                if(message.author.id === discordSelected)
+                        await message.channel.send("> :white_check_mark:  Le profil ScoreSaber ``" + player.playerName + "`` a bien été lié avec votre compte Discord.\nAstuce: Tapez la commande ``" + this.config.discord.prefix + "me`` pour pouvoir être ajouté au classement du serveur.");
+                else
+                    await message.channel.send("> :white_check_mark:  Le profil ScoreSaber ``" + player.playerName + "`` a bien été lié avec le compte Discord ``" + discordMember.user.tag + "``.");
+        } catch (error) {
+            await message.channel.send("> :x: Le profil ne semble pas encore prêt. Merci de réessayer plus tard")
+            this.utils.Logger.log("Profil indisponible: " + profileId)
+        }
     }
 
 }
