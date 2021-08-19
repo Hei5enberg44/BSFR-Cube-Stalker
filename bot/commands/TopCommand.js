@@ -1,4 +1,4 @@
-class MeCommand {
+class TopCommand {
 
     /**
      * Constructeur de la commande
@@ -14,41 +14,39 @@ class MeCommand {
      * Permet de récupérer la "metadata" de la commande.
      * @returns {{Usage: string, Description: string, Command: string, ShowInHelp: boolean, Run: (function(*=, *=): void), Aliases: [string, string]}}
      */
-    getCommand() {
+    get meta() {
         return {
-            Command: "world",
-            Aliases: ["worldlead"],
-            Usage: "[<nb>]",
-            Description: "Affiche le classement mondial (10 défaut, 20 max, 1 min)",
-            Run: (args, message) => this.exec(args, message),
-            ShowInHelp: true
+            name: "top",
+            description: "Affiche le classement mondial",
+            options: {
+                "nb": {
+                    "name": "nombre",
+                    "type": "integer",
+                    "description": "Nombre de joueurs (10 défaut, 20 max, 1 min)",
+                    "required": false
+                }
+            }
         }
     }
 
     /**
      * Executor de la commande, ce qui va être exécuté quand la commande est effectuée.
-     * @param args
-     * @param message
+     * @param interaction
      */
-    async exec(args, message) {
+    async exec(interaction) {
 
-        // On regarde combien de joueurs doivent être affichés.
-        let nb = args[0];
-        if (!nb) {
-            nb = 10
-        } else if((nb > 20 || nb < 1) || isNaN(parseInt(nb))) {
-            await message.channel.send("> :slight_smile:  Le top 10 sera affiché.");
-            nb = 10
-        }
+        // On récupére l'option
+        let optionNumber = interaction.options._hoistedOptions.filter((args) => args.name === "nombre")
+
+        // On récupére le nombre de joueur souhaité
+        let number = optionNumber.length > 0 && optionNumber[0].value <= 20 && optionNumber[0].value >= 1 ? optionNumber[0].value : 10
 
         // On récupère le leaderboard mondial.
         let lb = (await this.utils.ScoreSaber.getLeaderboard()).players;
 
-        console.log(lb)
-
         // On prépare la description de l'embed avec les joueurs du classement.
         let desc = "";
-        for(let i = 0; i < nb; i++) {
+        for(let i = 0; i < number; i++) {
             let posShow;
 
             // La médaille du plaisirrrr
@@ -74,9 +72,9 @@ class MeCommand {
             .setColor('#000000');
 
         // On envoie l'embed dans le channel ou celui-ci a été demandé.
-        await message.channel.send(embed);
+        await interaction.reply({ embeds: [embed] });
      }
 
 }
 
-module.exports = MeCommand;
+module.exports = TopCommand;

@@ -1,6 +1,4 @@
-const Discord = require('discord.js');
-
-class HelpCommand {
+class ServerRefreshCommand {
 
     /**
      * Constructeur de la commande
@@ -17,40 +15,26 @@ class HelpCommand {
      * Permet de récupérer la "metadata" de la commande.
      * @returns {{Usage: string, Description: string, Command: string, ShowInHelp: boolean, Run: (function(*=, *=): void), Aliases: [string, string]}}
      */
-    getCommand() {
+    get meta() {
         return {
-            Command: "forcerefresh",
-            Aliases: ["serverrefresh", "forceupdate"],
-            Usage: "",
-            Description: "**[ADMIN]** Refresh l'ensemble du serveur.",
-            Run: (args, message) => this.exec(args, message),
-            ShowInHelp: false
+            name: "forcerefresh",
+            description: "Rafraichir l'ensemble du serveur.",
+            roles: [ "Admin", "Modérateur" ]
         }
     }
 
     /**
      * Executor de la commande, ce qui va être exécuté quand la commande est effectuée.
-     * @param args
-     * @param message
+     * @param interaction
      */
-    async exec(args, message) {
-
-        // On récupère l'objet membre.
-        let member = message.guild.members.resolve(message.author.id);
-
-        // On vérifie si l'utilisateur est un admin, sinon pepelaugh :^)
-        let isAdmin = member.roles.cache.some(r=>["admin", "Admin"].includes(r.name));
-        if(!isAdmin) {
-            await message.react(this.config.emoji_perm);
-            return;
-        }
+    async exec(interaction) {
 
         // On récupère la guilde du message et on lance le refresh forcé.
-        let guild = message.guild;
-        let edit = await message.channel.send("> :clock1:  **Rafraîchissement forcé** lancé pour ``" + guild.memberCount + "`` membres.");
+        let guild = interaction.member.guild;
+        await interaction.reply({ content: "> :clock1:  **Rafraîchissement forcé** lancé pour ``" + guild.memberCount + "`` membres." });
 
-        let newLd = await this.utils.ScoreSaber.refreshGuild(message.guild.id);
-        let oldLd = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, true)
+        let newLd = await this.utils.ScoreSaber.refreshGuild(guild.id);
+        let oldLd = await this.utils.ServerLeaderboard.getLeaderboardServer(guild.id, true)
         let ld = []
 
         await this.utils.ScoreSaber.asyncForEach(oldLd, async (oldPlayer) => {
@@ -62,12 +46,11 @@ class HelpCommand {
             })
         })
 
-        await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(ld)); // Mise à jour du leaderboard.
+        await this.utils.ServerLeaderboard.setLeaderboardServer(guild.id, JSON.stringify(ld)); // Mise à jour du leaderboard.
 
-        await edit.edit("> :clock1:  **Rafraîchissement forcé** terminé pour ``" + guild.memberCount + "`` membres.");
-
+        await interaction.editReply({ content: "> :clock1:  **Rafraîchissement forcé** terminé pour ``" + guild.memberCount + "`` membres." });
     }
 
 }
 
-module.exports = HelpCommand;
+module.exports = ServerRefreshCommand;

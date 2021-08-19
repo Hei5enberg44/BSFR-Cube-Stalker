@@ -75,7 +75,7 @@ class CubeStalker {
             this.utils.Logger.log("Discord: Ready.");
 
             // On change l'activité du bot.
-            await this.clients.discord.getClient().user.setActivity(this.config.discord.prefix + 'help - By Krixs & JiveOff', {
+            await this.clients.discord.getClient().user.setActivity('By Krixs & JiveOff', {
                 type: "LISTENING"
             });
 
@@ -111,4 +111,4 @@ class CubeStalker {
     }
 }
 
-let Index = new CubeStalker();
+new CubeStalker();

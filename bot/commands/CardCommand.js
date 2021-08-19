@@ -1,8 +1,6 @@
-const { MessageAttachment } = require("discord.js")
-const util = require("util");
 const fs = require("fs");
 
-class HelpCommand {
+class CardCommand {
 
     /**
      * Constructeur de la commande
@@ -21,12 +19,22 @@ class HelpCommand {
      */
     getCommand() {
         return {
-            Command: "card",
-            Aliases: ["rankcard"],
-            Usage: "[-gif]",
-            Description: "Génère une carte de stonker certifié.",
-            Run: (args, message) => this.exec(args, message),
-            ShowInHelp: true
+            name: "card",
+            description: "Génère une carte de stonker certifié.",
+            options: {
+                "player": {
+                    "name": "joueur",
+                    "type": "user",
+                    "description": "Demander la carte d'un autre membre",
+                    "required": false
+                },
+                "gif": {
+                    "name": "gif",
+                    "type": "boolean",
+                    "description": "Demander la carte au format GIF",
+                    "required": false
+                }
+            }
         }
     }
 
@@ -35,43 +43,18 @@ class HelpCommand {
      * @param args
      * @param message
      */
-    async exec(args, message) {
+    async exec(interaction) {
+        let gif = false
+        let user = interaction.user
 
-        // On regarde si il veut un gif.
-        let gif = false;
+        if(interaction.options._hoistedOptions.filter((args) => args.name === "gif").length > 0)
+            gif = interaction.options._hoistedOptions.filter((args) => args.name === "gif")[0].value
 
-        // On regarde quel utilisateur a été choisi.
-        let discordSelected, discordMember;
-        if(args[0]) {
-            if(args[0] === "-gif") {
-                discordSelected = message.author.id;
-                discordMember = message.author;
-                gif = true;
-            } else {
-                let promisifiedMember = util.promisify(this.utils.DiscordServer.getMember);
-                let memberFound = await promisifiedMember(message.guild, args[0]);
-                if(!memberFound) {
-                    await message.channel.send("> :x:  Aucun utilisateur trouvé.");
-                    return;
-                }
-                // L'utilisateur ayant été trouvé, on modifie les valeurs de "target".
-                discordMember = memberFound;
-                discordSelected = memberFound.user.id;
-
-                if(args[1]) {
-                    if (args[1] === "-gif") {
-                        gif = true
-                    }
-                }
-            }
-        } else {
-            // Aucune autre argument mentionné, donc la "target" est la personne ayant exécuté la commande.
-            discordSelected = message.author.id;
-            discordMember = message.author
-        }
+        if(interaction.options._hoistedOptions.filter((args) => args.name === "joueur").length > 0)
+            user = interaction.options._hoistedOptions.filter((args) => args.name === "joueur")[0].user
 
         // On regarde si l'utilisateur "target" a lié son compte Discord à un profil ScoreSaber.
-        const id = await (await this.clients.redis.quickRedis()).get(discordSelected);
+        const id = await (await this.clients.redis.quickRedis()).get(user.id);
 
         // Si l'utilisateur n'a pas relié de profil, on exécute ce qui figure ci dessous.
         if(id === null) {
@@ -79,11 +62,11 @@ class HelpCommand {
             if(args[0])
                 await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié pour le compte Discord ``" + discordMember.user.tag + "``.");
             else
-                await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié avec votre compte Discord!\nUtilisez la commande ``" + this.config.discord.prefix + "profil [lien scoresaber]`` pour pouvoir en lier un.");
+                await interaction.reply({ content: "> :x:  Aucun profil ScoreSaber n'est lié avec votre compte Discord!\nUtilisez la commande ``/profil [lien scoresaber]`` pour pouvoir en lier un.", ephemeral: true });
             return;
         }
 
-        const stonkerProfile = await this.utils.ScoreSaber.getStonkerCard(id, message, gif);
+        const stonkerProfile = await this.utils.ScoreSaber.getStonkerCard(id, interaction.user.id, gif);
 
         if(typeof stonkerProfile === 'string') {
             await message.channel.send("> :x:  " + stonkerProfile);
@@ -99,4 +82,4 @@ class HelpCommand {
 
 }
 
-module.exports = HelpCommand;
+module.exports = CardCommand;

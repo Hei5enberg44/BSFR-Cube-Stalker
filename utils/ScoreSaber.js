@@ -20,15 +20,12 @@ class ScoreSaber {
     }
 
     async checkApiIsUp(){
-	try {
-	    let data = (await axios.get(this.config.scoresaber.apiUrl + '/api/')).data.response
-	    if(data == "hey")
-		return true
-	    else
-		return false
-	} catch (e) {
-	    return false
-	}
+        try {
+            let data = (await axios.get(this.config.scoresaber.apiUrl + '/api/')).data.response
+            return data === "hey"
+        } catch (e) {
+            return false
+        }
     }
 
     /**
@@ -38,8 +35,7 @@ class ScoreSaber {
      */
     async refreshProfile(id) {
         try {
-            let data = (await axios.get(this.config.scoresaber.apiUrl + '/api/manage/user/' + id + '/refresh')).data.updated
-            return data;
+            return (await axios.get(this.config.scoresaber.apiUrl + '/api/manage/user/' + id + '/refresh')).data.updated;
         } catch(e) {
             this.utils.Logger.log("ScoreSaber refreshProfile: " + e.toString());
             return false;
@@ -49,11 +45,11 @@ class ScoreSaber {
     /**
      * Fonction pour refresh les rôles de la guilde.
      * @param ply
-     * @param message
+     * @param member
      * @param targetUser
      * @returns {Promise<boolean>}
      */
-    async refreshRoles(ply, message, targetUser) {
+    async refreshRoles(ply, member, targetUser) {
 
         let firstRoleName;
         let secondRoleName;
@@ -147,44 +143,36 @@ class ScoreSaber {
             return;
         }
 
-	let member = message.guild.members.resolve(targetUser);
-
         let hasRoleFirst = member.roles.cache.some(r=>[firstRoleName].includes(r.name));
 
         let hasRoleSecond;
 
-	if(!secondRoleName)
+        if(!secondRoleName)
             hasRoleSecond = true;
         else
             hasRoleSecond = member.roles.cache.some(r=>[secondRoleName].includes(r.name));
 
-	let firstroles = member.roles.cache.filter(role => role.name.indexOf("000pp") > -1);
-	let secondroles = member.roles.cache.filter(role => role.name.indexOf("500pp") > -1);
+        let firstroles = member.roles.cache.filter(role => role.name.indexOf("000pp") > -1);
+        let secondroles = member.roles.cache.filter(role => role.name.indexOf("500pp") > -1);
 
-	firstroles.forEach(async function(role) {
-	    if(firstRoleName != role.name) {
-		await member.roles.remove(role);
-		//await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
-	    }
-	});
+        firstroles.forEach(async function(role) {
+            if(firstRoleName !== role.name)
+                await member.roles.remove(role);
+        });
 
-	secondroles.forEach(async function(role) {
-	    if(secondRoleName != role.name) {
-	    	await member.roles.remove(role);
-		//await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
-	    }
-	})
+        secondroles.forEach(async function(role) {
+            if(secondRoleName !== role.name)
+                await member.roles.remove(role);
+        })
 
         if(!hasRoleFirst) {
-            let roleFirst = await message.guild.roles.cache.find(role => role.name === firstRoleName);
+            let roleFirst = await member.guild.roles.cache.find(role => role.name === firstRoleName);
             await member.roles.add(roleFirst);
-            //await message.channel.send("> :checkered_flag:  **[DEBUG]** Ajouté: " + roleFirst.name);
         }
         if(secondRoleName) {
             if(!hasRoleSecond) {
-                let roleSecond = await message.guild.roles.cache.find(role => role.name === secondRoleName);
+                let roleSecond = await member.guild.roles.cache.find(role => role.name === secondRoleName);
                 await member.roles.add(roleSecond);
-                //await message.channel.send("> :checkered_flag:  **[DEBUG]** Ajouté: " + roleSecond.name);
             }
         }
 
@@ -195,11 +183,11 @@ class ScoreSaber {
     /**
      * Fonction pour récupérer le profil ScoreSaber avec un snowflake ID.
      * @param id
-     * @param message
+     * @param member
      * @param targetUser
      * @returns {Promise<{}|boolean>}
      */
-    async getProfile(id, message, targetUser) {
+    async getProfile(id, member, targetUser) {
         let player = new Player();
         let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full');
         await (await this.clients.redis.quickRedis()).set("scoresaber:" + id, targetUser)
@@ -208,7 +196,7 @@ class ScoreSaber {
                 return false;
             } else {
                 player.setPlayer(response.data);
-                await this.refreshRoles(player.getPlayer(), message, targetUser);
+                await this.refreshRoles(player.getPlayer(), member, targetUser);
                 return player.getPlayer();
             }
         } else {
@@ -217,7 +205,7 @@ class ScoreSaber {
         }
     }
 
-    async getStonkerCard(id, message, gif) {
+    async getStonkerCard(id, userId, gif) {
 
         let response = await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/full');
         if (!response) {
@@ -247,10 +235,10 @@ class ScoreSaber {
         let splitHistory = player.history.split(",");
         let sevenDays = splitHistory[splitHistory.length - 7];
 
-	let diff;
+        let diff;
 
-	if(sevenDays) diff = sevenDays - player.rank
-	else diff = 0
+        if(sevenDays) diff = sevenDays - player.rank
+        else diff = 0
 
         let mode;
 
@@ -369,13 +357,13 @@ class ScoreSaber {
             let img = canvas.toDataURL();
             let data = img.replace(/^data:image\/\w+;base64,/, "");
             let buffer = new Buffer.alloc(data.length, data, 'base64');
-            await fs.writeFileSync('./assets/cache/' + message.author.id + '.png', buffer);
+            await fs.writeFileSync('./assets/cache/' + userId + '.png', buffer);
 
-            return {files: ['./assets/cache/' + message.author.id + '.png']}
+            return {files: ['./assets/cache/' + userId + '.png']}
         }
 
         const encoder = new GIFEncoder(1398, 960, "neuquant", true);
-        encoder.createReadStream().pipe(fs.createWriteStream('./assets/cache/' + message.author.id + '.gif'));
+        encoder.createReadStream().pipe(fs.createWriteStream('./assets/cache/' + userId + '.gif'));
 
         encoder.start();
         encoder.setRepeat(0);
@@ -505,7 +493,7 @@ class ScoreSaber {
 
         encoder.finish();
 
-        return {files: ['./assets/cache/' + message.author.id + '.gif']}
+        return {files: ['./assets/cache/' + userId + '.gif']}
 
     }
 
@@ -516,9 +504,7 @@ class ScoreSaber {
      */
     async getTopScore(id) {
         try {
-            let score = (await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/scores/top')).data.scores[0];
-
-            return score
+            return (await axios.get(this.config.scoresaber.apiUrl + '/api/player/' + id + '/scores/top')).data.scores[0];
         } catch(e) {
             this.utils.Logger.log("ScoreSaber getTopScore: " + e.toString());
             return false;
@@ -527,12 +513,10 @@ class ScoreSaber {
 
     /**
      * Fonction qui permet de retourner le leaderboard mondial.
-     * @returns {Promise<T|boolean>}
      */
     async getLeaderboard() {
         try {
-            let data = (await axios.get(this.config.scoresaber.apiUrl + '/api/players/1')).data
-            return data;
+            return (await axios.get(this.config.scoresaber.apiUrl + '/api/players/1')).data;
         } catch(e) {
             this.utils.Logger.log("ScoreSaber getLeaderboard: " + e.toString());
             return false;
@@ -664,27 +648,23 @@ class ScoreSaber {
         let secondroles = member.roles.cache.filter(role => role.name.indexOf("500pp") > -1);
 
         firstroles.forEach(async function(role) {
-            if(firstRoleName != role.name)
-            await member.roles.remove(role)
-            //await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
+            if(firstRoleName !== role.name)
+                await member.roles.remove(role)
         })
 
         secondroles.forEach(async function(role) {
-            if(secondRoleName != role.name)
-            await member.roles.remove(role)
-            //await message.channel.send("> :checkered_flag: **[DEBUG]** Retiré: " + role.name);
+            if(secondRoleName !== role.name)
+                await member.roles.remove(role)
         })
 
         if(!hasRoleFirst) {
             let roleFirst = await guild.roles.cache.find(role => role.name === firstRoleName);
-            await member.roles.add(roleFirst);
-            //await message.channel.send("> :checkered_flag:  **[DEBUG]** Ajouté: " + roleFirst.name);
+                await member.roles.add(roleFirst);
         }
         if(secondRoleName) {
             if(!hasRoleSecond) {
                 let roleSecond = await guild.roles.cache.find(role => role.name === secondRoleName);
-                await member.roles.add(roleSecond);
-                //await message.channel.send("> :checkered_flag:  **[DEBUG]** Ajouté: " + roleSecond.name);
+                    await member.roles.add(roleSecond);
             }
         }
 
@@ -710,7 +690,6 @@ class ScoreSaber {
     async refreshGuild(guildId) {
         let guild = await this.clients.discord.getClient().guilds.resolve(guildId);
         let newLd = [];
-        let ld = await this.utils.ServerLeaderboard.getLeaderboardServer(guildId);
 
         await this.asyncForEach(guild.members.cache.array(), async (member) => {
             const id = await (await this.clients.redis.quickRedis()).get(member.user.id);

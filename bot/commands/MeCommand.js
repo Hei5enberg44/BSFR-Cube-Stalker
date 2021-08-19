@@ -1,5 +1,3 @@
-const util = require("util");
-
 class MeCommand {
 
     /**
@@ -8,92 +6,75 @@ class MeCommand {
      */
     constructor(opt) {
         this.clients = opt.clients;
-        this.config = opt.config;
+        this.commands = opt.commands;
         this.utils = opt.utils;
+        this.config = opt.config;
     }
 
     /**
      * Permet de récupérer la "metadata" de la commande.
      * @returns {{Usage: string, Description: string, Command: string, ShowInHelp: boolean, Run: (function(*=, *=): void), Aliases: [string, string]}}
      */
-    getCommand() {
+    get meta() {
         return {
-            Command: "me",
-            Aliases: ["doisuck", "plspp", "amiwashedup"],
-            Usage: "[<utilisateur>]",
-            Description: "Affiche votre profil ScoreSaber.",
-            Run: (args, message) => this.exec(args, message),
-            ShowInHelp: true
+            name: "me",
+            description: "Affiche les informations d'un joueur.",
+            options: {
+                "player": {
+                    "name": "joueur",
+                    "type": "user",
+                    "description": "Afficher les informations d'un autre joueur",
+                    "required": false
+                }
+            }
         }
     }
 
     /**
      * Executor de la commande, ce qui va être exécuté quand la commande est effectuée.
-     * @param args
-     * @param message
+     * @param interaction
      */
-    async exec(args, message) {
+    async exec(interaction) {
 
-        // On regarde quel utilisateur a été choisi.
-        let discordSelected, discordMember;
-        if(args[0]) {
-            let promisifiedMember = util.promisify(this.utils.DiscordServer.getMember);
-            let memberFound = await promisifiedMember(message.guild, args[0]);
-            if(!memberFound) {
-                await message.channel.send("> :x:  Aucun utilisateur trouvé.");
-                return;
-            }
-            // L'utilisateur ayant été trouvé, on modifie les valeurs de "target".
-            discordMember = memberFound;
-            discordSelected = memberFound.user.id
-        } else {
-            // Aucune autre argument mentionné, donc la "target" est la personne ayant exécuté la commande.
-            discordSelected = message.author.id;
-            discordMember = message.author
+        let user = interaction.user
+        let member = interaction.member
+
+        if(interaction.options._hoistedOptions.filter((args) => args.name === "joueur").length > 0) {
+            user = interaction.options._hoistedOptions.filter((args) => args.name === "joueur")[0].user
+            member = interaction.options._hoistedOptions.filter((args) => args.name === "joueur")[0].member
         }
 
-        // On regarde si l'utilisateur "target" a lié son compte Discord à un profil ScoreSaber.
-        const id = await (await this.clients.redis.quickRedis()).get(discordSelected);
+        const id = await (await this.clients.redis.quickRedis()).get(user.id);
 
         // Si l'utilisateur n'a pas relié de profil, on exécute ce qui figure ci dessous.
         if(id === null) {
-            // Si quelqu'un d'autre à fait la commande pour quelqu'un d'autre.
-            if(args[0])
-                await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié pour le compte Discord ``" + discordMember.user.tag + "``.");
+            if(interaction.user.id !== user.id)
+                return await interaction.reply({ content: "> :x:  Aucun profil ScoreSaber n'est lié pour le compte Discord ``" + user.tag + "``.", ephemeral: true });
             else
-                await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié avec votre compte Discord!\nUtilisez la commande ``" + this.config.discord.prefix + "profil [lien scoresaber]`` pour pouvoir en lier un.")
-            return;
+                return await interaction.reply({ content: "> :x:  Aucun profil ScoreSaber n'est lié avec votre compte Discord!\nUtilisez la commande ``/profil [lien scoresaber]`` pour pouvoir en lier un.", ephemeral: true })
         }
 
-	// On vérifie que l'api est joignable
-	let apiStatus = await this.utils.ScoreSaber.checkApiIsUp();
-	if (apiStatus == false) {
-	    await message.channel.send("> :x:  Il semblerait que ScoreSaber soit injoignables. Veuillez réessayer plus tard.")
-	    return;
-	}
+        let apiStatus = await this.utils.ScoreSaber.checkApiIsUp();
+        if (apiStatus === false)
+            return await interaction.reply({ content: "> :x:  Il semblerait que ScoreSaber soit injoignable. Veuillez réessayer plus tard." })
 
-        // On se met dans un scope try catch au cas où le refresh ScoreSaber du profil n'a pas pu être réalisé.
-        // A monitorer (issue gitlab)
         try {
             let res = await this.utils.ScoreSaber.refreshProfile(id);
             this.utils.Logger.log("Profil mis à jour: " + res);
         } catch(e) {
-            await message.channel.send("> :x:  La mise à jour du profil n'a pas pu être réalisée, les données ci-dessous peuvent être inexactes.")
+            return await interaction.reply({ content: "> :x:  La mise à jour du profil n'a pas pu être réalisée, les données ci-dessous peuvent être inexactes.", ephemeral: true })
         }
 
-        // On récupère le profil ScoreSaber de l'utilisateur visé ainsi que son meilleur score.
-        let player = await this.utils.ScoreSaber.getProfile(id, message, discordSelected);
+        let player = await this.utils.ScoreSaber.getProfile(id, member, id);
         let score = await this.utils.ScoreSaber.getTopScore(id);
 
-        // On récupère le leaderboard serveur.
-        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, true);
+        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(member.guild.id, true);
 
-        if(!player || !score || !leaderboardServer) {
-            await message.channel.send("> :x:  Le profil ScoreSaber n'a pas pu être récupéré.");
-            return;
-        }
+        if(!player || !score || !leaderboardServer)
+            return await interaction.reply({ content: "> :x:  Le profil ScoreSaber n'a pas pu être récupéré.", ephemeral: true })
 
-        // Si le leaderboard serveur existe.
+        let content
+
         if(leaderboardServer) {
             let foundInLead;
             let placement;
@@ -111,31 +92,31 @@ class MeCommand {
                 foundInLead.pp = player.pp;
                 foundInLead.acc = player.accuracy;
                 leaderboardServer[placement] = foundInLead;
-                await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer)); // Mise à jour du leaderboard avec le pp du profil.
+                await this.utils.ServerLeaderboard.setLeaderboardServer(member.guild.id, JSON.stringify(leaderboardServer)); // Mise à jour du leaderboard avec le pp du profil.
             } else {
                 // Non.
 
                 // Si un autre utilisateur consulte le profil d'un autre qui n'a jamais run !me, on l'ajoute au Leaderboard.
-                if(args[0])
-                    await message.channel.send("> :clap:  ``" + player.playerName + "`` a été ajouté au classement du serveur.");
+                if(interaction.user.id !== user.id)
+                    content = "> :clap:  ``" + player.playerName + "`` a été ajouté au classement du serveur."
                 else
-                    await message.channel.send("> :clap:  Vous avez été ajouté au classement du serveur.");
-                player.leaderboardEntry.discordUser = discordSelected;
+                    content = "> :clap:  Vous avez été ajouté au classement du serveur."
+                player.leaderboardEntry.discordUser = user.id;
                 leaderboardServer.push(player.leaderboardEntry);
-                await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer)); // Mise à jour du leaderboard.
+                await this.utils.ServerLeaderboard.setLeaderboardServer(member.guild.id, JSON.stringify(leaderboardServer)); // Mise à jour du leaderboard.
             }
         } else {
             // On initialise le leaderboard du serveur avec le premier joueur.
-            await message.channel.send("> <:discord:686990677451604050>  Serait-ce un nouveau serveur? Je vous initialise le classement tout de suite.");
+            content = "> <:discord:686990677451604050>  Serait-ce un nouveau serveur? Je vous initialise le classement tout de suite."
             leaderboardServer = [];
-            player.leaderboardEntry.discordUser = discordSelected;
+            player.leaderboardEntry.discordUser = user.id;
             leaderboardServer.push(player.leaderboardEntry);
-            await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leaderboardServer)); // Mise à jour du leaderboard.
+            await this.utils.ServerLeaderboard.setLeaderboardServer(member.guild.id, JSON.stringify(leaderboardServer)); // Mise à jour du leaderboard.
         }
 
         // On récupère le leaderboard Acc et PP du serveur.
-        let leaderboardServerPp = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, true);
-        let leaderboardServerAcc = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, false);
+        let leaderboardServerPp = await this.utils.ServerLeaderboard.getLeaderboardServer(member.guild.id, true);
+        let leaderboardServerAcc = await this.utils.ServerLeaderboard.getLeaderboardServer(member.guild.id, false);
 
         // On récupère la position du joueur dans le leaderboard Pp serveur.
         let posInLeadPp = 1;
@@ -177,19 +158,11 @@ class MeCommand {
             posInLeadAcc = "#" + posInLeadAcc;
         }
 
-        // Les blagues du genre "mention bien" :^)
-        if(args.join().toLowerCase().indexOf("bien") > -1) {
-            await message.channel.send(":middle_finger:");
-            return;
-        }
-
-	// Récupération diff
-
         let difficulty = score.difficultyRaw.split("_")[1].replace("Plus", "+");
 
         // On prépare l'embed.
         let embed = this.utils.Embed.embed();
-        embed.setTitle(player.playerName)
+        await embed.setTitle(player.playerName)
             .setURL(this.config.scoresaber.url + "/u/" + id)
             .setThumbnail(this.config.scoresaber.apiUrl + player.avatar + "?date=" + new Date().getTime())
             .addField("Rang", ":earth_africa: #" + player.rank + " | :flag_" + player.country.toLowerCase() + ": #" + player.countryRank)
@@ -201,7 +174,8 @@ class MeCommand {
             .setColor('#000000');
 
         // On envoie l'embed dans le channel ou celui-ci a été demandé.
-        await message.channel.send(embed);
+        await interaction.reply({ content, embeds: [embed] });
+
     }
 
 }

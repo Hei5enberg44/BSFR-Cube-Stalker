@@ -14,43 +14,38 @@ class LeaderboardCommand {
      * Permet de récupérer la "metadata" de la commande.
      * @returns {{Usage: string, Description: string, Command: string, ShowInHelp: boolean, Run: (function(*=, *=): void), Aliases: [string, string]}}
      */
-    getCommand() {
+    get meta() {
         return {
-            Command: "leaderboard",
-            Aliases: ["ld", "server", "serverlead", "lead", "top"],
-            Usage: "[<page>]",
-            Description: "Affiche le classement du serveur.",
-            Run: (args, message) => this.exec(args, message),
-            ShowInHelp: true
+            name: "ld",
+            description: "Affiche le classement du serveur.",
+            options: {
+                "page": {
+                    "name": "page",
+                    "type": "number",
+                    "description": "Page à afficher",
+                    "required": false
+                }
+            }
         }
     }
 
     /**
      * Executor de la commande, ce qui va être exécuté quand la commande est effectuée.
-     * @param args
-     * @param message
+     * @param interaction
      */
-    async exec(args, message) {
+    async exec(interaction) {
 
         // On récupère le leaderboard du serveur.
-        let lb = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, true);
+        let lb = await this.utils.ServerLeaderboard.getLeaderboardServer(interaction.member.guild.id, true);
+
+        // On récupére l'option
+        let optionPage = interaction.options._hoistedOptions.filter((args) => args.name === "page")
 
         // On récupère la page et on vérifie si la page mentionnée est valide.
-        let tempPage;
-
-        // Si aucun argument, on donne la première page.
-        if(args[0]) {
-            if(!parseInt(args[0]) || args[0] < 1) {
-                await message.channel.send("> :x:  Veuillez indiquer un numéro de page valide.");
-                return;
-            }
-            tempPage = args[0];
-        } else {
-            tempPage = 1;
-        }
+        let tempPage = optionPage.length > 0 ? optionPage[0].value : 1
 
         // On impose les limites des pages.
-        let page = parseInt(tempPage) - 1;
+        let page = tempPage - 1;
         let beginning = (page * 10) + 1;
         let end = beginning + 9;
 
@@ -64,7 +59,7 @@ class LeaderboardCommand {
 
         // On vérifie que la page indiquée n'excède pas le nombre de pages.
         if(tempPage > nombreDePages) {
-            await message.channel.send("> :x:  Il n'y a que ``" + nombreDePages + "`` pages dans ce leaderboard.");
+            await interaction.reply({ content: "> :x:  Il n'y a que ``" + nombreDePages + "`` pages dans ce leaderboard.", ephemeral: true});
             return;
         }
 
@@ -118,7 +113,7 @@ class LeaderboardCommand {
         }
 
         // On envoie l'embed dans le channel ou celui-ci a été demandé.
-        await message.channel.send(embed);
+        await interaction.reply({embeds: [embed]});
      }
 
 }

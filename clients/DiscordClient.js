@@ -1,4 +1,4 @@
-const Package = require("discord.js");
+const { Client, Intents } = require("discord.js");
 
 class DiscordClient {
 
@@ -8,7 +8,16 @@ class DiscordClient {
      */
     constructor(opt) {
         this.config = opt.config;
-        this.client = new Package.Client();
+        this.client = new Client({
+            intents: [
+                Intents.FLAGS.GUILD_MEMBERS,
+                Intents.FLAGS.GUILD_MESSAGES,
+                Intents.FLAGS.GUILDS
+            ],
+            partials: [
+                "CHANNEL"
+            ]
+        });
     }
 
     /**
@@ -20,7 +29,6 @@ class DiscordClient {
 
     /**
      * Getter pour le client.
-     * @returns {Client | module:"discord.js".Client}
      */
     getClient() {
         return this.client;
