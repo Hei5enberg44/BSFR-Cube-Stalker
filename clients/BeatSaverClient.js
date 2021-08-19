@@ -10,7 +10,7 @@ class BeatSaverClient {
         try {
             let options = {
                 method: "GET",
-                url: this.config.beatsaver.apiUrl + "/maps/by-hash/" + hash,
+                url: this.config.beatsaver.apiUrl + "/maps/hash/" + hash,
                 headers: {
                     'User-Agent': this.config.beatsaver.userAgent
                 }
@@ -24,7 +24,7 @@ class BeatSaverClient {
     }
 
     async getMaxScore(notes) {
-        let maxScore = 0
+        let maxScore
 
         if(notes < 14) {
             if(notes === 1) {
@@ -44,23 +44,23 @@ class BeatSaverClient {
     get diffs() {
         return {
             1: {
-                "beatsaver": "easy",
+                "beatsaver": "Easy",
                 "display": "Easy"
             },
             3: {
-                "beatsaver": "normal",
+                "beatsaver": "Normal",
                 "display": "Normal"
             },
             5: {
-                "beatsaver": "hard",
+                "beatsaver": "Hard",
                 "display": "Hard"
             },
             7: {
-                "beatsaver": "expert",
+                "beatsaver": "Expert",
                 "display": "Expert"
             },
             9: {
-                "beatsaver": "expertPlus",
+                "beatsaver": "ExpertPlus",
                 "display": "Expert+"
             },
         }

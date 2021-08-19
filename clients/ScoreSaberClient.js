@@ -35,7 +35,7 @@ class ScoreSaberClient {
                     'User-Agent': this.config.ingameapi.userAgent
                 }
             }
-            let res = await Axios(options)
+            await Axios(options)
             return this
         } catch(e) {
             console.error(e)
@@ -150,15 +150,16 @@ class ScoreSaberClient {
         if(isFirstFR) {
             let channel = this.clients.discord.getClient().channels.cache.get(this.config.discord.top1channel)
 
-            let maxScore = await this.clients.beatsaver.getMaxScore(map.metadata.characteristics
-                .filter((char) => char.name.toLowerCase() === info.gameMode.toLowerCase())[0]
-                .difficulties[this.clients.beatsaver.diffs[info.difficulty].beatsaver].notes)
+            let maxScore = await this.clients.beatsaver.getMaxScore(
+                map.versions[0].diffs.filter((diff) => diff.characteristic.toLowerCase() === info.gameMode.toLowerCase() && diff.difficulty.toLowerCase() === this.clients.beatsaver.diffs[info.difficulty].beatsaver)[0].notes
+            )
+
             let accuracy = ((info.score / maxScore) * 100).toFixed(2)
 
             let embed = Embed.embed()
-            embed.setTitle(map.metadata.songName)
+            await embed.setTitle(map.name)
                 .setURL(this.config.scoresaber.url + "/leaderboard/" + scoreboard.uid)
-                .setThumbnail(this.config.beatsaver.url + map.coverURL)
+                .setThumbnail(this.config.beatsaver.url + map.versions[0].coverURL)
                 .setDescription("**" + this.clients.beatsaver.diffs[info.difficulty].display + "** par **" + map.metadata.levelAuthorName + "**")
                 .addField("Joueur", "<@" + userDiscordId + ">", true)
                 .addField("ScoreSaber", "[" + SSProfile.playerInfo.playerName + "](" + this.config.scoresaber.url + "/u/" + info.playerID + ")", true)
@@ -166,12 +167,12 @@ class ScoreSaberClient {
                 .addField("Score", info.score.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","), true)
                 .addField("Précision", accuracy + "%", true)
                 .addField("\u200b", "\u200b", true)
-                .addField("BeatSaver", "[Lien](" + this.config.beatsaver.url + "/beatmap/" + map.key + ")", true)
-                .addField("BSR", "!bsr " + map.key, true)
+                .addField("BeatSaver", "[Lien](" + this.config.beatsaver.url + "/beatmap/" + map.id + ")", true)
+                .addField("BSR", "!bsr " + map.id, true)
                 .addField("\u200b", "\u200b", true)
                 .setColor("#FFAC33")
 
-            channel.send(embed)
+            channel.send({embeds: [embed]})
         }
     }
 
