@@ -33,7 +33,7 @@ class ProfileCommand {
      * Executor de la commande, ce qui va être exécuté quand la commande est effectuée.
      * @param interaction
      */
-    async exec(args, message) {
+    async exec(interaction) {
 
         // On récupère l'objet membre.
         let member = interaction.member;
@@ -44,7 +44,7 @@ class ProfileCommand {
         let newUrl = "http";
 
         // HTTPS?
-        if(args[0].indexOf("https") > -1) {
+        if(link.indexOf("https") > -1) {
             url = newUrl = "https"
         }
 
@@ -53,19 +53,17 @@ class ProfileCommand {
         newUrl += "://new.scoresaber.com/u/";
 
         // On vérifie si l'URL est valide.
-        if(!(args[0].indexOf(url) > -1) && !(args[0].indexOf(newUrl) > -1)) {
-            await message.channel.send("> :x:  Veuillez indiquer un profil ScoreSaber valide.");
-            return;
-        }
+        if(!(link.indexOf(url) > -1) && !(link.indexOf(newUrl) > -1))
+            return await interaction.reply({ content: "> :x:  Veuillez indiquer un profil ScoreSaber valide.", ephemeral: true });
 
         // On récupère l'ID du profil ScoreSaber.
-        let profileId = args[0].replace(url , "").replace(newUrl, "");
+        let profileId = link.replace(url , "").replace(newUrl, "");
 
         profileId = profileId.split("?")[0];
         profileId = profileId.split("&")[0];
 
         // On récupère le leaderboard serveur.
-        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(message.guild.id, true);
+        let leaderboardServer = await this.utils.ServerLeaderboard.getLeaderboardServer(this.config.discord.guildId, true);
 
         // On vérifie que le profil n'est pas déjà présent dans le leaderboard du serveur.
         let foundProfile = false;
@@ -82,7 +80,7 @@ class ProfileCommand {
         // On fait en sorte de supprimer l'ancien profil de l'utilisateur Discord pour éviter les doublons.
         let leadFiltered = [];
         for(let i in leaderboardServer) {
-            if(leaderboardServer[i].discordUser !== discordSelected) {
+            if(leaderboardServer[i].discordUser !== member.user.id) {
                 leadFiltered.push(leaderboardServer[i]);
             }
         }

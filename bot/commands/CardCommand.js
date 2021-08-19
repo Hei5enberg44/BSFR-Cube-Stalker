@@ -17,7 +17,7 @@ class CardCommand {
      * Permet de récupérer la "metadata" de la commande.
      * @returns {{Usage: string, Description: string, Command: string, ShowInHelp: boolean, Run: (function(*=, *=): void), Aliases: [string, string]}}
      */
-    getCommand() {
+    get meta() {
         return {
             name: "card",
             description: "Génère une carte de stonker certifié.",
@@ -40,8 +40,7 @@ class CardCommand {
 
     /**
      * Executor de la commande, ce qui va être exécuté quand la commande est effectuée.
-     * @param args
-     * @param message
+     * @param interaction
      */
     async exec(interaction) {
         let gif = false
@@ -59,8 +58,8 @@ class CardCommand {
         // Si l'utilisateur n'a pas relié de profil, on exécute ce qui figure ci dessous.
         if(id === null) {
             // Si quelqu'un d'autre à fait la commande pour quelqu'un d'autre.
-            if(args[0])
-                await message.channel.send("> :x:  Aucun profil ScoreSaber n'est lié pour le compte Discord ``" + discordMember.user.tag + "``.");
+            if(user.id !== interaction.user.id)
+                await interaction.reply({ content: "> :x:  Aucun profil ScoreSaber n'est lié pour le compte Discord ``" + user.tag + "``.", ephemeral: true });
             else
                 await interaction.reply({ content: "> :x:  Aucun profil ScoreSaber n'est lié avec votre compte Discord!\nUtilisez la commande ``/profil [lien scoresaber]`` pour pouvoir en lier un.", ephemeral: true });
             return;
@@ -69,12 +68,12 @@ class CardCommand {
         const stonkerProfile = await this.utils.ScoreSaber.getStonkerCard(id, interaction.user.id, gif);
 
         if(typeof stonkerProfile === 'string') {
-            await message.channel.send("> :x:  " + stonkerProfile);
+            await interaction.reply({ content: "> :x:  " + stonkerProfile, ephemeral: true });
             return
         }
 
         // On envoie l'embed dans le channel ou celui-ci a été demandé.
-        await message.channel.send(stonkerProfile);
+        await interaction.reply({ ...stonkerProfile });
 
         await fs.unlinkSync(stonkerProfile.files[0]);
 

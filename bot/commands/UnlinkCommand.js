@@ -50,7 +50,7 @@ class UnlinkCommand {
             }
         }
         // On met à jour le leaderboard.
-        await this.utils.ServerLeaderboard.setLeaderboardServer(message.guild.id, JSON.stringify(leadFiltered));
+        await this.utils.ServerLeaderboard.setLeaderboardServer(member.guild.id, JSON.stringify(leadFiltered));
 
         // On supprime la clé Redis contenant l'ID ScoreSaber.
         await (await this.clients.redis.quickRedis()).del(member.user.id);
