@@ -532,7 +532,7 @@ class ScoreSaber {
         if(response) {
             if(response.data.error) {
                 return false;
-            } else {		
+            } else {
                 player.setPlayer(response.data);
                 await this.refresherRole(player.getPlayer(), guild, member);
                 return player.getPlayer();
@@ -691,14 +691,17 @@ class ScoreSaber {
         let guild = await this.clients.discord.getClient().guilds.resolve(guildId);
         let newLd = [];
 
-        await this.asyncForEach(guild.members.cache.array(), async (member) => {
+        await guild.members.fetch()
+
+        for(const [, member] of guild.members.cache.entries()) {
             const id = await (await this.clients.redis.quickRedis()).get(member.user.id);
             if(id !== null) {
                 let player = await this.getProfileRefresher(id, guild, member);
                 newLd.push(player.leaderboardEntry)
             }
-	    await this.sleep(250)
-        })
+            await this.sleep(250)
+        }
+
         return newLd;
     }
 }
