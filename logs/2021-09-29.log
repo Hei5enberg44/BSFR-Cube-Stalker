@@ -1,0 +1,1299 @@
+[00:00:00] [Leaderboard] Actualisation du joueur "BSFR | Hei5enberg"...
+[00:00:00] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[00:00:00] [Leaderboard] Actualisation du joueur "OMDN | Krixs"...
+[00:00:00] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198073345392/full"
+[00:00:00] [ScoreSaber] Requête envoyée avec succès
+[00:00:00] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198073345392/scores/top/1"
+[00:00:00] [ScoreSaber] Requête envoyée avec succès
+[00:00:00] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[00:00:00] [ScoreSaber] Requête envoyée avec succès
+[00:00:00] [ScoreSaber] Requête envoyée avec succès
+[00:00:00] [Leaderboard] Actualisation du joueur "OMDN | Krixs" terminée
+[00:00:01] [Leaderboard] Actualisation du joueur "BSFR | Hei5enberg" terminée
+[00:08:25] [Application] Démarrage du bot
+[00:08:25] [Discord] Initialisation...
+[00:08:27] [Discord] Initialisation terminée
+[00:08:27] [CommandManager] Commande "/card" trouvée
+[00:08:27] [CommandManager] Commande "/forcerefresh" trouvée
+[00:08:27] [CommandManager] Commande "/ld" trouvée
+[00:08:27] [CommandManager] Commande "/link" trouvée
+[00:08:27] [CommandManager] Commande "/locateworld" trouvée
+[00:08:27] [CommandManager] Commande "/me" trouvée
+[00:08:27] [CommandManager] Commande "/setprofile" trouvée
+[00:08:27] [CommandManager] Commande "/top" trouvée
+[00:08:27] [CommandManager] Commande "/unlink" trouvée
+[00:08:27] [CommandManager] Actualisation des commandes (/) de l'application
+[00:08:27] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[00:08:27] [Application] Le bot est prêt !
+[00:08:32] [CommandManager] Hei5enberg#2119 a exécuté la commande "/me"
+[00:08:33] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[00:08:33] [ScoreSaber] Requête envoyée avec succès
+[00:08:33] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[00:08:33] [ScoreSaber] Requête envoyée avec succès
+[00:11:43] [Application] Démarrage du bot
+[00:11:43] [Discord] Initialisation...
+[00:11:44] [Discord] Initialisation terminée
+[00:11:44] [CommandManager] Commande "/card" trouvée
+[00:11:44] [CommandManager] Commande "/forcerefresh" trouvée
+[00:11:44] [CommandManager] Commande "/ld" trouvée
+[00:11:44] [CommandManager] Commande "/link" trouvée
+[00:11:44] [CommandManager] Commande "/locateworld" trouvée
+[00:11:44] [CommandManager] Commande "/me" trouvée
+[00:11:44] [CommandManager] Commande "/setprofile" trouvée
+[00:11:44] [CommandManager] Commande "/top" trouvée
+[00:11:44] [CommandManager] Commande "/unlink" trouvée
+[00:11:44] [CommandManager] Actualisation des commandes (/) de l'application
+[00:11:45] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[00:11:45] [Application] Le bot est prêt !
+[00:11:54] [CommandManager] Hei5enberg#2119 a exécuté la commande "/me"
+[00:11:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[00:11:55] [ScoreSaber] Requête envoyée avec succès
+[00:11:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[00:11:55] [ScoreSaber] Requête envoyée avec succès
+[00:12:05] [CommandManager] Hei5enberg#2119 a exécuté la commande "/me"
+[00:12:06] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198073345392/full"
+[00:12:06] [ScoreSaber] Requête envoyée avec succès
+[00:12:06] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198073345392/scores/top/1"
+[00:12:06] [ScoreSaber] Requête envoyée avec succès
+[00:13:22] [Application] Démarrage du bot
+[00:13:22] [Discord] Initialisation...
+[00:13:23] [Discord] Initialisation terminée
+[00:13:23] [CommandManager] Commande "/card" trouvée
+[00:13:23] [CommandManager] Commande "/forcerefresh" trouvée
+[00:13:23] [CommandManager] Commande "/ld" trouvée
+[00:13:23] [CommandManager] Commande "/link" trouvée
+[00:13:23] [CommandManager] Commande "/locateworld" trouvée
+[00:13:23] [CommandManager] Commande "/me" trouvée
+[00:13:23] [CommandManager] Commande "/setprofile" trouvée
+[00:13:23] [CommandManager] Commande "/top" trouvée
+[00:13:23] [CommandManager] Commande "/unlink" trouvée
+[00:13:23] [CommandManager] Actualisation des commandes (/) de l'application
+[00:13:23] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[00:13:23] [Application] Le bot est prêt !
+[00:13:31] [CommandManager] Hei5enberg#2119 a exécuté la commande "/me"
+[00:13:31] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[00:13:32] [ScoreSaber] Requête envoyée avec succès
+[00:13:32] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[00:13:32] [ScoreSaber] Requête envoyée avec succès
+[00:13:41] [Application] Démarrage du bot
+[00:13:41] [Discord] Initialisation...
+[00:13:43] [Discord] Initialisation terminée
+[00:13:43] [CommandManager] Commande "/card" trouvée
+[00:13:43] [CommandManager] Commande "/forcerefresh" trouvée
+[00:13:43] [CommandManager] Commande "/ld" trouvée
+[00:13:43] [CommandManager] Commande "/link" trouvée
+[00:13:43] [CommandManager] Commande "/locateworld" trouvée
+[00:13:43] [CommandManager] Commande "/me" trouvée
+[00:13:43] [CommandManager] Commande "/setprofile" trouvée
+[00:13:43] [CommandManager] Commande "/top" trouvée
+[00:13:43] [CommandManager] Commande "/unlink" trouvée
+[00:13:43] [CommandManager] Actualisation des commandes (/) de l'application
+[00:13:43] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[00:13:43] [Application] Le bot est prêt !
+[09:59:36] [Application] Démarrage du bot
+[09:59:36] [Discord] Initialisation...
+[09:59:37] [Discord] Initialisation terminée
+[09:59:37] [CommandManager] Commande "/card" trouvée
+[09:59:37] [CommandManager] Commande "/forcerefresh" trouvée
+[09:59:37] [CommandManager] Commande "/ld" trouvée
+[09:59:37] [CommandManager] Commande "/link" trouvée
+[09:59:37] [CommandManager] Commande "/locateworld" trouvée
+[09:59:37] [CommandManager] Commande "/me" trouvée
+[09:59:37] [CommandManager] Commande "/setprofile" trouvée
+[09:59:37] [CommandManager] Commande "/top" trouvée
+[09:59:37] [CommandManager] Commande "/unlink" trouvée
+[09:59:37] [CommandManager] Actualisation des commandes (/) de l'application
+[09:59:37] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[09:59:37] [Application] Le bot est prêt !
+[10:02:19] [Application] Démarrage du bot
+[10:02:19] [Discord] Initialisation...
+[10:02:20] [Discord] Initialisation terminée
+[10:02:20] [CommandManager] Commande "/card" trouvée
+[10:02:20] [CommandManager] Commande "/forcerefresh" trouvée
+[10:02:20] [CommandManager] Commande "/ld" trouvée
+[10:02:20] [CommandManager] Commande "/link" trouvée
+[10:02:20] [CommandManager] Commande "/locateworld" trouvée
+[10:02:20] [CommandManager] Commande "/me" trouvée
+[10:02:20] [CommandManager] Commande "/setprofile" trouvée
+[10:02:20] [CommandManager] Commande "/top" trouvée
+[10:02:20] [CommandManager] Commande "/unlink" trouvée
+[10:02:20] [CommandManager] Actualisation des commandes (/) de l'application
+[10:02:20] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[10:02:20] [Application] Le bot est prêt !
+[10:06:10] [CommandManager] Hei5enberg#2119 a exécuté la commande "/me"
+[10:06:10] [CommandManager] [ERROR] L'exécution de la commande "/me" a échoué : Merci d'effectuer la commande dans <#892522955681185793>
+[10:08:22] [Application] Démarrage du bot
+[10:08:22] [Discord] Initialisation...
+[10:08:23] [Discord] Initialisation terminée
+[10:08:23] [CommandManager] Commande "/card" trouvée
+[10:08:23] [CommandManager] Commande "/forcerefresh" trouvée
+[10:08:23] [CommandManager] Commande "/ld" trouvée
+[10:08:23] [CommandManager] Commande "/link" trouvée
+[10:08:23] [CommandManager] Commande "/locateworld" trouvée
+[10:08:23] [CommandManager] Commande "/me" trouvée
+[10:08:23] [CommandManager] Commande "/setprofile" trouvée
+[10:08:23] [CommandManager] Commande "/top" trouvée
+[10:08:23] [CommandManager] Commande "/unlink" trouvée
+[10:08:23] [CommandManager] Actualisation des commandes (/) de l'application
+[10:11:47] [Application] Démarrage du bot
+[10:11:47] [Discord] Initialisation...
+[10:11:48] [Discord] Initialisation terminée
+[10:11:48] [CommandManager] Commande "/card" trouvée
+[10:11:48] [CommandManager] Commande "/forcerefresh" trouvée
+[10:11:48] [CommandManager] Commande "/ld" trouvée
+[10:11:48] [CommandManager] Commande "/link" trouvée
+[10:11:48] [CommandManager] Commande "/locateworld" trouvée
+[10:11:48] [CommandManager] Commande "/me" trouvée
+[10:11:48] [CommandManager] Commande "/setprofile" trouvée
+[10:11:48] [CommandManager] Commande "/top" trouvée
+[10:11:48] [CommandManager] Commande "/unlink" trouvée
+[10:11:48] [CommandManager] Actualisation des commandes (/) de l'application
+[10:11:48] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[10:11:48] [Application] Le bot est prêt !
+[10:14:12] [CommandManager] Hei5enberg#2119 a exécuté la commande "/locateworld"
+[10:14:13] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[10:14:13] [ScoreSaber] Requête envoyée avec succès
+[10:14:13] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[10:14:13] [ScoreSaber] Requête envoyée avec succès
+[10:14:13] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/players/20"
+[10:14:13] [ScoreSaber] Requête envoyée avec succès
+[11:18:31] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/undefined/full"
+[11:18:31] [ScoreSaber] [ERROR] Une erreur est survenue lors de la récupération du profil ScoreSaber
+[11:19:09] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/undefined/full"
+[11:19:10] [ScoreSaber] [ERROR] Une erreur est survenue lors de la récupération du profil ScoreSaber
+[11:19:34] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/undefined/full"
+[11:19:34] [ScoreSaber] [ERROR] Une erreur est survenue lors de la récupération du profil ScoreSaber
+[11:19:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/undefined/full"
+[11:19:56] [ScoreSaber] [ERROR] Une erreur est survenue lors de la récupération du profil ScoreSaber
+[11:20:09] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/undefined/full"
+[11:20:09] [ScoreSaber] [ERROR] Une erreur est survenue lors de la récupération du profil ScoreSaber
+[11:20:37] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[11:20:37] [ScoreSaber] Requête envoyée avec succès
+[11:20:37] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[11:20:37] [ScoreSaber] Requête envoyée avec succès
+[11:20:46] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[11:20:47] [ScoreSaber] Requête envoyée avec succès
+[11:20:47] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[11:20:47] [ScoreSaber] Requête envoyée avec succès
+[11:21:01] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[11:21:01] [ScoreSaber] Requête envoyée avec succès
+[11:21:01] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[11:21:02] [ScoreSaber] Requête envoyée avec succès
+[11:28:29] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[11:28:30] [ScoreSaber] Requête envoyée avec succès
+[11:28:30] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[11:28:30] [ScoreSaber] Requête envoyée avec succès
+[11:28:49] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[11:28:49] [ScoreSaber] Requête envoyée avec succès
+[11:28:49] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[11:28:49] [ScoreSaber] Requête envoyée avec succès
+[11:34:17] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[11:34:18] [ScoreSaber] Requête envoyée avec succès
+[11:34:18] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[11:34:18] [ScoreSaber] Requête envoyée avec succès
+[11:52:00] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[11:52:01] [ScoreSaber] Requête envoyée avec succès
+[11:52:01] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[11:52:01] [ScoreSaber] Requête envoyée avec succès
+[11:52:14] [Application] Démarrage du bot
+[11:52:14] [Discord] Initialisation...
+[11:52:15] [Discord] Initialisation terminée
+[11:52:15] [CommandManager] Commande "/card" trouvée
+[11:52:15] [CommandManager] Commande "/forcerefresh" trouvée
+[11:52:15] [CommandManager] Commande "/ld" trouvée
+[11:52:15] [CommandManager] Commande "/link" trouvée
+[11:52:15] [CommandManager] Commande "/locateworld" trouvée
+[11:52:15] [CommandManager] Commande "/me" trouvée
+[11:52:15] [CommandManager] Commande "/setprofile" trouvée
+[11:52:15] [CommandManager] Commande "/top" trouvée
+[11:52:15] [CommandManager] Commande "/unlink" trouvée
+[11:52:15] [CommandManager] Actualisation des commandes (/) de l'application
+[11:52:15] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[11:52:15] [Application] Le bot est prêt !
+[11:52:22] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[11:52:22] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[11:52:22] [ScoreSaber] Requête envoyée avec succès
+[11:52:22] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[11:52:22] [ScoreSaber] Requête envoyée avec succès
+[12:08:50] [Application] Démarrage du bot
+[12:08:50] [Discord] Initialisation...
+[12:08:51] [Discord] Initialisation terminée
+[12:08:51] [CommandManager] Commande "/card" trouvée
+[12:08:51] [CommandManager] Commande "/forcerefresh" trouvée
+[12:08:51] [CommandManager] Commande "/ld" trouvée
+[12:08:51] [CommandManager] Commande "/link" trouvée
+[12:08:51] [CommandManager] Commande "/locateworld" trouvée
+[12:08:51] [CommandManager] Commande "/me" trouvée
+[12:08:51] [CommandManager] Commande "/setprofile" trouvée
+[12:08:51] [CommandManager] Commande "/top" trouvée
+[12:08:51] [CommandManager] Commande "/unlink" trouvée
+[12:08:51] [CommandManager] Actualisation des commandes (/) de l'application
+[12:08:51] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:08:51] [Application] Le bot est prêt !
+[12:08:55] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:08:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:08:55] [ScoreSaber] Requête envoyée avec succès
+[12:08:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:08:56] [ScoreSaber] Requête envoyée avec succès
+[12:09:47] [Application] Démarrage du bot
+[12:09:47] [Discord] Initialisation...
+[12:09:48] [Discord] Initialisation terminée
+[12:09:48] [CommandManager] Commande "/card" trouvée
+[12:09:48] [CommandManager] Commande "/forcerefresh" trouvée
+[12:09:48] [CommandManager] Commande "/ld" trouvée
+[12:09:48] [CommandManager] Commande "/link" trouvée
+[12:09:48] [CommandManager] Commande "/locateworld" trouvée
+[12:09:48] [CommandManager] Commande "/me" trouvée
+[12:09:48] [CommandManager] Commande "/setprofile" trouvée
+[12:09:48] [CommandManager] Commande "/top" trouvée
+[12:09:48] [CommandManager] Commande "/unlink" trouvée
+[12:09:48] [CommandManager] Actualisation des commandes (/) de l'application
+[12:09:48] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:09:48] [Application] Le bot est prêt !
+[12:09:52] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:09:53] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:09:53] [ScoreSaber] Requête envoyée avec succès
+[12:09:53] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:09:53] [ScoreSaber] Requête envoyée avec succès
+[12:10:30] [Application] Démarrage du bot
+[12:10:30] [Discord] Initialisation...
+[12:10:31] [Discord] Initialisation terminée
+[12:10:31] [CommandManager] Commande "/card" trouvée
+[12:10:31] [CommandManager] Commande "/forcerefresh" trouvée
+[12:10:31] [CommandManager] Commande "/ld" trouvée
+[12:10:31] [CommandManager] Commande "/link" trouvée
+[12:10:31] [CommandManager] Commande "/locateworld" trouvée
+[12:10:31] [CommandManager] Commande "/me" trouvée
+[12:10:31] [CommandManager] Commande "/setprofile" trouvée
+[12:10:31] [CommandManager] Commande "/top" trouvée
+[12:10:31] [CommandManager] Commande "/unlink" trouvée
+[12:10:31] [CommandManager] Actualisation des commandes (/) de l'application
+[12:10:31] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:10:31] [Application] Le bot est prêt !
+[12:10:35] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:10:35] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:10:35] [ScoreSaber] Requête envoyée avec succès
+[12:10:35] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:10:36] [ScoreSaber] Requête envoyée avec succès
+[12:11:40] [Application] Démarrage du bot
+[12:11:40] [Discord] Initialisation...
+[12:11:41] [Discord] Initialisation terminée
+[12:11:41] [CommandManager] Commande "/card" trouvée
+[12:11:41] [CommandManager] Commande "/forcerefresh" trouvée
+[12:11:41] [CommandManager] Commande "/ld" trouvée
+[12:11:41] [CommandManager] Commande "/link" trouvée
+[12:11:41] [CommandManager] Commande "/locateworld" trouvée
+[12:11:41] [CommandManager] Commande "/me" trouvée
+[12:11:41] [CommandManager] Commande "/setprofile" trouvée
+[12:11:41] [CommandManager] Commande "/top" trouvée
+[12:11:41] [CommandManager] Commande "/unlink" trouvée
+[12:11:41] [CommandManager] Actualisation des commandes (/) de l'application
+[12:11:42] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:11:42] [Application] Le bot est prêt !
+[12:11:44] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:11:45] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:11:45] [ScoreSaber] Requête envoyée avec succès
+[12:11:45] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:11:45] [ScoreSaber] Requête envoyée avec succès
+[12:11:45] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : ENOENT, No such file or directory './assets/images/card/background/0'
+[12:12:01] [Application] Démarrage du bot
+[12:12:01] [Discord] Initialisation...
+[12:12:02] [Discord] Initialisation terminée
+[12:12:02] [CommandManager] Commande "/card" trouvée
+[12:12:02] [CommandManager] Commande "/forcerefresh" trouvée
+[12:12:02] [CommandManager] Commande "/ld" trouvée
+[12:12:02] [CommandManager] Commande "/link" trouvée
+[12:12:02] [CommandManager] Commande "/locateworld" trouvée
+[12:12:02] [CommandManager] Commande "/me" trouvée
+[12:12:02] [CommandManager] Commande "/setprofile" trouvée
+[12:12:02] [CommandManager] Commande "/top" trouvée
+[12:12:02] [CommandManager] Commande "/unlink" trouvée
+[12:12:02] [CommandManager] Actualisation des commandes (/) de l'application
+[12:12:02] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:12:02] [Application] Le bot est prêt !
+[12:12:04] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:12:05] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:12:05] [ScoreSaber] Requête envoyée avec succès
+[12:12:05] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:12:05] [ScoreSaber] Requête envoyée avec succès
+[12:13:32] [Application] Démarrage du bot
+[12:13:32] [Discord] Initialisation...
+[12:13:33] [Discord] Initialisation terminée
+[12:13:33] [CommandManager] Commande "/card" trouvée
+[12:13:33] [CommandManager] Commande "/forcerefresh" trouvée
+[12:13:33] [CommandManager] Commande "/ld" trouvée
+[12:13:33] [CommandManager] Commande "/link" trouvée
+[12:13:33] [CommandManager] Commande "/locateworld" trouvée
+[12:13:33] [CommandManager] Commande "/me" trouvée
+[12:13:33] [CommandManager] Commande "/setprofile" trouvée
+[12:13:33] [CommandManager] Commande "/top" trouvée
+[12:13:33] [CommandManager] Commande "/unlink" trouvée
+[12:13:33] [CommandManager] Actualisation des commandes (/) de l'application
+[12:13:33] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:13:33] [Application] Le bot est prêt !
+[12:13:36] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:13:36] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:13:36] [ScoreSaber] Requête envoyée avec succès
+[12:13:36] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:13:37] [ScoreSaber] Requête envoyée avec succès
+[12:14:32] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The user aborted a request.
+[12:14:48] [Application] Démarrage du bot
+[12:14:48] [Discord] Initialisation...
+[12:14:49] [Discord] Initialisation terminée
+[12:14:49] [CommandManager] Commande "/card" trouvée
+[12:14:49] [CommandManager] Commande "/forcerefresh" trouvée
+[12:14:49] [CommandManager] Commande "/ld" trouvée
+[12:14:49] [CommandManager] Commande "/link" trouvée
+[12:14:49] [CommandManager] Commande "/locateworld" trouvée
+[12:14:49] [CommandManager] Commande "/me" trouvée
+[12:14:49] [CommandManager] Commande "/setprofile" trouvée
+[12:14:49] [CommandManager] Commande "/top" trouvée
+[12:14:49] [CommandManager] Commande "/unlink" trouvée
+[12:14:49] [CommandManager] Actualisation des commandes (/) de l'application
+[12:14:49] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:14:49] [Application] Le bot est prêt !
+[12:14:52] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:14:52] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:14:52] [ScoreSaber] Requête envoyée avec succès
+[12:14:52] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:14:52] [ScoreSaber] Requête envoyée avec succès
+[12:15:47] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The user aborted a request.
+[12:16:23] [Application] Démarrage du bot
+[12:16:23] [Discord] Initialisation...
+[12:16:24] [Discord] Initialisation terminée
+[12:16:24] [CommandManager] Commande "/card" trouvée
+[12:16:24] [CommandManager] Commande "/forcerefresh" trouvée
+[12:16:24] [CommandManager] Commande "/ld" trouvée
+[12:16:24] [CommandManager] Commande "/link" trouvée
+[12:16:24] [CommandManager] Commande "/locateworld" trouvée
+[12:16:24] [CommandManager] Commande "/me" trouvée
+[12:16:24] [CommandManager] Commande "/setprofile" trouvée
+[12:16:24] [CommandManager] Commande "/top" trouvée
+[12:16:24] [CommandManager] Commande "/unlink" trouvée
+[12:16:24] [CommandManager] Actualisation des commandes (/) de l'application
+[12:16:24] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:16:24] [Application] Le bot est prêt !
+[12:16:39] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:16:39] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:16:39] [ScoreSaber] Requête envoyée avec succès
+[12:16:39] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:16:39] [ScoreSaber] Requête envoyée avec succès
+[12:17:34] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The user aborted a request.
+[12:22:19] [Application] Démarrage du bot
+[12:22:19] [Discord] Initialisation...
+[12:22:20] [Discord] Initialisation terminée
+[12:22:20] [CommandManager] Commande "/card" trouvée
+[12:22:20] [CommandManager] Commande "/forcerefresh" trouvée
+[12:22:20] [CommandManager] Commande "/ld" trouvée
+[12:22:20] [CommandManager] Commande "/link" trouvée
+[12:22:20] [CommandManager] Commande "/locateworld" trouvée
+[12:22:20] [CommandManager] Commande "/me" trouvée
+[12:22:20] [CommandManager] Commande "/setprofile" trouvée
+[12:22:20] [CommandManager] Commande "/top" trouvée
+[12:22:20] [CommandManager] Commande "/unlink" trouvée
+[12:22:20] [CommandManager] Actualisation des commandes (/) de l'application
+[12:22:21] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:22:21] [Application] Le bot est prêt !
+[12:22:22] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:22:23] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:22:23] [ScoreSaber] Requête envoyée avec succès
+[12:22:23] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:22:23] [ScoreSaber] Requête envoyée avec succès
+[12:23:18] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The user aborted a request.
+[12:33:21] [Application] Démarrage du bot
+[12:33:21] [Discord] Initialisation...
+[12:33:22] [Discord] Initialisation terminée
+[12:33:22] [CommandManager] Commande "/card" trouvée
+[12:33:22] [CommandManager] Commande "/forcerefresh" trouvée
+[12:33:22] [CommandManager] Commande "/ld" trouvée
+[12:33:22] [CommandManager] Commande "/link" trouvée
+[12:33:22] [CommandManager] Commande "/locateworld" trouvée
+[12:33:22] [CommandManager] Commande "/me" trouvée
+[12:33:22] [CommandManager] Commande "/setprofile" trouvée
+[12:33:22] [CommandManager] Commande "/top" trouvée
+[12:33:22] [CommandManager] Commande "/unlink" trouvée
+[12:33:22] [CommandManager] Actualisation des commandes (/) de l'application
+[12:33:22] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:33:22] [Application] Le bot est prêt !
+[12:33:25] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:33:26] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:33:26] [ScoreSaber] Requête envoyée avec succès
+[12:33:26] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:33:26] [ScoreSaber] Requête envoyée avec succès
+[12:33:26] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : XMLHttpRequest is not defined
+[12:34:22] [Application] Démarrage du bot
+[12:34:22] [Discord] Initialisation...
+[12:34:23] [Discord] Initialisation terminée
+[12:34:23] [CommandManager] Commande "/card" trouvée
+[12:34:23] [CommandManager] Commande "/forcerefresh" trouvée
+[12:34:23] [CommandManager] Commande "/ld" trouvée
+[12:34:23] [CommandManager] Commande "/link" trouvée
+[12:34:23] [CommandManager] Commande "/locateworld" trouvée
+[12:34:23] [CommandManager] Commande "/me" trouvée
+[12:34:23] [CommandManager] Commande "/setprofile" trouvée
+[12:34:23] [CommandManager] Commande "/top" trouvée
+[12:34:23] [CommandManager] Commande "/unlink" trouvée
+[12:34:23] [CommandManager] Actualisation des commandes (/) de l'application
+[12:34:24] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:34:24] [Application] Le bot est prêt !
+[12:34:29] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:34:29] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:34:30] [ScoreSaber] Requête envoyée avec succès
+[12:34:30] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:34:30] [ScoreSaber] Requête envoyée avec succès
+[12:34:30] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : Image or Canvas expected
+[12:35:18] [Application] Démarrage du bot
+[12:35:18] [Discord] Initialisation...
+[12:35:19] [Discord] Initialisation terminée
+[12:35:19] [CommandManager] Commande "/card" trouvée
+[12:35:19] [CommandManager] Commande "/forcerefresh" trouvée
+[12:35:19] [CommandManager] Commande "/ld" trouvée
+[12:35:19] [CommandManager] Commande "/link" trouvée
+[12:35:19] [CommandManager] Commande "/locateworld" trouvée
+[12:35:19] [CommandManager] Commande "/me" trouvée
+[12:35:19] [CommandManager] Commande "/setprofile" trouvée
+[12:35:19] [CommandManager] Commande "/top" trouvée
+[12:35:19] [CommandManager] Commande "/unlink" trouvée
+[12:35:19] [CommandManager] Actualisation des commandes (/) de l'application
+[12:35:19] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[12:35:19] [Application] Le bot est prêt !
+[12:35:21] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[12:35:21] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[12:35:21] [ScoreSaber] Requête envoyée avec succès
+[12:35:21] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[12:35:22] [ScoreSaber] Requête envoyée avec succès
+[19:24:46] [Application] Démarrage du bot
+[19:24:46] [Discord] Initialisation...
+[19:24:47] [Discord] Initialisation terminée
+[19:24:48] [CommandManager] Commande "/card" trouvée
+[19:24:48] [CommandManager] Commande "/forcerefresh" trouvée
+[19:24:48] [CommandManager] Commande "/ld" trouvée
+[19:24:48] [CommandManager] Commande "/link" trouvée
+[19:24:48] [CommandManager] Commande "/locateworld" trouvée
+[19:24:48] [CommandManager] Commande "/me" trouvée
+[19:24:48] [CommandManager] Commande "/setprofile" trouvée
+[19:24:48] [CommandManager] Commande "/top" trouvée
+[19:24:48] [CommandManager] Commande "/unlink" trouvée
+[19:24:48] [CommandManager] Actualisation des commandes (/) de l'application
+[19:24:48] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[19:24:48] [Application] Le bot est prêt !
+[19:26:22] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[19:26:22] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[19:26:22] [ScoreSaber] Requête envoyée avec succès
+[19:26:22] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[19:26:23] [ScoreSaber] Requête envoyée avec succès
+[19:27:18] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The user aborted a request.
+[19:33:18] [Application] Démarrage du bot
+[19:33:18] [Discord] Initialisation...
+[19:33:19] [Discord] Initialisation terminée
+[19:33:19] [CommandManager] Commande "/card" trouvée
+[19:33:19] [CommandManager] Commande "/forcerefresh" trouvée
+[19:33:19] [CommandManager] Commande "/ld" trouvée
+[19:33:19] [CommandManager] Commande "/link" trouvée
+[19:33:19] [CommandManager] Commande "/locateworld" trouvée
+[19:33:19] [CommandManager] Commande "/me" trouvée
+[19:33:19] [CommandManager] Commande "/setprofile" trouvée
+[19:33:19] [CommandManager] Commande "/top" trouvée
+[19:33:19] [CommandManager] Commande "/unlink" trouvée
+[19:33:19] [CommandManager] Actualisation des commandes (/) de l'application
+[19:33:19] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[19:33:19] [Application] Le bot est prêt !
+[19:33:23] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[19:33:23] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[19:33:23] [ScoreSaber] Requête envoyée avec succès
+[19:33:23] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[19:33:23] [ScoreSaber] Requête envoyée avec succès
+[21:14:34] [Application] Démarrage du bot
+[21:14:34] [Discord] Initialisation...
+[21:14:35] [Discord] Initialisation terminée
+[21:14:35] [CommandManager] Commande "/card" trouvée
+[21:14:35] [CommandManager] Commande "/forcerefresh" trouvée
+[21:14:35] [CommandManager] Commande "/ld" trouvée
+[21:14:35] [CommandManager] Commande "/link" trouvée
+[21:14:35] [CommandManager] Commande "/locateworld" trouvée
+[21:14:35] [CommandManager] Commande "/me" trouvée
+[21:14:35] [CommandManager] Commande "/setprofile" trouvée
+[21:14:35] [CommandManager] Commande "/top" trouvée
+[21:14:35] [CommandManager] Commande "/unlink" trouvée
+[21:14:35] [CommandManager] Actualisation des commandes (/) de l'application
+[21:14:35] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[21:14:35] [Application] Le bot est prêt !
+[21:14:48] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[21:14:48] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:14:48] [ScoreSaber] Requête envoyée avec succès
+[21:14:48] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:14:48] [ScoreSaber] Requête envoyée avec succès
+[21:14:49] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received an instance of Object
+[21:15:32] [Application] Démarrage du bot
+[21:15:32] [Discord] Initialisation...
+[21:15:33] [Discord] Initialisation terminée
+[21:15:33] [CommandManager] Commande "/card" trouvée
+[21:15:33] [CommandManager] Commande "/forcerefresh" trouvée
+[21:15:33] [CommandManager] Commande "/ld" trouvée
+[21:15:33] [CommandManager] Commande "/link" trouvée
+[21:15:33] [CommandManager] Commande "/locateworld" trouvée
+[21:15:33] [CommandManager] Commande "/me" trouvée
+[21:15:33] [CommandManager] Commande "/setprofile" trouvée
+[21:15:33] [CommandManager] Commande "/top" trouvée
+[21:15:33] [CommandManager] Commande "/unlink" trouvée
+[21:15:33] [CommandManager] Actualisation des commandes (/) de l'application
+[21:15:33] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[21:15:33] [Application] Le bot est prêt !
+[21:15:35] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[21:15:36] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:15:36] [ScoreSaber] Requête envoyée avec succès
+[21:15:36] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:15:36] [ScoreSaber] Requête envoyée avec succès
+[21:15:36] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The "path" argument must be of type string or an instance of Buffer or URL. Received an instance of Object
+[21:17:31] [Application] Démarrage du bot
+[21:17:31] [Discord] Initialisation...
+[21:17:33] [Discord] Initialisation terminée
+[21:17:33] [CommandManager] Commande "/card" trouvée
+[21:17:33] [CommandManager] Commande "/forcerefresh" trouvée
+[21:17:33] [CommandManager] Commande "/ld" trouvée
+[21:17:33] [CommandManager] Commande "/link" trouvée
+[21:17:33] [CommandManager] Commande "/locateworld" trouvée
+[21:17:33] [CommandManager] Commande "/me" trouvée
+[21:17:33] [CommandManager] Commande "/setprofile" trouvée
+[21:17:33] [CommandManager] Commande "/top" trouvée
+[21:17:33] [CommandManager] Commande "/unlink" trouvée
+[21:17:33] [CommandManager] Actualisation des commandes (/) de l'application
+[21:17:33] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[21:17:33] [Application] Le bot est prêt !
+[21:17:35] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[21:17:35] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:17:36] [ScoreSaber] Requête envoyée avec succès
+[21:17:36] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:17:36] [ScoreSaber] Requête envoyée avec succès
+[21:17:36] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The "path" argument must be of type string or an instance of Buffer or URL. Received an instance of Object
+[21:18:07] [Application] Démarrage du bot
+[21:18:07] [Discord] Initialisation...
+[21:18:08] [Discord] Initialisation terminée
+[21:18:08] [CommandManager] Commande "/card" trouvée
+[21:18:08] [CommandManager] Commande "/forcerefresh" trouvée
+[21:18:08] [CommandManager] Commande "/ld" trouvée
+[21:18:08] [CommandManager] Commande "/link" trouvée
+[21:18:08] [CommandManager] Commande "/locateworld" trouvée
+[21:18:08] [CommandManager] Commande "/me" trouvée
+[21:18:08] [CommandManager] Commande "/setprofile" trouvée
+[21:18:08] [CommandManager] Commande "/top" trouvée
+[21:18:08] [CommandManager] Commande "/unlink" trouvée
+[21:18:08] [CommandManager] Actualisation des commandes (/) de l'application
+[21:18:09] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[21:18:09] [Application] Le bot est prêt !
+[21:18:10] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[21:18:11] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:18:11] [ScoreSaber] Requête envoyée avec succès
+[21:18:11] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:18:11] [ScoreSaber] Requête envoyée avec succès
+[21:18:11] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The resource must be a string, Buffer or a valid file stream.
+[21:18:45] [Application] Démarrage du bot
+[21:18:45] [Discord] Initialisation...
+[21:18:47] [Discord] Initialisation terminée
+[21:18:47] [CommandManager] Commande "/card" trouvée
+[21:18:47] [CommandManager] Commande "/forcerefresh" trouvée
+[21:18:47] [CommandManager] Commande "/ld" trouvée
+[21:18:47] [CommandManager] Commande "/link" trouvée
+[21:18:47] [CommandManager] Commande "/locateworld" trouvée
+[21:18:47] [CommandManager] Commande "/me" trouvée
+[21:18:47] [CommandManager] Commande "/setprofile" trouvée
+[21:18:47] [CommandManager] Commande "/top" trouvée
+[21:18:47] [CommandManager] Commande "/unlink" trouvée
+[21:18:47] [CommandManager] Actualisation des commandes (/) de l'application
+[21:18:47] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[21:18:47] [Application] Le bot est prêt !
+[21:18:49] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[21:18:50] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:18:50] [ScoreSaber] Requête envoyée avec succès
+[21:18:50] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:18:50] [ScoreSaber] Requête envoyée avec succès
+[21:18:50] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The resource must be a string, Buffer or a valid file stream.
+[21:20:52] [Application] Démarrage du bot
+[21:20:52] [Discord] Initialisation...
+[21:20:53] [Discord] Initialisation terminée
+[21:20:53] [CommandManager] Commande "/card" trouvée
+[21:20:53] [CommandManager] Commande "/forcerefresh" trouvée
+[21:20:53] [CommandManager] Commande "/ld" trouvée
+[21:20:53] [CommandManager] Commande "/link" trouvée
+[21:20:53] [CommandManager] Commande "/locateworld" trouvée
+[21:20:53] [CommandManager] Commande "/me" trouvée
+[21:20:53] [CommandManager] Commande "/setprofile" trouvée
+[21:20:53] [CommandManager] Commande "/top" trouvée
+[21:20:53] [CommandManager] Commande "/unlink" trouvée
+[21:20:53] [CommandManager] Actualisation des commandes (/) de l'application
+[21:20:54] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[21:20:54] [Application] Le bot est prêt !
+[21:21:00] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[21:21:01] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:21:01] [ScoreSaber] Requête envoyée avec succès
+[21:21:01] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:21:01] [ScoreSaber] Requête envoyée avec succès
+[21:21:02] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : card is not defined
+[21:21:16] [Application] Démarrage du bot
+[21:21:16] [Discord] Initialisation...
+[21:21:17] [Discord] Initialisation terminée
+[21:21:17] [CommandManager] Commande "/card" trouvée
+[21:21:17] [CommandManager] Commande "/forcerefresh" trouvée
+[21:21:17] [CommandManager] Commande "/ld" trouvée
+[21:21:17] [CommandManager] Commande "/link" trouvée
+[21:21:17] [CommandManager] Commande "/locateworld" trouvée
+[21:21:17] [CommandManager] Commande "/me" trouvée
+[21:21:17] [CommandManager] Commande "/setprofile" trouvée
+[21:21:17] [CommandManager] Commande "/top" trouvée
+[21:21:17] [CommandManager] Commande "/unlink" trouvée
+[21:21:17] [CommandManager] Actualisation des commandes (/) de l'application
+[21:21:17] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[21:21:17] [Application] Le bot est prêt !
+[21:21:21] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[21:21:21] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:21:21] [ScoreSaber] Requête envoyée avec succès
+[21:21:21] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:21:22] [ScoreSaber] Requête envoyée avec succès
+[21:21:22] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The resource must be a string, Buffer or a valid file stream.
+[21:22:52] [Application] Démarrage du bot
+[21:22:52] [Discord] Initialisation...
+[21:22:53] [Discord] Initialisation terminée
+[21:22:53] [CommandManager] Commande "/card" trouvée
+[21:22:53] [CommandManager] Commande "/forcerefresh" trouvée
+[21:22:53] [CommandManager] Commande "/ld" trouvée
+[21:22:53] [CommandManager] Commande "/link" trouvée
+[21:22:53] [CommandManager] Commande "/locateworld" trouvée
+[21:22:53] [CommandManager] Commande "/me" trouvée
+[21:22:53] [CommandManager] Commande "/setprofile" trouvée
+[21:22:53] [CommandManager] Commande "/top" trouvée
+[21:22:53] [CommandManager] Commande "/unlink" trouvée
+[21:22:53] [CommandManager] Actualisation des commandes (/) de l'application
+[21:22:54] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[21:22:54] [Application] Le bot est prêt !
+[21:22:55] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[21:22:56] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:22:56] [ScoreSaber] Requête envoyée avec succès
+[21:22:56] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:22:56] [ScoreSaber] Requête envoyée avec succès
+[21:24:24] [Application] Démarrage du bot
+[21:24:24] [Discord] Initialisation...
+[21:24:25] [Discord] Initialisation terminée
+[21:24:25] [CommandManager] Commande "/card" trouvée
+[21:24:25] [CommandManager] Commande "/forcerefresh" trouvée
+[21:24:25] [CommandManager] Commande "/ld" trouvée
+[21:24:25] [CommandManager] Commande "/link" trouvée
+[21:24:25] [CommandManager] Commande "/locateworld" trouvée
+[21:24:25] [CommandManager] Commande "/me" trouvée
+[21:24:25] [CommandManager] Commande "/setprofile" trouvée
+[21:24:25] [CommandManager] Commande "/top" trouvée
+[21:24:25] [CommandManager] Commande "/unlink" trouvée
+[21:24:25] [CommandManager] Actualisation des commandes (/) de l'application
+[21:24:26] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[21:24:26] [Application] Le bot est prêt !
+[21:24:28] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[21:24:28] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:24:28] [ScoreSaber] Requête envoyée avec succès
+[21:24:28] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:24:29] [ScoreSaber] Requête envoyée avec succès
+[21:26:19] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:26:19] [ScoreSaber] Requête envoyée avec succès
+[21:26:19] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:26:20] [ScoreSaber] Requête envoyée avec succès
+[21:26:53] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:26:54] [ScoreSaber] Requête envoyée avec succès
+[21:26:54] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:26:54] [ScoreSaber] Requête envoyée avec succès
+[21:27:06] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:27:06] [ScoreSaber] Requête envoyée avec succès
+[21:27:06] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:27:07] [ScoreSaber] Requête envoyée avec succès
+[21:30:31] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:30:31] [ScoreSaber] Requête envoyée avec succès
+[21:30:31] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:30:31] [ScoreSaber] Requête envoyée avec succès
+[21:30:45] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:30:46] [ScoreSaber] Requête envoyée avec succès
+[21:30:46] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:30:46] [ScoreSaber] Requête envoyée avec succès
+[21:31:05] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:31:05] [ScoreSaber] Requête envoyée avec succès
+[21:31:05] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:31:06] [ScoreSaber] Requête envoyée avec succès
+[21:32:15] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:32:15] [ScoreSaber] Requête envoyée avec succès
+[21:32:15] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:32:15] [ScoreSaber] Requête envoyée avec succès
+[21:32:47] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:32:47] [ScoreSaber] Requête envoyée avec succès
+[21:32:47] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:32:48] [ScoreSaber] Requête envoyée avec succès
+[21:33:07] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:33:07] [ScoreSaber] Requête envoyée avec succès
+[21:33:07] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:33:08] [ScoreSaber] Requête envoyée avec succès
+[21:33:43] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:33:43] [ScoreSaber] Requête envoyée avec succès
+[21:33:43] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:33:43] [ScoreSaber] Requête envoyée avec succès
+[21:47:07] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:47:07] [ScoreSaber] Requête envoyée avec succès
+[21:47:07] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:47:08] [ScoreSaber] Requête envoyée avec succès
+[21:47:28] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:47:28] [ScoreSaber] Requête envoyée avec succès
+[21:47:28] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:47:28] [ScoreSaber] Requête envoyée avec succès
+[21:48:52] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:48:53] [ScoreSaber] Requête envoyée avec succès
+[21:48:53] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:48:53] [ScoreSaber] Requête envoyée avec succès
+[21:49:54] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:49:55] [ScoreSaber] Requête envoyée avec succès
+[21:49:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:49:55] [ScoreSaber] Requête envoyée avec succès
+[21:50:29] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:50:29] [ScoreSaber] Requête envoyée avec succès
+[21:50:29] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:50:29] [ScoreSaber] Requête envoyée avec succès
+[21:51:34] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:51:34] [ScoreSaber] Requête envoyée avec succès
+[21:51:34] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:51:34] [ScoreSaber] Requête envoyée avec succès
+[21:53:14] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:53:15] [ScoreSaber] Requête envoyée avec succès
+[21:53:15] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:53:15] [ScoreSaber] Requête envoyée avec succès
+[21:54:21] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:54:22] [ScoreSaber] Requête envoyée avec succès
+[21:54:22] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:54:22] [ScoreSaber] Requête envoyée avec succès
+[21:55:46] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:55:46] [ScoreSaber] Requête envoyée avec succès
+[21:55:46] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:55:46] [ScoreSaber] Requête envoyée avec succès
+[21:55:59] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[21:55:59] [ScoreSaber] Requête envoyée avec succès
+[21:55:59] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[21:55:59] [ScoreSaber] Requête envoyée avec succès
+[22:08:12] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:08:12] [ScoreSaber] Requête envoyée avec succès
+[22:08:12] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:08:13] [ScoreSaber] Requête envoyée avec succès
+[22:08:25] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:08:25] [ScoreSaber] Requête envoyée avec succès
+[22:08:25] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:08:26] [ScoreSaber] Requête envoyée avec succès
+[22:09:05] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:09:05] [ScoreSaber] Requête envoyée avec succès
+[22:09:05] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:09:05] [ScoreSaber] Requête envoyée avec succès
+[22:09:16] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:09:16] [ScoreSaber] Requête envoyée avec succès
+[22:09:16] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:09:16] [ScoreSaber] Requête envoyée avec succès
+[22:10:47] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:10:48] [ScoreSaber] Requête envoyée avec succès
+[22:10:48] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:10:48] [ScoreSaber] Requête envoyée avec succès
+[22:15:06] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:15:06] [ScoreSaber] Requête envoyée avec succès
+[22:15:06] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:15:07] [ScoreSaber] Requête envoyée avec succès
+[22:16:22] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:16:22] [ScoreSaber] Requête envoyée avec succès
+[22:16:22] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:16:22] [ScoreSaber] Requête envoyée avec succès
+[22:17:39] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:17:39] [ScoreSaber] Requête envoyée avec succès
+[22:17:39] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:17:40] [ScoreSaber] Requête envoyée avec succès
+[22:18:17] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:18:17] [ScoreSaber] Requête envoyée avec succès
+[22:18:17] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:18:17] [ScoreSaber] Requête envoyée avec succès
+[22:18:48] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:18:48] [ScoreSaber] Requête envoyée avec succès
+[22:18:48] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:18:48] [ScoreSaber] Requête envoyée avec succès
+[22:21:45] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:21:45] [ScoreSaber] Requête envoyée avec succès
+[22:21:45] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:21:46] [ScoreSaber] Requête envoyée avec succès
+[22:21:58] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:21:58] [ScoreSaber] Requête envoyée avec succès
+[22:21:58] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:21:59] [ScoreSaber] Requête envoyée avec succès
+[22:22:48] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:22:49] [ScoreSaber] Requête envoyée avec succès
+[22:22:49] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:22:49] [ScoreSaber] Requête envoyée avec succès
+[22:22:53] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:22:53] [ScoreSaber] Requête envoyée avec succès
+[22:22:53] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:22:53] [ScoreSaber] Requête envoyée avec succès
+[22:25:50] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:25:50] [ScoreSaber] Requête envoyée avec succès
+[22:25:50] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:25:51] [ScoreSaber] Requête envoyée avec succès
+[22:26:09] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:26:09] [ScoreSaber] Requête envoyée avec succès
+[22:26:09] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:26:09] [ScoreSaber] Requête envoyée avec succès
+[22:29:01] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:29:01] [ScoreSaber] Requête envoyée avec succès
+[22:29:01] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:29:01] [ScoreSaber] Requête envoyée avec succès
+[22:31:25] [Application] Démarrage du bot
+[22:31:25] [Discord] Initialisation...
+[22:31:26] [Discord] Initialisation terminée
+[22:31:26] [CommandManager] Commande "/card" trouvée
+[22:31:26] [CommandManager] Commande "/forcerefresh" trouvée
+[22:31:26] [CommandManager] Commande "/ld" trouvée
+[22:31:26] [CommandManager] Commande "/link" trouvée
+[22:31:26] [CommandManager] Commande "/locateworld" trouvée
+[22:31:26] [CommandManager] Commande "/me" trouvée
+[22:31:26] [CommandManager] Commande "/setprofile" trouvée
+[22:31:26] [CommandManager] Commande "/top" trouvée
+[22:31:26] [CommandManager] Commande "/unlink" trouvée
+[22:31:26] [CommandManager] Actualisation des commandes (/) de l'application
+[22:31:26] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[22:31:26] [Application] Le bot est prêt !
+[22:31:34] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[22:31:35] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:31:35] [ScoreSaber] Requête envoyée avec succès
+[22:31:35] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:31:35] [ScoreSaber] Requête envoyée avec succès
+[22:32:54] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:32:54] [ScoreSaber] Requête envoyée avec succès
+[22:32:54] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:32:54] [ScoreSaber] Requête envoyée avec succès
+[22:33:32] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:33:33] [ScoreSaber] Requête envoyée avec succès
+[22:33:33] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:33:33] [ScoreSaber] Requête envoyée avec succès
+[22:38:06] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:38:07] [ScoreSaber] Requête envoyée avec succès
+[22:38:07] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:38:07] [ScoreSaber] Requête envoyée avec succès
+[22:42:29] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:42:29] [ScoreSaber] Requête envoyée avec succès
+[22:42:29] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:42:29] [ScoreSaber] Requête envoyée avec succès
+[22:43:40] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:43:40] [ScoreSaber] Requête envoyée avec succès
+[22:43:40] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:43:41] [ScoreSaber] Requête envoyée avec succès
+[22:44:12] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:44:12] [ScoreSaber] Requête envoyée avec succès
+[22:44:12] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:44:12] [ScoreSaber] Requête envoyée avec succès
+[22:44:28] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:44:29] [ScoreSaber] Requête envoyée avec succès
+[22:44:29] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:44:29] [ScoreSaber] Requête envoyée avec succès
+[22:44:49] [Application] Démarrage du bot
+[22:44:49] [Discord] Initialisation...
+[22:44:50] [Discord] Initialisation terminée
+[22:44:50] [CommandManager] Commande "/card" trouvée
+[22:44:50] [CommandManager] Commande "/forcerefresh" trouvée
+[22:44:50] [CommandManager] Commande "/ld" trouvée
+[22:44:50] [CommandManager] Commande "/link" trouvée
+[22:44:50] [CommandManager] Commande "/locateworld" trouvée
+[22:44:50] [CommandManager] Commande "/me" trouvée
+[22:44:50] [CommandManager] Commande "/setprofile" trouvée
+[22:44:50] [CommandManager] Commande "/top" trouvée
+[22:44:50] [CommandManager] Commande "/unlink" trouvée
+[22:44:50] [CommandManager] Actualisation des commandes (/) de l'application
+[22:44:50] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[22:44:50] [Application] Le bot est prêt !
+[22:44:55] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[22:44:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:44:55] [ScoreSaber] Requête envoyée avec succès
+[22:44:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:44:56] [ScoreSaber] Requête envoyée avec succès
+[22:45:17] [Application] Démarrage du bot
+[22:45:17] [Discord] Initialisation...
+[22:45:18] [Discord] Initialisation terminée
+[22:45:18] [CommandManager] Commande "/card" trouvée
+[22:45:18] [CommandManager] Commande "/forcerefresh" trouvée
+[22:45:18] [CommandManager] Commande "/ld" trouvée
+[22:45:18] [CommandManager] Commande "/link" trouvée
+[22:45:18] [CommandManager] Commande "/locateworld" trouvée
+[22:45:18] [CommandManager] Commande "/me" trouvée
+[22:45:18] [CommandManager] Commande "/setprofile" trouvée
+[22:45:18] [CommandManager] Commande "/top" trouvée
+[22:45:18] [CommandManager] Commande "/unlink" trouvée
+[22:45:18] [CommandManager] Actualisation des commandes (/) de l'application
+[22:45:19] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[22:45:19] [Application] Le bot est prêt !
+[22:45:20] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[22:45:21] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:45:21] [ScoreSaber] Requête envoyée avec succès
+[22:45:21] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:45:21] [ScoreSaber] Requête envoyée avec succès
+[22:45:21] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : ENOENT: no such file or directory, stat 'G:\Projets\Cube Stalker\assets\images\card\cache\76561198125542519.gif'
+[22:46:07] [Application] Démarrage du bot
+[22:46:07] [Discord] Initialisation...
+[22:46:08] [Discord] Initialisation terminée
+[22:46:08] [CommandManager] Commande "/card" trouvée
+[22:46:08] [CommandManager] Commande "/forcerefresh" trouvée
+[22:46:08] [CommandManager] Commande "/ld" trouvée
+[22:46:08] [CommandManager] Commande "/link" trouvée
+[22:46:08] [CommandManager] Commande "/locateworld" trouvée
+[22:46:08] [CommandManager] Commande "/me" trouvée
+[22:46:08] [CommandManager] Commande "/setprofile" trouvée
+[22:46:08] [CommandManager] Commande "/top" trouvée
+[22:46:08] [CommandManager] Commande "/unlink" trouvée
+[22:46:08] [CommandManager] Actualisation des commandes (/) de l'application
+[22:46:09] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[22:46:09] [Application] Le bot est prêt !
+[22:46:10] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[22:46:10] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:46:10] [ScoreSaber] Requête envoyée avec succès
+[22:46:10] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:46:11] [ScoreSaber] Requête envoyée avec succès
+[22:46:23] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[22:46:23] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:46:23] [ScoreSaber] Requête envoyée avec succès
+[22:46:23] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:46:24] [ScoreSaber] Requête envoyée avec succès
+[22:46:24] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : ENOENT: no such file or directory, stat 'G:\Projets\Cube Stalker\assets\images\card\cache\76561198125542519.gif'
+[22:46:50] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[22:46:51] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:46:51] [ScoreSaber] Requête envoyée avec succès
+[22:46:51] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:46:51] [ScoreSaber] Requête envoyée avec succès
+[22:47:21] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:47:22] [ScoreSaber] Requête envoyée avec succès
+[22:47:22] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:47:22] [ScoreSaber] Requête envoyée avec succès
+[22:47:31] [Application] Démarrage du bot
+[22:47:31] [Discord] Initialisation...
+[22:47:32] [Discord] Initialisation terminée
+[22:47:32] [CommandManager] Commande "/card" trouvée
+[22:47:32] [CommandManager] Commande "/forcerefresh" trouvée
+[22:47:32] [CommandManager] Commande "/ld" trouvée
+[22:47:32] [CommandManager] Commande "/link" trouvée
+[22:47:32] [CommandManager] Commande "/locateworld" trouvée
+[22:47:32] [CommandManager] Commande "/me" trouvée
+[22:47:32] [CommandManager] Commande "/setprofile" trouvée
+[22:47:32] [CommandManager] Commande "/top" trouvée
+[22:47:32] [CommandManager] Commande "/unlink" trouvée
+[22:47:32] [CommandManager] Actualisation des commandes (/) de l'application
+[22:47:33] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[22:47:33] [Application] Le bot est prêt !
+[22:47:35] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[22:47:35] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:47:35] [ScoreSaber] Requête envoyée avec succès
+[22:47:35] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:47:36] [ScoreSaber] Requête envoyée avec succès
+[22:50:04] [Application] Démarrage du bot
+[22:50:04] [Discord] Initialisation...
+[22:50:05] [Discord] Initialisation terminée
+[22:50:05] [CommandManager] Commande "/card" trouvée
+[22:50:05] [CommandManager] Commande "/forcerefresh" trouvée
+[22:50:05] [CommandManager] Commande "/ld" trouvée
+[22:50:05] [CommandManager] Commande "/link" trouvée
+[22:50:05] [CommandManager] Commande "/locateworld" trouvée
+[22:50:05] [CommandManager] Commande "/me" trouvée
+[22:50:05] [CommandManager] Commande "/setprofile" trouvée
+[22:50:05] [CommandManager] Commande "/top" trouvée
+[22:50:05] [CommandManager] Commande "/unlink" trouvée
+[22:50:05] [CommandManager] Actualisation des commandes (/) de l'application
+[22:50:05] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[22:50:05] [Application] Le bot est prêt !
+[22:50:08] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[22:50:08] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:50:09] [ScoreSaber] Requête envoyée avec succès
+[22:50:09] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:50:09] [ScoreSaber] Requête envoyée avec succès
+[22:51:12] [Application] Démarrage du bot
+[22:51:12] [Discord] Initialisation...
+[22:51:14] [Discord] Initialisation terminée
+[22:51:14] [CommandManager] Commande "/card" trouvée
+[22:51:14] [CommandManager] Commande "/forcerefresh" trouvée
+[22:51:14] [CommandManager] Commande "/ld" trouvée
+[22:51:14] [CommandManager] Commande "/link" trouvée
+[22:51:14] [CommandManager] Commande "/locateworld" trouvée
+[22:51:14] [CommandManager] Commande "/me" trouvée
+[22:51:14] [CommandManager] Commande "/setprofile" trouvée
+[22:51:14] [CommandManager] Commande "/top" trouvée
+[22:51:14] [CommandManager] Commande "/unlink" trouvée
+[22:51:14] [CommandManager] Actualisation des commandes (/) de l'application
+[22:51:14] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[22:51:14] [Application] Le bot est prêt !
+[22:51:16] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:51:16] [ScoreSaber] Requête envoyée avec succès
+[22:51:16] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:51:16] [ScoreSaber] Requête envoyée avec succès
+[22:53:52] [Application] Démarrage du bot
+[22:53:52] [Discord] Initialisation...
+[22:53:53] [Discord] Initialisation terminée
+[22:53:53] [CommandManager] Commande "/card" trouvée
+[22:53:53] [CommandManager] Commande "/forcerefresh" trouvée
+[22:53:53] [CommandManager] Commande "/ld" trouvée
+[22:53:53] [CommandManager] Commande "/link" trouvée
+[22:53:53] [CommandManager] Commande "/locateworld" trouvée
+[22:53:53] [CommandManager] Commande "/me" trouvée
+[22:53:53] [CommandManager] Commande "/setprofile" trouvée
+[22:53:53] [CommandManager] Commande "/top" trouvée
+[22:53:53] [CommandManager] Commande "/unlink" trouvée
+[22:53:53] [CommandManager] Actualisation des commandes (/) de l'application
+[22:53:53] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[22:53:53] [Application] Le bot est prêt !
+[22:53:56] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[22:53:56] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:53:57] [ScoreSaber] Requête envoyée avec succès
+[22:53:57] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:53:57] [ScoreSaber] Requête envoyée avec succès
+[22:54:29] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The user aborted a request.
+[22:56:56] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:56:56] [ScoreSaber] Requête envoyée avec succès
+[22:56:56] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:56:56] [ScoreSaber] Requête envoyée avec succès
+[22:57:11] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:57:11] [ScoreSaber] Requête envoyée avec succès
+[22:57:12] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:57:12] [ScoreSaber] Requête envoyée avec succès
+[22:57:19] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:57:20] [ScoreSaber] Requête envoyée avec succès
+[22:57:20] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:57:20] [ScoreSaber] Requête envoyée avec succès
+[22:58:08] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:58:08] [ScoreSaber] Requête envoyée avec succès
+[22:58:08] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:58:09] [ScoreSaber] Requête envoyée avec succès
+[22:58:24] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:58:24] [ScoreSaber] Requête envoyée avec succès
+[22:58:24] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:58:25] [ScoreSaber] Requête envoyée avec succès
+[22:58:35] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[22:58:36] [ScoreSaber] Requête envoyée avec succès
+[22:58:36] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[22:58:36] [ScoreSaber] Requête envoyée avec succès
+[23:06:07] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:06:07] [ScoreSaber] Requête envoyée avec succès
+[23:06:07] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:06:07] [ScoreSaber] Requête envoyée avec succès
+[23:06:46] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:06:47] [ScoreSaber] Requête envoyée avec succès
+[23:06:47] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:06:47] [ScoreSaber] Requête envoyée avec succès
+[23:07:03] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:07:04] [ScoreSaber] Requête envoyée avec succès
+[23:07:04] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:07:04] [ScoreSaber] Requête envoyée avec succès
+[23:07:16] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:07:16] [ScoreSaber] Requête envoyée avec succès
+[23:07:16] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:07:16] [ScoreSaber] Requête envoyée avec succès
+[23:07:25] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:07:25] [ScoreSaber] Requête envoyée avec succès
+[23:07:25] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:07:26] [ScoreSaber] Requête envoyée avec succès
+[23:07:50] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:07:50] [ScoreSaber] Requête envoyée avec succès
+[23:07:50] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:07:51] [ScoreSaber] Requête envoyée avec succès
+[23:08:15] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:08:15] [ScoreSaber] Requête envoyée avec succès
+[23:08:15] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:08:16] [ScoreSaber] Requête envoyée avec succès
+[23:08:30] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:08:31] [ScoreSaber] Requête envoyée avec succès
+[23:08:31] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:08:31] [ScoreSaber] Requête envoyée avec succès
+[23:08:42] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:08:42] [ScoreSaber] Requête envoyée avec succès
+[23:08:42] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:08:43] [ScoreSaber] Requête envoyée avec succès
+[23:08:57] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:08:57] [ScoreSaber] Requête envoyée avec succès
+[23:08:57] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:08:57] [ScoreSaber] Requête envoyée avec succès
+[23:09:13] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:09:14] [ScoreSaber] Requête envoyée avec succès
+[23:09:14] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:09:14] [ScoreSaber] Requête envoyée avec succès
+[23:09:49] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:09:50] [ScoreSaber] Requête envoyée avec succès
+[23:09:50] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:09:50] [ScoreSaber] Requête envoyée avec succès
+[23:10:02] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:10:03] [ScoreSaber] Requête envoyée avec succès
+[23:10:03] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:10:03] [ScoreSaber] Requête envoyée avec succès
+[23:10:33] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:10:33] [ScoreSaber] Requête envoyée avec succès
+[23:10:33] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:10:33] [ScoreSaber] Requête envoyée avec succès
+[23:10:41] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:10:41] [ScoreSaber] Requête envoyée avec succès
+[23:10:41] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:10:42] [ScoreSaber] Requête envoyée avec succès
+[23:10:53] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:10:53] [ScoreSaber] Requête envoyée avec succès
+[23:10:53] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:10:54] [ScoreSaber] Requête envoyée avec succès
+[23:11:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:11:56] [ScoreSaber] Requête envoyée avec succès
+[23:11:56] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:11:56] [ScoreSaber] Requête envoyée avec succès
+[23:12:56] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:12:56] [ScoreSaber] Requête envoyée avec succès
+[23:12:56] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:12:57] [ScoreSaber] Requête envoyée avec succès
+[23:13:36] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:13:36] [ScoreSaber] Requête envoyée avec succès
+[23:13:36] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:13:36] [ScoreSaber] Requête envoyée avec succès
+[23:13:52] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:13:52] [ScoreSaber] Requête envoyée avec succès
+[23:13:52] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:13:52] [ScoreSaber] Requête envoyée avec succès
+[23:14:00] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:14:00] [ScoreSaber] Requête envoyée avec succès
+[23:14:00] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:14:00] [ScoreSaber] Requête envoyée avec succès
+[23:14:07] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:14:07] [ScoreSaber] Requête envoyée avec succès
+[23:14:07] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:14:07] [ScoreSaber] Requête envoyée avec succès
+[23:22:50] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:22:50] [ScoreSaber] Requête envoyée avec succès
+[23:22:50] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:22:50] [ScoreSaber] Requête envoyée avec succès
+[23:23:32] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:23:33] [ScoreSaber] Requête envoyée avec succès
+[23:23:33] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:23:33] [ScoreSaber] Requête envoyée avec succès
+[23:23:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:23:55] [ScoreSaber] Requête envoyée avec succès
+[23:23:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:23:56] [ScoreSaber] Requête envoyée avec succès
+[23:27:24] [Application] Démarrage du bot
+[23:27:24] [Discord] Initialisation...
+[23:27:25] [Discord] Initialisation terminée
+[23:27:25] [CommandManager] Commande "/card" trouvée
+[23:27:25] [CommandManager] Commande "/forcerefresh" trouvée
+[23:27:25] [CommandManager] Commande "/ld" trouvée
+[23:27:25] [CommandManager] Commande "/link" trouvée
+[23:27:25] [CommandManager] Commande "/locateworld" trouvée
+[23:27:25] [CommandManager] Commande "/me" trouvée
+[23:27:25] [CommandManager] Commande "/setprofile" trouvée
+[23:27:25] [CommandManager] Commande "/top" trouvée
+[23:27:25] [CommandManager] Commande "/unlink" trouvée
+[23:27:25] [CommandManager] Actualisation des commandes (/) de l'application
+[23:27:25] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[23:27:25] [Application] Le bot est prêt !
+[23:27:33] [CommandManager] OMDN | Krixs#1106 a exécuté la commande "/card"
+[23:27:33] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198073345392/full"
+[23:27:34] [ScoreSaber] Requête envoyée avec succès
+[23:27:34] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198073345392/scores/top/1"
+[23:27:34] [ScoreSaber] Requête envoyée avec succès
+[23:29:29] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[23:29:30] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:29:30] [ScoreSaber] Requête envoyée avec succès
+[23:29:30] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:29:30] [ScoreSaber] Requête envoyée avec succès
+[23:30:01] [Application] Démarrage du bot
+[23:30:01] [Discord] Initialisation...
+[23:30:03] [Discord] Initialisation terminée
+[23:30:03] [CommandManager] Commande "/card" trouvée
+[23:30:03] [CommandManager] Commande "/forcerefresh" trouvée
+[23:30:03] [CommandManager] Commande "/ld" trouvée
+[23:30:03] [CommandManager] Commande "/link" trouvée
+[23:30:03] [CommandManager] Commande "/locateworld" trouvée
+[23:30:03] [CommandManager] Commande "/me" trouvée
+[23:30:03] [CommandManager] Commande "/setprofile" trouvée
+[23:30:03] [CommandManager] Commande "/top" trouvée
+[23:30:03] [CommandManager] Commande "/unlink" trouvée
+[23:30:03] [CommandManager] Actualisation des commandes (/) de l'application
+[23:30:03] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[23:30:03] [Application] Le bot est prêt !
+[23:30:09] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[23:30:09] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:30:10] [ScoreSaber] Requête envoyée avec succès
+[23:30:10] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:30:10] [ScoreSaber] Requête envoyée avec succès
+[23:32:46] [Application] Démarrage du bot
+[23:32:46] [Discord] Initialisation...
+[23:32:48] [Discord] Initialisation terminée
+[23:32:48] [CommandManager] Commande "/card" trouvée
+[23:32:48] [CommandManager] Commande "/forcerefresh" trouvée
+[23:32:48] [CommandManager] Commande "/ld" trouvée
+[23:32:48] [CommandManager] Commande "/link" trouvée
+[23:32:48] [CommandManager] Commande "/locateworld" trouvée
+[23:32:48] [CommandManager] Commande "/me" trouvée
+[23:32:48] [CommandManager] Commande "/setprofile" trouvée
+[23:32:48] [CommandManager] Commande "/top" trouvée
+[23:32:48] [CommandManager] Commande "/unlink" trouvée
+[23:32:48] [CommandManager] Actualisation des commandes (/) de l'application
+[23:32:48] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[23:32:48] [Application] Le bot est prêt !
+[23:32:49] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[23:32:50] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:32:50] [ScoreSaber] Requête envoyée avec succès
+[23:32:50] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:32:50] [ScoreSaber] Requête envoyée avec succès
+[23:35:29] [Application] Démarrage du bot
+[23:35:29] [Discord] Initialisation...
+[23:35:30] [Discord] Initialisation terminée
+[23:35:30] [CommandManager] Commande "/card" trouvée
+[23:35:30] [CommandManager] Commande "/forcerefresh" trouvée
+[23:35:30] [CommandManager] Commande "/ld" trouvée
+[23:35:30] [CommandManager] Commande "/link" trouvée
+[23:35:30] [CommandManager] Commande "/locateworld" trouvée
+[23:35:30] [CommandManager] Commande "/me" trouvée
+[23:35:30] [CommandManager] Commande "/setprofile" trouvée
+[23:35:30] [CommandManager] Commande "/top" trouvée
+[23:35:30] [CommandManager] Commande "/unlink" trouvée
+[23:35:30] [CommandManager] Actualisation des commandes (/) de l'application
+[23:35:31] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[23:35:31] [Application] Le bot est prêt !
+[23:35:35] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[23:35:35] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:35:36] [ScoreSaber] Requête envoyée avec succès
+[23:35:36] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:35:36] [ScoreSaber] Requête envoyée avec succès
+[23:36:04] [Application] Démarrage du bot
+[23:36:04] [Discord] Initialisation...
+[23:36:05] [Discord] Initialisation terminée
+[23:36:05] [CommandManager] Commande "/card" trouvée
+[23:36:05] [CommandManager] Commande "/forcerefresh" trouvée
+[23:36:05] [CommandManager] Commande "/ld" trouvée
+[23:36:05] [CommandManager] Commande "/link" trouvée
+[23:36:05] [CommandManager] Commande "/locateworld" trouvée
+[23:36:05] [CommandManager] Commande "/me" trouvée
+[23:36:05] [CommandManager] Commande "/setprofile" trouvée
+[23:36:05] [CommandManager] Commande "/top" trouvée
+[23:36:05] [CommandManager] Commande "/unlink" trouvée
+[23:36:05] [CommandManager] Actualisation des commandes (/) de l'application
+[23:36:05] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[23:36:05] [Application] Le bot est prêt !
+[23:36:08] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[23:36:09] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:36:09] [ScoreSaber] Requête envoyée avec succès
+[23:36:09] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:36:09] [ScoreSaber] Requête envoyée avec succès
+[23:36:37] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[23:36:38] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:36:38] [ScoreSaber] Requête envoyée avec succès
+[23:36:38] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:36:38] [ScoreSaber] Requête envoyée avec succès
+[23:38:50] [Application] Démarrage du bot
+[23:38:50] [Discord] Initialisation...
+[23:38:51] [Discord] Initialisation terminée
+[23:38:51] [CommandManager] Commande "/card" trouvée
+[23:38:51] [CommandManager] Commande "/forcerefresh" trouvée
+[23:38:51] [CommandManager] Commande "/ld" trouvée
+[23:38:51] [CommandManager] Commande "/link" trouvée
+[23:38:51] [CommandManager] Commande "/locateworld" trouvée
+[23:38:51] [CommandManager] Commande "/me" trouvée
+[23:38:51] [CommandManager] Commande "/setprofile" trouvée
+[23:38:51] [CommandManager] Commande "/top" trouvée
+[23:38:51] [CommandManager] Commande "/unlink" trouvée
+[23:38:51] [CommandManager] Actualisation des commandes (/) de l'application
+[23:38:51] [CommandManager] Fin de l'actualisation des commandes (/) de l'application
+[23:38:51] [Application] Le bot est prêt !
+[23:38:55] [CommandManager] Hei5enberg#2119 a exécuté la commande "/card"
+[23:38:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/full"
+[23:38:55] [ScoreSaber] Requête envoyée avec succès
+[23:38:55] [ScoreSaber] Envoi de la requête "https://new.scoresaber.com/api/player/76561198125542519/scores/top/1"
+[23:38:56] [ScoreSaber] Requête envoyée avec succès
+[23:39:28] [CommandManager] [ERROR] L'exécution de la commande "/card" a échoué : The user aborted a request.
