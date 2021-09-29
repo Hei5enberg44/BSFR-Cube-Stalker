@@ -4,7 +4,7 @@ const config = require('../config.json')
 
 class Database {
     constructor() {
-        const url = `mongodb://${config.database.host}:${config.database.port}`
+        const url = `mongodb://${config.database.username}:${config.database.password}@${config.database.host}:${config.database.port}`
         this.client = new MongoClient(url)
         this.dbName = `${config.database.name}`
     }
