@@ -15,11 +15,9 @@ module.exports = {
             const db = await client.connect()
             const m = db.collection('members')
 
-            const member = await m.findOne({
+            return m.findOne({
                 memberId: memberId
             })
-
-            return member
         } finally {
             client.close()
         }

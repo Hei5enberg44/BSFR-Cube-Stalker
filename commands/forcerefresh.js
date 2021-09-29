@@ -39,6 +39,5 @@ module.exports = {
                 throw Error(error.message)
             }
         }
-        
 	}
 }

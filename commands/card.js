@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageAttachment } = require('discord.js')
+const { MessageEmbed } = require('discord.js')
 const { CommandError, CommandInteractionError, ScoreSaberError } = require('../utils/error')
 const members = require('../controllers/members')
 const cardgenerator = require('../controllers/cardgenerator')
@@ -27,24 +27,17 @@ module.exports = {
 
             const otherMember = interaction.options.getUser('joueur')
 
-            let member, memberId
-
+            let member
             if(otherMember) {
-                // Identifiant du membre pour lequel aficher les informations
-                memberId = otherMember.id
-
                 // Informations sur le membre
-                member = await members.getMember(memberId)
+                member = await members.getMember(otherMember.id)
 
                 if(!member) {
-                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord <@${memberId}>`)
+                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord <@${otherMember.id}>`)
                 }
             } else {
-                // Identifiant du membre exécutant la commande
-                memberId = interaction.member.id
-
                 // Informations sur le membre
-                member = await members.getMember(memberId)
+                member = await members.getMember(interaction.member.id)
             }
 
             const embed = new MessageEmbed()

@@ -21,7 +21,7 @@ module.exports = {
             // On vérifie que la commande est exécutée dans le bon channel
             const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
             if(interaction.channelId != cubeStalkerChannelId)
-                throw CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
+                throw new CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
             
             const count = interaction.options.getInteger('nombre') ?? 10
 

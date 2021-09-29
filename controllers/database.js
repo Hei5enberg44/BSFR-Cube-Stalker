@@ -1,5 +1,4 @@
 const { MongoClient, Db } = require('mongodb')
-const Logger = require('../utils/logger')
 const config = require('../config.json')
 
 class Database {
@@ -15,9 +14,7 @@ class Database {
      */
     async connect() {
         await this.client.connect()
-        const db = this.client.db(this.dbName)
-
-        return db
+        return this.client.db(this.dbName)
     }
 
     /**
