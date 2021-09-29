@@ -25,13 +25,12 @@ module.exports = {
                 throw new CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
             
             const url = interaction.options.getString('lien_scoresaber')
-            const memberId = interaction.member.id
 
             await interaction.deferReply()
 
             const scoreSaberProfil = await scoresaber.getProfil(url)
 
-            await members.addMember(memberId, scoreSaberProfil.id)
+            await members.addMember(interaction.member.id, scoreSaberProfil.id)
             
             const embed = new MessageEmbed()
                     .setColor('#2ECC71')

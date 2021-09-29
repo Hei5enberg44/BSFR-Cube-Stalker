@@ -1,4 +1,4 @@
-const { MessageEmbed, CommandInteraction } = require('discord.js')
+const { MessageEmbed } = require('discord.js')
 const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError } = require('../utils/error')
 const members = require('../controllers/members')
 const leaderboard = require('../controllers/leaderboard')
@@ -38,25 +38,19 @@ module.exports = {
 
             if(rank && rank < 1) throw new CommandInteractionError('Le rang du joueur doit être supérieur ou égal à 1')
 
-            let member, memberId
+            let member
 
             if(otherMember) {
-                // Identifiant du membre pour lequel aficher les informations
-                memberId = otherMember.id
-
                 // Informations sur le membre
-                member = await members.getMember(memberId)
+                member = await members.getMember(otherMember.id)
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou non
                 if(!member) {
-                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord <@${memberId}>`)
+                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord <@${otherMember.id}>`)
                 }
             } else {
-                // Identifiant du membre exécutant la commande
-                memberId = interaction.member.id
-
                 // Informations sur le membre
-                member = await members.getMember(memberId)
+                member = await members.getMember(interaction.member.id)
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou non
                 if(!member) {

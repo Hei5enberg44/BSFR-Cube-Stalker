@@ -30,7 +30,7 @@ module.exports = {
             // On vérifie que la commande est exécutée dans le bon channel
             const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
             if(interaction.channelId != cubeStalkerChannelId)
-                throw CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
+                throw new CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
             
             const url = interaction.options.getString('lien_scoresaber')
             const member = interaction.options.getUser('joueur')
@@ -38,16 +38,15 @@ module.exports = {
             await interaction.deferReply()
 
             const scoreSaberProfil = await scoresaber.getProfil(url)
-            const memberId = member.id
 
-            await members.addMember(memberId, scoreSaberProfil.id, true)
+            await members.addMember(member.id, scoreSaberProfil.id, true)
             
             const embed = new MessageEmbed()
                     .setColor('#2ECC71')
                     .setTitle(scoreSaberProfil.name)
                     .setURL(scoreSaberProfil.url)
                     .setThumbnail(scoreSaberProfil.avatar)
-                    .setDescription(`Le profil ScoreSaber a bien été lié avec le compte Discord de <@${memberId}>`)
+                    .setDescription(`Le profil ScoreSaber a bien été lié avec le compte Discord de <@${member.id}>`)
                     .setFooter(`${config.appName} ${config.appVersion}`, config.appLogo)
 
             await interaction.editReply({ embeds: [embed] })

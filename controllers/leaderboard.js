@@ -133,9 +133,7 @@ module.exports = {
      getGlobalLeaderboardByPlayerId: async function(scoreSaberId) {
         const rank = await scoresaber.getPlayerRankById(scoreSaberId)
 
-        const playersList = await module.exports.getGlobalLeaderboardByPlayerRank(rank)
-
-        return playersList
+        return module.exports.getGlobalLeaderboardByPlayerRank(rank)
     },
 
     /**
@@ -154,8 +152,8 @@ module.exports = {
             const leaderboard = await l.find({}, { pp: 1 }).toArray()
 
             // Récupération des rangs Discord du membre
-            let rankPP = leaderboard.sort((a, b) => b.pp - a.pp).findIndex(leaderboard => leaderboard.memberId == memberId)
-            let rankAcc = leaderboard.sort((a, b) => b.averageRankedAccuracy - a.averageRankedAccuracy).findIndex(leaderboard => leaderboard.memberId == memberId)
+            let rankPP = leaderboard.sort((a, b) => b.pp - a.pp).findIndex(ld => ld.memberId == memberId)
+            let rankAcc = leaderboard.sort((a, b) => b.averageRankedAccuracy - a.averageRankedAccuracy).findIndex(ld => ld.memberId == memberId)
 
             if(rankPP === -1 || rankAcc === -1) return null
 
