@@ -51,7 +51,7 @@ module.exports = {
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou non
                 if(!member) {
-                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\n:information_source: Utilisez la commande `/profile` afin de lier celui-ci')
+                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\n:information_source: Utilisez la commande `/link` afin de lier celui-ci')
                 }
             }
 

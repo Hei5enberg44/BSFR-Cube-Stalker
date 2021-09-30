@@ -39,7 +39,8 @@ module.exports = {
             let playersList = ''
             for(let i = 0; i < leaderboard.length; i++) {
                 const ml = leaderboard[i]
-                const rank = `#${i + 1}`.replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')
+                const pos = page * itemsPerPage + i + 1
+                const rank = `#${pos}`.replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')
                 const pp = new Intl.NumberFormat('en-US').format(ml.pp) + 'pp'
                 const acc = (ml.averageRankedAccuracy).toFixed(2) + '%'
                 const stat = type == 'pp' ? pp : acc
