@@ -68,6 +68,7 @@ class Commands {
                 Logger.log(`[CommandManager] ${interaction.user.username}#${interaction.user.discriminator} a exécuté la commande "/${interaction.commandName}"`)
                 await command.execute(interaction)
             } catch(error) {
+                console.log(error)
                 let errMessage
                 if(error instanceof CommandError) {
                     errMessage = error.message
