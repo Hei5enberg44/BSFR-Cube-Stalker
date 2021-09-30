@@ -38,6 +38,11 @@ module.exports = {
             } else {
                 // Informations sur le membre
                 member = await members.getMember(interaction.member.id)
+
+                // On vérifie ici si le membre a lié son compte ScoreSaber ou non
+                if(!member) {
+                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\n:information_source: Utilisez la commande `/link` afin de lier celui-ci')
+                }
             }
 
             const embed = new MessageEmbed()
