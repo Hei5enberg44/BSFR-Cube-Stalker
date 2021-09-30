@@ -46,7 +46,7 @@ module.exports = {
         try {
             const player = {}
 
-            const playerId = url.replace(/^https?:\/\/(www\.)?scoresaber\.com\/u\/([0-9]+).*$/, '$2')
+            const playerId = url.replace(/^https?:\/\/(new\.|www\.)?scoresaber\.com\/u\/([0-9]+).*$/, '$2')
 
             const dataProfil = await module.exports.send(playerUrl + playerId + '/full')
 
