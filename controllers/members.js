@@ -36,7 +36,7 @@ module.exports = {
             const db = await client.connect()
             const m = db.collection('members')
 
-            if(isAdmin) {
+            if(!isAdmin) {
                 // On vérifie si le membre Discord à déjà un profil ScoreSaber lié
                 const profilIsAlreadyLinked = await m.countDocuments({ memberId: memberId })
                 if(profilIsAlreadyLinked > 0) throw new MemberError('Ce compte Discord est déjà lié à un profil ScoreSaber\nVeuillez utiliser la commande `/unlink` avant de lier un autre profil ScoreSaber\n(Cette commande peut être utilisée dans la limite de 1 par mois)')
