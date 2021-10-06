@@ -1,5 +1,7 @@
 const { createCanvas, loadImage, registerFont } = require('canvas')
 const ffmpeg = require('fluent-ffmpeg')
+const {execFile} = require('child_process')
+const gifsicle = require('gifsicle')
 const scoresaber = require('./scoresaber')
 const tmp = require('tmp')
 const fs = require('fs')
@@ -83,12 +85,13 @@ module.exports = {
 
         // Fusion du texte et du background puis enregistrement du fichier
         const cardPath = `./assets/images/card/cache/${scoreSaberId}.gif`
+        const optimizedCardPath = `./assets/images/card/cache/${scoreSaberId}_o.gif`
         const base64Image = canvas.toDataURL().split(';base64,').pop()
 
         const tmpOverlay = tmp.fileSync()
         fs.writeFileSync(tmpOverlay.name, base64Image, {encoding: 'base64'})
 
-        return new Promise(resolve => {
+        await new Promise(resolve => {
             ffmpeg()
                 .input('./assets/images/card/background.gif')
                 .input(tmpOverlay.name)
@@ -98,18 +101,28 @@ module.exports = {
                     '[gif][text]overlay=0:0:format=rgb[overlayed]',
                     '[overlayed]split[a][b]',
                     '[a]palettegen=stats_mode=single[palette]',
-                    '[b][palette]paletteuse=bayer:bayer_scale=5[output]',
+                    '[b][palette]paletteuse=bayer:bayer_scale=5[output]'
                 ])
                 .outputOptions([
                     '-map [output]',
                     '-loop 0'
                 ])
-                .outputFPS(30)
+                .outputFPS(20)
                 .output(cardPath)
                 .on('end', function() {
-                    return resolve(cardPath)
+                    resolve()
                 })
                 .run()
         })
+
+        await new Promise(resolve => {
+            execFile(gifsicle, ['--lossy=50', cardPath, '-o', optimizedCardPath], err => {
+                if(!err) resolve()
+            })
+        })
+
+        fs.unlinkSync(cardPath)
+
+        return optimizedCardPath
     }
 }
