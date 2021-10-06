@@ -11,7 +11,7 @@ module.exports = {
      * Récéupration du classement serveur global
      * @param {string} type type de classement (pp ou acc)
      * @param {number} page page à afficher (10 éléments par page)
-     * @returns {Promise<{pp: string, acc: string, total: number}>} classement serveur global
+     * @returns {Promise<Object>} classement serveur global
      */
      getLeaderboard: async function(type, page) {
         const client = new Database()
@@ -138,11 +138,11 @@ module.exports = {
     },
 
     /**
-     * Récéupration du classement serveur d'un membre
+     * Récupération du classement serveur d'un membre
      * @param {number} memberId identifiant Discord du membre
-     * @returns {Promise<{pp: string, acc: string, total: number}>} classement serveur du membre
+     * @returns {Promise<Object>} classement serveur du membre
      */
-    getMemberLeaderboard: async function(memberId) {
+     getMemberLeaderboard: async function(memberId) {
         const client = new Database()
 
         try {
@@ -153,19 +153,49 @@ module.exports = {
             const leaderboard = await l.find({}, { pp: 1 }).toArray()
 
             // Récupération des rangs Discord du membre
-            let rankPP = leaderboard.sort((a, b) => b.pp - a.pp).findIndex(ld => ld.memberId == memberId)
-            let rankAcc = leaderboard.sort((a, b) => b.averageRankedAccuracy - a.averageRankedAccuracy).findIndex(ld => ld.memberId == memberId)
+            let serverRankPP = leaderboard.sort((a, b) => b.pp - a.pp).findIndex(ld => ld.memberId == memberId)
+            let serverRankAcc = leaderboard.sort((a, b) => b.averageRankedAccuracy - a.averageRankedAccuracy).findIndex(ld => ld.memberId == memberId)
 
-            if(rankPP === -1 || rankAcc === -1) return null
-
-            // Affichage d'une médaille pour les 3 premières positions du classement
-            rankPP = `#${rankPP + 1}`.replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')
-            rankAcc = `#${rankAcc + 1}`.replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')
+            if(serverRankPP === -1 || serverRankAcc === -1) return null
 
             return {
-                pp: rankPP,
-                acc: rankAcc,
-                total: leaderboard.length
+                serverRankPP: serverRankPP + 1,
+                serverRankAcc: serverRankAcc + 1,
+                serverLdTotal: leaderboard.length
+            }
+        } finally {
+            client.close()
+        }
+    },
+
+    /**
+     * Récupération des données de classement d'un membre
+     * @param {number} memberId identifiant Discord du membre
+     * @returns {Promise<Object>} classement serveur du membre
+     */
+    getMember: async function(memberId) {
+        const client = new Database()
+
+        try {
+            const db = await client.connect()
+            const l = db.collection('leaderboard')
+
+            // Récupération du classement
+            const leaderboard = await l.find({}, { pp: 1 }).toArray()
+
+            // Récupération des données de classement du joueur
+            const ldDatas = leaderboard.find(ld => ld.memberId == memberId)
+
+            if(!ldDatas) return null
+
+            return {
+                pp: ldDatas.pp,
+                rank: ldDatas.rank,
+                countryRank: ldDatas.countryRank,
+                averageRankedAccuracy: ldDatas.averageRankedAccuracy,
+                serverRankPP: ldDatas.serverRankPP,
+                serverRankAcc: ldDatas.serverRankAcc,
+                serverLdTotal: leaderboard.length
             }
         } finally {
             client.close()
@@ -175,8 +205,8 @@ module.exports = {
     /**
      * Ajout d'un membre au classement serveur
      * @param {number} memberId identifiant Discord du membre
-     * @param {number} scoreSaberDatas identifiant du profil ScoreSaber du membre
-     * @returns {Promise<{pp: string, acc: string, total: number}>} classement serveur du membre
+     * @param {Object} scoreSaberDatas données du profil ScoreSaber du membre
+     * @returns {Promise<Object>} classement serveur du membre
      */
     addMemberLeaderboard: async function(memberId, scoreSaberDatas) {
         const client = new Database()
@@ -194,11 +224,27 @@ module.exports = {
                     scoreSaberName: scoreSaberDatas.name,
                     scoreSaberCountry: scoreSaberDatas.country,
                     pp: scoreSaberDatas.pp,
+                    rank: scoreSaberDatas.rank,
+                    countryRank: scoreSaberDatas.countryRank,
                     averageRankedAccuracy: scoreSaberDatas.averageRankedAccuracy
                 })
+
+                const memberLd = await module.exports.getMemberLeaderboard(memberId)
+
+                await l.updateOne(
+                    {
+                        memberId: memberId
+                    },
+                    {
+                        $set: {
+                            serverRankPP: memberLd.serverRankPP,
+                            serverRankAcc: memberLd.serverRankAcc
+                        }
+                    }
+                )
             }
 
-            return module.exports.getMemberLeaderboard(memberId)
+            return module.exports.getMember(memberId)
         } finally {
             client.close()
         }
@@ -207,8 +253,8 @@ module.exports = {
     /**
      * Mise à jour du classement serveur d'un membre
      * @param {number} memberId identifiant Discord du membre
-     * @param {number} scoreSaberDatas données du profil ScoreSaber du membre
-     * @returns {Promise<{pp: string, acc: string, total: number}>} classement serveur du membre
+     * @param {Object} scoreSaberDatas données du profil ScoreSaber du membre
+     * @returns {Promise<Object>} classement serveur du membre
      */
     updateMemberLeaderboard: async function(memberId, scoreSaberDatas) {
         const client = new Database()
@@ -220,6 +266,8 @@ module.exports = {
             const leaderboardCount = await l.countDocuments({ memberId: memberId })
 
             if(leaderboardCount) {
+                const memberLd = await module.exports.getMemberLeaderboard(memberId)
+
                 await l.updateOne(
                     {
                         memberId: memberId
@@ -230,13 +278,17 @@ module.exports = {
                             scoreSaberName: scoreSaberDatas.name,
                             scoreSaberCountry: scoreSaberDatas.country,
                             pp: scoreSaberDatas.pp,
-                            averageRankedAccuracy: scoreSaberDatas.averageRankedAccuracy
+                            rank: scoreSaberDatas.rank,
+                            countryRank: scoreSaberDatas.countryRank,
+                            averageRankedAccuracy: scoreSaberDatas.averageRankedAccuracy,
+                            serverRankPP: memberLd.serverRankPP,
+                            serverRankAcc: memberLd.serverRankAcc
                         }
                     }
                 )
             }
 
-            return module.exports.getMemberLeaderboard(memberId)
+            return module.exports.getMember(memberId)
         } finally {
             client.close()
         }
