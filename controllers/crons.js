@@ -1,5 +1,6 @@
 const CronJob = require('cron').CronJob
 const { Client } = require('discord.js')
+const Logger = require('../utils/logger')
 const leaderboard = require('./leaderboard')
 const config = require('../config.json')
 
@@ -18,5 +19,7 @@ module.exports = {
 
             await leaderboard.refreshLeaderboard(members)
         }, null, true, 'Europe/Paris')
+
+        Logger.log('[CronManager] Tâche "refreshLeaderboard" chargée')
     }
 }
