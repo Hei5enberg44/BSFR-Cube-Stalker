@@ -35,6 +35,7 @@ try {
 
             // Tâches planifiées
             await crons.refreshLeaderboard(client)
+            await crons.top1fr(client)
         
             Logger.log('[Application] Le bot est prêt !')
         })
