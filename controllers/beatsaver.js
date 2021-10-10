@@ -12,11 +12,11 @@ module.exports = {
         let error = true
 
         do {
-            Logger.log(`[BeatSaver] Envoi de la requête "${url}"`)
+            // Logger.log(`[BeatSaver] Envoi de la requête "${url}"`)
             const res = await fetch(url)
             
             if(res.ok) {
-                Logger.log(`[BeatSaver] Requête envoyée avec succès`)
+                // Logger.log(`[BeatSaver] Requête envoyée avec succès`)
                 data = await res.json()
 
                 error = false
