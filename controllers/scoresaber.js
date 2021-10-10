@@ -46,7 +46,7 @@ module.exports = {
         return data
     },
 
-    getProfil: async function(url) {
+    getProfile: async function(url) {
         try {
             const player = {}
 
@@ -123,9 +123,9 @@ module.exports = {
                     const dataScores = await module.exports.send(playerUrl + playerId + '/scores/recent/' + page)
 
                     for(const userScore of dataScores.scores) {
-                        try {
-                            await beatsaver.getMapByHash(userScore.songHash)
-
+                        const mapInfos = await beatsaver.getMapByHash(userScore.songHash)
+                        
+                        if(mapInfos.id) {
                             userScore.playerId = playerId
 
                             const score = await m.findOne({
@@ -144,8 +144,6 @@ module.exports = {
                                     break
                                 }
                             }
-                        } catch(error) {
-                            error = false
                         }
                     }
 

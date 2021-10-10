@@ -37,7 +37,7 @@ module.exports = {
 
             await interaction.deferReply()
 
-            const scoreSaberProfil = await scoresaber.getProfil(url)
+            const scoreSaberProfil = await scoresaber.getProfile(url)
 
             await members.addMember(member.id, scoreSaberProfil.id, true)
             
