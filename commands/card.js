@@ -57,7 +57,6 @@ module.exports = {
 
             fs.unlinkSync(card)
         } catch(error) {
-            console.log(error)
             if(error instanceof CommandInteractionError || error instanceof ScoreSaberError) {
                 throw new CommandError(error.message, interaction.commandName)
             } else {
