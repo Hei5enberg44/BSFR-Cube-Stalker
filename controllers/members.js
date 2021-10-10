@@ -24,6 +24,23 @@ module.exports = {
     },
 
     /**
+     * Récupère la liste des membres depuis la table « members »
+     * @returns {Promise<[{memberId: number, scoreSaberId: number}]>} membres Discord
+     */
+     getAllMembers: async function(memberId) {
+        const client = new Database()
+
+        try {
+            const db = await client.connect()
+            const m = db.collection('members')
+
+            return await m.find().toArray()
+        } finally {
+            client.close()
+        }
+    },
+
+    /**
      * Ajoute un membre dans la table « members »
      * @param {number} memberId identifiant Discord du membre
      * @param {string} scoreSaberId identifiant du profil ScoreSaber du membre
