@@ -275,11 +275,11 @@ module.exports = {
      */
     getNonce: async function() {
         try {
-            const noneApiUrl = 'http://145.239.177.159:19000/api/nonce'
+            const nonceApiUrl = config.nonceapiurl
 
             const options = { method: 'GET' }
 
-            const res = await fetch(noneApiUrl, options)
+            const res = await fetch(nonceApiUrl, options)
 
             const data = await res.json()
 
