@@ -37,7 +37,7 @@ module.exports = {
                 }
                 if(res.status === 429) {
                     Logger.log('[ScoreSaber] [ERROR] Erreur 429, nouvel essai dans 30 secondes')
-                    await wait(30)
+                    await wait(60)
                 }
 
                 error = true
@@ -124,23 +124,31 @@ module.exports = {
                     const dataScores = await module.exports.send(playerUrl + playerId + '/scores/recent/' + page)
 
                     for(const userScore of dataScores.scores) {
-                        userScore.playerId = playerId
+                        try {
+                            await beatsaver.getMapByHash(songHash)
 
-                        const score = await m.findOne({
-                            playerId: userScore.playerId,
-                            songHash: userScore.songHash,
-                            difficultyRaw: userScore.difficultyRaw
-                        })
+                            userScore.playerId = playerId
 
-                        if(!score) {
-                            newMaps.push(userScore)
-                        } else {
-                            if(score.score != userScore.score || score.pp != userScore.pp) {
+                            const score = await m.findOne({
+                                playerId: userScore.playerId,
+                                songHash: userScore.songHash,
+                                difficultyRaw: userScore.difficultyRaw
+                            })
+
+                            if(!score) {
                                 newMaps.push(userScore)
-                            } else {
                                 error = true
                                 break
+                            } else {
+                                if(score.score != userScore.score || score.pp != userScore.pp) {
+                                    newMaps.push(userScore)
+                                } else {
+                                    error = true
+                                    break
+                                }
                             }
+                        } catch(error) {
+                            error = false
                         }
                     }
 
