@@ -36,7 +36,7 @@ module.exports = {
                     await wait(3)
                 }
                 if(res.status === 429) {
-                    Logger.log('[ScoreSaber] [ERROR] Erreur 429, nouvel essai dans 30 secondes')
+                    Logger.log('[ScoreSaber] [ERROR] Erreur 429, nouvel essai dans 60 secondes')
                     await wait(60)
                 }
 
@@ -137,8 +137,6 @@ module.exports = {
 
                             if(!score) {
                                 newMaps.push(userScore)
-                                error = true
-                                break
                             } else {
                                 if(score.score != userScore.score || score.pp != userScore.pp) {
                                     newMaps.push(userScore)
