@@ -2,10 +2,9 @@ const fetch = require('node-fetch')
 const FormData = require('form-data')
 const Logger = require('../utils/logger')
 const Database = require('./database')
-const members = require('./members')
 const beatsaver = require('./beatsaver')
 const config = require('../config.json')
-const { ScoreSaberError, BeatSaverError } = require('../utils/error')
+const { ScoreSaberError } = require('../utils/error')
 
 const scoresaberUrl = 'https://scoresaber.com'
 const newScoresaberUrl = 'https://new.scoresaber.com'
@@ -385,10 +384,15 @@ module.exports = {
      * @returns {Promise<Object[]>} liste des maps
      */
     getTop1FR: async function() {
+        const client = new Database()
+
         try {
             const top1FR = []
-            
-            const membersList = await members.getAllMembers()
+
+            const db = await client.connect()
+            const m = db.collection('members')
+
+            const membersList = await m.find().toArray()
 
             for(const m of membersList) {
                 const lastsMaps = await module.exports.getLastsPlayerScores(m.scoreSaberId)
@@ -421,6 +425,8 @@ module.exports = {
             return top1FR
         } catch(error) {
             throw Error(error.message)
+        } finally {
+            client.close()
         }
     }
 }
