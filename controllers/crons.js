@@ -32,7 +32,7 @@ module.exports = {
      * @param {Client} client client Discord
      */
     top1fr: async function(client) {
-        new CronJob('*/5 * * * *', async function() {
+        new CronJob('*/10 * * * *', async function() {
             try {
                 const datas = await scoresaber.getTop1FR()
 
