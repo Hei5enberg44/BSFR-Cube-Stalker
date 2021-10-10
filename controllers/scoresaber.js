@@ -125,7 +125,7 @@ module.exports = {
 
                     for(const userScore of dataScores.scores) {
                         try {
-                            await beatsaver.getMapByHash(songHash)
+                            await beatsaver.getMapByHash(userScore.songHash)
 
                             userScore.playerId = playerId
 
