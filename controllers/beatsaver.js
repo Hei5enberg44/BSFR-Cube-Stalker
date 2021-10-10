@@ -7,36 +7,19 @@ const beatsaverApiUrl = beatsaverUrl + '/api'
 const beatsaverMapByHash = beatsaverApiUrl + '/maps/hash/'
 
 module.exports = {
-    send: async function(url) {
-        let data
-        let error = true
-
-        do {
-            // Logger.log(`[BeatSaver] Envoi de la requête "${url}"`)
-            const res = await fetch(url)
-            
-            if(res.ok) {
-                // Logger.log(`[BeatSaver] Requête envoyée avec succès`)
-                data = await res.json()
-
-                error = false
-            } else {
-                if(res.status === 404) throw Error('La ressource demandée est introuvable')
-
-                error = true
-            }
-        } while(error)
-
-        return data
-    },
-
     getMapByHash: async function(hash) {
+        let data = {}
+
         try {
-            const dataMap = await module.exports.send(beatsaverMapByHash + hash)
+            const res = await fetch(beatsaverMapByHash + hash)
+
+            if(res.ok) {
+                data = await res.json()
+            }
 
             return dataMap
         } catch(error) {
-            throw new BeatSaverError(`Map "${hash}" introuvable`)
+            return data
         }
     },
 
