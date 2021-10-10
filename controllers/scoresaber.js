@@ -393,14 +393,21 @@ module.exports = {
 
                     const top1 = countryLeaderboard.scores[0]
                     if(top1.playerId === m.scoreSaberId) {
-                        top1FR.push({
-                            memberId: m.memberId,
-                            leaderboardUrl: scoresaberUrl + '/leaderboard/' + countryLeaderboard.uid,
-                            playerInfos: await module.exports.getProfil(m.scoreSaberId),
-                            difficultyRaw: map.difficultyRaw,
-                            mapInfos: await beatsaver.getMapByHash(map.songHash),
-                            scoreInfos: top1
-                        })
+                        try {
+                            const scoreSaberProfile = await module.exports.getProfil(m.scoreSaberId)
+                            const mapInfos = await beatsaver.getMapByHash(map.songHash)
+
+                            top1FR.push({
+                                memberId: m.memberId,
+                                leaderboardUrl: scoresaberUrl + '/leaderboard/' + countryLeaderboard.uid,
+                                playerInfos: scoreSaberProfile,
+                                difficultyRaw: map.difficultyRaw,
+                                mapInfos: mapInfos,
+                                scoreInfos: top1
+                            })
+                        } catch(error) {
+                            Logger.log(error.message)
+                        }
                     }
                 }
             }
