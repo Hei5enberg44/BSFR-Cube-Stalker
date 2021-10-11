@@ -108,11 +108,11 @@ module.exports = {
                 }
 
                 // Acc
-                const accDiff = (Math.abs(scoreSaberDatas.averageRankedAccuracy - oldLd.averageRankedAccuracy)).toFixed(2)
-                if(scoreSaberDatas.averageRankedAccuracy > oldLd.averageRankedAccuracy) {
-                    accProgress = `**▲${accDiff}%**`
-                } else if(scoreSaberDatas.averageRankedAccuracy < oldLd.averageRankedAccuracy) {
-                    accProgress = `**▼${accDiff}%**`
+                const accDiff = (scoreSaberDatas.averageRankedAccuracy - oldLd.averageRankedAccuracy).toFixed(2)
+                if(accDiff > 0) {
+                    accProgress = `**▲${Math.abs(accDiff)}%**`
+                } else if(accDiff < 0) {
+                    accProgress = `**▼${Math.abs(accDiff)}%**`
                 }
 
                 // Rank Server PP
