@@ -13,7 +13,7 @@ module.exports = {
      */
     refreshLeaderboard: async function(client) {
         new CronJob('0 0 * * *', async function() {
-            Logger.log(`[Leaderboard] Actualisation du classement des joueurs du serveur`)
+            Logger.log('Leaderboard', 'INFO', 'Actualisation du classement des joueurs du serveur')
 
             const guild = client.guilds.cache.find(g => g.id === config.guild.id)
 
@@ -22,10 +22,10 @@ module.exports = {
 
             await leaderboard.refreshLeaderboard(members)
 
-            Logger.log(`[Leaderboard] Actualisation du classement des joueurs du  terminée`)
+            Logger.log('Leaderboard', 'INFO', 'Actualisation du classement des joueurs du  terminée')
         }, null, true, 'Europe/Paris')
 
-        Logger.log('[CronManager] Tâche "refreshLeaderboard" chargée')
+        Logger.log('CronManager', 'INFO', 'Tâche "refreshLeaderboard" chargée')
     },
 
     /**
@@ -35,7 +35,7 @@ module.exports = {
      */
     top1fr: async function(client) {
         new CronJob('*/1 * * * *', async function() {
-            Logger.log('[Top1FR] Récupération des tops 1 FR')
+            Logger.log('Top1FR', 'INFO', 'Récupération des tops 1 FR')
 
             const datas = await scoresaber.getTop1FR()
 
@@ -67,9 +67,9 @@ module.exports = {
                 top1FRChannel.send({ embeds: [embed] })
             }
 
-            Logger.log('[Top1FR] Récupération des tops 1 FR terminée')
+            Logger.log('Top1FR', 'INFO', 'Récupération des tops 1 FR terminée')
         }, null, true, 'Europe/Paris')
 
-        Logger.log('[CronManager] Tâche "top1fr" chargée')
+        Logger.log('CronManager', 'INFO', 'Tâche "top1fr" chargée')
     }
 }

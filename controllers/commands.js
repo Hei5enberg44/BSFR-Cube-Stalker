@@ -22,13 +22,13 @@ class Commands {
         for(const file of commandFiles) {
             const command = require(`../commands/${file}`)
             commands.push(command.data)
-            Logger.log(`[CommandManager] Commande "/${command.data.name}" trouvée`)
+            Logger.log('CommandManager', 'INFO', `Commande "/${command.data.name}" trouvée`)
             commandsRoles.push({ name: command.data.name, roles: command.roles ?? null })
             this.client.commands.set(command.data.name, command)
         }
 
         // On applique les rôles aux commandes
-        Logger.log(`[CommandManager] Actualisation des commandes (/) de l'application`)
+        Logger.log('CommandManager', 'INFO', `Actualisation des commandes (/) de l'application`)
         const guild = await this.client.guilds.cache.get(config.guild.id)
         await guild.commands.set(commands).then(cmds => {
             const fullPermissions = []
@@ -50,7 +50,7 @@ class Commands {
 
             guild.commands.permissions.set({ fullPermissions: fullPermissions })
         })
-        Logger.log(`[CommandManager] Fin de l'actualisation des commandes (/) de l'application`)
+        Logger.log('CommandManager', 'INFO', 'Fin de l\'actualisation des commandes (/) de l\'application')
     }
     
     /**
@@ -65,7 +65,7 @@ class Commands {
             if(!command) return
         
             try {
-                Logger.log(`[CommandManager] ${interaction.user.username}#${interaction.user.discriminator} a exécuté la commande "/${interaction.commandName}"`)
+                Logger.log('CommandManager', 'INFO', `${interaction.user.username}#${interaction.user.discriminator} a exécuté la commande "/${interaction.commandName}"`)
                 await command.execute(interaction)
             } catch(error) {
                 let errMessage
@@ -73,7 +73,7 @@ class Commands {
                     errMessage = error.message
                 } else {
                     errMessage = 'Une erreur est survenue lors de l\'exécution de la commande'
-                    Logger.log(`[CommandManager] [ERROR] L'exécution de la commande "/${interaction.commandName}" a échoué : ${error.message}`)
+                    Logger.log('CommandManager', 'ERROR', `L'exécution de la commande "/${interaction.commandName}" a échoué : ${error.message}`)
                 }
 
                 const embed = new MessageEmbed()

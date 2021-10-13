@@ -1,4 +1,5 @@
 const fs = require('fs')
+const chalk = require('chalk')
 
 module.exports = {
     /**
@@ -22,12 +23,32 @@ module.exports = {
     /**
      * Redirige les logs vers un fichier horodaté
      * Les logs sont ensuite retournés dans la console
+     * @param {string} scope provenance du log
+     * @param {string} level niveau de log (INFO, WARNING, ERROR)
      * @param {string} content log à formatter
      * @returns {string} logs formattées
      */
-    log: function(content) {
+    log: function(scope, level, content) {
         const date = module.exports.date()
-        fs.appendFileSync(`${__dirname}/../logs/${date.date}.log`, `[${date.time}] ${content}\n`)
-        console.log(content)
+
+        let logLevel
+        switch(level) {
+            case 'INFO':
+                logLevel = chalk.blueBright(level)
+                break
+            case 'WARNING':
+                logLevel = chalk.yellowBright(level)
+                break
+            case 'ERROR':
+                logLevel = chalk.redBright(level)
+                break
+            default:
+                logLevel = chalk.blueBright(level)
+        }
+
+        const logContent = `[${scope}] [${logLevel}] ${content}`
+
+        fs.appendFileSync(`${__dirname}/../logs/${date.date}.log`, `[${date.time}] ${logContent}\n`)
+        console.log(logContent)
     }
 }

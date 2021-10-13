@@ -3,7 +3,7 @@ const Logger = require('./utils/logger')
 try {
     const fs = require('fs')
 
-    Logger.log('[Application] Démarrage du bot')
+    Logger.log('Application', 'INFO', 'Démarrage du bot')
 
     // Chargement de la configuration du bot
     if(!fs.existsSync('./config.json')) throw Error('Le fichier de configuration "config.json" est manquant')
@@ -13,7 +13,7 @@ try {
     const Commands = require('./controllers/commands')
     const crons = require('./controllers/crons')
 
-    Logger.log('[Discord] Initialisation...')
+    Logger.log('Discord', 'INFO', 'Initialisation...')
 
     try {
         const client = new Client({
@@ -26,7 +26,7 @@ try {
         })
 
         client.once('ready', async () => {
-            Logger.log('[Discord] Initialisation terminée')
+            Logger.log('Discord', 'INFO', 'Initialisation terminée')
         
             // Chargement des commandes
             const commands = new Commands(client)
@@ -37,14 +37,15 @@ try {
             await crons.refreshLeaderboard(client)
             await crons.top1fr(client)
         
-            Logger.log('[Application] Le bot est prêt !')
+            Logger.log('Application', 'INFO', 'Le bot est prêt !')
         })
         
         client.login(config.token)
     } catch(error) {
-        Logger.log(`[Discord] [ERROR] Une erreur est survenue : ${error.message}`)
+        Logger.log('Discord', 'ERROR', `Une erreur est survenue : ${error.message}`)
     }
 } catch(error) {
-    Logger.log(`[Application] [ERROR] Démarrage du bot impossible : ${error.message}`)
+    console.log(error)
+    Logger.log('Application', 'ERROR', `Démarrage du bot impossible : ${error.message}`)
 }
 

@@ -326,7 +326,7 @@ module.exports = {
             const ld = await l.find().toArray()
 
             ld.forEach(async (lm) => {
-                Logger.log(`[Leaderboard] Actualisation du joueur "${lm.scoreSaberName}"...`)
+                Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${lm.scoreSaberName}"...`)
 
                 const playerDatas = await scoresaber.getPlayerDatas(lm.scoreSaberId)
                 const pp = playerDatas.pp
@@ -335,9 +335,9 @@ module.exports = {
                 if(member) {
                     await roles.updateMemberPpRoles(member, pp)
 
-                    Logger.log(`[Leaderboard] Actualisation du joueur "${lm.scoreSaberName}" terminée`)
+                    Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${lm.scoreSaberName}" terminée`)
                 } else {
-                    Logger.log(`[Leaderboard] Le joueur "${lm.scoreSaberName}" est introuvable`)
+                    Logger.log('Leaderboard', 'WARNING', `Le joueur "${lm.scoreSaberName}" est introuvable`)
                 }
             })
         } finally {

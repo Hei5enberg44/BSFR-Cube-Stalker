@@ -16,11 +16,11 @@ module.exports = {
         let error = true
 
         do {
-            // Logger.log(`[ScoreSaber] Envoi de la requête "${url}"`)
+            // Logger.log('ScoreSaber', 'INFO', `Envoi de la requête "${url}"`)
             const res = await fetch(url)
             
             if(res.ok) {
-                // Logger.log(`[ScoreSaber] Requête envoyée avec succès`)
+                // Logger.log('ScoreSaber', 'INFO', 'Requête envoyée avec succès')
                 data = await res.json()
 
                 error = false
@@ -28,11 +28,11 @@ module.exports = {
                 if(res.status === 404) throw Error('La ressource demandée est introuvable')
                 if(res.status === 422) throw Error('La ressource demandée est introuvable')
                 if(res.status === 500) {
-                    Logger.log('[ScoreSaber] [ERROR] Erreur 500, nouvel essai dans 3 secondes')
+                    Logger.log('ScoreSaber', 'ERROR', 'Erreur 500, nouvel essai dans 3 secondes')
                     await wait(3)
                 }
                 if(res.status === 429) {
-                    Logger.log('[ScoreSaber] [ERROR] Erreur 429, nouvel essai dans 60 secondes')
+                    Logger.log('ScoreSaber', 'ERROR', 'Erreur 429, nouvel essai dans 60 secondes')
                     await wait(60)
                 }
 
