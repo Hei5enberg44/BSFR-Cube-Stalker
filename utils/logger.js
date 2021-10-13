@@ -48,7 +48,7 @@ module.exports = {
 
         const logContent = `[${scope}] [${logLevel}] ${content}`
 
-        fs.appendFileSync(`${__dirname}/../logs/${date.date}.log`, `[${date.time}] ${logContent}\n`)
+        fs.appendFileSync(`${__dirname}/../logs/${date.date}.log`, `[${date.time}] [${scope}] [${level}] ${content}\n`)
         console.log(logContent)
     }
 }
