@@ -47,7 +47,7 @@ module.exports = {
                     .setTitle(top1.songName)
                     .setURL(`https://scoresaber.com/leaderboard/${top1.leaderboardId}`)
                     .setThumbnail(top1.songCoverUrl)
-                    .setDescription(`**${top1.levelDifficulty} (${top1.levelGameMode})** par **${top1.levelAuthorName}**\n**Date :** ${top1.timeSet}`)
+                    .setDescription(`**${top1.levelDifficulty.replace('ExpertPlus', 'Expert+')} (${top1.levelGameMode})** par **${top1.levelAuthorName}**\n**Date :** ${top1.timeSet}`)
                     .addFields(
                         { name: 'Joueur', value: `<@${top1.memberId}>`, inline: true },
                         { name: 'ScoreSaber', value: `[${top1.scoreSaberName}](https://scoresaber.com/u/${top1.scoreSaberId})`, inline: true },
