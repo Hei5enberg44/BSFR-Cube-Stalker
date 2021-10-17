@@ -5,8 +5,8 @@ const Database = require('./database')
 module.exports = {
     /**
      * Récupère un membre depuis la table « members »
-     * @param {number} memberId identifiant Discord du membre
-     * @returns {Promise<{memberId: number, scoreSaberId: number}>} membre Discord
+     * @param {string} memberId identifiant Discord du membre
+     * @returns {Promise<{memberId: number, scoreSaberId: number, top1: boolean}>} membre Discord
      */
     getMember: async function(memberId) {
         const client = new Database()
@@ -42,7 +42,7 @@ module.exports = {
 
     /**
      * Ajoute un membre dans la table « members »
-     * @param {number} memberId identifiant Discord du membre
+     * @param {string} memberId identifiant Discord du membre
      * @param {string} scoreSaberId identifiant du profil ScoreSaber du membre
      * @param {boolean} isAdmin indique si il s'agit d'un admin/modérateur qui a exécuté la commande
      */
@@ -72,7 +72,8 @@ module.exports = {
                 {
                     $set: {
                         memberId: memberId,
-                        scoreSaberId: scoreSaberId
+                        scoreSaberId: scoreSaberId,
+                        top1: true
                     }
                 },
                 { upsert: true }
@@ -84,7 +85,7 @@ module.exports = {
 
     /**
      * Supprime un membre des tables « members » et « leaderboard »
-     * @param {number} memberId identifiant Discord du membre
+     * @param {string} memberId identifiant Discord du membre
      */
     delMember: async function(memberId) {
         const client = new Database()

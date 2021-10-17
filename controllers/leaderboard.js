@@ -139,7 +139,7 @@ module.exports = {
 
     /**
      * Récupération du classement serveur d'un membre
-     * @param {number} memberId identifiant Discord du membre
+     * @param {string} memberId identifiant Discord du membre
      * @returns {Promise<Object>} classement serveur du membre
      */
      getMemberLeaderboard: async function(memberId) {
@@ -170,7 +170,7 @@ module.exports = {
 
     /**
      * Récupération des données de classement d'un membre
-     * @param {number} memberId identifiant Discord du membre
+     * @param {string} memberId identifiant Discord du membre
      * @returns {Promise<Object>} classement serveur du membre
      */
     getMember: async function(memberId) {
@@ -204,7 +204,7 @@ module.exports = {
 
     /**
      * Ajout d'un membre au classement serveur
-     * @param {number} memberId identifiant Discord du membre
+     * @param {string} memberId identifiant Discord du membre
      * @param {Object} scoreSaberDatas données du profil ScoreSaber du membre
      * @returns {Promise<Object>} classement serveur du membre
      */
@@ -252,7 +252,7 @@ module.exports = {
 
     /**
      * Mise à jour du classement serveur d'un membre
-     * @param {number} memberId identifiant Discord du membre
+     * @param {string} memberId identifiant Discord du membre
      * @param {Object} scoreSaberDatas données du profil ScoreSaber du membre
      * @returns {Promise<Object>} classement serveur du membre
      */
@@ -296,7 +296,7 @@ module.exports = {
 
     /**
      * Suppression du classement serveur d'un membre
-     * @param {number} memberId identifiant Discord du membre
+     * @param {string} memberId identifiant Discord du membre
      */
     delMemberLeaderboard: async function(memberId) {
         const client = new Database()
