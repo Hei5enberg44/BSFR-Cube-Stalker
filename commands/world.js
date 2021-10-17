@@ -5,7 +5,7 @@ const config = require('../config.json')
 
 module.exports = {
 	data: {
-		name: 'top',
+		name: 'world',
 		description: 'Affiche le classement mondial',
         options: [
             {
