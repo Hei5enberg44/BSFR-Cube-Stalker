@@ -33,6 +33,14 @@ class LeaderboardError extends Error {
     }
 }
 
+class Top1Error extends Error {
+    constructor(message) {
+        super(message)
+        this.name = this.constructor.name
+        Error.captureStackTrace(this, this.constructor)
+    }
+}
+
 class CooldownError extends Error {
     constructor(message) {
         super(message)
@@ -51,5 +59,5 @@ class ScoreSaberError extends Error {
 }
 
 module.exports = {
-    CommandError, CommandInteractionError, MemberError, LeaderboardError, CooldownError, ScoreSaberError
+    CommandError, CommandInteractionError, MemberError, LeaderboardError, Top1Error, CooldownError, ScoreSaberError
 }
