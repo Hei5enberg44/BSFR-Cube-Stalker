@@ -11,7 +11,7 @@ module.exports = {
     isSubscribed: async function(memberId) {
         const member = await members.getMember(memberId)
 
-        return member.top1 === undefined || member.top1 === true ? true : false
+        return member.top1 !== undefined ? member.top1 : true
     },
 
     /**
