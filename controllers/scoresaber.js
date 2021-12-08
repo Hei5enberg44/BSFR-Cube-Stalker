@@ -4,9 +4,8 @@ const Database = require('./database')
 const { ScoreSaberError } = require('../utils/error')
 
 const scoresaberUrl = 'https://scoresaber.com'
-const newScoresaberUrl = 'https://new.scoresaber.com'
-const newScoresaberApiUrl = newScoresaberUrl + '/api/'
-const playerUrl = newScoresaberApiUrl + 'player/'
+const scoresaberApiUrl = scoresaberUrl + '/api/'
+const playerUrl = scoresaberApiUrl + 'player/'
 
 const wait = (s) => new Promise((res) => setTimeout(res, s * 1000))
 
@@ -49,17 +48,16 @@ module.exports = {
 
             const playerId = url.replace(/^https?:\/\/(new\.|www\.)?scoresaber\.com\/u\/([0-9]+).*$/, '$2')
 
-            const dataProfil = await module.exports.send(playerUrl + playerId + '/full')
+            const playerInfos = await module.exports.send(playerUrl + playerId + '/basic')
 
-            const playerInfos = dataProfil.playerInfo
-            player.id = playerInfos.playerId
-            player.name = playerInfos.playerName
-            player.avatar = newScoresaberUrl + playerInfos.avatar
-            player.url = 'https://scoresaber.com/u/' + playerInfos.playerId
+            player.id = playerInfos.id
+            player.name = playerInfos.name
+            player.avatar = playerInfos.profilePicture
+            player.url = 'https://scoresaber.com/u/' + playerInfos.id
 
             return player
         } catch(error) {
-            throw new ScoreSaberError(`Profil ScoreSaber introuvable. Veuillez vérifier que le lien soit valide.\n:information_source: Exemple : \`${newScoresaberUrl}/u/[Identifiant ScoreSaber]\``)
+            throw new ScoreSaberError(`Profil ScoreSaber introuvable. Veuillez vérifier que le lien soit valide.\n:information_source: Exemple : \`${scoresaberUrl}/u/[Identifiant ScoreSaber]\``)
         }
     },
 
@@ -67,29 +65,27 @@ module.exports = {
         try {
             const player = {}
 
-            const dataProfil = await module.exports.send(playerUrl + playerId + '/full')
-            const dataScores = await module.exports.send(playerUrl + playerId + '/scores/top/1')
+            const playerInfos = await module.exports.send(playerUrl + playerId + '/full')
+            const playerScores = await module.exports.send(playerUrl + playerId + '/scores?sort=top&page=1')
 
-            const playerInfos = dataProfil.playerInfo
-            const scoreStats = dataProfil.scoreStats
-            player.url = 'https://scoresaber.com/u/' + playerInfos.playerId
-            player.id = playerInfos.playerId
-            player.name = playerInfos.playerName
-            player.avatar = newScoresaberUrl + playerInfos.avatar
+            const scoreStats = playerInfos.scoreStats
+            player.url = scoresaberUrl + '/u/' + playerInfos.id
+            player.id = playerInfos.id
+            player.name = playerInfos.name
+            player.avatar = playerInfos.profilePicture
             player.rank = playerInfos.rank
             player.countryRank = playerInfos.countryRank
             player.pp = playerInfos.pp
             player.country = playerInfos.country
-            player.history = playerInfos.history
+            player.history = playerInfos.histories
             player.averageRankedAccuracy = scoreStats.averageRankedAccuracy
 
-            const playerScores = dataScores.scores
             const topScore = playerScores[0]
             player.topPP = {
-                rank: topScore.rank,
-                score: topScore.score,
-                pp: topScore.pp,
-                songDetails: topScore.songAuthorName + ' - ' + topScore.songName + (topScore.songSubName != '' ? ' ' + topScore.songSubName : '') + ' [' + topScore.difficultyRaw.replace(/^_([^_]+)_.+$/, '$1').replace('ExpertPlus', 'Expert+') + '] by ' + topScore.levelAuthorName
+                rank: topScore.score.rank,
+                score: topScore.score.modifiedScore,
+                pp: topScore.score.pp,
+                songDetails: topScore.leaderboard.songAuthorName + ' - ' + topScore.leaderboard.songName + (topScore.leaderboard.songSubName != '' ? ' ' + topScore.leaderboard.songSubName : '') + ' [' + topScore.leaderboard.difficulty.difficultyRaw.replace(/^_([^_]+)_.+$/, '$1').replace('ExpertPlus', 'Expert+') + '] by ' + topScore.leaderboard.levelAuthorName
             }
 
             return player
@@ -102,18 +98,16 @@ module.exports = {
         try {
             const players = []
 
-            const dataGlobal = await module.exports.send(newScoresaberApiUrl + 'players/' + page)
-
-            const playersInfos = dataGlobal.players
+            const playersInfos = await module.exports.send(scoresaberApiUrl + 'players?page=' + page)
 
             for(const playerInfos of playersInfos) {
                 const player = {
-                    id: playerInfos.playerId,
-                    name: playerInfos.playerName,
+                    id: playerInfos.id,
+                    name: playerInfos.name,
                     country: playerInfos.country,
                     rank: playerInfos.rank,
                     pp: playerInfos.pp,
-                    url: 'https://scoresaber.com/u/' + playerInfos.playerId
+                    url: scoresaberUrl + '/u/' + playerInfos.id
                 }
                 players.push(player)
             }
