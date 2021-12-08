@@ -11,6 +11,7 @@ try {
 
     const { Client, Intents } = require('discord.js')
     const Commands = require('./controllers/commands')
+    const Events = require('./controllers/events')
     const crons = require('./controllers/crons')
 
     Logger.log('Discord', 'INFO', 'Initialisation...')
@@ -32,6 +33,10 @@ try {
             const commands = new Commands(client)
             await commands.load()
             await commands.listen()
+
+            // Chargement des évènements
+            const events = new Events(client)
+            await events.load()
 
             // Tâches planifiées
             await crons.refreshLeaderboard(client)
