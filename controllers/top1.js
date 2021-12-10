@@ -146,7 +146,7 @@ module.exports = {
                 songName: map.leaderboard.songName,
                 songCoverUrl: map.leaderboard.coverImage,
                 levelKey: mapDetails.id,
-                levelAuthorName: map.leaderboard.songAuthorName,
+                levelAuthorName: map.leaderboard.levelAuthorName,
                 levelDifficulty: levelDifficulty,
                 levelGameMode: levelGameMode,
                 scoreSaberId: playerInfos.id,
