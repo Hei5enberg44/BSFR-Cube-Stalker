@@ -66,7 +66,7 @@ module.exports = {
             const player = {}
 
             const playerInfos = await module.exports.send(playerUrl + playerId + '/full')
-            const playerScores = await module.exports.send(playerUrl + playerId + '/scores?sort=top&page=1')
+            const playerTopScore = await module.exports.send(playerUrl + playerId + '/scores?sort=top&page=1&limit=1')
 
             const scoreStats = playerInfos.scoreStats
             player.url = scoresaberUrl + '/u/' + playerInfos.id
@@ -80,11 +80,12 @@ module.exports = {
             player.history = playerInfos.histories
             player.averageRankedAccuracy = scoreStats.averageRankedAccuracy
 
-            const topScore = playerScores[0]
+            const topScore = playerTopScore.playerScores[0]
             player.topPP = {
                 rank: topScore.score.rank,
-                score: topScore.score.modifiedScore,
                 pp: topScore.score.pp,
+                acc: topScore.score.modifiedScore / topScore.leaderboard.maxScore * 100,
+                fc: topScore.score.fullCombo,
                 songDetails: topScore.leaderboard.songAuthorName + ' - ' + topScore.leaderboard.songName + (topScore.leaderboard.songSubName != '' ? ' ' + topScore.leaderboard.songSubName : '') + ' [' + topScore.leaderboard.difficulty.difficultyRaw.replace(/^_([^_]+)_.+$/, '$1').replace('ExpertPlus', 'Expert+') + '] by ' + topScore.leaderboard.levelAuthorName
             }
 
