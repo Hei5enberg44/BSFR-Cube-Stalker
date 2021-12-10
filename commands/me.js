@@ -144,7 +144,7 @@ module.exports = {
                     { name: 'Points de performance', value: `:clap: ${new Intl.NumberFormat('en-US').format(scoreSaberDatas.pp)}pp ${ppProgress}`, inline: true },
                     { name: 'Précision en classé', value: `:dart: ${(scoreSaberDatas.averageRankedAccuracy).toFixed(2)}% ${accProgress}`, inline: true },
                     { name: 'Meilleur score', value: `:one: ${scoreSaberDatas.topPP.songDetails}` },
-                    { name: 'Infos sur le meilleur score', value: `:mechanical_arm: Rank: ${scoreSaberDatas.topPP.rank} | Score: ${scoreSaberDatas.topPP.score} | PP: ${scoreSaberDatas.topPP.pp}` }
+                    { name: 'Infos sur le meilleur score', value: `:mechanical_arm: Rank: ${scoreSaberDatas.topPP.rank} | PP: ${new Intl.NumberFormat('en-US').format(scoreSaberDatas.topPP.pp)} | Acc: ${(scoreSaberDatas.topPP.acc).toFixed(2)}% | FC: ${scoreSaberDatas.topPP.fc ? 'Oui' : 'Non'}` }
                 )
                 .setFooter(`${config.appName} ${config.appVersion}`, config.appLogo)
             )
