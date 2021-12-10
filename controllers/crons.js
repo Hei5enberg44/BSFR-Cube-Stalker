@@ -1,8 +1,9 @@
 const CronJob = require('cron').CronJob
 const { Client, MessageEmbed } = require('discord.js')
+const { userMention, bold, hyperlink, time } = require('@discordjs/builders')
 const Logger = require('../utils/logger')
 const leaderboard = require('./leaderboard')
-const scoresaber = require('./scoresaber')
+const top1 = require('./top1')
 const config = require('../config.json')
 
 module.exports = {
@@ -29,34 +30,49 @@ module.exports = {
     },
 
     /**
-     * Scan les nouveaux scores des membres et si il s'agit d'un top 1 FR,
-     * alors on envoi le score dans le channel 'top-1-fr
+     * Scan des nouveaux top 1 FR des membres du classement serveur
+     */
+    scanTop1FR: async function() {
+        new CronJob('*/2 * * * *', async function() {
+            Logger.log('Top1FR', 'INFO', 'Scan des nouveaux top 1 FR depuis ScoreSaber')
+
+            await top1.scanTop1FR()
+
+            Logger.log('Top1FR', 'INFO', 'Scan des nouveaux top 1 FR terminé')
+        }, null, true, 'Europe/Paris')
+
+        Logger.log('CronManager', 'INFO', 'Tâche "scanTop1FR" chargée')
+    },
+
+    /**
+     * Récupération des top 1 FR depuis la base de données
+     * et envoi de ceux-ci dans le channel 'top-1-fr'
      * @param {Client} client client Discord
      */
-    top1fr: async function(client) {
+    postTop1FR: async function(client) {
         new CronJob('*/1 * * * *', async function() {
-            Logger.log('Top1FR', 'INFO', 'Récupération des tops 1 FR')
+            Logger.log('Top1FR', 'INFO', 'Récupération des nouveaux top 1 FR depuis la base de données')
 
-            const datas = await scoresaber.getTop1FR()
+            const datas = await top1.getTop1FR()
 
-            for(const top1 of datas) {
-                await scoresaber.deleteTop1FR(top1)
+            for(const top of datas) {
+                await top1.deleteTop1FR(top)
 
                 const embed = new MessageEmbed()
                     .setColor('#F1C40F')
-                    .setTitle(top1.songName)
-                    .setURL(`https://scoresaber.com/leaderboard/${top1.leaderboardId}`)
-                    .setThumbnail(top1.songCoverUrl)
-                    .setDescription(`**${top1.levelDifficulty.replace('ExpertPlus', 'Expert+')} (${top1.levelGameMode})** par **${top1.levelAuthorName}**\n**Date :** ${top1.timeSet}`)
+                    .setTitle(top.songName)
+                    .setURL(`https://scoresaber.com/leaderboard/${top.leaderboardId}`)
+                    .setThumbnail(top.songCoverUrl)
+                    .setDescription(`${bold(`${top.levelDifficulty.replace('ExpertPlus', 'Expert+')} (${top.levelGameMode})`)} par ${bold(top.levelAuthorName)}\n${bold('Date')} : ${time(new Date(top.timeSet))}`)
                     .addFields(
-                        { name: 'Joueur', value: `<@${top1.memberId}>`, inline: true },
-                        { name: 'ScoreSaber', value: `[${top1.scoreSaberName}](https://scoresaber.com/u/${top1.scoreSaberId})`, inline: true },
+                        { name: 'Joueur', value: `${userMention(top.memberId)}`, inline: true },
+                        { name: 'ScoreSaber', value: hyperlink(top.scoreSaberName, `https://scoresaber.com/u/${top.scoreSaberId}`), inline: true },
                         { name: '\u200b', value: '\u200b', inline: true },
-                        { name: 'Score', value: `${new Intl.NumberFormat('en-US').format(top1.score)}`, inline: true },
-                        { name: 'Précision', value: `${(top1.acc).toFixed(2)}%`, inline: true },
+                        { name: 'Score', value: `${new Intl.NumberFormat('en-US').format(top.score)}`, inline: true },
+                        { name: 'Précision', value: `${(top.acc).toFixed(2)}%`, inline: true },
                         { name: '\u200b', value: '\u200b', inline: true },
-                        { name: 'BeatSaver', value: `[Lien](https://beatsaver.com/maps/${top1.levelKey})`, inline: true },
-                        { name: 'BSR', value: `!bsr ${top1.levelKey}`, inline: true },
+                        { name: 'BeatSaver', value: hyperlink('Lien', `https://beatsaver.com/maps/${top.levelKey}`), inline: true },
+                        { name: 'BSR', value: `!bsr ${top.levelKey}`, inline: true },
                         { name: '\u200b', value: '\u200b', inline: true }
                     )
                     .setFooter(`${config.appName} ${config.appVersion}`, config.appLogo)
@@ -67,9 +83,9 @@ module.exports = {
                 top1FRChannel.send({ embeds: [embed] })
             }
 
-            Logger.log('Top1FR', 'INFO', 'Récupération des tops 1 FR terminée')
+            Logger.log('Top1FR', 'INFO', 'Récupération des nouveaux top 1 FR terminée')
         }, null, true, 'Europe/Paris')
 
-        Logger.log('CronManager', 'INFO', 'Tâche "top1fr" chargée')
+        Logger.log('CronManager', 'INFO', 'Tâche "postTop1FR" chargée')
     }
 }

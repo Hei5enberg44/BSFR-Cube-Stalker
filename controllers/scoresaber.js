@@ -1,11 +1,11 @@
 const fetch = require('node-fetch')
 const Logger = require('../utils/logger')
-const Database = require('./database')
 const { ScoreSaberError } = require('../utils/error')
 
 const scoresaberUrl = 'https://scoresaber.com'
 const scoresaberApiUrl = scoresaberUrl + '/api/'
 const playerUrl = scoresaberApiUrl + 'player/'
+const leaderboardUrl = scoresaberApiUrl + 'leaderboard/'
 
 const wait = (s) => new Promise((res) => setTimeout(res, s * 1000))
 
@@ -57,7 +57,7 @@ module.exports = {
 
             return player
         } catch(error) {
-            throw new ScoreSaberError(`Profil ScoreSaber introuvable. Veuillez vérifier que le lien soit valide.\n:information_source: Exemple : \`${scoresaberUrl}/u/[Identifiant ScoreSaber]\``)
+            throw new ScoreSaberError(`Profil ScoreSaber introuvable. Veuillez vérifier que le lien soit valide.\nℹ️ Exemple : \`${scoresaberUrl}/u/[Identifiant ScoreSaber]\``)
         }
     },
 
@@ -130,44 +130,40 @@ module.exports = {
     },
 
     /**
-     * Récupère les top 1 FR depuis la base de données
-     * @returns {Promise<Object[]>} liste des maps
+     * Récupère les scores récent d'un joueur sur ScoreSaber
+     * @param {string} scoreSaberId identifiant ScoreSaber du joueur
+     * @param {Number} page page à récupérer
+     * @returns {Promise<Object>} liste des maps
      */
-    getTop1FR: async function() {
-        const client = new Database()
-
+    getPlayerRecentMaps: async function(scoreSaberId, page) {
         try {
-            const db = await client.connect()
-            const t = db.collection('top1')
+            const maps = []
 
-            const top1FR = await t.find().toArray()
+            const datas = await module.exports.send(playerUrl + scoreSaberId + '/scores?sort=recent&page=' + page)
 
-            return top1FR
-        } finally {
-            client.close()
+            for(const score of datas.playerScores) {
+                maps.push(score)
+            }
+
+            return maps
+        } catch(error) {
+            throw new ScoreSaberError('Une erreur est survenue lors de la récupération des maps récente du joueur')
         }
     },
 
     /**
-     * Supprime un top 1 FR de la base de données
-     * @param {Object} top1 données du top 1 à supprimer
+     * 
+     * @param {*} leaderboardId 
+     * @param {*} country 
+     * @returns 
      */
-    deleteTop1FR: async function(top1) {
-        const client = new Database()
-
+     getMapCountryLeaderboardTop1Player: async function(leaderboardId, country) {
         try {
-            const db = await client.connect()
-            const t = db.collection('top1')
+            const datas = await module.exports.send(leaderboardUrl + '/by-id/' + leaderboardId + '/scores?countries=' + country + '&page=1')
 
-            await t.deleteOne({
-                scoreSaberId: top1.scoreSaberId,
-                memberId: top1.memberId,
-                leaderboardId: top1.leaderboardId,
-                score: top1.score,
-                pp: top1.pp
-            })
-        } finally {
-            client.close()
+            return datas.scores[0]
+        } catch(error) {
+            throw new ScoreSaberError('Une erreur est survenue lors de la récupération du top 1 du pays sur la map')
         }
     }
 }
