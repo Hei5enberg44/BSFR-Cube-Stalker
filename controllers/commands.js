@@ -78,7 +78,7 @@ class Commands {
 
                 const embed = new MessageEmbed()
                         .setColor('#E74C3C')
-                        .setDescription(`:x: ${errMessage}`)
+                        .setDescription(`❌ ${errMessage}`)
                 
                 if(!interaction.deferred && !interaction.replied) {
                     await interaction.reply({ embeds: [embed], ephemeral: true })

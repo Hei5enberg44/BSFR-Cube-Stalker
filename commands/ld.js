@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js')
+const { channelMention } = require('@discordjs/builders')
 const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError } = require('../utils/error')
 const leaderboard = require('../controllers/leaderboard')
 const config = require('../config.json')
@@ -37,7 +38,7 @@ module.exports = {
             // On vérifie que la commande est exécutée dans le bon channel
             const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
             if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
+                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
             
             const type = interaction.options.getString('classement')
             const page = interaction.options.getInteger('page') ?? 1

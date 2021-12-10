@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js')
+const { channelMention } = require('@discordjs/builders')
 const { CommandError, CommandInteractionError } = require('../utils/error')
 const leaderboard = require('../controllers/leaderboard')
 const config = require('../config.json')
@@ -15,11 +16,11 @@ module.exports = {
             // On vérifie que la commande est exécutée dans le bon channel
             const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
             if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
+                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
             
             let embed = new MessageEmbed()
                 .setColor('#F1C40F')
-                .setDescription(':tools: Actualisation du serveur en cours...')
+                .setDescription('🛠️ Actualisation du serveur en cours...')
 
             await interaction.reply({ embeds: [embed] })
 

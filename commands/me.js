@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js')
+const { userMention, channelMention, bold } = require('@discordjs/builders')
 const { CommandError, CommandInteractionError, ScoreSaberError } = require('../utils/error')
 const { countryCodeEmoji } = require('../utils/country-code-emoji')
 const roles = require('../controllers/roles')
@@ -25,7 +26,7 @@ module.exports = {
             // On vérifie que la commande est exécutée dans le bon channel
             const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
             if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
+                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
             
             const otherMember = interaction.options.getUser('joueur')
 
@@ -40,7 +41,7 @@ module.exports = {
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou non
                 if(!member) {
-                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord <@${memberId}>`)
+                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord ${userMention(memberId)}`)
                 }
             } else {
                 // Identifiant du membre exécutant la commande
@@ -51,7 +52,7 @@ module.exports = {
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou non
                 if(!member) {
-                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\n:information_source: Utilisez la commande `/link` afin de lier celui-ci')
+                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
                 }
             }
 
@@ -73,7 +74,7 @@ module.exports = {
 
                 embeds.push(new MessageEmbed()
                     .setColor('#2ECC71')
-                    .setDescription(`:clap: <@${memberId}> a été ajouté au classement du serveur !`)
+                    .setDescription(`👏 ${userMention(memberId)} a été ajouté au classement du serveur !`)
                 )
             } else { // Sinon, on le met à jour
                 ld = await leaderboard.updateMemberLeaderboard(memberId, scoreSaberDatas)
@@ -86,49 +87,49 @@ module.exports = {
                 // Rang global
                 const rankDiff = Math.abs(scoreSaberDatas.rank - oldLd.rank)
                 if(scoreSaberDatas.rank < oldLd.rank) {
-                    rankProgress = `**▲${rankDiff}**`
+                    rankProgress = bold(`▲${rankDiff}`)
                 } else if(scoreSaberDatas.rank > oldLd.rank) {
-                    rankProgress = `**▼${rankDiff}**`
+                    rankProgress = bold(`▼${rankDiff}`)
                 }
 
                 // Rank pays
                 const countryRankDiff = Math.abs(scoreSaberDatas.countryRank - oldLd.countryRank)
                 if(scoreSaberDatas.countryRank < oldLd.countryRank) {
-                    countryRankProgress = `**▲${countryRankDiff}**`
+                    countryRankProgress = bold(`▲${countryRankDiff}`)
                 } else if(scoreSaberDatas.countryRank > oldLd.countryRank) {
-                    countryRankProgress = `**▼${countryRankDiff}**`
+                    countryRankProgress = bold(`▼${countryRankDiff}`)
                 }
 
                 // PP
                 const ppDiff = new Intl.NumberFormat('en-US').format(Math.abs(scoreSaberDatas.pp - oldLd.pp))
                 if(scoreSaberDatas.pp > oldLd.pp) {
-                    ppProgress = `**▲${ppDiff}pp**`
+                    ppProgress = bold(`▲${ppDiff}pp`)
                 } else if(scoreSaberDatas.pp < oldLd.pp) {
-                    ppProgress = `**▼${ppDiff}pp**`
+                    ppProgress = bold(`▼${ppDiff}pp`)
                 }
 
                 // Acc
                 const accDiff = (scoreSaberDatas.averageRankedAccuracy - oldLd.averageRankedAccuracy).toFixed(2)
                 if(accDiff > 0) {
-                    accProgress = `**▲${Math.abs(accDiff)}%**`
+                    accProgress = bold(`▲${Math.abs(accDiff)}%`)
                 } else if(accDiff < 0) {
-                    accProgress = `**▼${Math.abs(accDiff)}%**`
+                    accProgress = bold(`▼${Math.abs(accDiff)}%`)
                 }
 
                 // Rank Server PP
                 const serverPPDiff = Math.abs(ld.serverRankPP - oldLd.serverRankPP)
                 if(ld.serverRankPP < oldLd.serverRankPP) {
-                    serverRankPPProgress = `**▲${serverPPDiff}**`
+                    serverRankPPProgress = bold(`▲${serverPPDiff}`)
                 } else if(ld.serverRankPP > oldLd.serverRankPP) {
-                    serverRankPPProgress = `**▼${serverPPDiff}**`
+                    serverRankPPProgress = bold(`▼${serverPPDiff}`)
                 }
 
                 // Rank Server Acc
                 const serverAccDiff = Math.abs(ld.serverRankAcc - oldLd.serverRankAcc)
                 if(ld.serverRankAcc < oldLd.serverRankAcc) {
-                    serverRankAccProgress = `**▲${serverAccDiff}**`
+                    serverRankAccProgress = bold(`▲${serverAccDiff}`)
                 } else if(ld.serverRankAcc > oldLd.serverRankAcc) {
-                    serverRankAccProgress = `**▼${serverAccDiff}**`
+                    serverRankAccProgress = bold(`▼${serverAccDiff}`)
                 }
             }
 
@@ -139,12 +140,12 @@ module.exports = {
                 .setURL(scoreSaberDatas.url)
                 .setThumbnail(scoreSaberDatas.avatar)
                 .addFields(
-                    { name: 'Rang', value: `:earth_africa: #${scoreSaberDatas.rank} ${rankProgress} | ${scoreSaberDatas.country !== '' ? countryCodeEmoji(scoreSaberDatas.country) : '🏴‍☠️'} #${scoreSaberDatas.countryRank} ${countryRankProgress}` },
-                    { name: 'Rang Discord', value: `**PP**: ${(`#${ld.serverRankPP}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${ld.serverLdTotal} joueurs ${serverRankPPProgress}\n**Précision**: ${(`#${ld.serverRankAcc}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${ld.serverLdTotal} joueurs ${serverRankAccProgress}` },
-                    { name: 'Points de performance', value: `:clap: ${new Intl.NumberFormat('en-US').format(scoreSaberDatas.pp)}pp ${ppProgress}`, inline: true },
-                    { name: 'Précision en classé', value: `:dart: ${(scoreSaberDatas.averageRankedAccuracy).toFixed(2)}% ${accProgress}`, inline: true },
-                    { name: 'Meilleur score', value: `:one: ${scoreSaberDatas.topPP.songDetails}` },
-                    { name: 'Infos sur le meilleur score', value: `:mechanical_arm: Rank: ${scoreSaberDatas.topPP.rank} | PP: ${new Intl.NumberFormat('en-US').format(scoreSaberDatas.topPP.pp)} | Acc: ${(scoreSaberDatas.topPP.acc).toFixed(2)}% | FC: ${scoreSaberDatas.topPP.fc ? 'Oui' : 'Non'}` }
+                    { name: 'Rang', value: `🌍 #${scoreSaberDatas.rank} ${rankProgress} | ${scoreSaberDatas.country !== '' ? countryCodeEmoji(scoreSaberDatas.country) : '🏴‍☠️'} #${scoreSaberDatas.countryRank} ${countryRankProgress}` },
+                    { name: 'Rang Discord', value: `${bold('PP')}: ${(`#${ld.serverRankPP}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${ld.serverLdTotal} joueurs ${serverRankPPProgress}\n${bold('Précision')}: ${(`#${ld.serverRankAcc}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${ld.serverLdTotal} joueurs ${serverRankAccProgress}` },
+                    { name: 'Points de performance', value: `👏 ${new Intl.NumberFormat('en-US').format(scoreSaberDatas.pp)}pp ${ppProgress}`, inline: true },
+                    { name: 'Précision en classé', value: `🎯 ${(scoreSaberDatas.averageRankedAccuracy).toFixed(2)}% ${accProgress}`, inline: true },
+                    { name: 'Meilleur score', value: `1️⃣ ${scoreSaberDatas.topPP.songDetails}` },
+                    { name: 'Infos sur le meilleur score', value: `🦾 Rank: ${scoreSaberDatas.topPP.rank} | PP: ${new Intl.NumberFormat('en-US').format(scoreSaberDatas.topPP.pp)} | Acc: ${(scoreSaberDatas.topPP.acc).toFixed(2)}% | FC: ${scoreSaberDatas.topPP.fc ? 'Oui' : 'Non'}` }
                 )
                 .setFooter(`${config.appName} ${config.appVersion}`, config.appLogo)
             )

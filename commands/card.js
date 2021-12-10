@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js')
+const { userMention, channelMention } = require('@discordjs/builders')
 const { CommandError, CommandInteractionError, ScoreSaberError } = require('../utils/error')
 const members = require('../controllers/members')
 const cardgenerator = require('../controllers/cardgenerator')
@@ -23,7 +24,7 @@ module.exports = {
             // On vérifie que la commande est exécutée dans le bon channel
             const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
             if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
+                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
 
             const otherMember = interaction.options.getUser('joueur')
 
@@ -33,7 +34,7 @@ module.exports = {
                 member = await members.getMember(otherMember.id)
 
                 if(!member) {
-                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord <@${otherMember.id}>`)
+                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord ${userMention(otherMember.id)}`)
                 }
             } else {
                 // Informations sur le membre
@@ -41,13 +42,13 @@ module.exports = {
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou non
                 if(!member) {
-                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\n:information_source: Utilisez la commande `/link` afin de lier celui-ci')
+                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
                 }
             }
 
             const embed = new MessageEmbed()
                 .setColor('#F1C40F')
-                .setDescription(':tools: Fabrication de la carte en cours...')
+                .setDescription('🛠️ Fabrication de la carte en cours...')
 
             await interaction.reply({ embeds: [embed] })
 

@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js')
+const { userMention, channelMention } = require('@discordjs/builders')
 const { CommandError, CommandInteractionError, CooldownError } = require('../utils/error')
 const cooldown = require('../controllers/cooldown')
 const members = require('../controllers/members')
@@ -23,7 +24,7 @@ module.exports = {
             // On vérifie que la commande est exécutée dans le bon channel
             const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
             if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
+                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
             
             const isAdmin = interaction.member.roles.cache.find(role => ["Admin", "Modérateur"].indexOf(role.name) !== -1) !== undefined
 
@@ -33,13 +34,13 @@ module.exports = {
             if(!isAdmin && member.id !== interaction.member.id) throw new CommandInteractionError('Vous n\'êtes pas autorisé à délier le profil ScoreSaber d\'un autre membre que vous')
             
             const memberToUnlink = await members.getMember(member.id)
-            if(!memberToUnlink) throw new CommandInteractionError(`Il n'y a pas de profil ScoreSaber lié au membre <@${member.id}>`)
+            if(!memberToUnlink) throw new CommandInteractionError(`Il n'y a pas de profil ScoreSaber lié au membre ${userMention(member.id)}`)
 
             // Si le membre qui exécute la commande n'a pas le rôle Admin ou Modérateur, on lui ajoute un cooldown pour cette commande
             const cd = isAdmin ? null : await cooldown.checkCooldown('unlink', interaction.member.id, 60 * 60 * 24 * 30)
 
             // On demande confirmation pour exécuter la commande
-            let embedDesctiption = member.id === interaction.member.id ? ':warning: Êtes-vous sûr(e) de vouloir délier votre profil ScoreSaber ?' : `:warning: Êtes-vous sûr(e) de vouloir délier le profil ScoreSaber pour le membre <@${member.id}> ?`
+            let embedDesctiption = member.id === interaction.member.id ? '⚠️ Êtes-vous sûr(e) de vouloir délier votre profil ScoreSaber ?' : `⚠️ Êtes-vous sûr(e) de vouloir délier le profil ScoreSaber pour le membre ${userMention(member.id)} ?`
             if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau le \`${cd.date}\``
             
             let embed = new MessageEmbed()
@@ -70,7 +71,7 @@ module.exports = {
 
                         await confirmMessage.reactions.removeAll()
 
-                        embedDesctiption = `:white_check_mark: Le profil ScoreSaber a bien été délié du compte <@${member.id}>`
+                        embedDesctiption = `✅ Le profil ScoreSaber a bien été délié du compte ${userMention(member.id)}`
                         if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau le \`${cd.date}\``
 
                         embed = new MessageEmbed()
@@ -83,7 +84,7 @@ module.exports = {
 
                         embed = new MessageEmbed()
                                 .setColor('#E74C3C')
-                                .setDescription(':x: L\'opération a été annulée')
+                                .setDescription('❌ L\'opération a été annulée')
 
                         await interaction.editReply({ embeds: [embed] })
                     }
@@ -92,7 +93,7 @@ module.exports = {
 
                     embed = new MessageEmbed()
                             .setColor('#E74C3C')
-                            .setDescription(':x: Vous avez mis trop de temps à répondre')
+                            .setDescription('❌ Vous avez mis trop de temps à répondre')
 
                     await interaction.editReply({ embeds: [embed] })
                 })

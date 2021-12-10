@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js')
+const { channelMention } = require('@discordjs/builders')
 const { CommandError, CommandInteractionError, Top1Error } = require('../utils/error')
 const members = require('../controllers/members')
 const top1 = require('../controllers/top1')
@@ -22,7 +23,7 @@ module.exports = {
             // On vérifie que la commande est exécutée dans le bon channel
             const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
             if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
+                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
             
             const subscribe = interaction.options.getBoolean('subscribe')
 
@@ -34,7 +35,7 @@ module.exports = {
             
             // On vérifie ici si le membre a lié son compte ScoreSaber ou non
             if(!member) {
-                throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\n:information_source: Utilisez la commande `/link` afin de lier celui-ci')
+                throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
             }
 
             const isSubscribed = await top1.isSubscribed(memberId)

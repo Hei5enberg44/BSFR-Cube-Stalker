@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js')
+const { userMention, channelMention } = require('@discordjs/builders')
 const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError } = require('../utils/error')
 const members = require('../controllers/members')
 const leaderboard = require('../controllers/leaderboard')
@@ -28,7 +29,7 @@ module.exports = {
             // On vérifie que la commande est exécutée dans le bon channel
             const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
             if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans <#${cubeStalkerChannelId}>`)
+                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
             
             const otherMember = interaction.options.getUser('joueur')
             const rank = interaction.options.getInteger('rang')
@@ -46,7 +47,7 @@ module.exports = {
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou non
                 if(!member) {
-                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord <@${otherMember.id}>`)
+                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord ${userMention(otherMember.id)}`)
                 }
             } else {
                 // Informations sur le membre
@@ -54,7 +55,7 @@ module.exports = {
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou non
                 if(!member) {
-                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\n:information_source: Utilisez la commande `/link` afin de lier celui-ci')
+                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
                 }
             }
 
