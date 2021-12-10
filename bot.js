@@ -40,7 +40,8 @@ try {
 
             // Tâches planifiées
             await crons.refreshLeaderboard(client)
-            await crons.top1fr(client)
+            await crons.scanTop1FR()
+            await crons.postTop1FR(client)
         
             Logger.log('Application', 'INFO', 'Le bot est prêt !')
         })
