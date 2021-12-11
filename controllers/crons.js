@@ -5,6 +5,7 @@ const Logger = require('../utils/logger')
 const leaderboard = require('./leaderboard')
 const top1 = require('./top1')
 const config = require('../config.json')
+const { Top1Error } = require('../utils/error')
 
 module.exports = {
     /**
@@ -36,7 +37,13 @@ module.exports = {
         new CronJob('*/2 * * * *', async function() {
             Logger.log('Top1FR', 'INFO', 'Scan des nouveaux top 1 FR depuis ScoreSaber')
 
-            await top1.scanTop1FR()
+            try {
+                await top1.scanTop1FR()
+            } catch(error) {
+                if(error instanceof Top1Error) {
+                    Logger.log('Top1FR', 'ERROR', error.message)
+                }
+            }
 
             Logger.log('Top1FR', 'INFO', 'Scan des nouveaux top 1 FR terminé')
         }, null, true, 'Europe/Paris')

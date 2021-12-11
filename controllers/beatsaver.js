@@ -49,7 +49,7 @@ module.exports = {
 
             return map
         } catch(error) {
-            throw new BeatSaverError(`Récupération des informations de la map impossible`)
+            throw new BeatSaverError(`Récupération des informations de la map depuis BeatSaver impossible`)
         }
     },
 

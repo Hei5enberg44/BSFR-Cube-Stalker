@@ -1,8 +1,8 @@
-const { Top1Error } = require('../utils/error')
 const members = require('./members')
 const scoresaber = require('./scoresaber')
 const beatsaver = require('./beatsaver')
 const Database = require('./database')
+const { Top1Error, ScoreSaberError, BeatSaverError } = require('../utils/error')
 
 function calcAcc(mapDetails, levelDifficulty, levelGameMode, score) {
     const notes = mapDetails.versions[0].diffs.filter(diff => diff.difficulty === levelDifficulty && diff.characteristic === levelGameMode)[0].notes
@@ -15,12 +15,18 @@ module.exports = {
      * Scan pour des nouveaux top 1 FR
      */
     scanTop1FR: async function() {
-        const playersRecentMaps = await module.exports.getPlayersRecentMaps()
+        try {
+            const playersRecentMaps = await module.exports.getPlayersRecentMaps()
 
-        for(const map of playersRecentMaps) {
-            const top1FR = await scoresaber.getMapCountryLeaderboardTop1Player(map.leaderboard.id, 'FR')
-            if(top1FR.leaderboardPlayerInfo.id === map.scoreSaberId) {
-                await module.exports.addTop1FR(map.memberId, top1FR.leaderboardPlayerInfo, map)
+            for(const map of playersRecentMaps) {
+                const top1FR = await scoresaber.getMapCountryLeaderboardTop1Player(map.leaderboard.id, 'FR')
+                if(top1FR.leaderboardPlayerInfo.id === map.scoreSaberId) {
+                    await module.exports.addTop1FR(map.memberId, top1FR.leaderboardPlayerInfo, map)
+                }
+            }
+        } catch(error) {
+            if(error instanceof ScoreSaberError) {
+                throw new Top1Error('Une erreur est survenue lors du scan des top 1 FR : ' + error.message)
             }
         }
     },
@@ -127,9 +133,9 @@ module.exports = {
     addTop1FR: async function(memberId, playerInfos, map) {
         const client = new Database()
 
-        const mapDetails = await beatsaver.geMapByHash(map.leaderboard.songHash)
-
         try {
+            const mapDetails = await beatsaver.geMapByHash(map.leaderboard.songHash)
+
             const db = await client.connect()
             const t = db.collection('top1')
 
@@ -153,6 +159,10 @@ module.exports = {
                 scoreSaberName: playerInfos.name,
                 memberId: memberId
             })
+        } catch(error) {
+            if(error instanceof BeatSaverError) {
+                throw new Top1Error('Ajout du top 1 impossible : ' + error.message)
+            }
         } finally {
             client.close()
         }
