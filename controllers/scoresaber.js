@@ -152,10 +152,10 @@ module.exports = {
     },
 
     /**
-     * 
-     * @param {*} leaderboardId 
-     * @param {*} country 
-     * @returns 
+     * Récupération du top 1 d'un pays sur le classement d'une map
+     * @param {Number} leaderboardId identifiant du classement
+     * @param {string} country pays
+     * @returns {Object} premier score du classement
      */
      getMapCountryLeaderboardTop1Player: async function(leaderboardId, country) {
         try {
