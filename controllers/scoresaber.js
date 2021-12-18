@@ -15,7 +15,7 @@ module.exports = {
         let error = true
 
         do {
-            // Logger.log('ScoreSaber', 'INFO', `Envoi de la requête "${url}"`)
+            Logger.log('ScoreSaber', 'INFO', `Envoi de la requête "${url}"`)
             const res = await fetch(url)
             
             if(res.ok) {
