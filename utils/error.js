@@ -1,5 +1,13 @@
 const Logger = require('./logger')
 
+class DatabaseError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = this.constructor.name
+        Error.captureStackTrace(this, this.constructor)
+    }
+}
+
 class CommandError extends Error {
     constructor(message, commandName) {
         super(message)
@@ -68,5 +76,5 @@ class BeatSaverError extends Error {
 }
 
 module.exports = {
-    CommandError, CommandInteractionError, MemberError, LeaderboardError, Top1Error, CooldownError, ScoreSaberError, BeatSaverError
+    DatabaseError, CommandError, CommandInteractionError, MemberError, LeaderboardError, Top1Error, CooldownError, ScoreSaberError, BeatSaverError
 }

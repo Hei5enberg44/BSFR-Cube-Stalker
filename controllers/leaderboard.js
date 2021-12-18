@@ -4,7 +4,7 @@ const { countryCodeEmoji } = require('../utils/country-code-emoji')
 const Logger = require('../utils/logger')
 const scoresaber = require('./scoresaber')
 const roles = require('./roles')
-const Database = require('./database')
+const { Leaderboard } = require('./database')
 
 module.exports = {
     /**
@@ -14,48 +14,39 @@ module.exports = {
      * @returns {Promise<Object>} classement serveur global
      */
      getLeaderboard: async function(type, page) {
-        const client = new Database()
+        // Récupération du classement
+        const itemsPerPage = 10
+        
+        const leaderboardCount = await Leaderboard.count()
 
-        try {
-            const db = await client.connect()
-            const l = db.collection('leaderboard')
+        if(leaderboardCount == 0)
+            throw new LeaderboardError('Aucune donnée de classement disponible.')
 
-            // Récupération du classement
-            const itemsPerPage = 10
-            
-            const leaderboardCount = await l.countDocuments()
+        const pageCount = Math.ceil(leaderboardCount / itemsPerPage)
 
-            if(leaderboardCount == 0)
-                throw new LeaderboardError('Aucune donnée de classement disponible.')
+        if(page > pageCount)
+            throw new LeaderboardError('La page demandée n\'existe pas.')
 
-            const pageCount = Math.ceil(leaderboardCount / itemsPerPage)
+        const sort = type == 'pp' ? { pp: -1, _id: 1 } : { averageRankedAccuracy: -1, _id: 1 }
+        const leaderboard = await l.find().sort(sort).skip((page - 1) * itemsPerPage).limit(itemsPerPage).toArray()
 
-            if(page > pageCount)
-                throw new LeaderboardError('La page demandée n\'existe pas.')
+        let playersList = ''
+        for(let i = 0; i < leaderboard.length; i++) {
+            const ml = leaderboard[i]
+            const pos = (page - 1) * itemsPerPage + i + 1
+            const rank = `#${pos}`.replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')
+            const pp = new Intl.NumberFormat('en-US').format(ml.pp) + 'pp'
+            const acc = (ml.averageRankedAccuracy).toFixed(2) + '%'
+            const stat = type == 'pp' ? pp : acc
+            const scoreSaberUrl = `https://scoresaber.com/u/${ml.scoreSaberId}`
+            playersList += `${rank} - ${ml.scoreSaberCountry !== '' ? countryCodeEmoji(ml.scoreSaberCountry) : '🏴‍☠️'} [${ml.scoreSaberName}](${scoreSaberUrl}) - ${stat}\n`
+        }
 
-            const sort = type == 'pp' ? { pp: -1, _id: 1 } : { averageRankedAccuracy: -1, _id: 1 }
-            const leaderboard = await l.find().sort(sort).skip((page - 1) * itemsPerPage).limit(itemsPerPage).toArray()
+        const pageInfo = `Page \`${page}\` sur \`${pageCount}\``
 
-            let playersList = ''
-            for(let i = 0; i < leaderboard.length; i++) {
-                const ml = leaderboard[i]
-                const pos = (page - 1) * itemsPerPage + i + 1
-                const rank = `#${pos}`.replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')
-                const pp = new Intl.NumberFormat('en-US').format(ml.pp) + 'pp'
-                const acc = (ml.averageRankedAccuracy).toFixed(2) + '%'
-                const stat = type == 'pp' ? pp : acc
-                const scoreSaberUrl = `https://scoresaber.com/u/${ml.scoreSaberId}`
-                playersList += `${rank} - ${ml.scoreSaberCountry !== '' ? countryCodeEmoji(ml.scoreSaberCountry) : '🏴‍☠️'} [${ml.scoreSaberName}](${scoreSaberUrl}) - ${stat}\n`
-            }
-
-            const pageInfo = `Page \`${page}\` sur \`${pageCount}\``
-
-            return {
-                title: 'Classement ' + (type == 'pp' ? 'PP' : 'Précision') + ` Serveur (${leaderboardCount} joueurs)`,
-                content: playersList + '\n' + pageInfo
-            }
-        } finally {
-            client.close()
+        return {
+            title: 'Classement ' + (type == 'pp' ? 'PP' : 'Précision') + ` Serveur (${leaderboardCount} joueurs)`,
+            content: playersList + '\n' + pageInfo
         }
     },
 
@@ -143,28 +134,23 @@ module.exports = {
      * @returns {Promise<Object>} classement serveur du membre
      */
      getMemberLeaderboard: async function(memberId) {
-        const client = new Database()
+        // Récupération du classement
+        const leaderboard = await Leaderboard.findAll({
+            order: [
+                [ 'pp', 'ASC' ]
+            ]
+        })
 
-        try {
-            const db = await client.connect()
-            const l = db.collection('leaderboard')
+        // Récupération des rangs Discord du membre
+        let serverRankPP = leaderboard.sort((a, b) => b.pp - a.pp).findIndex(ld => ld.memberId == memberId)
+        let serverRankAcc = leaderboard.sort((a, b) => b.averageRankedAccuracy - a.averageRankedAccuracy).findIndex(ld => ld.memberId == memberId)
 
-            // Récupération du classement
-            const leaderboard = await l.find({}, { pp: 1 }).toArray()
+        if(serverRankPP === -1 || serverRankAcc === -1) return null
 
-            // Récupération des rangs Discord du membre
-            let serverRankPP = leaderboard.sort((a, b) => b.pp - a.pp).findIndex(ld => ld.memberId == memberId)
-            let serverRankAcc = leaderboard.sort((a, b) => b.averageRankedAccuracy - a.averageRankedAccuracy).findIndex(ld => ld.memberId == memberId)
-
-            if(serverRankPP === -1 || serverRankAcc === -1) return null
-
-            return {
-                serverRankPP: serverRankPP + 1,
-                serverRankAcc: serverRankAcc + 1,
-                serverLdTotal: leaderboard.length
-            }
-        } finally {
-            client.close()
+        return {
+            serverRankPP: serverRankPP + 1,
+            serverRankAcc: serverRankAcc + 1,
+            serverLdTotal: leaderboard.length
         }
     },
 
@@ -174,31 +160,26 @@ module.exports = {
      * @returns {Promise<Object>} classement serveur du membre
      */
     getMember: async function(memberId) {
-        const client = new Database()
+        // Récupération du classement
+        const leaderboard = await Leaderboard.findAll({
+            order: [
+                [ 'pp', 'ASC' ]
+            ]
+        })
 
-        try {
-            const db = await client.connect()
-            const l = db.collection('leaderboard')
+        // Récupération des données de classement du joueur
+        const ldDatas = leaderboard.find(ld => ld.memberId == memberId)
 
-            // Récupération du classement
-            const leaderboard = await l.find({}, { pp: 1 }).toArray()
+        if(!ldDatas) return null
 
-            // Récupération des données de classement du joueur
-            const ldDatas = leaderboard.find(ld => ld.memberId == memberId)
-
-            if(!ldDatas) return null
-
-            return {
-                pp: ldDatas.pp,
-                rank: ldDatas.rank,
-                countryRank: ldDatas.countryRank,
-                averageRankedAccuracy: ldDatas.averageRankedAccuracy,
-                serverRankPP: ldDatas.serverRankPP,
-                serverRankAcc: ldDatas.serverRankAcc,
-                serverLdTotal: leaderboard.length
-            }
-        } finally {
-            client.close()
+        return {
+            pp: ldDatas.pp,
+            rank: ldDatas.rank,
+            countryRank: ldDatas.countryRank,
+            averageRankedAccuracy: ldDatas.averageRankedAccuracy,
+            serverRankPP: ldDatas.serverRankPP,
+            serverRankAcc: ldDatas.serverRankAcc,
+            serverLdTotal: leaderboard.length
         }
     },
 
@@ -209,45 +190,35 @@ module.exports = {
      * @returns {Promise<Object>} classement serveur du membre
      */
     addMemberLeaderboard: async function(memberId, scoreSaberDatas) {
-        const client = new Database()
+        const leaderboardCount = await Leaderboard.findOne({ where: { memberId: memberId } })
 
-        try {
-            const db = await client.connect()
-            const l = db.collection('leaderboard')
+        if(!leaderboardCount) {
+            await Leaderboard.create({
+                memberId: memberId,
+                scoreSaberId: scoreSaberDatas.id,
+                scoreSaberName: scoreSaberDatas.name,
+                scoreSaberCountry: scoreSaberDatas.country,
+                pp: scoreSaberDatas.pp,
+                rank: scoreSaberDatas.rank,
+                countryRank: scoreSaberDatas.countryRank,
+                averageRankedAccuracy: scoreSaberDatas.averageRankedAccuracy,
+                serverRankAcc: 0,
+                serverRankPP: 0
+            })
 
-            const leaderboardCount = await l.findOne({ memberId: memberId })
+            const memberLd = await module.exports.getMemberLeaderboard(memberId)
 
-            if(!leaderboardCount) {
-                await l.insertOne({
-                    memberId: memberId,
-                    scoreSaberId: scoreSaberDatas.id,
-                    scoreSaberName: scoreSaberDatas.name,
-                    scoreSaberCountry: scoreSaberDatas.country,
-                    pp: scoreSaberDatas.pp,
-                    rank: scoreSaberDatas.rank,
-                    countryRank: scoreSaberDatas.countryRank,
-                    averageRankedAccuracy: scoreSaberDatas.averageRankedAccuracy
-                })
-
-                const memberLd = await module.exports.getMemberLeaderboard(memberId)
-
-                await l.updateOne(
-                    {
-                        memberId: memberId
-                    },
-                    {
-                        $set: {
-                            serverRankPP: memberLd.serverRankPP,
-                            serverRankAcc: memberLd.serverRankAcc
-                        }
-                    }
-                )
-            }
-
-            return module.exports.getMember(memberId)
-        } finally {
-            client.close()
+            await Leaderboard.update({
+                serverRankPP: memberLd.serverRankPP,
+                serverRankAcc: memberLd.serverRankAcc
+            }, {
+                where: {
+                    memberId: memberId
+                }
+            })
         }
+
+        return module.exports.getMember(memberId)
     },
 
     /**
@@ -257,41 +228,30 @@ module.exports = {
      * @returns {Promise<Object>} classement serveur du membre
      */
     updateMemberLeaderboard: async function(memberId, scoreSaberDatas) {
-        const client = new Database()
+        const leaderboardCount = await Leaderboard.count({ where: { memberId: memberId } })
 
-        try {
-            const db = await client.connect()
-            const l = db.collection('leaderboard')
+        if(leaderboardCount) {
+            const memberLd = await module.exports.getMemberLeaderboard(memberId)
 
-            const leaderboardCount = await l.countDocuments({ memberId: memberId })
-
-            if(leaderboardCount) {
-                const memberLd = await module.exports.getMemberLeaderboard(memberId)
-
-                await l.updateOne(
-                    {
-                        memberId: memberId
-                    },
-                    {
-                        $set: {
-                            scoreSaberId: scoreSaberDatas.id,
-                            scoreSaberName: scoreSaberDatas.name,
-                            scoreSaberCountry: scoreSaberDatas.country,
-                            pp: scoreSaberDatas.pp,
-                            rank: scoreSaberDatas.rank,
-                            countryRank: scoreSaberDatas.countryRank,
-                            averageRankedAccuracy: scoreSaberDatas.averageRankedAccuracy,
-                            serverRankPP: memberLd.serverRankPP,
-                            serverRankAcc: memberLd.serverRankAcc
-                        }
-                    }
-                )
-            }
-
-            return module.exports.getMember(memberId)
-        } finally {
-            client.close()
+            await Leaderboard.update({
+                scoreSaberId: scoreSaberDatas.id,
+                scoreSaberName: scoreSaberDatas.name,
+                scoreSaberCountry: scoreSaberDatas.country,
+                pp: scoreSaberDatas.pp,
+                rank: scoreSaberDatas.rank,
+                countryRank: scoreSaberDatas.countryRank,
+                averageRankedAccuracy: scoreSaberDatas.averageRankedAccuracy,
+                serverRankPP: memberLd.serverRankPP,
+                serverRankAcc: memberLd.serverRankAcc
+            },
+            {
+                where: {
+                    memberId: memberId
+                }
+            })
         }
+
+        return module.exports.getMember(memberId)
     },
 
     /**
@@ -299,16 +259,9 @@ module.exports = {
      * @param {string} memberId identifiant Discord du membre
      */
     delMemberLeaderboard: async function(memberId) {
-        const client = new Database()
-
-        try {
-            const db = await client.connect()
-            const l = db.collection('leaderboard')
-
-            await l.deleteOne({ memberId: memberId })
-        } finally {
-            client.close()
-        }
+        await Leaderboard.destroy({
+            where: { memberId: memberId }
+        })
     },
 
     /**
@@ -317,31 +270,22 @@ module.exports = {
      * @param {Collection<GuildMember>} members liste des membres de la guild 
      */
      refreshLeaderboard: async function(members) {
-        const client = new Database()
+        const ld = await Leaderboard.findAll()
 
-        try {
-            const db = await client.connect()
-            const l = db.collection('leaderboard')
+        ld.forEach(async (lm) => {
+            Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${lm.scoreSaberName}"...`)
 
-            const ld = await l.find().toArray()
+            const playerDatas = await scoresaber.getPlayerDatas(lm.scoreSaberId)
+            const pp = playerDatas.pp
 
-            ld.forEach(async (lm) => {
-                Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${lm.scoreSaberName}"...`)
+            const member = members.find(m => m.id === lm.memberId)
+            if(member) {
+                await roles.updateMemberPpRoles(member, pp)
 
-                const playerDatas = await scoresaber.getPlayerDatas(lm.scoreSaberId)
-                const pp = playerDatas.pp
-
-                const member = members.find(m => m.id === lm.memberId)
-                if(member) {
-                    await roles.updateMemberPpRoles(member, pp)
-
-                    Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${lm.scoreSaberName}" terminée`)
-                } else {
-                    Logger.log('Leaderboard', 'WARNING', `Le joueur "${lm.scoreSaberName}" est introuvable`)
-                }
-            })
-        } finally {
-            client.close()
-        }
+                Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${lm.scoreSaberName}" terminée`)
+            } else {
+                Logger.log('Leaderboard', 'WARNING', `Le joueur "${lm.scoreSaberName}" est introuvable`)
+            }
+        })
     }
 }

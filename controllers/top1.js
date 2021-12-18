@@ -1,7 +1,8 @@
 const members = require('./members')
 const scoresaber = require('./scoresaber')
 const beatsaver = require('./beatsaver')
-const Database = require('./database')
+const { Top1, LastMembersMaps, Members } = require('./database')
+const { Op } = require('sequelize')
 const { Top1Error, ScoreSaberError, BeatSaverError } = require('../utils/error')
 
 function calcAcc(mapDetails, levelDifficulty, levelGameMode, score) {
@@ -81,20 +82,9 @@ module.exports = {
      * @returns {Promise<Object>} dernière map jouée du joueur
      */
     getPlayerLastPlayedMap: async function(scoreSaberId) {
-        const client = new Database()
+        const lastPlayedMap = await LastMembersMaps.findOne({ where: { scoreSaberId: scoreSaberId } })
 
-        try {
-            const db = await client.connect()
-            const lm = db.collection('lastMembersMaps')
-
-            const lastPlayedMap = await lm.findOne({
-                scoreSaberId: scoreSaberId
-            })
-
-            return lastPlayedMap
-        } finally {
-            client.close()
-        }
+        return lastPlayedMap
     },
 
     /**
@@ -102,25 +92,17 @@ module.exports = {
      * @param {string} scoreSaberId identifiant ScoreSaber du joueur
      * @param {Object} map dernière map jouée par le joueur
      */
-     addPlayerLastPlayedMap: async function(scoreSaberId, map) {
-        const client = new Database()
+    addPlayerLastPlayedMap: async function(scoreSaberId, map) {
+        const lm = await LastMembersMaps.findOne({ where: { scoreSaberId: scoreSaberId } })
 
-        try {
-            const db = await client.connect()
-            const lm = db.collection('lastMembersMaps')
-
-            await lm.updateOne(
-                {
-                    scoreSaberId: scoreSaberId
-                }, {
-                    $set: {
-                        timeSet: map.score.timeSet
-                    }
-                }, {
-                    upsert: true
+        if(!lm) {
+            await LastMembersMaps.create({
+                scoreSaberId: scoreSaberId,
+                timeSet: map.score.timeSet
             })
-        } finally {
-            client.close()
+        } else {
+            lm.timeSet = map.score.timeSet
+            await lm.save()
         }
     },
 
@@ -131,19 +113,14 @@ module.exports = {
      * @param {Object} map map concernée par le top 1
      */
     addTop1FR: async function(memberId, playerInfos, map) {
-        const client = new Database()
-
         try {
             const mapDetails = await beatsaver.geMapByHash(map.leaderboard.songHash)
-
-            const db = await client.connect()
-            const t = db.collection('top1')
 
             const difficultyRaw = map.leaderboard.difficulty.difficultyRaw
             const levelDifficulty = difficultyRaw.split('_')[1]
             const levelGameMode = difficultyRaw.split('_')[2].replace('Solo', '')
 
-            await t.insertOne({
+            await Top1.create({
                 score: map.score.modifiedScore,
                 acc: map.leaderboard.maxScore > 0 ? map.score.modifiedScore / map.leaderboard.maxScore * 100 : calcAcc(mapDetails, levelDifficulty, levelGameMode, map.score.modifiedScore),
                 pp: map.score.pp,
@@ -163,8 +140,6 @@ module.exports = {
             if(error instanceof BeatSaverError) {
                 throw new Top1Error('Ajout du top 1 impossible : ' + error.message)
             }
-        } finally {
-            client.close()
         }
     },
 
@@ -172,19 +147,10 @@ module.exports = {
      * Récupère les top 1 FR depuis la base de données
      * @returns {Promise<Object[]>} liste des maps
      */
-     getTop1FR: async function() {
-        const client = new Database()
+    getTop1FR: async function() {
+        const top1FR = await Top1.findAll()
 
-        try {
-            const db = await client.connect()
-            const t = db.collection('top1')
-
-            const top1FR = await t.find().toArray()
-
-            return top1FR
-        } finally {
-            client.close()
-        }
+        return top1FR
     },
 
     /**
@@ -192,39 +158,23 @@ module.exports = {
      * @param {Object} top1 données du top 1 à supprimer
      */
     deleteTop1FR: async function(top1) {
-        const client = new Database()
-
-        try {
-            const db = await client.connect()
-            const t = db.collection('top1')
-
-            await t.deleteOne({
-                scoreSaberId: top1.scoreSaberId,
-                memberId: top1.memberId,
-                leaderboardId: top1.leaderboardId,
-                score: top1.score,
-                pp: top1.pp
-            })
-        } finally {
-            client.close()
-        }
+        await Top1.destroy({
+            where: {
+                [Op.and]: [
+                    { scoreSaberId: top1.scoreSaberId },
+                    { memberId: top1.memberId },
+                    { leaderboardId: top1.leaderboardId },
+                    { score: top1.score },
+                    { pp: top1.pp }
+                ]
+            }
+        })
     },
 
     getSubscribed: async function() {
-        const client = new Database()
+        const subscribed = await Members.findAll({ where: { top1: true } })
 
-        try {
-            const db = await client.connect()
-            const m = db.collection('members')
-
-            const subscribed = await m.find({
-                top1: true
-            }).toArray()
-
-            return subscribed
-        } finally {
-            client.close()
-        }
+        return subscribed
     },
 
     /**
@@ -244,25 +194,10 @@ module.exports = {
      * @param {boolean} subscribe
      */
     subscribe: async function(memberId, subscribe) {
-        const client = new Database()
-
-        try {
-            const db = await client.connect()
-            const m = db.collection('members')
-
-            await m.updateOne(
-                {
-                    memberId: memberId,
-                },
-                {
-                    $set: {
-                        top1: subscribe
-                    }
-                },
-                { upsert: true }
-            )
-        } finally {
-            client.close()
-        }
+        await Members.update({ top1: subscribe }, {
+            where: {
+                memberId: memberId
+            }
+        })
     }
 }

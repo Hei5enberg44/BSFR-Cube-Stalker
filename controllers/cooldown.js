@@ -1,5 +1,6 @@
 const { CooldownError } = require('../utils/error')
-const Database = require('./database')
+const { Cooldowns } = require('./database')
+const { Op } = require('sequelize')
 
 function millisecondsToDate(m) {
     const d = new Date(m)
@@ -16,53 +17,49 @@ function millisecondsToDate(m) {
 
 module.exports = {
     checkCooldown: async function(commandName, memberId, duration) {
-        const client = new Database()
-
-        try {
-            const db = await client.connect()
-            const c = db.collection('cooldown')
-
-            const date = (new Date()).getTime()
+        const date = (new Date()).getTime()
         
-            // On vérifie si le membre a déjà un cooldown et si celui-ci est expiré
-            const cd = await c.findOne({ commandName: commandName, memberId: memberId })
-            if(cd) {
-                if(cd.expirationDate > date) throw new CooldownError(`Vous ne pouvez pas encore exécuter la commande \`/${commandName}\`\nVous pourrez exécuter cette commande de nouveau le \`${millisecondsToDate(cd.expirationDate)}\``)
+        // On vérifie si le membre a déjà un cooldown et si celui-ci est expiré
+        const cd = await Cooldowns.findOne({
+            where: {
+                [Op.and]: [
+                    { commandName: commandName },
+                    { memberId: memberId }
+                ]
             }
+        })
 
-            const expirationDate = date + (duration * 1000)
+        if(cd) {
+            if(cd.expirationDate > date) throw new CooldownError(`Vous ne pouvez pas encore exécuter la commande \`/${commandName}\`\nVous pourrez exécuter cette commande de nouveau le \`${millisecondsToDate(cd.expirationDate)}\``)
+        }
 
-            return {
-                timestamp: expirationDate,
-                date: millisecondsToDate(expirationDate)
-            }
-        } finally {
-            client.close()
+        const expirationDate = date + (duration * 1000)
+
+        return {
+            timestamp: expirationDate,
+            date: millisecondsToDate(expirationDate)
         }
     },
 
     addCooldown: async function(commandName, memberId, expirationDate) {
-        const client = new Database()
+        const cd = await Cooldowns.findOne({
+            where: {
+                [Op.and]: [
+                    { memberId: memberId },
+                    { commandName: commandName }
+                ]
+            }
+        })
 
-        try {
-            const db = await client.connect()
-            const c = db.collection('cooldown')
-
-            await c.updateOne(
-                {
-                    memberId: memberId,
-                },
-                {
-                    $set: {
-                        commandName: commandName,
-                        memberId: memberId,
-                        expirationDate: expirationDate
-                    }
-                },
-                { upsert: true }
-            )
-        } finally {
-            client.close()
+        if(!cd) {
+            Cooldowns.create({
+                commandName: commandName,
+                memberId: memberId,
+                expirationDate: expirationDate
+            })
+        } else {
+            cd.expirationDate = expirationDate
+            await cd.save()
         }
     }
 }
