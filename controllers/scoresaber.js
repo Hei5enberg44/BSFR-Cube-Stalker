@@ -101,7 +101,7 @@ module.exports = {
 
             const playersInfos = await module.exports.send(scoresaberApiUrl + 'players?page=' + page)
 
-            for(const playerInfos of playersInfos) {
+            for(const playerInfos of playersInfos.players) {
                 const player = {
                     id: playerInfos.id,
                     name: playerInfos.name,
