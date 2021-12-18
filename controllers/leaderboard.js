@@ -27,8 +27,12 @@ module.exports = {
         if(page > pageCount)
             throw new LeaderboardError('La page demandée n\'existe pas.')
 
-        const sort = type == 'pp' ? { pp: -1, _id: 1 } : { averageRankedAccuracy: -1, _id: 1 }
-        const leaderboard = await l.find().sort(sort).skip((page - 1) * itemsPerPage).limit(itemsPerPage).toArray()
+        const sort = type == 'pp' ? [[ 'pp', 'DESC' ], [ 'id', 'ASC' ]] : [[ 'averageRankedAccuracy', 'DESC' ], [ 'id', 'ASC' ]]
+        const leaderboard = await Leaderboard.findAll({
+            order: sort,
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage
+        })
 
         let playersList = ''
         for(let i = 0; i < leaderboard.length; i++) {
