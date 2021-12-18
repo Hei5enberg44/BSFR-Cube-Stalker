@@ -63,7 +63,7 @@ module.exports = {
             const datas = await top1.getTop1FR()
 
             for(const top of datas) {
-                await top1.deleteTop1FR(top)
+                await top1.deleteTop1FR(top.id)
 
                 const embed = new MessageEmbed()
                     .setColor('#F1C40F')

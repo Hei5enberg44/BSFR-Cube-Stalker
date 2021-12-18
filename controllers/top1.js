@@ -155,18 +155,12 @@ module.exports = {
 
     /**
      * Supprime un top 1 FR de la base de données
-     * @param {Object} top1 données du top 1 à supprimer
+     * @param {Object} top1Id identifiant du top1 à supprimer
      */
-    deleteTop1FR: async function(top1) {
+    deleteTop1FR: async function(top1Id) {
         await Top1.destroy({
             where: {
-                [Op.and]: [
-                    { scoreSaberId: top1.scoreSaberId },
-                    { memberId: top1.memberId },
-                    { leaderboardId: top1.leaderboardId },
-                    { score: top1.score },
-                    { pp: top1.pp }
-                ]
+                id: top1Id
             }
         })
     },
