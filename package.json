@@ -1,6 +1,6 @@
 {
   "name": "cube-stalker",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Cube stalker is a bot that allows you to get some info about every profile on scoresaber",
   "main": "bot.js",
   "scripts": {
