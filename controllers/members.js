@@ -66,14 +66,18 @@ module.exports = {
      * @param {string} memberId identifiant Discord du membre
      */
     delMember: async function(memberId) {
-        await leaderboard.delMemberLeaderboard(memberId)
+        const member = await module.exports.getMember(memberId)
 
-        await Members.destroy({
-            where: { memberId: memberId }
-        })
+        if(member) {
+            await leaderboard.delMemberLeaderboard(member.memberId)
 
-        await LastMembersMaps.destroy({
-            where: { memberId: memberId }
-        })
+            await Members.destroy({
+                where: { memberId: member.memberId }
+            })
+
+            await LastMembersMaps.destroy({
+                where: { scoreSaberId: member.scoreSaberId }
+            })
+        }
     }
 }
