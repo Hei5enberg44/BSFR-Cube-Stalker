@@ -9,11 +9,11 @@
   "author": "BSFR",
   "license": "ISC",
   "dependencies": {
-    "@discordjs/builders": "^0.9.0",
+    "@discordjs/builders": "^0.11.0",
     "canvas": "^2.8.0",
     "chalk": "^4.1.2",
     "cron": "^1.8.2",
-    "discord.js": "^13.3.1",
+    "discord.js": "^13.5.0",
     "fluent-ffmpeg": "^2.1.2",
     "gifsicle": "^5.2.0",
     "mariadb": "^2.5.5",
