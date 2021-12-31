@@ -17,7 +17,7 @@ function millisecondsToDate(m) {
 
 module.exports = {
     checkCooldown: async function(commandName, memberId, duration) {
-        const date = (new Date()).getTime()
+        const date = Math.floor(new Date().getTime() / 1000)
         
         // On vérifie si le membre a déjà un cooldown et si celui-ci est expiré
         const cd = await Cooldowns.findOne({
@@ -33,7 +33,7 @@ module.exports = {
             if(cd.expirationDate > date) throw new CooldownError(`Vous ne pouvez pas encore exécuter la commande \`/${commandName}\`\nVous pourrez exécuter cette commande de nouveau le \`${millisecondsToDate(cd.expirationDate)}\``)
         }
 
-        const expirationDate = date + (duration * 1000)
+        const expirationDate = date + duration
 
         return {
             timestamp: expirationDate,
