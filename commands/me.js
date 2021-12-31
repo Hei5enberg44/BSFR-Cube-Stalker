@@ -147,7 +147,7 @@ module.exports = {
                     { name: 'Meilleur score', value: `1️⃣ ${scoreSaberDatas.topPP.songDetails}` },
                     { name: 'Infos sur le meilleur score', value: `🦾 Rank: ${scoreSaberDatas.topPP.rank} | PP: ${new Intl.NumberFormat('en-US').format(scoreSaberDatas.topPP.pp)} | Acc: ${(scoreSaberDatas.topPP.acc).toFixed(2)}% | FC: ${scoreSaberDatas.topPP.fc ? 'Oui' : 'Non'}` }
                 )
-                .setFooter(`${config.appName} ${config.appVersion}`, config.appLogo)
+                .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
             )
 
             // On met à jour les rôles du membre en fonction de son nombre de pp

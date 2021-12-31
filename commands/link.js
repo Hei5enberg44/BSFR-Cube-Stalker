@@ -39,7 +39,7 @@ module.exports = {
                     .setURL(scoreSaberProfil.url)
                     .setThumbnail(scoreSaberProfil.avatar)
                     .setDescription('Votre profil ScoreSaber a bien été lié avec votre compte Discord\nTapez la commande `/me` pour pouvoir être ajouté au classement du serveur')
-                    .setFooter(`${config.appName} ${config.appVersion}`, config.appLogo)
+                    .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
 
             await interaction.editReply({ embeds: [ embed ] })
         } catch(error) {

@@ -54,7 +54,7 @@ module.exports = {
                 .setColor('#000000')
                 .setTitle(ld.title)
                 .setDescription(ld.content)
-                .setFooter(`${config.appName} ${config.appVersion}`, config.appLogo)
+                .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
             
             await interaction.editReply({ embeds: [ embed ] })
         } catch(error) {

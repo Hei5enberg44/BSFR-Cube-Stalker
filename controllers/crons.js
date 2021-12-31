@@ -82,7 +82,7 @@ module.exports = {
                         { name: 'BSR', value: `!bsr ${top.levelKey}`, inline: true },
                         { name: '\u200b', value: '\u200b', inline: true }
                     )
-                    .setFooter(`${config.appName} ${config.appVersion}`, config.appLogo)
+                    .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
                 
                 const guild = client.guilds.cache.find(g => g.id === config.guild.id)
 

@@ -70,7 +70,7 @@ module.exports = {
                 .setTitle('Classement Mondial')
                 .setURL('https://scoresaber.com/global')
                 .setDescription(ld)
-                .setFooter(`${config.appName} ${config.appVersion}`, config.appLogo)
+                .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
             
             await interaction.editReply({ embeds: [ embed ] })
         } catch(error) {
