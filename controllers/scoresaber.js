@@ -1,7 +1,6 @@
 const fetch = require('node-fetch')
 const Logger = require('../utils/logger')
 const { ScoreSaberError } = require('../utils/error')
-
 const scoresaberUrl = 'https://scoresaber.com'
 const scoresaberApiUrl = scoresaberUrl + '/api/'
 const playerUrl = scoresaberApiUrl + 'player/'

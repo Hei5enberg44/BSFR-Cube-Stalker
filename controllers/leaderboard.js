@@ -13,7 +13,7 @@ module.exports = {
      * @param {number} page page à afficher (10 éléments par page)
      * @returns {Promise<Object>} classement serveur global
      */
-     getLeaderboard: async function(type, page) {
+    getLeaderboard: async function(type, page) {
         // Récupération du classement
         const itemsPerPage = 10
         
@@ -126,7 +126,7 @@ module.exports = {
      * @param {string} scoreSaberId identifiant ScoreSaber du joueur
      * @returns {Promise<string>} liste des joueurs
      */
-     getGlobalLeaderboardByPlayerId: async function(scoreSaberId) {
+    getGlobalLeaderboardByPlayerId: async function(scoreSaberId) {
         const rank = await scoresaber.getPlayerRankById(scoreSaberId)
 
         return module.exports.getGlobalLeaderboardByPlayerRank(rank)
@@ -137,7 +137,7 @@ module.exports = {
      * @param {string} memberId identifiant Discord du membre
      * @returns {Promise<Object>} classement serveur du membre
      */
-     getMemberLeaderboard: async function(memberId) {
+    getMemberLeaderboard: async function(memberId) {
         // Récupération du classement
         const leaderboard = await Leaderboard.findAll({
             order: [
@@ -273,10 +273,10 @@ module.exports = {
      * puis met à jour leurs rôles de pp
      * @param {Collection<GuildMember>} members liste des membres de la guild 
      */
-     refreshLeaderboard: async function(members) {
+    refreshLeaderboard: async function(members) {
         const ld = await Leaderboard.findAll()
 
-        ld.forEach(async (lm) => {
+        for(const lm of ld) {
             Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${lm.scoreSaberName}"...`)
 
             const playerDatas = await scoresaber.getPlayerDatas(lm.scoreSaberId)
@@ -290,6 +290,6 @@ module.exports = {
             } else {
                 Logger.log('Leaderboard', 'WARNING', `Le joueur "${lm.scoreSaberName}" est introuvable`)
             }
-        })
+        }
     }
 }

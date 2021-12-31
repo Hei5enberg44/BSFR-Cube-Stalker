@@ -2,7 +2,6 @@ const members = require('./members')
 const scoresaber = require('./scoresaber')
 const beatsaver = require('./beatsaver')
 const { Top1, LastMembersMaps, Members } = require('./database')
-const { Op } = require('sequelize')
 const { Top1Error, ScoreSaberError, BeatSaverError } = require('../utils/error')
 
 function calcAcc(mapDetails, levelDifficulty, levelGameMode, score) {
