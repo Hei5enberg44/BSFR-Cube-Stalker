@@ -24,7 +24,7 @@ module.exports = {
 
             await leaderboard.refreshLeaderboard(members)
 
-            Logger.log('Leaderboard', 'INFO', 'Actualisation du classement des joueurs du  terminée')
+            Logger.log('Leaderboard', 'INFO', 'Actualisation du classement des joueurs du serveur terminée')
         }, null, true, 'Europe/Paris')
 
         Logger.log('CronManager', 'INFO', 'Tâche "refreshLeaderboard" chargée')
