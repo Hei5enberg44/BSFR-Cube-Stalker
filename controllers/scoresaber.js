@@ -9,16 +9,16 @@ const leaderboardUrl = scoresaberApiUrl + 'leaderboard/'
 const wait = (s) => new Promise((res) => setTimeout(res, s * 1000))
 
 module.exports = {
-    send: async function(url) {
+    send: async function(url, log = true) {
         let data
         let error = true
 
         do {
-            Logger.log('ScoreSaber', 'INFO', `Envoi de la requête "${url}"`)
+            if(log) Logger.log('ScoreSaber', 'INFO', `Envoi de la requête "${url}"`)
             const res = await fetch(url)
             
             if(res.ok) {
-                // Logger.log('ScoreSaber', 'INFO', 'Requête envoyée avec succès')
+                if(log) Logger.log('ScoreSaber', 'INFO', 'Requête envoyée avec succès')
                 data = await res.json()
 
                 error = false
@@ -138,7 +138,7 @@ module.exports = {
         try {
             const maps = []
 
-            const datas = await module.exports.send(playerUrl + scoreSaberId + '/scores?sort=recent&page=' + page)
+            const datas = await module.exports.send(playerUrl + scoreSaberId + '/scores?sort=recent&page=' + page, false)
 
             for(const score of datas.playerScores) {
                 maps.push(score)
@@ -156,9 +156,9 @@ module.exports = {
      * @param {string} country pays
      * @returns {Object} premier score du classement
      */
-     getMapCountryLeaderboardTop1Player: async function(leaderboardId, country) {
+    getMapCountryLeaderboardTop1Player: async function(leaderboardId, country) {
         try {
-            const datas = await module.exports.send(leaderboardUrl + '/by-id/' + leaderboardId + '/scores?countries=' + country + '&page=1')
+            const datas = await module.exports.send(leaderboardUrl + 'by-id/' + leaderboardId + '/scores?countries=' + country + '&page=1', false)
 
             return datas.scores[0]
         } catch(error) {
