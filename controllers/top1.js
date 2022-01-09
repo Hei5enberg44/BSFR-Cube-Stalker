@@ -19,9 +19,12 @@ module.exports = {
             const playersRecentMaps = await module.exports.getPlayersRecentMaps()
 
             for(const map of playersRecentMaps) {
-                const top1FR = await scoresaber.getMapCountryLeaderboardTop1Player(map.leaderboard.id, 'FR')
-                if(top1FR.leaderboardPlayerInfo.id === map.scoreSaberId) {
-                    await module.exports.addTop1FR(map.memberId, top1FR.leaderboardPlayerInfo, map)
+                const ldFR = await scoresaber.getMapCountryLeaderboard(map.leaderboard.id, 'FR')
+
+                if(ldFR.length > 0) {
+                    if(ldFR[0].leaderboardPlayerInfo.id === map.scoreSaberId) {
+                        await module.exports.addTop1FR(map.memberId, ldFR, map)
+                    }
                 }
             }
         } catch(error) {
@@ -108,10 +111,10 @@ module.exports = {
     /**
      * Ajout d'un top 1 dans la base de données
      * @param {string} memberId identifiant du membre Discord
-     * @param {Object} playerInfos informations concernant le joueur
+     * @param {Object} leaderboard première page du classement France de la map
      * @param {Object} map map concernée par le top 1
      */
-    addTop1FR: async function(memberId, playerInfos, map) {
+    addTop1FR: async function(memberId, leaderboard, map) {
         try {
             const mapDetails = await beatsaver.geMapByHash(map.leaderboard.songHash)
 
@@ -120,6 +123,7 @@ module.exports = {
             const levelGameMode = difficultyRaw.split('_')[2].replace('Solo', '')
 
             await Top1.create({
+                rank: map.score.rank,
                 score: map.score.modifiedScore,
                 acc: map.leaderboard.maxScore > 0 ? map.score.modifiedScore / map.leaderboard.maxScore * 100 : calcAcc(mapDetails, levelDifficulty, levelGameMode, map.score.modifiedScore),
                 pp: map.score.pp,
@@ -131,8 +135,10 @@ module.exports = {
                 levelAuthorName: map.leaderboard.levelAuthorName,
                 levelDifficulty: levelDifficulty,
                 levelGameMode: levelGameMode,
-                scoreSaberId: playerInfos.id,
-                scoreSaberName: playerInfos.name,
+                scoreSaberId: leaderboard[0].leaderboardPlayerInfo.id,
+                scoreSaberName: leaderboard[0].leaderboardPlayerInfo.name,
+                beatenScoreSaberId: leaderboard.length > 1 ? leaderboard[1].leaderboardPlayerInfo.id : '',
+                beatenScoreSaberName: leaderboard.length > 1 ? leaderboard[1].leaderboardPlayerInfo.name : '',
                 memberId: memberId
             })
         } catch(error) {

@@ -151,16 +151,17 @@ module.exports = {
     },
 
     /**
-     * Récupération du top 1 d'un pays sur le classement d'une map
+     * Récupération du classement d'un pays défini pour une map
      * @param {Number} leaderboardId identifiant du classement
      * @param {string} country pays
-     * @returns {Object} premier score du classement
+     * @param {Number} page page du classement
+     * @returns {Promise<Array>} liste des scores du classement
      */
-    getMapCountryLeaderboardTop1Player: async function(leaderboardId, country) {
+    getMapCountryLeaderboard: async function(leaderboardId, country, page = 1) {
         try {
-            const datas = await module.exports.send(leaderboardUrl + 'by-id/' + leaderboardId + '/scores?countries=' + country + '&page=1', false)
+            const datas = await module.exports.send(leaderboardUrl + 'by-id/' + leaderboardId + '/scores?countries=' + country + '&page=' + page, false)
 
-            return datas.scores[0]
+            return datas.scores
         } catch(error) {
             throw new ScoreSaberError('Une erreur est survenue lors de la récupération du top 1 du pays sur la map')
         }

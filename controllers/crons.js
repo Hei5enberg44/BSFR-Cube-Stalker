@@ -77,12 +77,15 @@ module.exports = {
                         { name: '\u200b', value: '\u200b', inline: true },
                         { name: 'Score', value: `${new Intl.NumberFormat('en-US').format(top.score)}`, inline: true },
                         { name: 'Précision', value: `${(top.acc).toFixed(2)}%`, inline: true },
-                        { name: '\u200b', value: '\u200b', inline: true },
+                        { name: 'Rang 🌍', value: `#${top.rank}`, inline: true },
                         { name: 'BeatSaver', value: hyperlink('Lien', `https://beatsaver.com/maps/${top.levelKey}`), inline: true },
                         { name: 'BSR', value: `!bsr ${top.levelKey}`, inline: true },
                         { name: '\u200b', value: '\u200b', inline: true }
                     )
-                    .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
+
+                if(top.beatenScoreSaberId !== '') embed.addField('Bien joué !', `Tu es passé(e) devant ${hyperlink(top.beatenScoreSaberName, `https://scoresaber.com/u/${top.beatenScoreSaberId}`)}`)
+
+                embed.setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
                 
                 const guild = client.guilds.cache.find(g => g.id === config.guild.id)
 

@@ -85,6 +85,7 @@ const Top1 = sequelize.define('top1', {
         autoIncrement: true,
         primaryKey: true
     },
+    rank: DataTypes.INTEGER,
     score: DataTypes.INTEGER,
     acc: DataTypes.FLOAT,
     pp: DataTypes.FLOAT,
@@ -98,6 +99,8 @@ const Top1 = sequelize.define('top1', {
     levelGameMode: DataTypes.STRING(255),
     scoreSaberId: DataTypes.STRING(255),
     scoreSaberName: DataTypes.STRING(255),
+    beatenScoreSaberId: DataTypes.STRING(255),
+    beatenScoreSaberName: DataTypes.STRING(255),
     memberId: DataTypes.STRING(255)
 }, {
     timestamps: false,
