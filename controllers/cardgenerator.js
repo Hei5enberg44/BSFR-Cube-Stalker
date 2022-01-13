@@ -80,7 +80,7 @@ module.exports = {
         ctx.fillText(`Top PP :`, 80, 240)
         ctx.font = '22px "Neon Tubes"'
         ctx.fillText(player.topPP.songDetails, 80, 270, 800)
-        ctx.fillText(`Rank: #${player.topPP.rank} | Score: ${Intl.NumberFormat('en-US').format(player.topPP.score)} | PP: ${player.topPP.pp}`, 80, 300)
+        ctx.fillText(`Rank: #${player.topPP.rank} | Score: ${Intl.NumberFormat('en-US').format(player.topPP.score)} | PP: ${player.topPP.pp} | Acc: ${(player.topPP.acc).toFixed(2)}%`, 80, 300)
         ctx.globalAlpha = 1
 
         // Fusion du texte et du background puis enregistrement du fichier

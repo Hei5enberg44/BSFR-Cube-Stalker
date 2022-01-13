@@ -83,6 +83,7 @@ module.exports = {
             player.topPP = {
                 rank: topScore.score.rank,
                 pp: topScore.score.pp,
+                score: topScore.score.modifiedScore,
                 acc: topScore.score.modifiedScore / topScore.leaderboard.maxScore * 100,
                 fc: topScore.score.fullCombo,
                 songDetails: topScore.leaderboard.songAuthorName + ' - ' + topScore.leaderboard.songName + (topScore.leaderboard.songSubName != '' ? ' ' + topScore.leaderboard.songSubName : '') + ' [' + topScore.leaderboard.difficulty.difficultyRaw.replace(/^_([^_]+)_.+$/, '$1').replace('ExpertPlus', 'Expert+') + '] by ' + topScore.leaderboard.levelAuthorName
