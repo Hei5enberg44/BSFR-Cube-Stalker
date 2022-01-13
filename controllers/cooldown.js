@@ -3,7 +3,7 @@ const { Cooldowns } = require('./database')
 const { Op } = require('sequelize')
 
 function millisecondsToDate(m) {
-    const d = new Date(m)
+    const d = new Date(m * 1000)
 
     const year = d.getFullYear()
     const month = d.getMonth() < 9 ? `0${d.getMonth() + 1}` : d.getMonth() + 1
