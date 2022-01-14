@@ -86,7 +86,11 @@ module.exports = {
                 score: topScore.score.modifiedScore,
                 acc: topScore.score.modifiedScore / topScore.leaderboard.maxScore * 100,
                 fc: topScore.score.fullCombo,
-                songDetails: topScore.leaderboard.songAuthorName + ' - ' + topScore.leaderboard.songName + (topScore.leaderboard.songSubName != '' ? ' ' + topScore.leaderboard.songSubName : '') + ' [' + topScore.leaderboard.difficulty.difficultyRaw.replace(/^_([^_]+)_.+$/, '$1').replace('ExpertPlus', 'Expert+') + '] by ' + topScore.leaderboard.levelAuthorName
+                stars: topScore.leaderboard.stars,
+                name: topScore.leaderboard.songAuthorName + ' - ' + topScore.leaderboard.songName + (topScore.leaderboard.songSubName != '' ? ' ' + topScore.leaderboard.songSubName : ''),
+                difficulty: topScore.leaderboard.difficulty.difficultyRaw.replace(/^_([^_]+)_.+$/, '$1').replace('ExpertPlus', 'Expert+'),
+                author: topScore.leaderboard.levelAuthorName,
+                cover: topScore.leaderboard.coverImage
             }
 
             return player

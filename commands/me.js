@@ -144,7 +144,7 @@ module.exports = {
                     { name: 'Rang Discord', value: `${bold('PP')}: ${(`#${ld.serverRankPP}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${ld.serverLdTotal} joueurs ${serverRankPPProgress}\n${bold('Précision')}: ${(`#${ld.serverRankAcc}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${ld.serverLdTotal} joueurs ${serverRankAccProgress}` },
                     { name: 'Points de performance', value: `👏 ${new Intl.NumberFormat('en-US').format(scoreSaberDatas.pp)}pp ${ppProgress}`, inline: true },
                     { name: 'Précision en classé', value: `🎯 ${(scoreSaberDatas.averageRankedAccuracy).toFixed(2)}% ${accProgress}`, inline: true },
-                    { name: 'Meilleur score', value: `1️⃣ ${scoreSaberDatas.topPP.songDetails}` },
+                    { name: 'Meilleur score', value: `1️⃣ ${scoreSaberDatas.topPP.name} [${scoreSaberDatas.topPP.difficulty}] by ${scoreSaberDatas.topPP.author}` },
                     { name: 'Infos sur le meilleur score', value: `🦾 Rank: ${scoreSaberDatas.topPP.rank} | PP: ${new Intl.NumberFormat('en-US').format(scoreSaberDatas.topPP.pp)} | Acc: ${(scoreSaberDatas.topPP.acc).toFixed(2)}% | FC: ${scoreSaberDatas.topPP.fc ? 'Oui' : 'Non'}` }
                 )
                 .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
