@@ -54,9 +54,9 @@ module.exports = {
 
             const card = await cardgenerator.getCard(member.scoreSaberId)
 
-            await interaction.editReply({ files: [card], embeds: [] })
+            await interaction.editReply({ files: [{attachment: card.name, name: member.scoreSaberId + '.png'}], embeds: [] })
 
-            fs.unlinkSync(card)
+            card.removeCallback()
         } catch(error) {
             if(error instanceof CommandInteractionError || error instanceof ScoreSaberError) {
                 throw new CommandError(error.message, interaction.commandName)
