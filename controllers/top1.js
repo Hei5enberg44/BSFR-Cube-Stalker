@@ -95,7 +95,7 @@ module.exports = {
      * @param {Object} map dernière map jouée par le joueur
      */
     addPlayerLastPlayedMap: async function(scoreSaberId, map) {
-        const lm = await LastMembersMaps.findOne({ where: { scoreSaberId: scoreSaberId } })
+        const lm = await module.exports.getPlayerLastPlayedMap(scoreSaberId)
 
         if(!lm) {
             await LastMembersMaps.create({
