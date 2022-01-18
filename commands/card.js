@@ -9,7 +9,7 @@ const fs = require('fs')
 module.exports = {
     data: {
         name: 'card',
-        description: 'Génère une carte de stonker certifié',
+        description: 'Génère votre carte de joueur',
         options: [
             {
                 type: 'USER',
