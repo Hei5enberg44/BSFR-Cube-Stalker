@@ -11,7 +11,7 @@ const config = require('../config.json')
 module.exports = {
 	data: {
 		name: 'me',
-		description: 'Affiche les informations d\'un joueur',
+		description: 'Affiche vos informations de joueur',
         options: [
             {
                 type: 'USER',
@@ -133,9 +133,14 @@ module.exports = {
                 }
             }
 
+            // On met à jour les rôles du membre en fonction de son nombre de pp
+            const memberToUpdate = otherMember ? interaction.guild.members.cache.find(m => m.id === otherMember.id) : interaction.member
+            await roles.updateMemberPpRoles(memberToUpdate, scoreSaberDatas.pp)
+            const memberPpRoles = roles.getMemberPpRoles(memberToUpdate)
+
             // On affiche les informations ScoreSaber du membre
             embeds.push(new MessageEmbed()
-                .setColor('#000000')
+                .setColor(memberPpRoles.size > 0 ? memberPpRoles.last().color : memberToUpdate.displayHexColor)
                 .setTitle(scoreSaberDatas.name)
                 .setURL(scoreSaberDatas.url)
                 .setThumbnail(scoreSaberDatas.avatar)
@@ -149,10 +154,6 @@ module.exports = {
                 )
                 .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
             )
-
-            // On met à jour les rôles du membre en fonction de son nombre de pp
-            const memberToUpdate = otherMember ? interaction.guild.members.cache.find(m => m.id === otherMember.id) : interaction.member
-            await roles.updateMemberPpRoles(memberToUpdate, scoreSaberDatas.pp)
             
             await interaction.editReply({ embeds: embeds })
         } catch(error) {
