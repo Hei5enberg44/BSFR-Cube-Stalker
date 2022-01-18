@@ -137,10 +137,11 @@ module.exports = {
             const memberToUpdate = otherMember ? interaction.guild.members.cache.find(m => m.id === otherMember.id) : interaction.member
             await roles.updateMemberPpRoles(memberToUpdate, scoreSaberDatas.pp)
             const memberPpRoles = roles.getMemberPpRoles(memberToUpdate)
+            const memberPpRolesSorted = memberPpRoles.sort((r1, r2) => parseInt((r1.name).replace(/(\s|pp)/, '')) - parseInt((r2.name).replace(/(\s|pp)/, '')))
 
             // On affiche les informations ScoreSaber du membre
             embeds.push(new MessageEmbed()
-                .setColor(memberPpRoles.size > 0 ? memberPpRoles.last().color : memberToUpdate.displayHexColor)
+                .setColor(memberPpRoles.size > 0 ? memberPpRolesSorted.last().color : memberToUpdate.displayHexColor)
                 .setTitle(scoreSaberDatas.name)
                 .setURL(scoreSaberDatas.url)
                 .setThumbnail(scoreSaberDatas.avatar)
