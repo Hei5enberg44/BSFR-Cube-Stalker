@@ -1,13 +1,23 @@
-const { GuildMember } = require('discord.js')
+const { GuildMember, Collection, Role } = require('discord.js')
 
 module.exports = {
+    /**
+     * Récupère la liste des rôles de pp d'un membre
+     * @param {GuildMember} member membre Discord
+     * @returns {Collection.<Role>} Rôle de pp le plus élevé du membre
+     */
+    getMemberPpRoles: function(member) {
+        const roles = member.roles.cache.filter(role => role.name.match(/^[0-9\s]+pp$/))
+        return roles
+    },
+
     /**
      * Met à jour les rôles de pp d'un membre
      * @param {GuildMember} member membre Discord à mettre à jour
      * @param {number} pp nombre de pp du membre
      */
     updateMemberPpRoles: async function(member, pp) {
-        const memberPpRoles = member.roles.cache.filter(role => role.name.match(/^[0-9\s]+pp$/))
+        const memberPpRoles = module.exports.getMemberPpRoles(member)
 
         // On détermine la liste des rôles de pp à assigner au membre
         const t = Math.floor(pp / 1000)
@@ -33,7 +43,7 @@ module.exports = {
                     // Sinon, on le supprime
                     const roleToDelete = roles.find(r => r.name === role.name)
                     if(roleToDelete) {
-                        member.roles.remove(roleToDelete)
+                        await member.roles.remove(roleToDelete)
                     }
                 }
             }
@@ -42,7 +52,7 @@ module.exports = {
             for(const roleName of newPpRoles) {
                 const roleToAdd = roles.find(r => r.name === roleName)
                 if(roleToAdd) {
-                    member.roles.add(roleToAdd)
+                    await member.roles.add(roleToAdd)
                 }
             }
         }
