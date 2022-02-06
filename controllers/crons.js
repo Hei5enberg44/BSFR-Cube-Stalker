@@ -3,6 +3,7 @@ const { Client, MessageEmbed } = require('discord.js')
 const { userMention, bold, hyperlink, time } = require('@discordjs/builders')
 const Logger = require('../utils/logger')
 const leaderboard = require('./leaderboard')
+const roles = require('./roles')
 const top1 = require('./top1')
 const config = require('../config.json')
 const { Top1Error } = require('../utils/error')
@@ -34,7 +35,7 @@ module.exports = {
      * Scan des nouveaux top 1 FR des membres du classement serveur
      */
     scanTop1FR: async function() {
-        new CronJob('*/2 * * * *', async function() {
+        new CronJob('*/5 * * * *', async function() {
             Logger.log('Top1FR', 'INFO', 'Scan des nouveaux top 1 FR depuis ScoreSaber')
 
             try {
@@ -57,16 +58,22 @@ module.exports = {
      * @param {Client} client client Discord
      */
     postTop1FR: async function(client) {
-        new CronJob('*/1 * * * *', async function() {
+        new CronJob('*/2 * * * *', async function() {
             Logger.log('Top1FR', 'INFO', 'Récupération des nouveaux top 1 FR depuis la base de données')
+
+            const guild = client.guilds.cache.find(g => g.id === config.guild.id)
+            await guild.members.fetch()
 
             const datas = await top1.getTop1FR()
 
             for(const top of datas) {
                 await top1.deleteTop1FR(top.id)
 
+                const member = guild.members.cache.find(m => m.id === top.memberId)
+                const color = member ? roles.getMemberPpRoleColor(member) : null
+
                 const embed = new MessageEmbed()
-                    .setColor('#F1C40F')
+                    .setColor(color ?? '#F1C40F')
                     .setTitle(top.songName)
                     .setURL(`https://scoresaber.com/leaderboard/${top.leaderboardId}`)
                     .setThumbnail(top.songCoverUrl)
@@ -86,8 +93,6 @@ module.exports = {
                 if(top.beatenScoreSaberId !== '') embed.addField('Bien joué !', `Tu es passé(e) devant ${hyperlink(top.beatenScoreSaberName, `https://scoresaber.com/u/${top.beatenScoreSaberId}`)}`)
 
                 embed.setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
-                
-                const guild = client.guilds.cache.find(g => g.id === config.guild.id)
 
                 const top1FRChannel = guild.channels.cache.find(c => c.id === config.guild.channels.top1fr.id)
                 top1FRChannel.send({ embeds: [embed] })
