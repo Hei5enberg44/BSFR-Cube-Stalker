@@ -135,6 +135,7 @@ module.exports = {
                 levelAuthorName: map.leaderboard.levelAuthorName,
                 levelDifficulty: levelDifficulty,
                 levelGameMode: levelGameMode,
+                ranked: map.leaderboard.ranked,
                 scoreSaberId: leaderboard[0].leaderboardPlayerInfo.id,
                 scoreSaberName: leaderboard[0].leaderboardPlayerInfo.name,
                 beatenScoreSaberId: leaderboard.length > 1 ? leaderboard[1].leaderboardPlayerInfo.id : '',

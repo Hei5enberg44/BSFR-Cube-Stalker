@@ -72,12 +72,16 @@ module.exports = {
                 const member = guild.members.cache.find(m => m.id === top.memberId)
                 const color = member ? roles.getMemberPpRoleColor(member) : null
 
+                const rankedIconName = 'ss'
+                const ssIcon = guild.emojis.cache.find(e => e.name === rankedIconName)
+                const ssIconId = ssIcon.id
+
                 const embed = new MessageEmbed()
                     .setColor(color ?? '#F1C40F')
                     .setTitle(top.songName)
                     .setURL(`https://scoresaber.com/leaderboard/${top.leaderboardId}`)
                     .setThumbnail(top.songCoverUrl)
-                    .setDescription(`${bold(`${top.levelDifficulty.replace('ExpertPlus', 'Expert+')} (${top.levelGameMode})`)} par ${bold(top.levelAuthorName)}\n${bold('Date')} : ${time(new Date(top.timeSet))}`)
+                    .setDescription(`${(top.ranked && ssIcon) ? `<:${rankedIconName}:${ssIconId}> ` : ''}${bold(`${top.levelDifficulty.replace('ExpertPlus', 'Expert+')} (${top.levelGameMode})`)} par ${bold(top.levelAuthorName)}\n${bold('Date')} : ${time(new Date(top.timeSet))}`)
                     .addFields(
                         { name: 'Joueur', value: `${userMention(top.memberId)}`, inline: true },
                         { name: 'ScoreSaber', value: hyperlink(top.scoreSaberName, `https://scoresaber.com/u/${top.scoreSaberId}`), inline: true },

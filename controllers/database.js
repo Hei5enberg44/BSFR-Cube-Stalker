@@ -97,6 +97,7 @@ const Top1 = sequelize.define('top1', {
     levelAuthorName: DataTypes.TEXT,
     levelDifficulty: DataTypes.STRING(255),
     levelGameMode: DataTypes.STRING(255),
+    ranked: DataTypes.BOOLEAN,
     scoreSaberId: DataTypes.STRING(255),
     scoreSaberName: DataTypes.STRING(255),
     beatenScoreSaberId: DataTypes.STRING(255),
