@@ -12,6 +12,7 @@ module.exports = {
     send: async function(url, log = true) {
         let data
         let error = true
+        let retries = 0
 
         do {
             if(log) Logger.log('BeatLeader', 'INFO', `Envoi de la requête "${url}"`)
@@ -27,7 +28,7 @@ module.exports = {
                 if(res.status === 422) throw Error('La ressource demandée est introuvable')
                 if(res.status === 500) {
                     Logger.log('BeatLeader', 'ERROR', 'Erreur 500, nouvel essai dans 3 secondes')
-                    await wait(3)
+                    if(retries < 5) await wait(3)
                 }
                 if(res.status === 429) {
                     Logger.log('BeatLeader', 'ERROR', 'Erreur 429, nouvel essai dans 60 secondes')
@@ -35,6 +36,7 @@ module.exports = {
                 }
 
                 error = true
+                retries++
             }
         } while(error)
 

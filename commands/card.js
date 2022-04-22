@@ -4,7 +4,6 @@ const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError 
 const members = require('../controllers/members')
 const cardgenerator = require('../controllers/cardgenerator')
 const config = require('../config.json')
-const fs = require('fs')
 
 module.exports = {
     data: {
@@ -69,9 +68,9 @@ module.exports = {
 
             await interaction.reply({ embeds: [embed] })
 
-            const card = await cardgenerator.getCard(leaderboardChoice, member.scoreSaberId)
+            const card = await cardgenerator.getCard(leaderboardChoice, member.playerId)
 
-            await interaction.editReply({ files: [{attachment: card.name, name: member.scoreSaberId + '.png'}], embeds: [] })
+            await interaction.editReply({ files: [{attachment: card.name, name: member.playerId + '.png'}], embeds: [] })
 
             card.removeCallback()
         } catch(error) {
