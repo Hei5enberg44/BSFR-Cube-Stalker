@@ -8,12 +8,12 @@ const config = require('../config.json')
 module.exports = {
     data: {
         name: 'setprofile',
-        description: 'Lie un compte ScoreSaber à un compte Discord',
+        description: 'Lie un compte ScoreSaber ou BeatLeader à un compte Discord',
         options: [
             {
                 type: 'STRING',
-                name: 'lien_scoresaber',
-                description: 'Lien du profil ScoreSaber',
+                name: 'lien_leaderboard',
+                description: 'Lien du profil ScoreSaber ou BeatLeader',
                 required: true
             },
             {
@@ -33,21 +33,28 @@ module.exports = {
             if(interaction.channelId != cubeStalkerChannelId)
                 throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
             
-            const url = interaction.options.getString('lien_scoresaber')
+            const url = interaction.options.getString('lien_leaderboard')
             const member = interaction.options.getUser('joueur')
 
             await interaction.deferReply()
 
-            const scoreSaberProfil = await scoresaber.getProfile(url)
+            let playerProfil
+            if(url.includes('scoresaber')) {
+                playerProfil = await scoresaber.getProfile(url)
+            } else if(url.includes('beatleader')) {
+                playerProfil = await beatleader.getProfile(url)
+            } else {
+                throw new CommandInteractionError('Le lien entré n\'est pas un lien ScoreSaber ou BeatLeader valide')
+            }
 
-            await members.addMember(member.id, scoreSaberProfil.id, true)
+            await members.addMember(member.id, playerProfil.id, true)
             
             const embed = new MessageEmbed()
                     .setColor('#2ECC71')
-                    .setTitle(scoreSaberProfil.name)
-                    .setURL(scoreSaberProfil.url)
-                    .setThumbnail(scoreSaberProfil.avatar)
-                    .setDescription(`Le profil ScoreSaber a bien été lié avec le compte Discord de ${userMention(member.id)}`)
+                    .setTitle(playerProfil.name)
+                    .setURL(playerProfil.url)
+                    .setThumbnail(playerProfil.avatar)
+                    .setDescription(`Le profil ScoreSaber/BeatLeader a bien été lié avec le compte Discord de ${userMention(member.id)}`)
                     .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
 
             await interaction.editReply({ embeds: [embed] })

@@ -1,5 +1,6 @@
 const { createCanvas, loadImage, registerFont } = require('canvas')
 const scoresaber = require('./scoresaber')
+const beatleader = require('./beatleader')
 const tmp = require('tmp')
 const fs = require('fs')
 
@@ -23,8 +24,13 @@ function getDiffColor(diff) {
 }
 
 module.exports = {
-    getCard: async function(scoreSaberId) {
-        const player = await scoresaber.getPlayerDatas(scoreSaberId)
+    getCard: async function(leaderboard, playerId) {
+        let player
+        if(leaderboard === 'scoresaber') {
+            player = await scoresaber.getPlayerDatas(playerId)
+        } else if(leaderboard === 'beatleader') {
+            player = await beatleader.getPlayerDatas(playerId)
+        }
 
         const canvas = createCanvas(950, 380)
         const ctx = canvas.getContext('2d')

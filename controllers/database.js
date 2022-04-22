@@ -50,10 +50,11 @@ const Leaderboard = sequelize.define('leaderboard', {
         autoIncrement: true,
         primaryKey: true
     },
+    leaderboardName: DataTypes.STRING(255),
     memberId: DataTypes.STRING(255),
-    scoreSaberId: DataTypes.STRING(255),
-    scoreSaberName: DataTypes.STRING(255),
-    scoreSaberCountry: DataTypes.STRING(5),
+    playerId: DataTypes.STRING(255),
+    playerName: DataTypes.STRING(255),
+    playerCountry: DataTypes.STRING(5),
     pp: DataTypes.FLOAT,
     rank: DataTypes.INTEGER,
     countryRank: DataTypes.INTEGER,
@@ -72,7 +73,7 @@ const Members = sequelize.define('members', {
         primaryKey: true
     },
     memberId: DataTypes.STRING(255),
-    scoreSaberId: DataTypes.STRING(255),
+    playerId: DataTypes.STRING(255),
     top1: DataTypes.BOOLEAN
 }, {
     timestamps: false,

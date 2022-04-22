@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js')
 const { userMention, channelMention } = require('@discordjs/builders')
-const { CommandError, CommandInteractionError, ScoreSaberError } = require('../utils/error')
+const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const members = require('../controllers/members')
 const cardgenerator = require('../controllers/cardgenerator')
 const config = require('../config.json')
@@ -11,6 +11,22 @@ module.exports = {
         name: 'card',
         description: 'Génère votre carte de joueur',
         options: [
+            {
+                type: 'STRING',
+                name: 'leaderboard',
+                description: 'Choix du leaderboard',
+                choices: [
+                    {
+                        name: 'ScoreSaber',
+                        value: 'scoresaber'
+                    },
+                    {
+                        name: 'BeatLeader',
+                        value: 'beatleader'
+                    }
+                ],
+                required: false
+            },
             {
                 type: 'USER',
                 name: 'joueur',
@@ -26,6 +42,7 @@ module.exports = {
             if(interaction.channelId != cubeStalkerChannelId)
                 throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
 
+            const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const otherMember = interaction.options.getUser('joueur')
 
             let member
@@ -52,13 +69,13 @@ module.exports = {
 
             await interaction.reply({ embeds: [embed] })
 
-            const card = await cardgenerator.getCard(member.scoreSaberId)
+            const card = await cardgenerator.getCard(leaderboardChoice, member.scoreSaberId)
 
             await interaction.editReply({ files: [{attachment: card.name, name: member.scoreSaberId + '.png'}], embeds: [] })
 
             card.removeCallback()
         } catch(error) {
-            if(error instanceof CommandInteractionError || error instanceof ScoreSaberError) {
+            if(error instanceof CommandInteractionError || error instanceof ScoreSaberError || error instanceof BeatLeaderError) {
                 throw new CommandError(error.message, interaction.commandName)
             } else {
                 throw Error(error.message)

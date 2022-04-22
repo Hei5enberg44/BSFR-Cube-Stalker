@@ -16,8 +16,8 @@ module.exports = {
                 throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
 
             const commandsList = `\
-${inlineCode('/link')}: Lie votre profil ScoreSaber à votre compte Discord\n\
-${inlineCode('/unlink')}: Supprime la liaison de votre profil ScoreSaber à votre compte Discord\n\
+${inlineCode('/link')}: Lie votre profil ScoreSaber/BeatLeader à votre compte Discord\n\
+${inlineCode('/unlink')}: Supprime la liaison de votre profil ScoreSaber/BeatLeader à votre compte Discord\n\
 ${inlineCode('/me')}: Affiche vos informations de joueur ou celles d'un autre joueur\n\
 ${inlineCode('/card')}: Génère votre carte de joueur ou celle d'un autre joueur\n\
 ${inlineCode('/ld')}: Affiche le classement du serveur (pp ou acc)\n\

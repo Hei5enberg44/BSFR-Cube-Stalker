@@ -66,6 +66,15 @@ class ScoreSaberError extends Error {
     }
 }
 
+class BeatLeaderError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = this.constructor.name
+        Error.captureStackTrace(this, this.constructor)
+        Logger.log('ScoreSaber', 'ERROR', message)
+    }
+}
+
 class BeatSaverError extends Error {
     constructor(message) {
         super(message)
@@ -76,5 +85,5 @@ class BeatSaverError extends Error {
 }
 
 module.exports = {
-    DatabaseError, CommandError, CommandInteractionError, MemberError, LeaderboardError, Top1Error, CooldownError, ScoreSaberError, BeatSaverError
+    DatabaseError, CommandError, CommandInteractionError, MemberError, LeaderboardError, Top1Error, CooldownError, ScoreSaberError, BeatLeaderError, BeatSaverError
 }

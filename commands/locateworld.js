@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js')
 const { userMention, channelMention } = require('@discordjs/builders')
-const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError } = require('../utils/error')
+const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const members = require('../controllers/members')
 const leaderboard = require('../controllers/leaderboard')
 const config = require('../config.json')
@@ -10,6 +10,22 @@ module.exports = {
         name: 'locateworld',
         description: 'Affiche votre position dans le classement mondial',
         options: [
+            {
+                type: 'STRING',
+                name: 'leaderboard',
+                description: 'Choix du leaderboard',
+                choices: [
+                    {
+                        name: 'ScoreSaber',
+                        value: 'scoresaber'
+                    },
+                    {
+                        name: 'BeatLeader',
+                        value: 'beatleader'
+                    }
+                ],
+                required: false
+            },
             {
                 type: 'USER',
                 name: 'joueur',
@@ -31,6 +47,7 @@ module.exports = {
             if(interaction.channelId != cubeStalkerChannelId)
                 throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
             
+            const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const otherMember = interaction.options.getUser('joueur')
             const rank = interaction.options.getInteger('rang')
 
@@ -45,24 +62,24 @@ module.exports = {
                 // Informations sur le membre
                 member = await members.getMember(otherMember.id)
 
-                // On vérifie ici si le membre a lié son compte ScoreSaber ou non
+                // On vérifie ici si le membre a lié son compte ScoreSaber/BeatLeader ou non
                 if(!member) {
-                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord ${userMention(otherMember.id)}`)
+                    throw new CommandInteractionError(`Aucun profil ScoreSaber/BeatLeader n\'est lié pour le compte Discord ${userMention(otherMember.id)}`)
                 }
             } else {
                 // Informations sur le membre
                 member = await members.getMember(interaction.member.id)
 
-                // On vérifie ici si le membre a lié son compte ScoreSaber ou non
+                // On vérifie ici si le membre a lié son compte ScoreSaber/BeatLeader ou non
                 if(!member) {
-                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
+                    throw new CommandInteractionError('Aucun profil ScoreSaber/BeatLeader n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
                 }
             }
 
             await interaction.deferReply()
 
             // Données de classement ScoreSaber du joueur
-            const ld = rank ? await leaderboard.getGlobalLeaderboardByPlayerRank(rank) : await leaderboard.getGlobalLeaderboardByPlayerId(member.scoreSaberId)
+            const ld = rank ? await leaderboard.getGlobalLeaderboardByPlayerRank(leaderboardChoice, rank) : await leaderboard.getGlobalLeaderboardByPlayerId(leaderboardChoice, member.playerId)
 
             // On affiche le classement
             const embed = new MessageEmbed()
@@ -74,7 +91,7 @@ module.exports = {
             
             await interaction.editReply({ embeds: [ embed ] })
         } catch(error) {
-            if(error instanceof CommandInteractionError || error instanceof LeaderboardError || error instanceof ScoreSaberError) {
+            if(error instanceof CommandInteractionError || error instanceof LeaderboardError || error instanceof ScoreSaberError || error instanceof BeatLeaderError) {
                 throw new CommandError(error.message, interaction.commandName)
             } else {
                 throw Error(error.message)

@@ -9,7 +9,7 @@ const config = require('../config.json')
 module.exports = {
     data: {
         name: 'unlink',
-        description: 'Délie le profil ScoreSaber d\'un membre Discord',
+        description: 'Délie le profil ScoreSaber/BeatLeader d\'un membre Discord',
         options: [
             {
                 type: 'USER',
@@ -31,16 +31,16 @@ module.exports = {
             const member = interaction.options.getUser('joueur') ? interaction.options.getUser('joueur') : interaction.member
 
             // Si le membre n'a pas le rôle Admin ou Modérateur et essaye d'exécuter la commande sur un autre membre
-            if(!isAdmin && member.id !== interaction.member.id) throw new CommandInteractionError('Vous n\'êtes pas autorisé à délier le profil ScoreSaber d\'un autre membre que vous')
+            if(!isAdmin && member.id !== interaction.member.id) throw new CommandInteractionError('Vous n\'êtes pas autorisé à délier le profil ScoreSaber/BeatLeader d\'un autre membre que vous')
             
             const memberToUnlink = await members.getMember(member.id)
-            if(!memberToUnlink) throw new CommandInteractionError(`Il n'y a pas de profil ScoreSaber lié au membre ${userMention(member.id)}`)
+            if(!memberToUnlink) throw new CommandInteractionError(`Il n'y a pas de profil ScoreSaber/BeatLeader lié au membre ${userMention(member.id)}`)
 
             // Si le membre qui exécute la commande n'a pas le rôle Admin ou Modérateur, on lui ajoute un cooldown pour cette commande
             const cd = isAdmin ? null : await cooldown.checkCooldown('unlink', interaction.member.id, 60 * 60 * 24 * 30)
 
             // On demande confirmation pour exécuter la commande
-            let embedDesctiption = member.id === interaction.member.id ? '⚠️ Êtes-vous sûr(e) de vouloir délier votre profil ScoreSaber ?' : `⚠️ Êtes-vous sûr(e) de vouloir délier le profil ScoreSaber pour le membre ${userMention(member.id)} ?`
+            let embedDesctiption = member.id === interaction.member.id ? '⚠️ Êtes-vous sûr(e) de vouloir délier votre profil ScoreSaber/BeatLeader ?' : `⚠️ Êtes-vous sûr(e) de vouloir délier le profil ScoreSaber/BeatLeader pour le membre ${userMention(member.id)} ?`
             if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau le \`${cd.date}\``
             
             let embed = new MessageEmbed()
@@ -62,7 +62,7 @@ module.exports = {
                         // On ajoute le cooldown si le membre exécutant la commande n'a pas le rôle Admin ou Modérateur
                         if(!isAdmin) await cooldown.addCooldown('unlink', interaction.member.id, cd.timestamp)
 
-                        // On délie le profil ScoreSaber du membre
+                        // On délie le profil ScoreSaber/BeatLeader du membre
                         await members.delMember(member.id)
 
                         // On supprime les rôles pp du membre
@@ -71,7 +71,7 @@ module.exports = {
 
                         await confirmMessage.reactions.removeAll()
 
-                        embedDesctiption = `✅ Le profil ScoreSaber a bien été délié du compte ${userMention(member.id)}`
+                        embedDesctiption = `✅ Le profil ScoreSaber/BeatLeader a bien été délié du compte ${userMention(member.id)}`
                         if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau le \`${cd.date}\``
 
                         embed = new MessageEmbed()

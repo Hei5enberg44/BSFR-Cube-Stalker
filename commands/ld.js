@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js')
 const { channelMention } = require('@discordjs/builders')
-const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError } = require('../utils/error')
+const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const leaderboard = require('../controllers/leaderboard')
 const config = require('../config.json')
 
@@ -26,11 +26,27 @@ module.exports = {
                 required: true
             },
             {
+                type: 'STRING',
+                name: 'leaderboard',
+                description: 'Choix du leaderboard',
+                choices: [
+                    {
+                        name: 'ScoreSaber',
+                        value: 'scoresaber'
+                    },
+                    {
+                        name: 'BeatLeader',
+                        value: 'beatleader'
+                    }
+                ],
+                required: false
+            },
+            {
                 type: 'INTEGER',
                 name: 'page',
                 description: 'Page à afficher',
                 required: false
-            }
+            },
         ]
     },
 	async execute(interaction) {
@@ -40,6 +56,7 @@ module.exports = {
             if(interaction.channelId != cubeStalkerChannelId)
                 throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
             
+            const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const type = interaction.options.getString('classement')
             const page = interaction.options.getInteger('page') ?? 1
 
@@ -47,7 +64,7 @@ module.exports = {
 
             await interaction.deferReply()
 
-            const ld = await leaderboard.getLeaderboard(type, page)
+            const ld = await leaderboard.getLeaderboard(leaderboardChoice, type, page)
 
             // On affiche le classement
             const embed = new MessageEmbed()
@@ -58,7 +75,7 @@ module.exports = {
             
             await interaction.editReply({ embeds: [ embed ] })
         } catch(error) {
-            if(error instanceof CommandInteractionError || error instanceof ScoreSaberError || error instanceof LeaderboardError) {
+            if(error instanceof CommandInteractionError || error instanceof ScoreSaberError || error instanceof BeatLeaderError || error instanceof LeaderboardError) {
                 throw new CommandError(error.message, interaction.commandName)
             } else {
                 throw Error(error.message)
