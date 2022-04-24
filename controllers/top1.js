@@ -47,23 +47,23 @@ module.exports = {
             let page = 1
             let foundLastMap = false
 
-            const lastPlayedMap = await module.exports.getPlayerLastPlayedMap(player.scoreSaberId)
+            const lastPlayedMap = await module.exports.getPlayerLastPlayedMap(player.playerId)
 
             do {
-                const maps = await scoresaber.getPlayerRecentMaps(player.scoreSaberId, page)
+                const maps = await scoresaber.getPlayerRecentMaps(player.playerId, page)
                 for(let i = 0; i < maps.length; i++) {
                     const map = maps[i]
                     if(!lastPlayedMap) {
-                        await module.exports.addPlayerLastPlayedMap(player.scoreSaberId, map)
+                        await module.exports.addPlayerLastPlayedMap(player.playerId, map)
                         foundLastMap = true
                         break
                     } else {
                         if(page === 1 && i === 0)
-                            await module.exports.addPlayerLastPlayedMap(player.scoreSaberId, map)
+                            await module.exports.addPlayerLastPlayedMap(player.playerId, map)
                         
                         if(map.score.timeSet !== lastPlayedMap.timeSet) {
                             map.memberId = player.memberId
-                            map.scoreSaberId = player.scoreSaberId
+                            map.scoreSaberId = player.playerId
                             playersMaps.push(map)
                         } else {
                             foundLastMap = true
