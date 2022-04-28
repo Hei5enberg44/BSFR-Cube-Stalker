@@ -1,10 +1,9 @@
-const { MessageEmbed } = require('discord.js')
-const { userMention, channelMention } = require('@discordjs/builders')
+const { userMention } = require('@discordjs/builders')
+const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, CooldownError } = require('../utils/error')
 const cooldown = require('../controllers/cooldown')
 const members = require('../controllers/members')
 const roles = require('../controllers/roles')
-const config = require('../config.json')
 
 module.exports = {
     data: {
@@ -17,15 +16,17 @@ module.exports = {
                 description: 'Joueur à délier',
                 required: false
             }
-        ]
+        ],
+        default_member_permissions: '0'
     },
+    channels: [ 'cubeStalker' ],
+
+    /**
+     * Exécution de la commande
+     * @param {CommandInteraction} interaction intéraction Discord
+     */
 	async execute(interaction) {
         try {
-            // On vérifie que la commande est exécutée dans le bon channel
-            const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
-            if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
-            
             const isAdmin = interaction.member.roles.cache.find(role => ["Admin", "Modérateur"].indexOf(role.name) !== -1) !== undefined
 
             const member = interaction.options.getUser('joueur') ? interaction.options.getUser('joueur') : interaction.member
@@ -43,7 +44,7 @@ module.exports = {
             let embedDesctiption = member.id === interaction.member.id ? '⚠️ Êtes-vous sûr(e) de vouloir délier votre profil ScoreSaber/BeatLeader ?' : `⚠️ Êtes-vous sûr(e) de vouloir délier le profil ScoreSaber/BeatLeader pour le membre ${userMention(member.id)} ?`
             if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau le \`${cd.date}\``
             
-            let embed = new MessageEmbed()
+            let embed = new Embed()
                     .setColor('#2ECC71')
                     .setDescription(embedDesctiption)
             
@@ -74,7 +75,7 @@ module.exports = {
                         embedDesctiption = `✅ Le profil ScoreSaber/BeatLeader a bien été délié du compte ${userMention(member.id)}`
                         if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau le \`${cd.date}\``
 
-                        embed = new MessageEmbed()
+                        embed = new Embed()
                                 .setColor('#2ECC71')
                                 .setDescription(embedDesctiption)
 
@@ -82,7 +83,7 @@ module.exports = {
                     } else if(reaction.emoji.name === '❎') {
                         await confirmMessage.reactions.removeAll()
 
-                        embed = new MessageEmbed()
+                        embed = new Embed()
                                 .setColor('#E74C3C')
                                 .setDescription('❌ L\'opération a été annulée')
 
@@ -91,7 +92,7 @@ module.exports = {
                 }).catch(async (collected) => {
                     await confirmMessage.reactions.removeAll()
 
-                    embed = new MessageEmbed()
+                    embed = new Embed()
                             .setColor('#E74C3C')
                             .setDescription('❌ Vous avez mis trop de temps à répondre')
 

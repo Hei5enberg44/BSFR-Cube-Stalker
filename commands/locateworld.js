@@ -1,9 +1,8 @@
-const { MessageEmbed } = require('discord.js')
-const { userMention, channelMention } = require('@discordjs/builders')
+const { userMention } = require('@discordjs/builders')
+const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const members = require('../controllers/members')
 const leaderboard = require('../controllers/leaderboard')
-const config = require('../config.json')
 
 module.exports = {
     data: {
@@ -38,15 +37,17 @@ module.exports = {
                 description: 'Affiche la position d\'un joueur par rapport à son rang',
                 required: false
             }
-        ]
+        ],
+        default_member_permissions: '0'
     },
+    channels: [ 'cubeStalker' ],
+
+    /**
+     * Exécution de la commande
+     * @param {CommandInteraction} interaction intéraction Discord
+     */
 	async execute(interaction) {
         try {
-            // On vérifie que la commande est exécutée dans le bon channel
-            const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
-            if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
-            
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const otherMember = interaction.options.getUser('joueur')
             const rank = interaction.options.getInteger('rang')
@@ -82,12 +83,11 @@ module.exports = {
             const ld = rank ? await leaderboard.getGlobalLeaderboardByPlayerRank(leaderboardChoice, rank) : await leaderboard.getGlobalLeaderboardByPlayerId(leaderboardChoice, member.playerId)
 
             // On affiche le classement
-            const embed = new MessageEmbed()
+            const embed = new Embed()
                 .setColor('#000000')
                 .setTitle('Classement Mondial')
                 .setURL('https://scoresaber.com/global')
                 .setDescription(ld)
-                .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
             
             await interaction.editReply({ embeds: [ embed ] })
         } catch(error) {

@@ -1,12 +1,13 @@
 const CronJob = require('cron').CronJob
-const { Client, MessageEmbed } = require('discord.js')
+const { Client } = require('discord.js')
 const { userMention, bold, hyperlink, time } = require('@discordjs/builders')
+const Embed = require('../utils/embed')
+const { Top1Error } = require('../utils/error')
 const Logger = require('../utils/logger')
 const leaderboard = require('./leaderboard')
 const roles = require('./roles')
 const top1 = require('./top1')
 const config = require('../config.json')
-const { Top1Error } = require('../utils/error')
 
 module.exports = {
     /**
@@ -76,7 +77,7 @@ module.exports = {
                 const ssIcon = guild.emojis.cache.find(e => e.name === rankedIconName)
                 const ssIconId = ssIcon.id
 
-                const embed = new MessageEmbed()
+                const embed = new Embed()
                     .setColor(color ?? '#F1C40F')
                     .setTitle(top.songName)
                     .setURL(`https://scoresaber.com/leaderboard/${top.leaderboardId}`)
@@ -96,9 +97,7 @@ module.exports = {
 
                 if(top.beatenScoreSaberId !== '') embed.addField('Bien joué !', `Tu es passé(e) devant ${hyperlink(top.beatenScoreSaberName, `https://scoresaber.com/u/${top.beatenScoreSaberId}`)}`)
 
-                embed.setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
-
-                const top1FRChannel = guild.channels.cache.find(c => c.id === config.guild.channels.top1fr.id)
+                const top1FRChannel = guild.channels.cache.find(c => c.id === config.guild.channels.top1fr)
                 top1FRChannel.send({ embeds: [embed] })
             }
 

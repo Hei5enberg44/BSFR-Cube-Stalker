@@ -1,9 +1,7 @@
-const { MessageEmbed } = require('discord.js')
-const { channelMention } = require('@discordjs/builders')
+const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, Top1Error } = require('../utils/error')
 const members = require('../controllers/members')
 const top1 = require('../controllers/top1')
-const config = require('../config.json')
 
 module.exports = {
 	data: {
@@ -16,15 +14,17 @@ module.exports = {
                 description: 'True: s\'inscrire au top 1 FR, False: se désinscrire du top 1 FR',
                 required: true
             }
-        ]
+        ],
+        default_member_permissions: '0'
     },
+    channels: [ 'cubeStalker' ],
+
+    /**
+     * Exécution de la commande
+     * @param {CommandInteraction} interaction intéraction Discord
+     */
 	async execute(interaction) {
         try {
-            // On vérifie que la commande est exécutée dans le bon channel
-            const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
-            if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
-            
             const subscribe = interaction.options.getBoolean('subscribe')
 
             // Identifiant du membre exécutant la commande
@@ -57,7 +57,7 @@ module.exports = {
                 message = 'Vous êtes maintenant inscrit au top 1 FR'
             }
 
-            const embed = new MessageEmbed()
+            const embed = new Embed()
                 .setColor('#2ECC71')
                 .setDescription(message)
             

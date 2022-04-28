@@ -1,5 +1,5 @@
-const { MessageEmbed } = require('discord.js')
-const { userMention, channelMention, bold } = require('@discordjs/builders')
+const { userMention, bold } = require('@discordjs/builders')
+const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const { countryCodeEmoji } = require('../utils/country-code-emoji')
 const roles = require('../controllers/roles')
@@ -7,7 +7,6 @@ const members = require('../controllers/members')
 const leaderboard = require('../controllers/leaderboard')
 const scoresaber = require('../controllers/scoresaber')
 const beatleader = require('../controllers/beatleader')
-const config = require('../config.json')
 
 module.exports = {
 	data: {
@@ -36,15 +35,17 @@ module.exports = {
                 description: 'Affiche les informations d\'un autre joueur',
                 required: false
             }
-        ]
+        ],
+        default_member_permissions: '0'
     },
+    channels: [ 'cubeStalker' ],
+
+    /**
+     * Exécution de la commande
+     * @param {CommandInteraction} interaction intéraction Discord
+     */
 	async execute(interaction) {
         try {
-            // On vérifie que la commande est exécutée dans le bon channel
-            const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
-            if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
-            
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const otherMember = interaction.options.getUser('joueur')
 
@@ -95,7 +96,7 @@ module.exports = {
             if(!oldLd) {
                 ld = await leaderboard.addMemberLeaderboard(leaderboardChoice, memberId, playerDatas)
 
-                embeds.push(new MessageEmbed()
+                embeds.push(new Embed()
                     .setColor('#2ECC71')
                     .setDescription(`👏 ${userMention(memberId)} a été ajouté au classement du serveur !`)
                 )
@@ -163,7 +164,7 @@ module.exports = {
             }
 
             // On affiche les informations ScoreSaber du membre
-            embeds.push(new MessageEmbed()
+            embeds.push(new Embed()
                 .setColor(roles.getMemberPpRoleColor(memberToUpdate) ?? memberToUpdate.displayHexColor)
                 .setTitle(playerDatas.name)
                 .setURL(playerDatas.url)
@@ -176,7 +177,6 @@ module.exports = {
                     { name: 'Meilleur score', value: `1️⃣ ${playerDatas.topPP.name} [${playerDatas.topPP.difficulty}] by ${playerDatas.topPP.author}` },
                     { name: 'Infos sur le meilleur score', value: `🦾 Rank: ${playerDatas.topPP.rank} | PP: ${new Intl.NumberFormat('en-US').format(playerDatas.topPP.pp)} | Acc: ${(playerDatas.topPP.acc).toFixed(2)}% | FC: ${playerDatas.topPP.fc ? 'Oui' : 'Non'}` }
                 )
-                .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
             )
             
             await interaction.editReply({ embeds: embeds })

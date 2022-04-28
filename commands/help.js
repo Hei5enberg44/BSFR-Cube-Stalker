@@ -1,20 +1,21 @@
-const { MessageEmbed } = require('discord.js')
-const { channelMention, inlineCode } = require('@discordjs/builders')
+const { inlineCode } = require('@discordjs/builders')
+const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError } = require('../utils/error')
-const config = require('../config.json')
 
 module.exports = {
 	data: {
 		name: 'help',
-		description: 'Affiche l\'aide'
+		description: 'Affiche l\'aide',
+        default_member_permissions: '0'
     },
+    channels: [ 'cubeStalker' ],
+
+    /**
+     * Exécution de la commande
+     * @param {CommandInteraction} interaction intéraction Discord
+     */
 	async execute(interaction) {
         try {
-            // On vérifie que la commande est exécutée dans le bon channel
-            const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
-            if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
-
             const commandsList = `\
 ${inlineCode('/link')}: Lie votre profil ScoreSaber/BeatLeader à votre compte Discord\n\
 ${inlineCode('/unlink')}: Supprime la liaison de votre profil ScoreSaber/BeatLeader à votre compte Discord\n\
@@ -26,11 +27,10 @@ ${inlineCode('/top1')}: S\'inscire ou se désinscrire du top 1 FR\n\
 ${inlineCode('/world')}: Affiche le classement mondial\
 `
             
-            const embed = new MessageEmbed()
+            const embed = new Embed()
                 .setColor('#000000')
                 .setTitle('Aide')
                 .addField('Liste des commandes', commandsList)
-                .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
             
             await interaction.reply({ embeds: [ embed ], ephemeral: true })
         } catch(error) {

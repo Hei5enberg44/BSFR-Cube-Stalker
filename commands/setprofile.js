@@ -1,9 +1,8 @@
-const { MessageEmbed } = require('discord.js')
-const { userMention, channelMention } = require('@discordjs/builders')
+const { userMention } = require('@discordjs/builders')
+const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, MemberError, ScoreSaberError } = require('../utils/error')
 const members = require('../controllers/members')
 const scoresaber = require('../controllers/scoresaber')
-const config = require('../config.json')
 
 module.exports = {
     data: {
@@ -23,16 +22,17 @@ module.exports = {
                 required: true
             }
         ],
-        defaultPermission: false
+        default_member_permissions: '0'
     },
-    roles: [ "Admin", "Modérateur" ],
+    roles: [ 'Admin', 'Modérateur' ],
+    channels: [ 'cubeStalker' ],
+
+    /**
+     * Exécution de la commande
+     * @param {CommandInteraction} interaction intéraction Discord
+     */
 	async execute(interaction) {
         try {
-            // On vérifie que la commande est exécutée dans le bon channel
-            const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
-            if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
-            
             const url = interaction.options.getString('lien_leaderboard')
             const member = interaction.options.getUser('joueur')
 
@@ -49,13 +49,12 @@ module.exports = {
 
             await members.addMember(member.id, playerProfil.id, true)
             
-            const embed = new MessageEmbed()
+            const embed = new Embed()
                     .setColor('#2ECC71')
                     .setTitle(playerProfil.name)
                     .setURL(playerProfil.url)
                     .setThumbnail(playerProfil.avatar)
                     .setDescription(`Le profil ScoreSaber/BeatLeader a bien été lié avec le compte Discord de ${userMention(member.id)}`)
-                    .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
 
             await interaction.editReply({ embeds: [embed] })
         } catch(error) {

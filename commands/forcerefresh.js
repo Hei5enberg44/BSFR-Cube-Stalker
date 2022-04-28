@@ -1,24 +1,23 @@
-const { MessageEmbed } = require('discord.js')
-const { channelMention } = require('@discordjs/builders')
+const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError } = require('../utils/error')
 const leaderboard = require('../controllers/leaderboard')
-const config = require('../config.json')
 
 module.exports = {
     data: {
         name: 'forcerefresh',
         description: 'Actualise l\'ensemble du serveur',
-        defaultPermission: false
+        default_member_permissions: '0'
     },
-    roles: [ "Admin", "Modérateur" ],
+    roles: [ 'Admin', 'Modérateur' ],
+    channels: [ 'cubeStalker' ],
+
+    /**
+     * Exécution de la commande
+     * @param {CommandInteraction} interaction intéraction Discord
+     */
 	async execute(interaction) {
         try {
-            // On vérifie que la commande est exécutée dans le bon channel
-            const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
-            if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
-            
-            let embed = new MessageEmbed()
+            let embed = new Embed()
                 .setColor('#F1C40F')
                 .setDescription('🛠️ Actualisation du serveur en cours...')
 
@@ -28,7 +27,7 @@ module.exports = {
             const members = interaction.guild.members.cache
             await leaderboard.refreshLeaderboard(members)
 
-            embed = new MessageEmbed()
+            embed = new Embed()
                 .setColor('#2ECC71')
                 .setDescription('Le serveur a bien été actualisé')
 

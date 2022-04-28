@@ -1,9 +1,8 @@
-const { MessageEmbed } = require('discord.js')
-const { userMention, channelMention } = require('@discordjs/builders')
+const { userMention } = require('@discordjs/builders')
+const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const members = require('../controllers/members')
 const cardgenerator = require('../controllers/cardgenerator')
-const config = require('../config.json')
 
 module.exports = {
     data: {
@@ -32,15 +31,17 @@ module.exports = {
                 description: 'Génère la carte d\'un autre membre',
                 required: false
             }
-        ]
+        ],
+        default_member_permissions: '0'
     },
+    channels: [ 'birthday' ],
+
+    /**
+     * Exécution de la commande
+     * @param {CommandInteraction} interaction intéraction Discord
+     */
 	async execute(interaction) {
         try {
-            // On vérifie que la commande est exécutée dans le bon channel
-            const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
-            if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
-
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const otherMember = interaction.options.getUser('joueur')
 
@@ -62,7 +63,7 @@ module.exports = {
                 }
             }
 
-            const embed = new MessageEmbed()
+            const embed = new Embed()
                 .setColor('#F1C40F')
                 .setDescription('🛠️ Fabrication de la carte en cours...')
 

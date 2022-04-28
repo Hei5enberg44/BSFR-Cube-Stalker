@@ -1,5 +1,5 @@
-const { MessageEmbed } = require('discord.js')
 const { channelMention } = require('@discordjs/builders')
+const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const leaderboard = require('../controllers/leaderboard')
 const config = require('../config.json')
@@ -47,12 +47,19 @@ module.exports = {
                 description: 'Page à afficher',
                 required: false
             },
-        ]
+        ],
+        default_member_permissions: '0'
     },
+    channels: [ 'cubeStalker' ],
+
+    /**
+     * Exécution de la commande
+     * @param {CommandInteraction} interaction intéraction Discord
+     */
 	async execute(interaction) {
         try {
             // On vérifie que la commande est exécutée dans le bon channel
-            const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
+            const cubeStalkerChannelId = config.guild.channels.cubeStalker
             if(interaction.channelId != cubeStalkerChannelId)
                 throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
             
@@ -67,11 +74,10 @@ module.exports = {
             const ld = await leaderboard.getLeaderboard(leaderboardChoice, type, page)
 
             // On affiche le classement
-            const embed = new MessageEmbed()
+            const embed = new Embed()
                 .setColor('#000000')
                 .setTitle(ld.title)
                 .setDescription(ld.content)
-                .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
             
             await interaction.editReply({ embeds: [ embed ] })
         } catch(error) {

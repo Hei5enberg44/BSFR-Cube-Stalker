@@ -1,8 +1,6 @@
-const { MessageEmbed } = require('discord.js')
-const { channelMention } = require('@discordjs/builders')
+const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, LeaderboardError } = require('../utils/error')
 const leaderboard = require('../controllers/leaderboard')
-const config = require('../config.json')
 
 module.exports = {
 	data: {
@@ -31,15 +29,17 @@ module.exports = {
                 description: 'Nombre de joueurs à afficher (10 par défaut, 20 maximum)',
                 required: false
             }
-        ]
+        ],
+        default_member_permissions: '0'
     },
+    channels: [ 'cubeStalker' ],
+
+    /**
+     * Exécution de la commande
+     * @param {CommandInteraction} interaction intéraction Discord
+     */
 	async execute(interaction) {
         try {
-            // On vérifie que la commande est exécutée dans le bon channel
-            const cubeStalkerChannelId = config.guild.channels.cubeStalker.id
-            if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
-            
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const count = interaction.options.getInteger('nombre') ?? 10
 
@@ -50,12 +50,11 @@ module.exports = {
             const ld = await leaderboard.getGlobalLeaderboard(leaderboardChoice, count)
 
             // On affiche le classement
-            const embed = new MessageEmbed()
+            const embed = new Embed()
                 .setColor('#000000')
                 .setTitle('Classement Mondial')
                 .setURL('https://scoresaber.com/global')
                 .setDescription(ld)
-                .setFooter({ text: `${config.appName} ${config.appVersion}`, iconURL: config.appLogo })
             
             await interaction.editReply({ embeds: [ embed ] })
         } catch(error) {
