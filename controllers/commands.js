@@ -1,10 +1,14 @@
-const { Collection, MessageEmbed } = require('discord.js')
-const Logger = require('../utils/logger')
+const { Client, Collection, MessageEmbed } = require('discord.js')
+const { channelMention } = require('@discordjs/builders')
 const { CommandError } = require('../utils/error')
+const Logger = require('../utils/logger')
 const config = require('../config.json')
 const fs = require('fs')
 
 class Commands {
+    /**
+     * @param {Client} client client Discord
+     */
     constructor(client) {
         this.client = client
     }
@@ -29,27 +33,8 @@ class Commands {
 
         // On applique les rôles aux commandes
         Logger.log('CommandManager', 'INFO', `Actualisation des commandes (/) de l'application`)
-        const guild = await this.client.guilds.cache.get(config.guild.id)
-        await guild.commands.set(commands).then(cmds => {
-            const fullPermissions = []
-            for(const [ commandId, cmd ] of cmds.entries()) {
-                const roles = commandsRoles.find(cr => cr.name === cmd.name).roles
-                if(roles) {
-                    const permissions = []
-                    for(const role of roles) {
-                        const roleId = config.guild.roles[role]
-                        permissions.push({
-                            id: roleId,
-                            type: 'ROLE',
-                            permission: true
-                        })
-                    }
-                    fullPermissions.push({ id: commandId, permissions: permissions })
-                }
-            }
-
-            guild.commands.permissions.set({ fullPermissions: fullPermissions })
-        })
+        const guild = this.client.guilds.cache.get(config.guild.id)
+        await guild.commands.set(commands)
         Logger.log('CommandManager', 'INFO', 'Fin de l\'actualisation des commandes (/) de l\'application')
     }
     
@@ -65,7 +50,17 @@ class Commands {
             if(!command) return
         
             try {
-                Logger.log('CommandManager', 'INFO', `${interaction.user.username}#${interaction.user.discriminator} a exécuté la commande "/${interaction.commandName}"`)
+                Logger.log('CommandManager', 'INFO', `${interaction.user.tag} a exécuté la commande "/${interaction.commandName}"`)
+
+                // On test si la commande est exécutée depuis le bon channel
+                if(command.channels) {
+                    for(const channel of command.channels) {
+                        if(config.guild.channels[channel] !== interaction.channelId) {
+                            throw new CommandError('Merci d\'effectuer cette commande dans un des channels suivant :\n' + command.channels.map(channel => channelMention(config.guild.channels[channel])).join('\n'), interaction.commandName)
+                        }
+                    }
+                }
+
                 await command.execute(interaction)
             } catch(error) {
                 let errMessage
