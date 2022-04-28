@@ -7,7 +7,7 @@ const beatleader = require('../controllers/beatleader')
 module.exports = {
     data: {
         name: 'link',
-        description: 'Lie votre compte ScoreSaber ou BeatLeader à votre compte Discord',
+        description: 'Lie votre profil ScoreSaber ou BeatLeader à votre compte Discord',
         options: [
             {
                 type: 'STRING',

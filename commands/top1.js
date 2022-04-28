@@ -6,7 +6,7 @@ const top1 = require('../controllers/top1')
 module.exports = {
 	data: {
 		name: 'top1',
-		description: 'S\'inscire ou se désinscrire du top 1 FR',
+		description: 'S\'inscrire ou se désinscrire du top 1 FR',
         options: [
             {
                 type: 'BOOLEAN',
