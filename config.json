@@ -1,0 +1,25 @@
+{
+    "appName": "Cube Stalker",
+    "appVersion": "5.5.0",
+    "appLogo": "https://cdn.discordapp.com/avatars/685828417442283541/f632ba8478225b0cff72a0f23c59dfd6.webp?size=128",
+    "token": "",
+    "clientId": "",
+    "guild": {
+        "id": "",
+        "channels": {
+            "cubeStalker": "",
+            "top1fr": ""
+        },
+        "roles": {
+            "Admin": "",
+            "Modérateur": ""
+        }
+    },
+    "database": {
+        "host": "localhost",
+        "port": 3306,
+        "username": "",
+        "password": "",
+        "name": "bsfr_cubestalker"
+    }
+}
