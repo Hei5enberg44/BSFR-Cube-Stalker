@@ -318,7 +318,7 @@ module.exports = {
     refreshLeaderboard: async function(members) {
         const ld = await Leaderboard.findAll({
             where: {
-                leaderboardName: leaderboardName
+                leaderboardName: 'scoresaber'
             }
         })
 
