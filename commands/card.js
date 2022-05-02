@@ -34,7 +34,7 @@ module.exports = {
         ],
         default_member_permissions: '0'
     },
-    channels: [ 'birthday' ],
+    channels: [ 'cubeStalker' ],
 
     /**
      * Exécution de la commande
