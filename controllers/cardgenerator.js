@@ -60,12 +60,16 @@ module.exports = {
         ctx.drawImage(avatar, 56, 56, 110, 110)
         ctx.restore()
 
+        // Icon Leaderboard
+        const ldIcon = await loadImage(`./assets/images/card/${leaderboard === 'scoresaber' ? 'ss' : (leaderboard === 'beatleader' ? 'bl' : '')}.png`)
+        ctx.drawImage(ldIcon, 186, 65, 40, 40)
+
         // Pseudo du joueur
         ctx.font = '40px "Neon Tubes"'
         ctx.fillStyle = '#FFFFFF'
         ctx.shadowColor = 'black'
         ctx.shadowBlur = 8
-        ctx.fillText(player.name, 186, 100, 504)
+        ctx.fillText(player.name, 242, 100, 448)
 
         // Drapeau
         const flagPath = `./assets/images/card/flags/${player.country.toUpperCase()}.png`
@@ -189,6 +193,16 @@ module.exports = {
         // ctx.beginPath()
         // ctx.moveTo(186, 0)
         // ctx.lineTo(186, 380)
+        // ctx.stroke()
+
+        // ctx.beginPath()
+        // ctx.moveTo(226, 0)
+        // ctx.lineTo(226, 380)
+        // ctx.stroke()
+
+        // ctx.beginPath()
+        // ctx.moveTo(242, 0)
+        // ctx.lineTo(242, 380)
         // ctx.stroke()
 
         // ctx.beginPath()

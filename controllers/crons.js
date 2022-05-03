@@ -74,15 +74,15 @@ module.exports = {
                 const color = member ? roles.getMemberPpRoleColor(member) : null
 
                 const rankedIconName = 'ss'
-                const ssIcon = guild.emojis.cache.find(e => e.name === rankedIconName)
-                const ssIconId = ssIcon.id
+                const rankedIcon = guild.emojis.cache.find(e => e.name === rankedIconName)
+                const rankedIconId = rankedIcon?.id
 
                 const embed = new Embed()
                     .setColor(color ?? '#F1C40F')
                     .setTitle(top.songName)
                     .setURL(`https://scoresaber.com/leaderboard/${top.leaderboardId}`)
                     .setThumbnail(top.songCoverUrl)
-                    .setDescription(`${(top.ranked && ssIcon) ? `<:${rankedIconName}:${ssIconId}> ` : ''}${bold(`${top.levelDifficulty.replace('ExpertPlus', 'Expert+')} (${top.levelGameMode})`)} par ${bold(top.levelAuthorName)}\n${bold('Date')} : ${time(new Date(top.timeSet))}`)
+                    .setDescription(`${(top.ranked && rankedIcon) ? `<:${rankedIconName}:${rankedIconId}> ` : ''}${bold(`${top.levelDifficulty.replace('ExpertPlus', 'Expert+')} (${top.levelGameMode})`)} par ${bold(top.levelAuthorName)}\n${bold('Date')} : ${time(new Date(top.timeSet))}`)
                     .addFields(
                         { name: 'Joueur', value: `${userMention(top.memberId)}`, inline: true },
                         { name: 'ScoreSaber', value: hyperlink(top.scoreSaberName, `https://scoresaber.com/u/${top.scoreSaberId}`), inline: true },

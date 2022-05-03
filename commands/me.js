@@ -164,9 +164,13 @@ module.exports = {
             }
 
             // On affiche les informations ScoreSaber du membre
+            const ldIconName = leaderboardChoice === 'scoresaber' ? 'ss' : (leaderboardChoice === 'beatleader' ? 'bl' : '')
+            const ldIcon = interaction.guild.emojis.cache.find(e => e.name === ldIconName)
+            const ldIconId = ldIcon?.id
+
             embeds.push(new Embed()
                 .setColor(roles.getMemberPpRoleColor(memberToUpdate) ?? memberToUpdate.displayHexColor)
-                .setTitle(playerDatas.name)
+                .setTitle(`${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''}${playerDatas.name}`)
                 .setURL(playerDatas.url)
                 .setThumbnail(playerDatas.avatar)
                 .addFields(
