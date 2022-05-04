@@ -1,8 +1,8 @@
-const members = require('./members')
 const scoresaber = require('./scoresaber')
 const beatsaver = require('./beatsaver')
 const { Top1, LastMembersMaps, Members } = require('./database')
 const { Top1Error, ScoreSaberError, BeatSaverError } = require('../utils/error')
+const Logger = require('../utils/logger')
 
 function calcAcc(mapDetails, levelDifficulty, levelGameMode, score) {
     const notes = mapDetails.versions[0].diffs.filter(diff => diff.difficulty === levelDifficulty && diff.characteristic === levelGameMode)[0].notes
@@ -28,9 +28,7 @@ module.exports = {
                 }
             }
         } catch(error) {
-            if(error instanceof ScoreSaberError) {
-                throw new Top1Error('Une erreur est survenue lors du scan des top 1 FR : ' + error.message)
-            }
+            throw new Top1Error(`Une erreur est survenue lors du scan des top 1 FR : ${error.message}`)
         }
     },
 
@@ -41,38 +39,59 @@ module.exports = {
      */
     getPlayersRecentMaps: async function() {
         const playersList = await module.exports.getSubscribed()
+
         const playersMaps = []
 
         for(const player of playersList) {
-            let page = 1
-            let foundLastMap = false
+            try {
+                let page = 1
+                let foundLastMap = false
 
-            const lastPlayedMap = await module.exports.getPlayerLastPlayedMap(player.playerId)
+                const lastPlayedMap = await module.exports.getPlayerLastPlayedMap(player.playerId)
 
-            do {
-                const maps = await scoresaber.getPlayerRecentMaps(player.playerId, page)
-                for(let i = 0; i < maps.length; i++) {
-                    const map = maps[i]
-                    if(!lastPlayedMap) {
-                        await module.exports.addPlayerLastPlayedMap(player.playerId, map)
-                        foundLastMap = true
+                // Si le joueur n'a pas joué de nouvelle map depuis 1 mois, on le désinscrit du top 1 FR
+                if(lastPlayedMap) {
+                    const date = new Date()
+                    const lastPlayedMapDate = new Date(lastPlayedMap.timeSet).getTime()
+                    const expirationDate = date.setMonth(date.getMonth() - 1)
+                    if(lastPlayedMapDate < expirationDate) {
+                        await module.exports.subscribe(player.playerId, false)
+                        Logger.log('Top1FR', 'INFO', `Le joueur ${player.playerId} est inactif depuis 1 mois. Celui-ci a été désinscrit du top 1 FR.`)
                         break
-                    } else {
-                        if(page === 1 && i === 0)
-                            await module.exports.addPlayerLastPlayedMap(player.playerId, map)
-                        
-                        if(map.score.timeSet !== lastPlayedMap.timeSet) {
-                            map.memberId = player.memberId
-                            map.scoreSaberId = player.playerId
-                            playersMaps.push(map)
-                        } else {
-                            foundLastMap = true
-                            break
-                        }
                     }
                 }
-                page++
-            } while(!foundLastMap)
+
+                do {
+                    const maps = await scoresaber.getPlayerRecentMaps(player.playerId, page)
+                    for(let i = 0; i < maps.length; i++) {
+                        const map = maps[i]
+                        if(!lastPlayedMap) {
+                            await module.exports.addPlayerLastPlayedMap(player.playerId, map)
+                            foundLastMap = true
+                            break
+                        } else {
+                            if(page === 1 && i === 0)
+                                await module.exports.addPlayerLastPlayedMap(player.playerId, map)
+                            
+                            if(map.score.timeSet !== lastPlayedMap.timeSet) {
+                                map.memberId = player.memberId
+                                map.scoreSaberId = player.playerId
+                                playersMaps.push(map)
+                            } else {
+                                foundLastMap = true
+                                break
+                            }
+                        }
+                    }
+                    page++
+                } while(!foundLastMap)
+            } catch(error) {
+                if(error instanceof ScoreSaberError) {
+                    Logger.log('Top1FR', 'ERROR', error.message)
+                } else {
+                    throw new Error(error.message)
+                }
+            }
         }
 
         return playersMaps
@@ -85,7 +104,6 @@ module.exports = {
      */
     getPlayerLastPlayedMap: async function(scoreSaberId) {
         const lastPlayedMap = await LastMembersMaps.findOne({ where: { scoreSaberId: scoreSaberId } })
-
         return lastPlayedMap
     },
 
@@ -151,11 +169,10 @@ module.exports = {
 
     /**
      * Récupère les top 1 FR depuis la base de données
-     * @returns {Promise<Object[]>} liste des maps
+     * @returns {Promise<Array<Object>>} liste des maps
      */
     getTop1FR: async function() {
         const top1FR = await Top1.findAll()
-
         return top1FR
     },
 
@@ -171,33 +188,33 @@ module.exports = {
         })
     },
 
+    /**
+     * Récupère la liste des joueurs inscrits au top 1 FR
+     * @returns {Promise<Array<Object>>}
+     */
     getSubscribed: async function() {
         const subscribed = await Members.findAll({ where: { top1: true } })
-
         return subscribed
     },
 
     /**
-     * Vérifie si un membre est inscript au top 1 FR
-     * @param {string} memberId identifiant du membre Discord
-     * @returns {Promise<boolean>}
-     */
-    isSubscribed: async function(memberId) {
-        const member = await members.getMember(memberId)
-
-        return member.top1 !== undefined ? member.top1 : true
-    },
-
-    /**
      * Inscrit/Désinscrit un membre au top 1 FR
-     * @param {string} memberId identifiant du membre Discord
+     * @param {string} playerId identifiant leaderboard du joueur
      * @param {boolean} subscribe
      */
-    subscribe: async function(memberId, subscribe) {
+    subscribe: async function(playerId, subscribe) {
         await Members.update({ top1: subscribe }, {
             where: {
-                memberId: memberId
+                playerId: playerId
             }
         })
+
+        if(!subscribe) {
+            await LastMembersMaps.destroy({
+                where: {
+                    scoreSaberId: playerId
+                }
+            })
+        }
     }
 }

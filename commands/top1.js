@@ -2,6 +2,7 @@ const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, Top1Error } = require('../utils/error')
 const members = require('../controllers/members')
 const top1 = require('../controllers/top1')
+const Logger = require('../utils/logger')
 
 module.exports = {
 	data: {
@@ -38,7 +39,7 @@ module.exports = {
                 throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
             }
 
-            const isSubscribed = await top1.isSubscribed(memberId)
+            const isSubscribed = member.top1
 
             // Si le membre est déjà inscrit au top 1 FR
             if(isSubscribed === subscribe && subscribe === true)
@@ -50,10 +51,12 @@ module.exports = {
 
             let message = ''
             if(isSubscribed) {
-                await top1.subscribe(memberId, false)
+                await top1.subscribe(member.playerId, false)
+                Logger.log('Top1FR', 'INFO', `${interaction.user.tag} est maintenant désinscrit du top 1 FR`)
                 message = 'Vous êtes maintenant désinscrit du top 1 FR'
             } else {
-                await top1.subscribe(memberId, true)
+                await top1.subscribe(member.playerId, true)
+                Logger.log('Top1FR', 'INFO', `${interaction.user.tag} est maintenant sinscrit au top 1 FR`)
                 message = 'Vous êtes maintenant inscrit au top 1 FR'
             }
 
