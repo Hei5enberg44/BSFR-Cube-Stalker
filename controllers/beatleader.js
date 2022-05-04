@@ -24,8 +24,8 @@ module.exports = {
 
                 error = false
             } else {
-                if(res.status === 404) throw Error('La ressource demandée est introuvable')
-                if(res.status === 422) throw Error('La ressource demandée est introuvable')
+                if(res.status === 404) throw Error('Erreur 404 : Page introuvable')
+                if(res.status === 422) throw Error('Erreur 422 : La ressource demandée est introuvable')
                 if(res.status === 500) {
                     Logger.log('BeatLeader', 'ERROR', 'Erreur 500, nouvel essai dans 3 secondes')
                     if(retries < 5) await wait(3)
@@ -153,7 +153,7 @@ module.exports = {
 
             return maps
         } catch(error) {
-            throw new BeatLeaderError('Une erreur est survenue lors de la récupération des maps récente du joueur')
+            throw new BeatLeaderError(`Une erreur est survenue lors de la récupération des maps récentes pour le joueur ${beatLeaderId} (${error.message})`)
         }
     },
 
