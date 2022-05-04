@@ -59,7 +59,7 @@ module.exports = {
      * @param {Client} client client Discord
      */
     postTop1FR: async function(client) {
-        new CronJob('*/2 * * * *', async function() {
+        new CronJob('*/1 * * * *', async function() {
             Logger.log('Top1FR', 'INFO', 'Récupération des nouveaux top 1 FR depuis la base de données')
 
             const guild = client.guilds.cache.find(g => g.id === config.guild.id)
