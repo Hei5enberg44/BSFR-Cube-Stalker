@@ -57,7 +57,6 @@ module.exports = {
                     if(lastPlayedMapDate < expirationDate) {
                         await module.exports.subscribe(player.playerId, false)
                         Logger.log('Top1FR', 'INFO', `Le joueur ${player.playerId} est inactif depuis 1 mois. Celui-ci a été désinscrit du top 1 FR.`)
-                        break
                     }
                 }
 
