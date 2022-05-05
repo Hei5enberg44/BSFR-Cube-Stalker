@@ -42,23 +42,12 @@ module.exports = {
 
         const playersMaps = []
 
-        for(const player of playersList) {
+        await Promise.all(playersList.map(async (player) => {
             try {
                 let page = 1
                 let foundLastMap = false
 
                 const lastPlayedMap = await module.exports.getPlayerLastPlayedMap(player.playerId)
-
-                // Si le joueur n'a pas joué de nouvelle map depuis 1 mois, on le désinscrit du top 1 FR
-                if(lastPlayedMap) {
-                    const date = new Date()
-                    const lastPlayedMapDate = new Date(lastPlayedMap.timeSet).getTime()
-                    const expirationDate = date.setMonth(date.getMonth() - 1)
-                    if(lastPlayedMapDate < expirationDate) {
-                        await module.exports.subscribe(player.playerId, false)
-                        Logger.log('Top1FR', 'INFO', `Le joueur ${player.playerId} est inactif depuis 1 mois. Celui-ci a été désinscrit du top 1 FR.`)
-                    }
-                }
 
                 do {
                     const maps = await scoresaber.getPlayerRecentMaps(player.playerId, page)
@@ -91,7 +80,7 @@ module.exports = {
                     throw new Error(error.message)
                 }
             }
-        }
+        }))
 
         return playersMaps
     },
@@ -215,5 +204,27 @@ module.exports = {
                 }
             })
         }
+    },
+
+    unsubscribeInactivePlayers: async function() {
+        const playersList = await module.exports.getSubscribed()
+
+        await Promise.all(playersList.map(async (player) => {
+            try {
+                const lastPlayedMap = await module.exports.getPlayerLastPlayedMap(player.playerId)
+
+                if(lastPlayedMap) {
+                    const date = new Date()
+                    const lastPlayedMapDate = new Date(lastPlayedMap.timeSet).getTime()
+                    const expirationDate = date.setMonth(date.getMonth() - 1)
+                    if(lastPlayedMapDate < expirationDate) {
+                        await module.exports.subscribe(player.playerId, false)
+                        Logger.log('Top1FR', 'INFO', `Le joueur ${player.playerId} est inactif depuis 1 mois. Celui-ci a été désinscrit du top 1 FR.`)
+                    }
+                }
+            } catch(error) {
+                Logger.log('Top1FR', 'ERROR', error.message)
+            }
+        }))
     }
 }

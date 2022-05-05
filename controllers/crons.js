@@ -33,6 +33,27 @@ module.exports = {
     },
 
     /**
+     * Désinscription des joueurs inactifs du top 1 FR depuis plus d'un mois
+     */
+    unsubscribeInactivePlayers: async function() {
+        new CronJob('0 1 * * *', async function() {
+            Logger.log('Top1FR', 'INFO', 'Désinscription des joueurs inactifs du top 1 FR')
+
+            try {
+                await top1.unsubscribeInactivePlayers()
+            } catch(error) {
+                if(error instanceof Top1Error) {
+                    Logger.log('Top1FR', 'ERROR', error.message)
+                }
+            }
+
+            Logger.log('Top1FR', 'INFO', 'Désinscription des joueurs inactifs du top 1 FR terminée')
+        }, null, true, 'Europe/Paris')
+
+        Logger.log('CronManager', 'INFO', 'Tâche "unsubscribeInactivePlayers" chargée')
+    },
+
+    /**
      * Scan des nouveaux top 1 FR des membres du classement serveur
      */
     scanTop1FR: async function() {

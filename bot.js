@@ -54,6 +54,7 @@ try {
 
             // Tâches planifiées
             await crons.refreshLeaderboard(client)
+            await crons.unsubscribeInactivePlayers()
             await crons.scanTop1FR()
             await crons.postTop1FR(client)
         
