@@ -28,7 +28,9 @@ module.exports = {
                 }
             }
         } catch(error) {
-            throw new Top1Error(`Une erreur est survenue lors du scan des top 1 FR : ${error.message}`)
+            if(error instanceof ScoreSaberError) {
+                throw new Top1Error('Une erreur est survenue lors du scan des top 1 FR : ' + error.message)
+            }
         }
     },
 
@@ -39,48 +41,39 @@ module.exports = {
      */
     getPlayersRecentMaps: async function() {
         const playersList = await module.exports.getSubscribed()
-
         const playersMaps = []
 
-        await Promise.all(playersList.map(async (player) => {
-            try {
-                let page = 1
-                let foundLastMap = false
+        for(const player of playersList) {
+            let page = 1
+            let foundLastMap = false
 
-                const lastPlayedMap = await module.exports.getPlayerLastPlayedMap(player.playerId)
+            const lastPlayedMap = await module.exports.getPlayerLastPlayedMap(player.playerId)
 
-                do {
-                    const maps = await scoresaber.getPlayerRecentMaps(player.playerId, page)
-                    for(let i = 0; i < maps.length; i++) {
-                        const map = maps[i]
-                        if(!lastPlayedMap) {
+            do {
+                const maps = await scoresaber.getPlayerRecentMaps(player.playerId, page)
+                for(let i = 0; i < maps.length; i++) {
+                    const map = maps[i]
+                    if(!lastPlayedMap) {
+                        await module.exports.addPlayerLastPlayedMap(player.playerId, map)
+                        foundLastMap = true
+                        break
+                    } else {
+                        if(page === 1 && i === 0)
                             await module.exports.addPlayerLastPlayedMap(player.playerId, map)
+                        
+                        if(map.score.timeSet !== lastPlayedMap.timeSet) {
+                            map.memberId = player.memberId
+                            map.scoreSaberId = player.playerId
+                            playersMaps.push(map)
+                        } else {
                             foundLastMap = true
                             break
-                        } else {
-                            if(page === 1 && i === 0)
-                                await module.exports.addPlayerLastPlayedMap(player.playerId, map)
-                            
-                            if(map.score.timeSet !== lastPlayedMap.timeSet) {
-                                map.memberId = player.memberId
-                                map.scoreSaberId = player.playerId
-                                playersMaps.push(map)
-                            } else {
-                                foundLastMap = true
-                                break
-                            }
                         }
                     }
-                    page++
-                } while(!foundLastMap)
-            } catch(error) {
-                if(error instanceof ScoreSaberError) {
-                    Logger.log('Top1FR', 'ERROR', error.message)
-                } else {
-                    throw new Error(error.message)
                 }
-            }
-        }))
+                page++
+            } while(!foundLastMap)
+        }
 
         return playersMaps
     },
