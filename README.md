@@ -11,10 +11,6 @@
 
 > Bot permettant d'afficher les statistiques de joueurs sur ScoreSaber ou BeatLeader
 
-## Pré-requis
-
-- FFMPEG (pour la génération des cartes de profil)
-
 ## Installation
 
 ```sh
