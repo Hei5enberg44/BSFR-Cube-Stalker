@@ -5,6 +5,9 @@ try {
     const database = require('./controllers/database')
     const fs = require('fs')
 
+    // Création du répertoire de logs si celui-ci n'existe pas
+    if(!fs.existsSync('./logs')) fs.mkdirSync('./logs')
+
     Logger.log('Application', 'INFO', 'Démarrage du bot')
 
     // Chargement de la configuration du bot
