@@ -50,28 +50,34 @@ module.exports = {
             const lastPlayedMap = await module.exports.getPlayerLastPlayedMap(player.playerId)
 
             do {
-                const maps = await scoresaber.getPlayerRecentMaps(player.playerId, page)
-                for(let i = 0; i < maps.length; i++) {
-                    const map = maps[i]
-                    if(!lastPlayedMap) {
-                        await module.exports.addPlayerLastPlayedMap(player.playerId, map)
-                        foundLastMap = true
-                        break
-                    } else {
-                        if(page === 1 && i === 0)
+                try {
+                    const maps = await scoresaber.getPlayerRecentMaps(player.playerId, page)
+                    for(let i = 0; i < maps.length; i++) {
+                        const map = maps[i]
+                        if(!lastPlayedMap) {
                             await module.exports.addPlayerLastPlayedMap(player.playerId, map)
-                        
-                        if(map.score.timeSet !== lastPlayedMap.timeSet) {
-                            map.memberId = player.memberId
-                            map.scoreSaberId = player.playerId
-                            playersMaps.push(map)
-                        } else {
                             foundLastMap = true
                             break
+                        } else {
+                            if(page === 1 && i === 0)
+                                await module.exports.addPlayerLastPlayedMap(player.playerId, map)
+                            
+                            if(map.score.timeSet !== lastPlayedMap.timeSet) {
+                                map.memberId = player.memberId
+                                map.scoreSaberId = player.playerId
+                                playersMaps.push(map)
+                            } else {
+                                foundLastMap = true
+                                break
+                            }
                         }
                     }
+                    page++
+                } catch(error) {
+                    if(error instanceof ScoreSaberError) {
+                        foundLastMap = true
+                    }
                 }
-                page++
             } while(!foundLastMap)
         }
 
