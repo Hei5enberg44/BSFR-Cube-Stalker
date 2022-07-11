@@ -40,16 +40,19 @@ module.exports = {
 
                     if(country === 'FR') {
                         const player = await Members.findOne({
-                            where: { playerId : playerId }
+                            where: {
+                                playerId : playerId,
+                                top1: true
+                            }
                         })
 
                         if(player) {
-                            Logger.log('Top1FR', 'INFO', `Nouveau top 1 FR de « ${playerName} » sur « ${leaderboard.songName} »`)
-
                             try {
                                 const ldFR = await scoresaber.getMapCountryLeaderboard(leaderboard.id, 'FR')
 
                                 if(ldFR[0].leaderboardPlayerInfo.id === playerId) {
+                                    Logger.log('Top1FR', 'INFO', `Nouveau top 1 FR de « ${playerName} » sur « ${leaderboard.songName} »`)
+
                                     const mapDetails = await beatsaver.geMapByHash(leaderboard.songHash)
                         
                                     const levelDifficulty = leaderboard.difficulty.difficultyRaw.split('_')[1]
