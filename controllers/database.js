@@ -31,19 +31,6 @@ const Cooldowns = sequelize.define('cooldowns', {
     freezeTableName: true
 })
 
-const LastMembersMaps = sequelize.define('last_members_maps', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-    },
-    scoreSaberId: DataTypes.STRING(255),
-    timeSet: DataTypes.STRING(255)
-}, {
-    timestamps: false,
-    freezeTableName: true
-})
-
 const Leaderboard = sequelize.define('leaderboard', {
     id: {
         type: DataTypes.INTEGER,
@@ -80,35 +67,6 @@ const Members = sequelize.define('members', {
     freezeTableName: true
 })
 
-const Top1 = sequelize.define('top1', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-    },
-    rank: DataTypes.INTEGER,
-    score: DataTypes.INTEGER,
-    acc: DataTypes.FLOAT,
-    pp: DataTypes.FLOAT,
-    timeSet: DataTypes.STRING(255),
-    leaderboardId: DataTypes.INTEGER,
-    songName: DataTypes.TEXT,
-    songCoverUrl: DataTypes.TEXT,
-    levelKey: DataTypes.STRING(10),
-    levelAuthorName: DataTypes.TEXT,
-    levelDifficulty: DataTypes.STRING(255),
-    levelGameMode: DataTypes.STRING(255),
-    ranked: DataTypes.BOOLEAN,
-    scoreSaberId: DataTypes.STRING(255),
-    scoreSaberName: DataTypes.STRING(255),
-    beatenScoreSaberId: DataTypes.STRING(255),
-    beatenScoreSaberName: DataTypes.STRING(255),
-    memberId: DataTypes.STRING(255)
-}, {
-    timestamps: false,
-    freezeTableName: true
-})
-
 module.exports = {
-    test, Cooldowns, LastMembersMaps, Leaderboard, Members, Top1
+    test, Cooldowns, Leaderboard, Members
 }
