@@ -48,34 +48,37 @@ module.exports = {
 
                             try {
                                 const ldFR = await scoresaber.getMapCountryLeaderboard(leaderboard.id, 'FR')
-                                const mapDetails = await beatsaver.geMapByHash(leaderboard.songHash)
-                    
-                                const levelDifficulty = leaderboard.difficulty.difficultyRaw.split('_')[1]
-                                const levelGameMode = leaderboard.difficulty.gameMode.replace('Solo', '')
-                    
-                                const top1 = {
-                                    rank: score.rank,
-                                    score: score.modifiedScore,
-                                    acc: leaderboard.maxScore > 0 ? score.modifiedScore / leaderboard.maxScore * 100 : calcAcc(mapDetails, levelDifficulty, levelGameMode, score.modifiedScore),
-                                    pp: score.pp,
-                                    timeSet: score.timeSet,
-                                    leaderboardId: leaderboard.id,
-                                    songName: leaderboard.songName,
-                                    songCoverUrl: leaderboard.coverImage,
-                                    levelKey: mapDetails.id,
-                                    levelAuthorName: leaderboard.levelAuthorName,
-                                    levelDifficulty: levelDifficulty,
-                                    levelGameMode: levelGameMode,
-                                    ranked: leaderboard.ranked,
-                                    scoreSaberId: ldFR[0].leaderboardPlayerInfo.id,
-                                    scoreSaberName: ldFR[0].leaderboardPlayerInfo.name,
-                                    beatenScoreSaberId: ldFR.length > 1 ? ldFR[1].leaderboardPlayerInfo.id : '',
-                                    beatenScoreSaberName: ldFR.length > 1 ? ldFR[1].leaderboardPlayerInfo.name : '',
-                                    replay: score.pp && score.rank <= 500 ? `https://www.replay.beatleader.xyz/?id=${mapDetails.id}&difficulty=${levelDifficulty}&playerID=${playerId}` : null,
-                                    memberId: player.memberId
-                                }
 
-                                await module.exports.publish(client, top1)
+                                if(ldFR[0].leaderboardPlayerInfo.id === playerId) {
+                                    const mapDetails = await beatsaver.geMapByHash(leaderboard.songHash)
+                        
+                                    const levelDifficulty = leaderboard.difficulty.difficultyRaw.split('_')[1]
+                                    const levelGameMode = leaderboard.difficulty.gameMode.replace('Solo', '')
+                        
+                                    const top1 = {
+                                        rank: score.rank,
+                                        score: score.modifiedScore,
+                                        acc: leaderboard.maxScore > 0 ? score.modifiedScore / leaderboard.maxScore * 100 : calcAcc(mapDetails, levelDifficulty, levelGameMode, score.modifiedScore),
+                                        pp: score.pp,
+                                        timeSet: score.timeSet,
+                                        leaderboardId: leaderboard.id,
+                                        songName: leaderboard.songName,
+                                        songCoverUrl: leaderboard.coverImage,
+                                        levelKey: mapDetails.id,
+                                        levelAuthorName: leaderboard.levelAuthorName,
+                                        levelDifficulty: levelDifficulty,
+                                        levelGameMode: levelGameMode,
+                                        ranked: leaderboard.ranked,
+                                        scoreSaberId: ldFR[0].leaderboardPlayerInfo.id,
+                                        scoreSaberName: ldFR[0].leaderboardPlayerInfo.name,
+                                        beatenScoreSaberId: ldFR.length > 1 ? ldFR[1].leaderboardPlayerInfo.id : '',
+                                        beatenScoreSaberName: ldFR.length > 1 ? ldFR[1].leaderboardPlayerInfo.name : '',
+                                        replay: score.pp && score.rank <= 500 ? `https://www.replay.beatleader.xyz/?id=${mapDetails.id}&difficulty=${levelDifficulty}&playerID=${playerId}` : null,
+                                        memberId: player.memberId
+                                    }
+
+                                    await module.exports.publish(client, top1)
+                                }
                             } catch(error) {
                                 if(error instanceof BeatSaverError || error instanceof ScoreSaberError) {
                                     throw new Top1Error(`Ajout du top 1 impossible`)
