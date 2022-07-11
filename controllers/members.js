@@ -1,6 +1,6 @@
 const { MemberError } = require('../utils/error')
 const leaderboard = require('./leaderboard')
-const { Members, LastMembersMaps } = require('./database')
+const { Members } = require('./database')
 
 module.exports = {
     /**
@@ -73,10 +73,6 @@ module.exports = {
 
             await Members.destroy({
                 where: { memberId: member.memberId }
-            })
-
-            await LastMembersMaps.destroy({
-                where: { scoreSaberId: member.playerId }
             })
         }
     }

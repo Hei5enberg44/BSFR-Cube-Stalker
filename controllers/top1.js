@@ -4,7 +4,7 @@ const beatsaver = require('./beatsaver')
 const roles = require('./roles')
 const { userMention, bold, hyperlink, time } = require('@discordjs/builders')
 const Embed = require('../utils/embed')
-const { Top1, LastMembersMaps, Members } = require('./database')
+const { Members } = require('./database')
 const { Top1Error, ScoreSaberError, BeatSaverError } = require('../utils/error')
 const config = require('../config.json')
 const Logger = require('../utils/logger')
@@ -144,18 +144,6 @@ module.exports = {
     },
 
     /**
-     * Supprime un top 1 FR de la base de données
-     * @param {Object} top1Id identifiant du top1 à supprimer
-     */
-    deleteTop1FR: async function(top1Id) {
-        await Top1.destroy({
-            where: {
-                id: top1Id
-            }
-        })
-    },
-
-    /**
      * Récupère la liste des joueurs inscrits au top 1 FR
      * @returns {Promise<Array<Object>>}
      */
@@ -175,13 +163,5 @@ module.exports = {
                 playerId: playerId
             }
         })
-
-        if(!subscribe) {
-            await LastMembersMaps.destroy({
-                where: {
-                    scoreSaberId: playerId
-                }
-            })
-        }
     }
 }
