@@ -17,6 +17,7 @@ try {
     const { Client, Intents } = require('discord.js')
     const Commands = require('./controllers/commands')
     const Events = require('./controllers/events')
+    const top1 = require('./controllers/top1')
     const crons = require('./controllers/crons')
 
     Logger.log('Discord', 'INFO', 'Initialisation...')
@@ -57,9 +58,9 @@ try {
 
             // Tâches planifiées
             await crons.refreshLeaderboard(client)
-            await crons.unsubscribeInactivePlayers()
-            await crons.scanTop1FR()
-            await crons.postTop1FR(client)
+
+            // Top 1 FR
+            top1.listen(client)
         
             Logger.log('Application', 'INFO', 'Le bot est prêt !')
         })
