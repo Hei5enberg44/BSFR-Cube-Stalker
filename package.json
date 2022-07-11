@@ -1,6 +1,6 @@
 {
   "name": "cube-stalker",
-  "version": "5.7.2",
+  "version": "5.8.0",
   "description": "Cube stalker is a bot that allows you to get some info about every profile on scoresaber",
   "main": "bot.js",
   "scripts": {
@@ -17,6 +17,7 @@
     "mariadb": "^3.0.0",
     "node-fetch": "^2.6.7",
     "sequelize": "^6.21.2",
-    "tmp": "^0.2.1"
+    "tmp": "^0.2.1",
+    "ws": "^8.8.0"
   }
 }
