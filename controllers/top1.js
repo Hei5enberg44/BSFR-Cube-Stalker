@@ -72,7 +72,7 @@ module.exports = {
                                     beatenScoreSaberId: ldFR.length > 1 ? ldFR[1].leaderboardPlayerInfo.id : '',
                                     beatenScoreSaberName: ldFR.length > 1 ? ldFR[1].leaderboardPlayerInfo.name : '',
                                     replay: score.pp && score.rank <= 500 ? `https://www.replay.beatleader.xyz/?id=${mapDetails.id}&difficulty=${levelDifficulty}&playerID=${playerId}` : null,
-                                    memberId: playerId.memberId
+                                    memberId: player.memberId
                                 }
 
                                 await module.exports.publish(client, top1)
