@@ -99,7 +99,7 @@ module.exports = {
 
         ws.on('close', () => {
             Logger.log('Top1FR', 'WARNING', 'Le websocket de ScoreSaber s\'est fermé')
-            setTimeout(module.exports.listen, 60 * 1000)
+            setTimeout(module.exports.listen(client), 60 * 1000)
         })
     },
 
