@@ -1,4 +1,4 @@
-const { userMention } = require('@discordjs/builders')
+const { ApplicationCommandOptionType, userMention } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const members = require('../controllers/members')
@@ -10,7 +10,7 @@ module.exports = {
         description: 'Génère votre carte de joueur',
         options: [
             {
-                type: 'STRING',
+                type: ApplicationCommandOptionType.String,
                 name: 'leaderboard',
                 description: 'Choix du leaderboard',
                 choices: [
@@ -26,7 +26,7 @@ module.exports = {
                 required: false
             },
             {
-                type: 'USER',
+                type: ApplicationCommandOptionType.User,
                 name: 'joueur',
                 description: 'Génère la carte d\'un autre membre',
                 required: false

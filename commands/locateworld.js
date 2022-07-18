@@ -1,4 +1,4 @@
-const { userMention } = require('@discordjs/builders')
+const { ApplicationCommandOptionType, userMention } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const members = require('../controllers/members')
@@ -10,7 +10,7 @@ module.exports = {
         description: 'Affiche votre position dans le classement mondial',
         options: [
             {
-                type: 'STRING',
+                type: ApplicationCommandOptionType.String,
                 name: 'leaderboard',
                 description: 'Choix du leaderboard',
                 choices: [
@@ -26,13 +26,13 @@ module.exports = {
                 required: false
             },
             {
-                type: 'USER',
+                type: ApplicationCommandOptionType.User,
                 name: 'joueur',
                 description: 'Affiche la position d\'un autre membre',
                 required: false
             },
             {
-                type: 'INTEGER',
+                type: ApplicationCommandOptionType.Integer,
                 name: 'rang',
                 description: 'Affiche la position d\'un joueur par rapport à son rang',
                 required: false

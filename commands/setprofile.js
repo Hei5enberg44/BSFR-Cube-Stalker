@@ -1,4 +1,4 @@
-const { userMention } = require('@discordjs/builders')
+const { ApplicationCommandOptionType, userMention } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, MemberError, ScoreSaberError } = require('../utils/error')
 const members = require('../controllers/members')
@@ -10,13 +10,13 @@ module.exports = {
         description: 'Lie un compte ScoreSaber ou BeatLeader à un compte Discord',
         options: [
             {
-                type: 'STRING',
+                type: ApplicationCommandOptionType.String,
                 name: 'lien_leaderboard',
                 description: 'Lien du profil ScoreSaber ou BeatLeader',
                 required: true
             },
             {
-                type: 'USER',
+                type: ApplicationCommandOptionType.User,
                 name: 'joueur',
                 description: 'Joueur à lier',
                 required: true

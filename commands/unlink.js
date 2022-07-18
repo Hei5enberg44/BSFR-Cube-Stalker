@@ -1,4 +1,4 @@
-const { userMention } = require('@discordjs/builders')
+const { ApplicationCommandOptionType, userMention } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, CooldownError } = require('../utils/error')
 const cooldown = require('../controllers/cooldown')
@@ -11,7 +11,7 @@ module.exports = {
         description: 'Délie le profil ScoreSaber/BeatLeader d\'un membre Discord',
         options: [
             {
-                type: 'USER',
+                type: ApplicationCommandOptionType.User,
                 name: 'joueur',
                 description: 'Joueur à délier',
                 required: false

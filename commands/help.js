@@ -1,4 +1,4 @@
-const { inlineCode } = require('@discordjs/builders')
+const { inlineCode } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError } = require('../utils/error')
 
@@ -30,7 +30,7 @@ ${inlineCode('/world')}: Affiche le classement mondial\
             const embed = new Embed()
                 .setColor('#000000')
                 .setTitle('Aide')
-                .addField('Liste des commandes', commandsList)
+                .addFields({ name: 'Liste des commandes', value: commandsList })
             
             await interaction.reply({ embeds: [ embed ], ephemeral: true })
         } catch(error) {

@@ -14,7 +14,7 @@ try {
     if(!fs.existsSync('./config.json')) throw Error('Le fichier de configuration "config.json" est manquant')
     const config = require('./config.json')
 
-    const { Client, Intents } = require('discord.js')
+    const { Client, GatewayIntentBits } = require('discord.js')
     const Commands = require('./controllers/commands')
     const Events = require('./controllers/events')
     const top1 = require('./controllers/top1')
@@ -25,10 +25,10 @@ try {
     try {
         const client = new Client({
             intents: [
-                Intents.FLAGS.GUILDS,
-                Intents.FLAGS.GUILD_MEMBERS,
-                Intents.FLAGS.GUILD_MESSAGES,
-                Intents.FLAGS.GUILD_MESSAGE_REACTIONS
+                GatewayIntentBits.Guilds,
+                GatewayIntentBits.GuildMembers,
+                GatewayIntentBits.GuildMessages,
+                GatewayIntentBits.GuildMessageReactions
             ]
         })
 

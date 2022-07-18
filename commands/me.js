@@ -1,4 +1,4 @@
-const { userMention, bold } = require('@discordjs/builders')
+const { ApplicationCommandOptionType, userMention, bold } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const { countryCodeEmoji } = require('../utils/country-code-emoji')
@@ -14,7 +14,7 @@ module.exports = {
 		description: 'Affiche vos informations de joueur',
         options: [
             {
-                type: 'STRING',
+                type: ApplicationCommandOptionType.String,
                 name: 'leaderboard',
                 description: 'Choix du leaderboard',
                 choices: [
@@ -30,7 +30,7 @@ module.exports = {
                 required: false
             },
             {
-                type: 'USER',
+                type: ApplicationCommandOptionType.User,
                 name: 'joueur',
                 description: 'Affiche les informations d\'un autre joueur',
                 required: false

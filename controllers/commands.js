@@ -1,4 +1,4 @@
-const { Client, Collection, MessageEmbed } = require('discord.js')
+const { Client, Collection, EmbedBuilder, InteractionType } = require('discord.js')
 const { channelMention } = require('@discordjs/builders')
 const { CommandError } = require('../utils/error')
 const Logger = require('../utils/logger')
@@ -43,7 +43,7 @@ class Commands {
      */
     async listen() {
         this.client.on('interactionCreate', async interaction => {
-            if(!interaction.isCommand()) return
+            if(interaction.type !== InteractionType.ApplicationCommand) return
         
             const command = this.client.commands.get(interaction.commandName)
         
@@ -71,7 +71,7 @@ class Commands {
                     Logger.log('CommandManager', 'ERROR', `L'exécution de la commande "/${interaction.commandName}" a échoué : ${error.message}`)
                 }
 
-                const embed = new MessageEmbed()
+                const embed = new EmbedBuilder()
                         .setColor('#E74C3C')
                         .setDescription(`❌ ${errMessage}`)
                 

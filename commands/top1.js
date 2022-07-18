@@ -1,3 +1,4 @@
+const { ApplicationCommandOptionType } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, Top1Error } = require('../utils/error')
 const members = require('../controllers/members')
@@ -10,7 +11,7 @@ module.exports = {
 		description: 'S\'inscrire ou se désinscrire du top 1 FR',
         options: [
             {
-                type: 'BOOLEAN',
+                type: ApplicationCommandOptionType.Boolean,
                 name: 'subscribe',
                 description: 'True: s\'inscrire au top 1 FR, False: se désinscrire du top 1 FR',
                 required: true

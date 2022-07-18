@@ -137,7 +137,7 @@ module.exports = {
                 (top1.replay ? { name: 'Replay', value: hyperlink('Lien', top1.replay), inline: true } : { name: '\u200b', value: '\u200b', inline: true })
             )
 
-        if(top1.beatenScoreSaberId !== '') embed.addField('Bien joué !', `Tu es passé(e) devant ${hyperlink(top1.beatenScoreSaberName, `https://scoresaber.com/u/${top1.beatenScoreSaberId}`)}`)
+        if(top1.beatenScoreSaberId !== '') embed.addFields({ name: 'Bien joué !', value: `Tu es passé(e) devant ${hyperlink(top1.beatenScoreSaberName, `https://scoresaber.com/u/${top1.beatenScoreSaberId}`)}` })
 
         const top1FRChannel = guild.channels.cache.find(c => c.id === config.guild.channels.top1fr)
         await top1FRChannel.send({ embeds: [embed] })

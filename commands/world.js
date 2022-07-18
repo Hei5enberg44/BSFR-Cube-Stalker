@@ -1,3 +1,4 @@
+const { ApplicationCommandOptionType } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, LeaderboardError } = require('../utils/error')
 const leaderboard = require('../controllers/leaderboard')
@@ -8,7 +9,7 @@ module.exports = {
 		description: 'Affiche le classement mondial',
         options: [
             {
-                type: 'STRING',
+                type: ApplicationCommandOptionType.String,
                 name: 'leaderboard',
                 description: 'Choix du leaderboard',
                 choices: [
@@ -24,7 +25,7 @@ module.exports = {
                 required: false
             },
             {
-                type: 'INTEGER',
+                type: ApplicationCommandOptionType.Integer,
                 name: 'nombre',
                 description: 'Nombre de joueurs à afficher (10 par défaut, 20 maximum)',
                 required: false

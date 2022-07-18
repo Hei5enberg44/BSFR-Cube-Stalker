@@ -1,3 +1,4 @@
+const { ApplicationCommandOptionType } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, MemberError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const members = require('../controllers/members')
@@ -10,7 +11,7 @@ module.exports = {
         description: 'Lie votre profil ScoreSaber ou BeatLeader à votre compte Discord',
         options: [
             {
-                type: 'STRING',
+                type: ApplicationCommandOptionType.String,
                 name: 'lien_leaderboard',
                 description: 'Lien du profil ScoreSaber ou BeatLeader',
                 required: true

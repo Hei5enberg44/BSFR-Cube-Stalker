@@ -1,4 +1,4 @@
-const { channelMention } = require('@discordjs/builders')
+const { ApplicationCommandOptionType, channelMention } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const leaderboard = require('../controllers/leaderboard')
@@ -10,7 +10,7 @@ module.exports = {
 		description: 'Affiche le classement du serveur',
         options: [
             {
-                type: 'STRING',
+                type: ApplicationCommandOptionType.String,
                 name: 'classement',
                 description: 'Type de classement à afficher',
                 choices: [
@@ -26,7 +26,7 @@ module.exports = {
                 required: true
             },
             {
-                type: 'STRING',
+                type: ApplicationCommandOptionType.String,
                 name: 'leaderboard',
                 description: 'Choix du leaderboard',
                 choices: [
@@ -42,7 +42,7 @@ module.exports = {
                 required: false
             },
             {
-                type: 'INTEGER',
+                type: ApplicationCommandOptionType.Integer,
                 name: 'page',
                 description: 'Page à afficher',
                 required: false
