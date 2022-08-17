@@ -78,6 +78,7 @@ module.exports = {
             player.pp = playerInfos.pp
             player.country = playerInfos.country
             player.history = playerInfos.histories
+            player.banned = playerInfos.banned
             player.averageRankedAccuracy = scoreStats.averageRankedAccuracy
 
             const topScore = playerTopScore.playerScores[0]

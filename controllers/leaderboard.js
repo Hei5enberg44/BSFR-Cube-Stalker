@@ -326,10 +326,10 @@ module.exports = {
             Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${lm.playerName}"...`)
 
             const playerDatas = await scoresaber.getPlayerDatas(lm.playerId)
-            const pp = playerDatas.pp
-
             const member = members.find(m => m.id === lm.memberId)
+
             if(member) {
+                const pp = playerDatas.banned ? 0 : playerDatas.pp
                 await roles.updateMemberPpRoles(member, pp)
 
                 Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${lm.playerName}" terminée`)
