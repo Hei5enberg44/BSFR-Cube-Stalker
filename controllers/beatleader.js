@@ -82,6 +82,9 @@ module.exports = {
             player.averageRankedAccuracy = scoreStats.averageRankedAccuracy * 100
 
             const topScore = playerTopScore.data[0]
+
+            const difficulty = topScore.leaderboard.difficulty.difficultyName
+
             player.topPP = {
                 rank: topScore.rank,
                 pp: topScore.pp,
@@ -90,9 +93,10 @@ module.exports = {
                 fc: topScore.fullCombo,
                 stars: topScore.leaderboard.difficulty.stars,
                 name: topScore.leaderboard.song.author + ' - ' + topScore.leaderboard.song.name + (topScore.leaderboard.song.subName != '' ? ' ' + topScore.leaderboard.song.subName : ''),
-                difficulty: topScore.leaderboard.difficulty.difficultyName.replace('ExpertPlus', 'Expert+'),
+                difficulty: difficulty,
                 author: topScore.leaderboard.song.mapper,
-                cover: topScore.leaderboard.song.coverImage
+                cover: topScore.leaderboard.song.coverImage,
+                replay: topScore.pp && topScore.rank <= 500 ? `https://www.replay.beatleader.xyz/?id=${topScore.leaderboard.song.id}&difficulty=${difficulty}&playerID=${player.id}` : null
             }
 
             return player
