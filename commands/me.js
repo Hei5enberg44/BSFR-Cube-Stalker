@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, userMention, bold } = require('discord.js')
+const { ApplicationCommandOptionType, userMention, bold, hyperlink } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const { countryCodeEmoji } = require('../utils/country-code-emoji')
@@ -178,8 +178,8 @@ module.exports = {
                     { name: 'Rang Discord', value: `${bold('PP')}: ${(`#${ld.serverRankPP}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${ld.serverLdTotal} joueurs ${serverRankPPProgress}\n${bold('Précision')}: ${(`#${ld.serverRankAcc}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${ld.serverLdTotal} joueurs ${serverRankAccProgress}` },
                     { name: 'Points de performance', value: `👏 ${new Intl.NumberFormat('en-US').format(playerDatas.pp)}pp ${ppProgress}`, inline: true },
                     { name: 'Précision en classé', value: `🎯 ${(playerDatas.averageRankedAccuracy).toFixed(2)}% ${accProgress}`, inline: true },
-                    { name: 'Meilleur score', value: `1️⃣ ${playerDatas.topPP.name} [${playerDatas.topPP.difficulty}] by ${playerDatas.topPP.author}` },
-                    { name: 'Infos sur le meilleur score', value: `🦾 Rank: ${playerDatas.topPP.rank} | PP: ${new Intl.NumberFormat('en-US').format(playerDatas.topPP.pp)} | Acc: ${(playerDatas.topPP.acc).toFixed(2)}% | FC: ${playerDatas.topPP.fc ? 'Oui' : 'Non'}` }
+                    { name: 'Meilleur score', value: `1️⃣ ${playerDatas.topPP.name} [${playerDatas.topPP.difficulty.replace('ExpertPlus', 'Expert+')}] by ${playerDatas.topPP.author}` },
+                    { name: 'Infos sur le meilleur score', value: `🦾 Rank: ${playerDatas.topPP.rank} | PP: ${new Intl.NumberFormat('en-US').format(playerDatas.topPP.pp)} | Acc: ${(playerDatas.topPP.acc).toFixed(2)}% | FC: ${playerDatas.topPP.fc ? 'Oui' : 'Non'}${playerDatas.topPP.replay ? ` | ${hyperlink('Replay', playerDatas.topPP.replay)}` : ''}` }
                 )
             )
             

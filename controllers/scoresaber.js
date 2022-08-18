@@ -1,6 +1,7 @@
 const fetch = require('node-fetch')
+const beatsaver = require('./beatsaver')
 const Logger = require('../utils/logger')
-const { ScoreSaberError } = require('../utils/error')
+const { ScoreSaberError, BeatSaverError } = require('../utils/error')
 const scoresaberUrl = 'https://scoresaber.com'
 const scoresaberApiUrl = scoresaberUrl + '/api/'
 const playerUrl = scoresaberApiUrl + 'player/'
@@ -82,6 +83,19 @@ module.exports = {
             player.averageRankedAccuracy = scoreStats.averageRankedAccuracy
 
             const topScore = playerTopScore.playerScores[0]
+
+            let mapId = null
+            try {
+                const mapData = await beatsaver.geMapByHash(topScore.leaderboard.songHash)
+                mapId = mapData.id
+            } catch(error) {
+                if(error instanceof BeatSaverError) {
+                    Logger.log('BeatSaver', 'WARNING', error.message)
+                }
+            }
+
+            const difficulty = topScore.leaderboard.difficulty.difficultyRaw.split('_')[1]
+
             player.topPP = {
                 rank: topScore.score.rank,
                 pp: topScore.score.pp,
@@ -90,9 +104,10 @@ module.exports = {
                 fc: topScore.score.fullCombo,
                 stars: topScore.leaderboard.stars,
                 name: topScore.leaderboard.songAuthorName + ' - ' + topScore.leaderboard.songName + (topScore.leaderboard.songSubName != '' ? ' ' + topScore.leaderboard.songSubName : ''),
-                difficulty: topScore.leaderboard.difficulty.difficultyRaw.replace(/^_([^_]+)_.+$/, '$1').replace('ExpertPlus', 'Expert+'),
+                difficulty: difficulty,
                 author: topScore.leaderboard.levelAuthorName,
-                cover: topScore.leaderboard.coverImage
+                cover: topScore.leaderboard.coverImage,
+                replay: topScore.score.pp && topScore.score.rank <= 500 && mapId ? `https://www.replay.beatleader.xyz/?id=${mapId}&difficulty=${difficulty}&playerID=${player.id}` : null
             }
 
             return player

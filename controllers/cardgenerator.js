@@ -18,7 +18,7 @@ function getDiffColor(diff) {
             return '#FF6347'
         case 'Expert':
             return '#BF2A42'
-        case 'Expert+':
+        case 'ExpertPlus':
             return '#8F48DB'
     }
 }
