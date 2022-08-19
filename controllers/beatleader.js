@@ -96,7 +96,7 @@ module.exports = {
                 difficulty: difficulty,
                 author: topScore.leaderboard.song.mapper,
                 cover: topScore.leaderboard.song.coverImage,
-                replay: topScore.pp && topScore.rank <= 500 ? `https://www.replay.beatleader.xyz/?id=${topScore.leaderboard.song.id}&difficulty=${difficulty}&playerID=${player.id}` : null
+                replay: `https://www.replay.beatleader.xyz/?id=${topScore.leaderboard.song.id}&difficulty=${difficulty}&playerID=${player.id}`
             }
 
             return player
