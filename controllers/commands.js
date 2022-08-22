@@ -1,5 +1,4 @@
-const { Client, Collection, EmbedBuilder, InteractionType } = require('discord.js')
-const { channelMention } = require('@discordjs/builders')
+const { Client, Collection, EmbedBuilder, InteractionType, CommandInteractionOption, ApplicationCommandOptionType, channelMention } = require('discord.js')
 const { CommandError } = require('../utils/error')
 const Logger = require('../utils/logger')
 const config = require('../config.json')
@@ -11,6 +10,28 @@ class Commands {
      */
     constructor(client) {
         this.client = client
+    }
+
+    /**
+     * Récupération des options d'une commande exécutée
+     * @param {Array<CommandInteractionOption>} commandInteractionOptions données de la commande exécutée
+     * @returns {Array<String>} liste des options de la commande exécutée
+     */
+    getCommandOptions(commandInteractionOptions) {
+        return commandInteractionOptions.flatMap(d => {
+            switch(d.type) {
+                case ApplicationCommandOptionType.Attachment:
+                    return `${d.name}:${d?.attachment?.name}`
+                case ApplicationCommandOptionType.Subcommand:
+                    const subCommandName = d.name
+                    return [subCommandName, ...this.getCommandOptions(d.options)]
+                case ApplicationCommandOptionType.SubcommandGroup:
+                    const subCommandGroupName = d.name
+                    return [subCommandGroupName, ...this.getCommandOptions(d.options)]
+                default:
+                    return `${d.name}:${d?.value}`
+            }
+        })
     }
 
     /**
@@ -50,6 +71,7 @@ class Commands {
             if(!command) return
         
             try {
+                const commandOptions = this.getCommandOptions(interaction.options.data)
                 Logger.log('CommandManager', 'INFO', `${interaction.user.tag} a exécuté la commande "/${interaction.commandName}"`)
 
                 // On test si la commande est exécutée depuis le bon channel
