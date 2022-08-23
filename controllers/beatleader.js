@@ -9,6 +9,12 @@ const leaderboardUrl = beatleaderApiUrl + 'leaderboard/'
 const wait = (s) => new Promise((res) => setTimeout(res, s * 1000))
 
 module.exports = {
+    /**
+     * Envoi d'une requête à l'API de BeatLeader
+     * @param {string} url url de la requête
+     * @param {boolean} log true|false pour logger la requête
+     * @returns {Promise<Object>} résultat de la requête
+     */
     send: async function(url, log = true) {
         let data
         let error = true
@@ -43,18 +49,38 @@ module.exports = {
         return data
     },
 
+    /**
+     * Données de profil BeatLeader
+     * @typedef {Object} BeatLeaderProfile
+     * @property {string} id
+     * @property {string} name
+     * @property {string} avatar
+     * @property {string} url
+     * @property {string} country
+     * @property {number} rank
+     * @property {number} pp
+     */
+
+    /**
+     * Récupération des données de profil BeatLeader d'un joueur
+     * @param {string} url lien ou identifiant du profil BeatLeader du joueur
+     * @returns {Promise<BeatLeaderProfile>} données de profil BeatLeader du joueur
+     */
     getProfile: async function(url) {
         try {
-            const player = {}
-
             const playerId = url.replace(/^https?:\/\/(www\.)?beatleader\.xyz\/u\/([0-9]+).*$/, '$2')
 
             const playerInfos = await module.exports.send(playerUrl + playerId)
 
-            player.id = playerInfos.id
-            player.name = playerInfos.name
-            player.avatar = playerInfos.avatar
-            player.url = 'https://beatleader.xyz/u/' + playerInfos.id
+            const player = {
+                id: playerInfos.id,
+                name: playerInfos.name,
+                avatar: playerInfos.avatar,
+                url: `${beatleaderUrl}/u/${playerInfos.id}`,
+                country: playerInfos.country,
+                rank: playerInfos.rank,
+                pp: playerInfos.pp
+            }
 
             return player
         } catch(error) {
@@ -62,24 +88,63 @@ module.exports = {
         }
     },
 
+    /**
+     * Informations sur la map top pp d'un joueur
+     * @typedef {Object} TopPP
+     * @property {number} rank
+     * @property {number} pp
+     * @property {number} score
+     * @property {number} acc
+     * @property {boolean} fc
+     * @property {number} stars
+     * @property {string} name
+     * @property {string} difficulty
+     * @property {string} author
+     * @property {string} cover
+     * @property {null|string} replay
+     */
+
+    /**
+     * Données de joueur BeatLeader
+     * @typedef {Object} BeatLeaderPlayerDatas
+     * @property {string} id
+     * @property {string} name
+     * @property {string} avatar
+     * @property {string} url
+     * @property {number} rank
+     * @property {number} countryRank
+     * @property {number} pp
+     * @property {string} country
+     * @property {string} history
+     * @property {boolean} banned
+     * @property {number} averageRankedAccuracy
+     * @property {TopPP} topPP
+     */
+
+    /**
+     * Récuparation des données BeatLeader d'un joueur
+     * @param {string} playerId identifiant BeatLeader du joueur
+     * @returns {Promise<BeatLeaderPlayerDatas>} données BeatLeader du joueur
+     */
     getPlayerDatas: async function(playerId) {
         try {
-            const player = {}
-
             const playerInfos = await module.exports.send(playerUrl + playerId)
             const playerTopScore = await module.exports.send(playerUrl + playerId + '/scores?sortBy=pp&page=1')
 
             const scoreStats = playerInfos.scoreStats
-            player.url = beatleaderUrl + '/u/' + playerInfos.id
-            player.id = playerInfos.id
-            player.name = playerInfos.name
-            player.avatar = playerInfos.avatar
-            player.rank = playerInfos.rank
-            player.countryRank = playerInfos.countryRank
-            player.pp = playerInfos.pp
-            player.country = playerInfos.country
-            player.history = playerInfos.histories
-            player.averageRankedAccuracy = scoreStats.averageRankedAccuracy * 100
+            const player = {
+                id: playerInfos.id,
+                name: playerInfos.name,
+                avatar: playerInfos.avatar,
+                url: `${beatleaderUrl}/u/${playerInfos.id}`,
+                rank: playerInfos.rank,
+                countryRank: playerInfos.countryRank,
+                pp: playerInfos.pp,
+                country: playerInfos.country,
+                history: playerInfos.histories,
+                banned: playerInfos.banned,
+                averageRankedAccuracy: scoreStats.averageRankedAccuracy * 100
+            }
 
             const topScore = playerTopScore.data[0]
 
@@ -105,6 +170,11 @@ module.exports = {
         }
     },
 
+    /**
+     * Récupération de la liste des joueurs dans le classement global de BeatLeader
+     * @param {number} page page du classement
+     * @returns {Promise<Array<BeatLeaderProfile>>} liste des joueurs
+     */
     getGlobal: async function(page) {
         try {
             const players = []
@@ -115,10 +185,11 @@ module.exports = {
                 const player = {
                     id: playerInfos.id,
                     name: playerInfos.name,
+                    avatar: playerInfos.avatar,
+                    url: `${beatleaderUrl}/u/${playerInfos.id}`,
                     country: playerInfos.country,
                     rank: playerInfos.rank,
-                    pp: playerInfos.pp,
-                    url: beatleaderUrl + '/u/' + playerInfos.id
+                    pp: playerInfos.pp
                 }
                 players.push(player)
             }
@@ -137,28 +208,6 @@ module.exports = {
     getPlayerRankById: async function(beatLeaderId) {
         const playerDatas = await module.exports.getPlayerDatas(beatLeaderId)
         return playerDatas.rank
-    },
-
-    /**
-     * Récupère les scores récent d'un joueur sur BeatLeader
-     * @param {string} beatLeaderId identifiant BeatLeader du joueur
-     * @param {Number} page page à récupérer
-     * @returns {Promise<Object>} liste des maps
-     */
-    getPlayerRecentMaps: async function(beatLeaderId, page) {
-        try {
-            const maps = []
-
-            const datas = await module.exports.send(playerUrl + beatLeaderId + '/scores?sort=date&page=' + page, false)
-
-            for(const score of datas.data) {
-                maps.push(score)
-            }
-
-            return maps
-        } catch(error) {
-            throw new BeatLeaderError(`Une erreur est survenue lors de la récupération des maps récentes pour le joueur ${beatLeaderId} (${error.message})`)
-        }
     },
 
     /**

@@ -8,6 +8,11 @@ const mapsHashUrl = beatSaverApiUrl + '/maps/hash/'
 const wait = (s) => new Promise((res) => setTimeout(res, s * 1000))
 
 module.exports = {
+    /**
+     * Envoi d'une requête à l'API de BeatSaver
+     * @param {string} url url de la requête
+     * @returns {Promise<Object>} résultat de la requête
+     */
     send: async function(url) {
         let data
         let error = true
@@ -39,9 +44,30 @@ module.exports = {
     },
 
     /**
+     * Metadonnées d'une map BeatSaver
+     * @typedef {Object} BeatSaverMapMetadatas
+     * @property {number} duration
+     * @property {string} levelAuthorName
+     * @property {string} songAuthorName
+     * @property {string} songName
+     * @property {string} songSubName
+     */
+
+    /**
+     * Map BeatSaver
+     * @typedef {Object} BeatSaverMap
+     * @property {string} id
+     * @property {string} description
+     * @property {string} name
+     * @property {boolean} qualified
+     * @property {boolean} ranked
+     * @property {BeatSaverMapMetadatas} metadata
+     */
+
+    /**
      * Récupération des détails d'une map en fonction d'un hash
      * @param {string} hash hash de la map
-     * @returns {Object} détail de la map
+     * @returns {Promise<BeatSaverMap>} détail de la map
      */
     geMapByHash: async function(hash) {
         try {
@@ -55,7 +81,7 @@ module.exports = {
 
     /**
      * Détermine le score maximum d'une map en fonction du nombre de notes
-     * @param {Number} notes nombre de notes
+     * @param {number} notes nombre de notes
      * @returns {Number} score maximum
      */
     getMapMaxScore: function(notes) {

@@ -10,6 +10,12 @@ const leaderboardUrl = scoresaberApiUrl + 'leaderboard/'
 const wait = (s) => new Promise((res) => setTimeout(res, s * 1000))
 
 module.exports = {
+    /**
+     * Envoi d'une requête à l'API de ScoreSaber
+     * @param {string} url url de la requête
+     * @param {boolean} log true|false pour logger la requête
+     * @returns {Promise<Object>} résultat de la requête
+     */
     send: async function(url, log = true) {
         let data
         let error = true
@@ -43,18 +49,38 @@ module.exports = {
         return data
     },
 
+    /**
+     * Données de profil ScoreSaber
+     * @typedef {Object} ScoreSaberProfile
+     * @property {string} id
+     * @property {string} name
+     * @property {string} avatar
+     * @property {string} url
+     * @property {string} country
+     * @property {number} rank
+     * @property {number} pp
+     */
+
+    /**
+     * Récupération des données de profil ScoreSaber d'un joueur
+     * @param {string} url lien ou identifiant du profil ScoreSaber du joueur
+     * @returns {Promise<ScoreSaberProfile>} données de profil ScoreSaber du joueur
+     */
     getProfile: async function(url) {
         try {
-            const player = {}
-
             const playerId = url.replace(/^https?:\/\/(new\.|www\.)?scoresaber\.com\/u\/([0-9]+).*$/, '$2')
 
             const playerInfos = await module.exports.send(playerUrl + playerId + '/basic')
 
-            player.id = playerInfos.id
-            player.name = playerInfos.name
-            player.avatar = playerInfos.profilePicture
-            player.url = 'https://scoresaber.com/u/' + playerInfos.id
+            const player = {
+                id: playerInfos.id,
+                name: playerInfos.name,
+                avatar: playerInfos.profilePicture,
+                url: `${scoresaberUrl}/u/${playerInfos.id}`,
+                country: playerInfos.country,
+                rank: playerInfos.rank,
+                pp: playerInfos.pp
+            }
 
             return player
         } catch(error) {
@@ -62,25 +88,63 @@ module.exports = {
         }
     },
 
+    /**
+     * Informations sur la map top pp d'un joueur
+     * @typedef {Object} TopPP
+     * @property {number} rank
+     * @property {number} pp
+     * @property {number} score
+     * @property {number} acc
+     * @property {boolean} fc
+     * @property {number} stars
+     * @property {string} name
+     * @property {string} difficulty
+     * @property {string} author
+     * @property {string} cover
+     * @property {null|string} replay
+     */
+
+    /**
+     * Données de joueur ScoreSaber
+     * @typedef {Object} ScoreSaberPlayerDatas
+     * @property {string} id
+     * @property {string} name
+     * @property {string} avatar
+     * @property {string} url
+     * @property {number} rank
+     * @property {number} countryRank
+     * @property {number} pp
+     * @property {string} country
+     * @property {string} history
+     * @property {boolean} banned
+     * @property {number} averageRankedAccuracy
+     * @property {TopPP} topPP
+     */
+
+    /**
+     * Récuparation des données ScoreSaber d'un joueur
+     * @param {string} playerId identifiant ScoreSaber du joueur
+     * @returns {Promise<ScoreSaberPlayerDatas>} données ScoreSaber du joueur
+     */
     getPlayerDatas: async function(playerId) {
         try {
-            const player = {}
-
             const playerInfos = await module.exports.send(playerUrl + playerId + '/full')
             const playerTopScore = await module.exports.send(playerUrl + playerId + '/scores?sort=top&page=1&limit=1')
 
             const scoreStats = playerInfos.scoreStats
-            player.url = scoresaberUrl + '/u/' + playerInfos.id
-            player.id = playerInfos.id
-            player.name = playerInfos.name
-            player.avatar = playerInfos.profilePicture
-            player.rank = playerInfos.rank
-            player.countryRank = playerInfos.countryRank
-            player.pp = playerInfos.pp
-            player.country = playerInfos.country
-            player.history = playerInfos.histories
-            player.banned = playerInfos.banned
-            player.averageRankedAccuracy = scoreStats.averageRankedAccuracy
+            const player = {
+                id: playerInfos.id,
+                name: playerInfos.name,
+                avatar: playerInfos.profilePicture,
+                url: `${scoresaberUrl}/u/${playerInfos.id}`,
+                rank: playerInfos.rank,
+                countryRank: playerInfos.countryRank,
+                pp: playerInfos.pp,
+                country: playerInfos.country,
+                history: playerInfos.histories,
+                banned: playerInfos.banned,
+                averageRankedAccuracy: scoreStats.averageRankedAccuracy
+            }
 
             const topScore = playerTopScore.playerScores[0]
 
@@ -107,7 +171,7 @@ module.exports = {
                 difficulty: difficulty,
                 author: topScore.leaderboard.levelAuthorName,
                 cover: topScore.leaderboard.coverImage,
-                replay: topScore.score.pp && topScore.score.rank <= 500 && mapId ? `https://www.replay.beatleader.xyz/?id=${mapId}&difficulty=${difficulty}&playerID=${player.id}` : null
+                replay: topScore.score.hasReplay && mapId ? `https://www.replay.beatleader.xyz/?id=${mapId}&difficulty=${difficulty}&playerID=${player.id}` : null
             }
 
             return player
@@ -116,6 +180,11 @@ module.exports = {
         }
     },
 
+    /**
+     * Récupération de la liste des joueurs dans le classement global de ScoreSaber
+     * @param {number} page page du classement
+     * @returns {Promise<Array<ScoreSaberProfile>>} liste des joueurs
+     */
     getGlobal: async function(page) {
         try {
             const players = []
@@ -126,10 +195,11 @@ module.exports = {
                 const player = {
                     id: playerInfos.id,
                     name: playerInfos.name,
+                    avatar: playerInfos.profilePicture,
+                    url: `${scoresaberUrl}/u/${playerInfos.id}`,
                     country: playerInfos.country,
                     rank: playerInfos.rank,
-                    pp: playerInfos.pp,
-                    url: scoresaberUrl + '/u/' + playerInfos.id
+                    pp: playerInfos.pp
                 }
                 players.push(player)
             }
@@ -148,28 +218,6 @@ module.exports = {
     getPlayerRankById: async function(scoreSaberId) {
         const playerDatas = await module.exports.getPlayerDatas(scoreSaberId)
         return playerDatas.rank
-    },
-
-    /**
-     * Récupère les scores récent d'un joueur sur ScoreSaber
-     * @param {string} scoreSaberId identifiant ScoreSaber du joueur
-     * @param {Number} page page à récupérer
-     * @returns {Promise<Object>} liste des maps
-     */
-    getPlayerRecentMaps: async function(scoreSaberId, page) {
-        try {
-            const maps = []
-
-            const datas = await module.exports.send(playerUrl + scoreSaberId + '/scores?sort=recent&page=' + page, false)
-
-            for(const score of datas.playerScores) {
-                maps.push(score)
-            }
-
-            return maps
-        } catch(error) {
-            throw new ScoreSaberError(`Une erreur est survenue lors de la récupération des maps récentes pour le joueur ${scoreSaberId} (${error.message})`)
-        }
     },
 
     /**
