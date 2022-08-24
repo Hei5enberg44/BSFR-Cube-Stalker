@@ -5,9 +5,9 @@ const leaderboard = require('../controllers/leaderboard')
 const config = require('../config.json')
 
 module.exports = {
-	data: {
-		name: 'ld',
-		description: 'Affiche le classement du serveur',
+    data: {
+        name: 'ld',
+        description: 'Affiche le classement du serveur',
         options: [
             {
                 type: ApplicationCommandOptionType.String,
@@ -56,7 +56,7 @@ module.exports = {
      * Exécution de la commande
      * @param {CommandInteraction} interaction intéraction Discord
      */
-	async execute(interaction) {
+    async execute(interaction) {
         try {
             // On vérifie que la commande est exécutée dans le bon channel
             const cubeStalkerChannelId = config.guild.channels.cubeStalker
@@ -87,5 +87,5 @@ module.exports = {
                 throw Error(error.message)
             }
         }
-	}
+    }
 }

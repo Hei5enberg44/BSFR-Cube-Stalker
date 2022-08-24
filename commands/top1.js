@@ -6,9 +6,9 @@ const top1 = require('../controllers/top1')
 const Logger = require('../utils/logger')
 
 module.exports = {
-	data: {
-		name: 'top1',
-		description: 'S\'inscrire ou se désinscrire du top 1 FR',
+    data: {
+        name: 'top1',
+        description: 'S\'inscrire ou se désinscrire du top 1 FR',
         options: [
             {
                 type: ApplicationCommandOptionType.Boolean,
@@ -25,7 +25,7 @@ module.exports = {
      * Exécution de la commande
      * @param {CommandInteraction} interaction intéraction Discord
      */
-	async execute(interaction) {
+    async execute(interaction) {
         try {
             const subscribe = interaction.options.getBoolean('subscribe')
 
@@ -73,5 +73,5 @@ module.exports = {
                 throw Error(error.message)
             }
         }
-	}
+    }
 }

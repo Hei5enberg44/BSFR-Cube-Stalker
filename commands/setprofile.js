@@ -31,7 +31,7 @@ module.exports = {
      * Exécution de la commande
      * @param {CommandInteraction} interaction intéraction Discord
      */
-	async execute(interaction) {
+    async execute(interaction) {
         try {
             const url = interaction.options.getString('lien_leaderboard')
             const member = interaction.options.getUser('joueur')
@@ -64,5 +64,5 @@ module.exports = {
                 throw Error(error.message)
             }
         }
-	}
+    }
 }

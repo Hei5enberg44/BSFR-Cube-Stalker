@@ -9,9 +9,9 @@ const scoresaber = require('../controllers/scoresaber')
 const beatleader = require('../controllers/beatleader')
 
 module.exports = {
-	data: {
-		name: 'me',
-		description: 'Affiche vos informations de joueur',
+    data: {
+        name: 'me',
+        description: 'Affiche vos informations de joueur',
         options: [
             {
                 type: ApplicationCommandOptionType.String,
@@ -44,7 +44,7 @@ module.exports = {
      * Exécution de la commande
      * @param {CommandInteraction} interaction intéraction Discord
      */
-	async execute(interaction) {
+    async execute(interaction) {
         try {
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const otherMember = interaction.options.getUser('joueur')
@@ -191,5 +191,5 @@ module.exports = {
                 throw Error(error.message)
             }
         }
-	}
+    }
 }

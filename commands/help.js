@@ -3,9 +3,9 @@ const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError } = require('../utils/error')
 
 module.exports = {
-	data: {
-		name: 'help',
-		description: 'Affiche l\'aide',
+    data: {
+        name: 'help',
+        description: 'Affiche l\'aide',
         default_member_permissions: '0'
     },
     channels: [ 'cubeStalker' ],
@@ -14,7 +14,7 @@ module.exports = {
      * Exécution de la commande
      * @param {CommandInteraction} interaction intéraction Discord
      */
-	async execute(interaction) {
+    async execute(interaction) {
         try {
             const commandsList = `\
 ${inlineCode('/link')}: Lie votre profil ScoreSaber/BeatLeader à votre compte Discord\n\
@@ -40,5 +40,5 @@ ${inlineCode('/world')}: Affiche le classement mondial\
                 throw Error(error.message)
             }
         }
-	}
+    }
 }

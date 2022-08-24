@@ -15,7 +15,7 @@ module.exports = {
      * Exécution de la commande
      * @param {CommandInteraction} interaction intéraction Discord
      */
-	async execute(interaction) {
+    async execute(interaction) {
         try {
             let embed = new Embed()
                 .setColor('#F1C40F')
@@ -39,5 +39,5 @@ module.exports = {
                 throw Error(error.message)
             }
         }
-	}
+    }
 }

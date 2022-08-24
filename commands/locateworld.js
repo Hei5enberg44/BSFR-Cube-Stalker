@@ -46,7 +46,7 @@ module.exports = {
      * Exécution de la commande
      * @param {CommandInteraction} interaction intéraction Discord
      */
-	async execute(interaction) {
+    async execute(interaction) {
         try {
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const otherMember = interaction.options.getUser('joueur')
@@ -98,5 +98,5 @@ module.exports = {
             }
         }
         
-	}
+    }
 }

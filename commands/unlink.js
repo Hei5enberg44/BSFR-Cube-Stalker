@@ -25,7 +25,7 @@ module.exports = {
      * Exécution de la commande
      * @param {CommandInteraction} interaction intéraction Discord
      */
-	async execute(interaction) {
+    async execute(interaction) {
         try {
             const isAdmin = interaction.member.roles.cache.find(role => ["Admin", "Modérateur"].indexOf(role.name) !== -1) !== undefined
 
@@ -105,5 +105,5 @@ module.exports = {
                 throw Error(error.message)
             }
         }
-	}
+    }
 }

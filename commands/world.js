@@ -4,9 +4,9 @@ const { CommandError, CommandInteractionError, LeaderboardError } = require('../
 const leaderboard = require('../controllers/leaderboard')
 
 module.exports = {
-	data: {
-		name: 'world',
-		description: 'Affiche le classement mondial',
+    data: {
+        name: 'world',
+        description: 'Affiche le classement mondial',
         options: [
             {
                 type: ApplicationCommandOptionType.String,
@@ -39,7 +39,7 @@ module.exports = {
      * Exécution de la commande
      * @param {CommandInteraction} interaction intéraction Discord
      */
-	async execute(interaction) {
+    async execute(interaction) {
         try {
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const count = interaction.options.getInteger('nombre') ?? 10
@@ -65,5 +65,5 @@ module.exports = {
                 throw Error(error.message)
             }
         }
-	}
+    }
 }
