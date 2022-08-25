@@ -221,6 +221,27 @@ __Exemples :__
 
 ***
 
+- ### /playlist : Créer une playlist
+
+Permet de générer une playlist de maps en fonction du nombre d'étoiles et/ou de l'accuracy du joueur sur celles-ci.
+
+__Paramètres :__
+
+|    Nom    | Obligatoire | Contenu |
+| --------- |:-----------:| ------- |
+| **min_stars** |   | Nombre d'étoiles minimum |
+| **max_stars** |   | Nombre d'étoiles maximum |
+| **min_acc** |   | Accuracy minimum |
+| **max_acc** |   | Accuracy maximum |
+
+__Exemples :__
+
+```
+/playlist stars_min:8 stars_max:10 acc_min:90 acc_max:94
+```
+
+***
+
 - ### /forcerefresh : Actualise l'ensemble du serveur
 
 Permet d'actualiser les rôles de pp de tous les membres ayant lié leur profil ScoreSaber ou BeatLeader avec leur compte Discord.
