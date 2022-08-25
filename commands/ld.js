@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, channelMention } = require('discord.js')
+const { ApplicationCommandOptionType, CommandInteraction, channelMention } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const leaderboard = require('../controllers/leaderboard')

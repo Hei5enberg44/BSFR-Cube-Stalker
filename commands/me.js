@@ -1,4 +1,4 @@
-const { ApplicationCommandOptionType, userMention, bold, hyperlink } = require('discord.js')
+const { ApplicationCommandOptionType, CommandInteraction, userMention, bold, hyperlink } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const { countryCodeEmoji } = require('../utils/country-code-emoji')
@@ -59,9 +59,7 @@ module.exports = {
                 member = await members.getMember(memberId)
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou non
-                if(!member) {
-                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord ${userMention(memberId)}`)
-                }
+                if(!member) throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord ${userMention(memberId)}`)
             } else {
                 // Identifiant du membre exécutant la commande
                 memberId = interaction.member.id
@@ -70,9 +68,7 @@ module.exports = {
                 member = await members.getMember(memberId)
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou non
-                if(!member) {
-                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
-                }
+                if(!member) throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
             }
 
             await interaction.deferReply()
@@ -159,9 +155,7 @@ module.exports = {
 
             // On met à jour les rôles du membre en fonction de son nombre de pp
             const memberToUpdate = otherMember ? interaction.guild.members.cache.find(m => m.id === otherMember.id) : interaction.member
-            if(leaderboardChoice === 'scoresaber') {
-                await roles.updateMemberPpRoles(memberToUpdate, playerDatas.pp)
-            }
+            if(leaderboardChoice === 'scoresaber') await roles.updateMemberPpRoles(memberToUpdate, playerDatas.pp)
 
             // On affiche les informations ScoreSaber du membre
             const ldIconName = leaderboardChoice === 'scoresaber' ? 'ss' : (leaderboardChoice === 'beatleader' ? 'bl' : '')

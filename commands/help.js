@@ -1,4 +1,4 @@
-const { inlineCode } = require('discord.js')
+const { CommandInteraction, inlineCode } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError } = require('../utils/error')
 
