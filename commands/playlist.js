@@ -84,6 +84,8 @@ module.exports = {
                 return ps.stars >= starsMin && ps.stars <= starsMax && acc >= accMin && acc <= accMax
             })
 
+            if(playerScoresFiltered.length === 0) throw new CommandInteractionError('Aucune map correspondant aux critères choisis n\'a été trouvée')
+
             // Génération du fichier playlist
             const playlistName = `${starsMin}⭐ to ${starsMax}⭐ - ${accMin}% to ${accMax}%`
 
@@ -114,7 +116,7 @@ module.exports = {
 
             const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlist)), { name: playlistName + '.json' })
 
-            await interaction.editReply({ content: 'Ta playlist est prête !', embeds: [], files: [attachment] })
+            await interaction.editReply({ content: `Ta playlist est prête ! (${playlist.songs.length} maps)`, embeds: [], files: [attachment] })
         } catch(error) {
             if(error instanceof CommandInteractionError || error instanceof ScoreSaberError) {
                 throw new CommandError(error.message, interaction.commandName)
