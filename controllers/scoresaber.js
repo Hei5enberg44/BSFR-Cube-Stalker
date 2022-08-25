@@ -31,6 +31,7 @@ module.exports = {
 
                 error = false
             } else {
+                if(res.status === 400) throw Error('Erreur 400 : Requête invalide')
                 if(res.status === 404) throw Error('Erreur 404 : Page introuvable')
                 if(res.status === 422) throw Error('Erreur 422 : La ressource demandée est introuvable')
                 if(res.status === 500) {
@@ -234,6 +235,88 @@ module.exports = {
             return datas.scores
         } catch(error) {
             throw new ScoreSaberError('Une erreur est survenue lors de la récupération du top 1 du pays sur la map')
+        }
+    },
+
+    /**
+     * Données de joueur ScoreSaber
+     * @typedef {Object} ScoreSaberPlayerScore
+     * @property {number} rank
+     * @property {number} scoreId
+     * @property {number} score
+     * @property {number} unmodififiedScore
+     * @property {string} modifiers
+     * @property {number} pp
+     * @property {number} weight
+     * @property {string} timeSet
+     * @property {number} badCuts
+     * @property {number} missedNotes
+     * @property {number} maxCombo
+     * @property {boolean} fullCombo
+     * @property {number} leaderboardId
+     * @property {string} songHash
+     * @property {string} songName
+     * @property {string} songSubName
+     * @property {string} songAuthorName
+     * @property {string} levelAuthorName
+     * @property {number} difficulty
+     * @property {string} difficultyRaw
+     * @property {number} maxScore
+     * @property {boolean} ranked
+     * @property {number} stars
+     */
+
+    /**
+     * Récupère la liste des scores d'un joueur par rapport à son identifiant ScoreSaber
+     * @param {string} scoreSaberId identifiant ScoreSaber du joueur
+     * @returns {Promise<Array.<ScoreSaberPlayerScore>>} liste des scores du joueur
+     */
+    getPlayerScores: async function(scoreSaberId) {
+        const scores = []
+
+        try {
+            let nextPage = null
+            let limit = 100
+
+            do {
+                const datas = await module.exports.send(playerUrl + scoreSaberId + '/scores?sort=recent&limit=' + limit + '&page=' + (nextPage ?? 1), false)
+                const playerScores = datas.playerScores
+                const metadata = datas.metadata
+
+                for(const playerScore of playerScores) {
+                    scores.push({
+                        rank: playerScore.score.rank,
+                        scoreId: playerScore.score.id,
+                        score: playerScore.score.modifiedScore,
+                        unmodififiedScore: playerScore.score.baseScore,
+                        modifiers: playerScore.score.modifiers,
+                        pp: playerScore.score.pp,
+                        weight: playerScore.score.weight,
+                        timeSet: playerScore.score.timeSet,
+                        badCuts: playerScore.score.badCuts,
+                        missedNotes: playerScore.score.missedNotes,
+                        maxCombo: playerScore.score.maxCombo,
+                        fullCombo: playerScore.score.fullCombo,
+                        leaderboardId: playerScore.leaderboard.id,
+                        songHash: playerScore.leaderboard.songHash,
+                        songName: playerScore.leaderboard.songName,
+                        songSubName: playerScore.leaderboard.songSubName,
+                        songAuthorName: playerScore.leaderboard.songAuthorName,
+                        levelAuthorName: playerScore.leaderboard.levelAuthorName,
+                        difficulty: playerScore.leaderboard.difficulty.difficulty,
+                        difficultyRaw: playerScore.leaderboard.difficulty.difficultyRaw,
+                        maxScore: playerScore.leaderboard.maxScore,
+                        ranked: playerScore.leaderboard.ranked,
+                        stars: playerScore.leaderboard.stars
+                    })
+                }
+                
+                nextPage = metadata.page + 1 <= Math.ceil(metadata.total / metadata.itemsPerPage) ? metadata.page + 1 : null
+            } while(nextPage)
+
+            return scores
+        } catch(error) {
+            throw new ScoreSaberError('Une erreur est survenue lors de la récupération des scores du joueur')
         }
     }
 }
