@@ -5,9 +5,9 @@ const { Members } = require('./database')
 module.exports = {
     /**
      * @typedef {Object} Member
-     * @property {string} memberId 
-     * @property {string} playerId 
-     * @property {boolean} top1 
+     * @property {string} memberId
+     * @property {string} playerId
+     * @property {boolean} top1
      */
 
     /**

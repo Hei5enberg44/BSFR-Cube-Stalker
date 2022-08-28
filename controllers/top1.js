@@ -18,7 +18,6 @@ function calcAcc(mapDetails, levelDifficulty, levelGameMode, score) {
 module.exports = {
     /**
      * @typedef {Object} Top1
-     * @property {*} client 
      * @property {number} rank
      * @property {number} score
      * @property {number} acc
