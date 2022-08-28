@@ -17,6 +17,30 @@ function calcAcc(mapDetails, levelDifficulty, levelGameMode, score) {
 
 module.exports = {
     /**
+     * @typedef {Object} Top1
+     * @property {*} client 
+     * @property {number} rank
+     * @property {number} score
+     * @property {number} acc
+     * @property {number} pp
+     * @property {string} timeSet
+     * @property {number} leaderboardId
+     * @property {string} songName
+     * @property {string} songCoverUrl
+     * @property {string} levelKey
+     * @property {string} levelAuthorName
+     * @property {string} levelDifficulty
+     * @property {string} levelGameMode
+     * @property {boolean} ranked
+     * @property {string} scoreSaberId
+     * @property {string} scoreSaberName
+     * @property {string} beatenScoreSaberId
+     * @property {string} beatenScoreSaberName
+     * @property {string|null} replay
+     * @property {string} memberId
+     */
+
+    /**
      * Scan pour des nouveaux top 1 FR
      * @param {Client} client client Discord
      */
@@ -108,7 +132,7 @@ module.exports = {
     /**
      * Publication d'un top 1 FR dans le channel #top-1-fr
      * @param {Client} client client Discord
-     * @param {Object} top1 données du top 1 FR
+     * @param {Top1} top1 données du top 1 FR
      */
     publish: async function(client, top1) {
         const guild = client.guilds.cache.find(g => g.id === config.guild.id)
@@ -147,7 +171,7 @@ module.exports = {
 
     /**
      * Récupère la liste des joueurs inscrits au top 1 FR
-     * @returns {Promise<Array<Object>>}
+     * @returns {Promise<Array<{memberId: string, playerId: string, top1: boolean}>>}
      */
     getSubscribed: async function() {
         const subscribed = await Members.findAll({ where: { top1: true } })

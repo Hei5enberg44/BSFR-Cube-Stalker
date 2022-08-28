@@ -2,6 +2,9 @@ const Logger = require('../utils/logger')
 const fs = require('fs')
 
 class Events {
+    /**
+     * @param {Client} client client Discord
+     */
     constructor(client) {
         this.client = client
     }

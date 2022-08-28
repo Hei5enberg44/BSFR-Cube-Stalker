@@ -4,7 +4,7 @@ module.exports = {
     /**
      * Récupère la liste des rôles de pp d'un membre
      * @param {GuildMember} member membre Discord
-     * @returns {Collection.<Role>} rôle de pp le plus élevé du membre
+     * @returns {Collection<Role>} rôle de pp le plus élevé du membre
      */
     getMemberPpRoles: function(member) {
         const roles = member.roles.cache.filter(role => role.name.match(/^[0-9\s]+pp$/))
@@ -14,7 +14,7 @@ module.exports = {
     /**
      * Récupère la couleur du rôle de pp le plus élevé d'un membre
      * @param {GuildMember} member membre Discord
-     * @returns {String|null}
+     * @returns {string|null}
      */
     getMemberPpRoleColor: function(member) {
         const memberPpRoles = module.exports.getMemberPpRoles(member)

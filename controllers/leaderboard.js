@@ -22,7 +22,7 @@ module.exports = {
      * @param {string} leaderboardName choix du leaderboard
      * @param {string} type type de classement (pp ou acc)
      * @param {number} page page à afficher (10 éléments par page)
-     * @returns {Promise<Object>} classement serveur global
+     * @returns {Promise<{title: string, content: string}>} classement serveur global
      */
     getLeaderboard: async function(leaderboardName, type, page) {
         // Récupération du classement
@@ -158,10 +158,17 @@ module.exports = {
     },
 
     /**
+     * @typedef {Object} ServerMemberRanking
+     * @property {number} serverRankPP
+     * @property {number} serverRankAcc
+     * @property {number} serverLdTotal
+     */
+
+    /**
      * Récupération du classement serveur d'un membre
      * @param {string} leaderboardName choix du leaderboard
      * @param {string} memberId identifiant Discord du membre
-     * @returns {Promise<Object>} classement serveur du membre
+     * @returns {Promise<(ServerMemberRanking|null)>} classement serveur du membre
      */
     getMemberLeaderboard: async function(leaderboardName, memberId) {
         // Récupération du classement
@@ -184,10 +191,21 @@ module.exports = {
     },
 
     /**
+     * @typedef {Object} MemberRanking
+     * @property {number} pp
+     * @property {number} rank
+     * @property {number} countryRank
+     * @property {number} averageRankedAccuracy
+     * @property {number} serverRankPP
+     * @property {number} serverRankAcc
+     * @property {number} serverLdTotal
+     */
+
+    /**
      * Récupération des données de classement d'un membre
      * @param {string} leaderboardName choix du leaderboard
      * @param {string} memberId identifiant Discord du membre
-     * @returns {Promise<Object>} classement serveur du membre
+     * @returns {Promise<(MemberRanking|null)>} classement serveur du membre
      */
     getMember: async function(leaderboardName, memberId) {
         // Récupération du classement
@@ -217,7 +235,7 @@ module.exports = {
      * @param {string} leaderboardName choix du leaderboard
      * @param {string} memberId identifiant Discord du membre
      * @param {Object} playerDatas données du profil ScoreSaber ou BeatLeader du membre
-     * @returns {Promise<Object>} classement serveur du membre
+     * @returns {Promise<(MemberRanking|null)>} classement serveur du membre
      */
     addMemberLeaderboard: async function(leaderboardName, memberId, playerDatas) {
         const leaderboardCount = await Leaderboard.findOne({
@@ -263,7 +281,7 @@ module.exports = {
      * @param {string} leaderboardName choix du leaderboard
      * @param {string} memberId identifiant Discord du membre
      * @param {Object} playerDatas données du profil ScoreSaber ou BeatLeader du membre
-     * @returns {Promise<Object>} classement serveur du membre
+     * @returns {Promise<(MemberRanking|null)>} classement serveur du membre
      */
     updateMemberLeaderboard: async function(leaderboardName, memberId, playerDatas) {
         const leaderboardCount = await Leaderboard.count({

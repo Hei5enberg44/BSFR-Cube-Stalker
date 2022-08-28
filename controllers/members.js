@@ -4,9 +4,16 @@ const { Members } = require('./database')
 
 module.exports = {
     /**
+     * @typedef {Object} Member
+     * @property {string} memberId 
+     * @property {string} playerId 
+     * @property {boolean} top1 
+     */
+
+    /**
      * Récupère un membre depuis la table « members »
      * @param {string} memberId identifiant Discord du membre
-     * @returns {Promise<{memberId: number, playerId: number, top1: boolean}>} membre Discord
+     * @returns {Promise<Member>} membre Discord
      */
     getMember: async function(memberId) {
         return await Members.findOne({
@@ -18,9 +25,9 @@ module.exports = {
 
     /**
      * Récupère la liste des membres depuis la table « members »
-     * @returns {Promise<[{memberId: number, playerId: number}]>} membres Discord
+     * @returns {Promise<Array<Member>>} membres Discord
      */
-     getAllMembers: async function() {
+    getAllMembers: async function() {
         return await Members.findAll()
     },
 

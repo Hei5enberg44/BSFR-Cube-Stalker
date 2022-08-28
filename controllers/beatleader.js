@@ -212,9 +212,9 @@ module.exports = {
 
     /**
      * Récupération du classement d'un pays défini pour une map
-     * @param {Number} leaderboardId identifiant du classement
+     * @param {number} leaderboardId identifiant du classement
      * @param {string} country pays
-     * @param {Number} page page du classement
+     * @param {number} page page du classement
      * @returns {Promise<Array>} liste des scores du classement
      */
     getMapCountryLeaderboard: async function(leaderboardId, country, page = 1) {

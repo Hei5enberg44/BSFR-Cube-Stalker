@@ -16,6 +16,13 @@ function millisecondsToDate(m) {
 }
 
 module.exports = {
+    /**
+     * Vérifie le cooldown d'une commande pour un membre
+     * @param {string} commandName nom de la commande
+     * @param {string} memberId identifiant du membre
+     * @param {number} duration durée du cooldown
+     * @returns {{timestamp: number, date: string}} informations sur le cooldown
+     */
     checkCooldown: async function(commandName, memberId, duration) {
         const date = Math.floor(new Date().getTime() / 1000)
         
@@ -41,6 +48,12 @@ module.exports = {
         }
     },
 
+    /**
+     * Ajoute un cooldown sur une commande pour un membre
+     * @param {string} commandName nom de la commande
+     * @param {string} memberId identifiant du membre
+     * @param {number} expirationDate date d'expiration du cooldown (au format timestamp)
+     */
     addCooldown: async function(commandName, memberId, expirationDate) {
         const cd = await Cooldowns.findOne({
             where: {
