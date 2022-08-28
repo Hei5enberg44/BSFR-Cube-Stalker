@@ -68,7 +68,10 @@ module.exports = {
                 member = await members.getMember(memberId)
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou non
-                if(!member) throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
+                if(!member) {
+                    const linkCommand = interaction.guild.commands.cache.find(c => c.name === 'link')
+                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
+                }
             }
 
             await interaction.deferReply()
