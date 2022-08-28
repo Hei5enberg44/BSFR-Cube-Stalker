@@ -2,6 +2,10 @@ const members = require('../controllers/members')
 const Logger = require('../utils/logger')
 
 module.exports = {
+    /**
+     * Emitted whenever a member leaves a guild, or is kicked
+     * @param {GuildMember} member The member that has left/been kicked from the guild
+     */
     async execute(member) {
         const memberId = member.id
         const memberTag = member.user.tag
