@@ -15,7 +15,7 @@ class Commands {
     /**
      * Récupération des options d'une commande exécutée
      * @param {Array<CommandInteractionOption>} commandInteractionOptions données de la commande exécutée
-     * @returns {Array<String>} liste des options de la commande exécutée
+     * @returns {Array<string>} liste des options de la commande exécutée
      */
     getCommandOptions(commandInteractionOptions) {
         return commandInteractionOptions.flatMap(d => {
@@ -39,20 +39,18 @@ class Commands {
      */
     async load() {
         const commands = [] // Liste des commandes
-        const commandsRoles = [] // Liste des rôles
         this.client.commands = new Collection()
         const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
 
-        // On ajoute chaque commande au serveur
+        // On récupère les commandes
         for(const file of commandFiles) {
             const command = require(`../commands/${file}`)
             commands.push(command.data)
             Logger.log('CommandManager', 'INFO', `Commande "/${command.data.name}" trouvée`)
-            commandsRoles.push({ name: command.data.name, roles: command.roles ?? null })
             this.client.commands.set(command.data.name, command)
         }
 
-        // On applique les rôles aux commandes
+        // On ajoute chaque commande au serveur
         Logger.log('CommandManager', 'INFO', `Actualisation des commandes (/) de l'application`)
         const guild = this.client.guilds.cache.get(config.guild.id)
         await guild.commands.set(commands)
