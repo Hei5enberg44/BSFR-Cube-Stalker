@@ -18,7 +18,7 @@ module.exports = {
         try {
             const commandsList = [
                 { name: 'link', description: 'Lie votre profil ScoreSaber/BeatLeader à votre compte Discord' },
-                { name: 'unlink', description: 'Supprime la liaison de votre profil ScoreSaber/BeatLeader à votre compte Discord' },
+                { name: 'unlink', description: 'Supprime la liaison de votre profil ScoreSaber/BeatLeader de votre compte Discord' },
                 { name: 'me', description: 'Affiche vos informations de joueur ou celles d\'un autre joueur' },
                 { name: 'card', description: 'Génère votre carte de joueur ou celle d\'un autre joueur' },
                 { name: 'ld', description: 'Affiche le classement du serveur (pp ou acc)' },
