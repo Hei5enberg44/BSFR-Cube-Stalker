@@ -41,13 +41,15 @@ module.exports = {
             }
 
             await members.addMember(interaction.member.id, playerProfil.id)
+
+            const meCommand = interaction.guild.commands.cache.find(c => c.name === 'me')
             
             const embed = new Embed()
                     .setColor('#2ECC71')
                     .setTitle(playerProfil.name)
                     .setURL(playerProfil.url)
                     .setThumbnail(playerProfil.avatar)
-                    .setDescription('Votre profil ScoreSaber/BeatLeader a bien été lié avec votre compte Discord\nTapez la commande `/me` pour pouvoir être ajouté au classement du serveur')
+                    .setDescription(`Votre profil ScoreSaber/BeatLeader a bien été lié avec votre compte Discord\nTapez la commande ${meCommand} pour pouvoir être ajouté au classement du serveur`)
 
             await interaction.editReply({ embeds: [ embed ] })
         } catch(error) {
