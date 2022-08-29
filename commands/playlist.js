@@ -7,7 +7,7 @@ const scoresaber = require('../controllers/scoresaber')
 module.exports = {
     data: {
         name: 'playlist',
-        description: 'Génère une playlist pour le joueur en fonction de ses critères',
+        description: 'Génère une playlist en fonction de vos maps jouées et de vos critères choisis en options de commande',
         options: [
             {
                 type: ApplicationCommandOptionType.Number,
