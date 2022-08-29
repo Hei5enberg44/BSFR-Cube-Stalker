@@ -70,7 +70,7 @@ class Commands {
         
             try {
                 const commandOptions = this.getCommandOptions(interaction.options.data)
-                Logger.log('CommandManager', 'INFO', `${interaction.user.tag} a exécuté la commande "/${interaction.commandName} ${commandOptions.join(' ')}"`)
+                Logger.log('CommandManager', 'INFO', `${interaction.user.tag} a exécuté la commande "/${interaction.commandName}${commandOptions.length > 0 ? ` ${commandOptions.join(' ')}` : ''}"`)
 
                 // On test si la commande est exécutée depuis le bon channel
                 if(command.channels) {
