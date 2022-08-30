@@ -49,7 +49,7 @@ module.exports = {
                     .setTitle(playerProfil.name)
                     .setURL(playerProfil.url)
                     .setThumbnail(playerProfil.avatar)
-                    .setDescription(`Votre profil ScoreSaber/BeatLeader a bien été lié avec votre compte Discord\nTapez la commande ${meCommand} pour pouvoir être ajouté au classement du serveur`)
+                    .setDescription(`Votre profil ScoreSaber/BeatLeader a bien été lié avec votre compte Discord\nℹ️ Utilisez la commande </${meCommand.name}:${meCommand.id}> pour pouvoir être ajouté au classement du serveur`)
 
             await interaction.editReply({ embeds: [ embed ] })
         } catch(error) {
