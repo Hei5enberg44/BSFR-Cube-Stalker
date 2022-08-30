@@ -75,7 +75,7 @@ module.exports = {
         const flagPath = `./assets/images/card/flags/${player.country.toUpperCase()}.png`
         if(fs.existsSync(flagPath)) {
             const flag = await loadImage(flagPath)
-            ctx.drawImage(flag, 186, 122, 36, 36)
+            ctx.drawImage(flag, 188, 122, 36, 36)
         }
 
         // Classement du joueur dans son pays
@@ -132,6 +132,29 @@ module.exports = {
         ctx.fillText(player.topPP.name.length > 80 ? player.topPP.name.substring(0, 80) + '...' : player.topPP.name, 186, 259, 708)
         ctx.fillText(`Mapped by ${player.topPP.author}`, 186, 289, 708)
         ctx.fillText(`#${player.topPP.rank} | ${(player.topPP.pp).toFixed(2)}pp | ${(player.topPP.acc).toFixed(2)}%`, 186, 319)
+
+        // Affichage de la carte de Noël si la date du jour est comprise entre le 1er Décembre et le 31 Décembre
+        const date = new Date()
+        const christmasDateStart = new Date()
+        christmasDateStart.setMonth(11)
+        christmasDateStart.setDate(1)
+        const christmasDateEnd = new Date()
+        christmasDateEnd.setMonth(11)
+        christmasDateEnd.setDate(31)
+
+        if(date >= christmasDateStart && date <= christmasDateEnd) {
+            // Santa's hat
+            const hat = await loadImage('./assets/images/card/santas-hat.png')
+            ctx.save()
+            ctx.translate(30, 38)
+            ctx.rotate(-16 * Math.PI / 180)
+            ctx.drawImage(hat, 0, 16, 71, 36)
+            ctx.restore()
+
+            // Foreground snow
+            const snow = await loadImage('./assets/images/card/snow.png')
+            ctx.drawImage(snow, 0, 0, canvas.width, canvas.height)
+        }
 
         // Grille (pour tests)
         // ctx.beginPath()
