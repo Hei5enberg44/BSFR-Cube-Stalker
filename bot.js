@@ -14,7 +14,7 @@ try {
     if(!fs.existsSync('./config.json')) throw Error('Le fichier de configuration "config.json" est manquant')
     const config = require('./config.json')
 
-    const { Client, GatewayIntentBits } = require('discord.js')
+    const { Client, GatewayIntentBits, ActivityType, PresenceUpdateStatus } = require('discord.js')
     const Commands = require('./controllers/commands')
     const Events = require('./controllers/events')
     const top1 = require('./controllers/top1')
@@ -61,6 +61,17 @@ try {
 
             // Top 1 FR
             top1.listen(client)
+
+            // Statut du bot
+            client.user.setPresence({
+                activities: [
+                    {
+                        name: 'Beat Saber',
+                        type: ActivityType.Playing
+                    }
+                ],
+                status: PresenceUpdateStatus.DoNotDisturb
+            })
         
             Logger.log('Application', 'INFO', 'Le bot est prêt !')
         })
