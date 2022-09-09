@@ -107,7 +107,7 @@ module.exports = {
                                 }
                             } catch(error) {
                                 if(error instanceof BeatSaverError || error instanceof ScoreSaberError) {
-                                    throw new Top1Error(`Ajout du top 1 impossible`)
+                                    throw new Top1Error(`Ajout du top 1 impossible (${error.message})`)
                                 }
                             }
                         }
