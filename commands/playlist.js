@@ -1,7 +1,7 @@
 const { ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, ScoreSaberError } = require('../utils/error')
-const members = require('../controllers/members')
+const players = require('../controllers/players')
 const scoresaber = require('../controllers/scoresaber')
 
 module.exports = {
@@ -61,10 +61,11 @@ module.exports = {
             const memberId = interaction.member.id
 
             // Informations sur le membre
-            const member = await members.getMember(memberId)
+            const member = await players.get(memberId, 'scoresaber')
 
-            // On vérifie ici si le membre a lié son compte ScoreSaber ou non
-            if(!member) throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
+            // On vérifie ici si le membre a lié son compte ScoreSaber
+            const linkCommand = interaction.guild.commands.cache.find(c => c.name === 'link')
+            if(!member) throw new CommandInteractionError(`Aucun profil ScoreSaber n'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
 
             // On vérifie la cohérence des données renseignées par l'utilisateur
             if(starsMin > starsMax) throw new CommandInteractionError('Le nombre d\'étoiles minimum ne peut pas être supérieur au nombre d\'étoiles maximum')

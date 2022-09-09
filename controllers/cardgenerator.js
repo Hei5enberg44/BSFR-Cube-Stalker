@@ -24,7 +24,7 @@ function getDiffColor(diff) {
 }
 
 module.exports = {
-    getCard: async function(leaderboard, playerId) {
+    getCard: async function(playerId, leaderboard) {
         let player
         if(leaderboard === 'scoresaber') {
             player = await scoresaber.getPlayerDatas(playerId)

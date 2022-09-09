@@ -4,7 +4,7 @@ const beatsaver = require('./beatsaver')
 const roles = require('./roles')
 const { userMention, bold, hyperlink, time } = require('discord.js')
 const Embed = require('../utils/embed')
-const { Members } = require('./database')
+const { Players } = require('./database')
 const { Top1Error, ScoreSaberError, BeatSaverError } = require('../utils/error')
 const config = require('../config.json')
 const Logger = require('../utils/logger')
@@ -62,7 +62,7 @@ module.exports = {
                     const country = score?.leaderboardPlayerInfo?.country
 
                     if(country === 'FR') {
-                        const player = await Members.findOne({
+                        const player = await Players.findOne({
                             where: {
                                 playerId : playerId,
                                 top1: true
@@ -99,7 +99,7 @@ module.exports = {
                                         scoreSaberName: ldFR[0].leaderboardPlayerInfo.name,
                                         beatenScoreSaberId: ldFR.length > 1 ? ldFR[1].leaderboardPlayerInfo.id : '',
                                         beatenScoreSaberName: ldFR.length > 1 ? ldFR[1].leaderboardPlayerInfo.name : '',
-                                        replay: score.pp && score.rank <= 500 ? `https://www.replay.beatleader.xyz/?id=${mapDetails.id}&difficulty=${levelDifficulty}&playerID=${playerId}` : null,
+                                        replay: score.hasReplay ? `https://www.replay.beatleader.xyz/?id=${mapDetails.id}&difficulty=${levelDifficulty}&playerID=${playerId}` : null,
                                         memberId: player.memberId
                                     }
 
@@ -173,19 +173,25 @@ module.exports = {
      * @returns {Promise<Array<{memberId: string, playerId: string, top1: boolean}>>}
      */
     getSubscribed: async function() {
-        const subscribed = await Members.findAll({ where: { top1: true } })
+        const subscribed = await Players.findAll({
+            where: {
+                top1: true,
+                leaderboard: 'scoresaber'
+            }
+        })
         return subscribed
     },
 
     /**
      * Inscrit/Désinscrit un membre au top 1 FR
-     * @param {string} playerId identifiant leaderboard du joueur
+     * @param {string} memberId identifiant Discord du membre
      * @param {boolean} subscribe
      */
-    subscribe: async function(playerId, subscribe) {
-        await Members.update({ top1: subscribe }, {
+    subscribe: async function(memberId, subscribe) {
+        await Players.update({ top1: subscribe }, {
             where: {
-                playerId: playerId
+                memberId: memberId,
+                leaderboard: 'scoresaber'
             }
         })
     }

@@ -11,7 +11,7 @@ module.exports = {
      * @param {Client} client client Discord
      */
     refreshLeaderboard: async function(client) {
-        new CronJob('0 0 * * *', async function() {
+        new CronJob('0 */12 * * *', async function() {
             Logger.log('Leaderboard', 'INFO', 'Actualisation du classement des joueurs du serveur')
 
             const guild = client.guilds.cache.find(g => g.id === config.guild.id)

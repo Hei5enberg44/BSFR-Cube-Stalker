@@ -1,7 +1,7 @@
 const { ApplicationCommandOptionType, CommandInteraction, userMention } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
-const members = require('../controllers/members')
+const players = require('../controllers/players')
 const cardgenerator = require('../controllers/cardgenerator')
 
 module.exports = {
@@ -45,21 +45,30 @@ module.exports = {
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const otherMember = interaction.options.getUser('joueur')
 
-            let member
+            await interaction.deferReply()
+
+            let player, memberId
+
             if(otherMember) {
-                // Informations sur le membre
-                member = await members.getMember(otherMember.id)
+                // Identifiant du membre pour lequel aficher la carte
+                memberId = otherMember.id
 
-                if(!member) {
-                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord ${userMention(otherMember.id)}`)
-                }
+                // Informations sur le joueur
+                player = await players.get(memberId, leaderboardChoice)
+
+                // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
+                if(!player) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n\'est lié pour le compte Discord ${userMention(memberId)}`)
             } else {
-                // Informations sur le membre
-                member = await members.getMember(interaction.member.id)
+                // Identifiant du membre exécutant la commande
+                memberId = interaction.member.id
+                
+                // Informations sur le joueur
+                player = await players.get(memberId, leaderboardChoice)
 
-                // On vérifie ici si le membre a lié son compte ScoreSaber ou non
-                if(!member) {
-                    throw new CommandInteractionError('Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
+                // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
+                if(!player) {
+                    const linkCommand = interaction.guild.commands.cache.find(c => c.name === 'link')
+                    throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
                 }
             }
 
@@ -67,11 +76,11 @@ module.exports = {
                 .setColor('#F1C40F')
                 .setDescription('🛠️ Fabrication de la carte en cours...')
 
-            await interaction.reply({ embeds: [embed] })
+            await interaction.editReply({ embeds: [embed] })
 
-            const card = await cardgenerator.getCard(leaderboardChoice, member.playerId)
+            const card = await cardgenerator.getCard(player.playerId, leaderboardChoice)
 
-            await interaction.editReply({ files: [{attachment: card.name, name: member.playerId + '.png'}], embeds: [] })
+            await interaction.editReply({ files: [{attachment: card.name, name: player.playerId + '.png'}], embeds: [] })
 
             card.removeCallback()
         } catch(error) {

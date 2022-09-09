@@ -5,7 +5,7 @@ const Logger = require('../utils/logger')
 const scoresaber = require('./scoresaber')
 const beatleader = require('../controllers/beatleader')
 const roles = require('./roles')
-const { Leaderboard } = require('./database')
+const { Players, Leaderboard } = require('./database')
 
 module.exports = {
     _leaderboard: function(leaderboardName) {
@@ -28,7 +28,7 @@ module.exports = {
         // Récupération du classement
         const itemsPerPage = 10
         
-        const leaderboardCount = await Leaderboard.count({ where: { leaderboardName: leaderboardName } })
+        const leaderboardCount = await Leaderboard.count({ where: { leaderboard: leaderboardName } })
 
         if(leaderboardCount == 0)
             throw new LeaderboardError('Aucune donnée de classement disponible.')
@@ -40,7 +40,7 @@ module.exports = {
 
         const sort = type == 'pp' ? [[ 'pp', 'DESC' ], [ 'id', 'ASC' ]] : [[ 'averageRankedAccuracy', 'DESC' ], [ 'id', 'ASC' ]]
         const ld = await Leaderboard.findAll({
-            where: { leaderboardName: leaderboardName },
+            where: { leaderboard: leaderboardName },
             order: sort,
             offset: (page - 1) * itemsPerPage,
             limit: itemsPerPage
@@ -54,12 +54,7 @@ module.exports = {
             const pp = new Intl.NumberFormat('en-US').format(ml.pp) + 'pp'
             const acc = (ml.averageRankedAccuracy).toFixed(2) + '%'
             const stat = type == 'pp' ? pp : acc
-            let leaderboardUrl
-            if(leaderboardName === 'scoresaber') {
-                leaderboardUrl = `https://scoresaber.com/u/${ml.playerId}`
-            } else if(leaderboardName === 'beatleader') {
-                leaderboardUrl = `https://beatleader.xyz/u/${ml.playerId}`
-            }
+            const leaderboardUrl = `https://${leaderboardName === 'scoresaber' ? 'scoresaber.com' : 'beatleader.xyz'}/u/${ml.playerId}`
             playersList += `${rank} - ${ml.playerCountry !== '' ? countryCodeEmoji(ml.playerCountry) : '🏴‍☠️'} [${ml.playerName}](${leaderboardUrl}) - ${stat}\n`
         }
 
@@ -147,7 +142,7 @@ module.exports = {
     /**
      * Récupération du classement global sur la position d'un joueur par rapport à son identifiant
      * @param {string} leaderboardName choix du leaderboard
-     * @param {string} playerId identifiant leaderboard du joueur
+     * @param {string} playerId identifiant du joueur
      * @returns {Promise<string>} liste des joueurs
      */
     getGlobalLeaderboardByPlayerId: async function(leaderboardName, playerId) {
@@ -158,28 +153,28 @@ module.exports = {
     },
 
     /**
-     * @typedef {Object} ServerMemberRanking
+     * @typedef {Object} ServerPlayerRanking
      * @property {number} serverRankPP
      * @property {number} serverRankAcc
      * @property {number} serverLdTotal
      */
 
     /**
-     * Récupération du classement serveur d'un membre
-     * @param {string} leaderboardName choix du leaderboard
-     * @param {string} memberId identifiant Discord du membre
-     * @returns {Promise<(ServerMemberRanking|null)>} classement serveur du membre
+     * Récupération du classement serveur d'un joueur
+     * @param {string} playerId identifiant joueur
+     * @param {string} leaderboardName nom du leaderboard
+     * @returns {Promise<(ServerPlayerRanking|null)>} classement serveur du joueur
      */
-    getMemberLeaderboard: async function(leaderboardName, memberId) {
+    getPlayerLeaderboard: async function(playerId, leaderboardName) {
         // Récupération du classement
         const ld = await Leaderboard.findAll({
-            where: { leaderboardName: leaderboardName },
+            where: { leaderboard: leaderboardName },
             order: [ [ 'pp', 'ASC' ] ]
         })
 
         // Récupération des rangs Discord du membre
-        let serverRankPP = ld.sort((a, b) => b.pp - a.pp).findIndex(ld => ld.memberId == memberId)
-        let serverRankAcc = ld.sort((a, b) => b.averageRankedAccuracy - a.averageRankedAccuracy).findIndex(ld => ld.memberId == memberId)
+        let serverRankPP = ld.sort((a, b) => b.pp - a.pp).findIndex(ld => ld.playerId === playerId && ld.leaderboard === leaderboardName)
+        let serverRankAcc = ld.sort((a, b) => b.averageRankedAccuracy - a.averageRankedAccuracy).findIndex(ld => ld.playerId === playerId && ld.leaderboard === leaderboardName)
 
         if(serverRankPP === -1 || serverRankAcc === -1) return null
 
@@ -191,7 +186,7 @@ module.exports = {
     },
 
     /**
-     * @typedef {Object} MemberRanking
+     * @typedef {Object} PlayerRanking
      * @property {number} pp
      * @property {number} rank
      * @property {number} countryRank
@@ -202,20 +197,20 @@ module.exports = {
      */
 
     /**
-     * Récupération des données de classement d'un membre
-     * @param {string} leaderboardName choix du leaderboard
+     * Récupération des données de classement d'un joueur
      * @param {string} memberId identifiant Discord du membre
-     * @returns {Promise<(MemberRanking|null)>} classement serveur du membre
+     * @param {string} leaderboardName nom du leaderboard
+     * @returns {Promise<(PlayerRanking|null)>} classement serveur du joueur
      */
-    getMember: async function(leaderboardName, memberId) {
+    getPlayer: async function(memberId, leaderboardName) {
         // Récupération du classement
         const ld = await Leaderboard.findAll({
-            where: { leaderboardName: leaderboardName },
+            where: { leaderboard: leaderboardName },
             order: [ [ 'pp', 'ASC' ] ]
         })
 
         // Récupération des données de classement du joueur
-        const ldDatas = ld.find(l => l.memberId == memberId)
+        const ldDatas = ld.find(l => l.memberId === memberId && l.leaderboard === leaderboardName)
 
         if(!ldDatas) return null
 
@@ -231,23 +226,23 @@ module.exports = {
     },
 
     /**
-     * Ajout d'un membre au classement serveur
-     * @param {string} leaderboardName choix du leaderboard
+     * Ajout d'un joueur au classement serveur
      * @param {string} memberId identifiant Discord du membre
-     * @param {Object} playerDatas données du profil ScoreSaber ou BeatLeader du membre
-     * @returns {Promise<(MemberRanking|null)>} classement serveur du membre
+     * @param {string} leaderboardName nom du leaderboard
+     * @param {Object} playerDatas données du profil ScoreSaber ou BeatLeader du joueur
+     * @returns {Promise<(PlayerRanking|null)>} classement serveur du joueur
      */
-    addMemberLeaderboard: async function(leaderboardName, memberId, playerDatas) {
-        const leaderboardCount = await Leaderboard.findOne({
+    addPlayerLeaderboard: async function(memberId, leaderboardName, playerDatas) {
+        const playerLeaderboard = await Leaderboard.findOne({
             where: {
-                leaderboardName: leaderboardName,
-                memberId: memberId
+                memberId: memberId,
+                leaderboard: leaderboardName
             }
         })
 
-        if(!leaderboardCount) {
+        if(!playerLeaderboard) {
             await Leaderboard.create({
-                leaderboardName: leaderboardName,
+                leaderboard: leaderboardName,
                 memberId: memberId,
                 playerId: playerDatas.id,
                 playerName: playerDatas.name,
@@ -260,39 +255,39 @@ module.exports = {
                 serverRankPP: 0
             })
 
-            const memberLd = await module.exports.getMemberLeaderboard(leaderboardName, memberId)
+            const playerLd = await module.exports.getPlayerLeaderboard(playerDatas.id, leaderboardName)
 
             await Leaderboard.update({
-                serverRankPP: memberLd.serverRankPP,
-                serverRankAcc: memberLd.serverRankAcc
+                serverRankPP: playerLd.serverRankPP,
+                serverRankAcc: playerLd.serverRankAcc
             }, {
                 where: {
-                    leaderboardName: leaderboardName,
-                    memberId: memberId
+                    memberId: memberId,
+                    leaderboard: leaderboardName
                 }
             })
         }
 
-        return module.exports.getMember(leaderboardName, memberId)
+        return module.exports.getPlayer(memberId, leaderboardName)
     },
 
     /**
-     * Mise à jour du classement serveur d'un membre
-     * @param {string} leaderboardName choix du leaderboard
+     * Mise à jour du classement serveur d'un joueur
      * @param {string} memberId identifiant Discord du membre
-     * @param {Object} playerDatas données du profil ScoreSaber ou BeatLeader du membre
-     * @returns {Promise<(MemberRanking|null)>} classement serveur du membre
+     * @param {string} leaderboardName nom du leaderboard
+     * @param {Object} playerDatas données du profil ScoreSaber ou BeatLeader du joueur
+     * @returns {Promise<(PlayerRanking|null)>} classement serveur du joueur
      */
-    updateMemberLeaderboard: async function(leaderboardName, memberId, playerDatas) {
-        const leaderboardCount = await Leaderboard.count({
+    updatePlayerLeaderboard: async function(memberId, leaderboardName, playerDatas) {
+        const playerLeaderboard = await Leaderboard.findOne({
             where: {
-                leaderboardName: leaderboardName,
-                memberId: memberId
+                memberId: memberId,
+                leaderboard: leaderboardName
             }
         })
 
-        if(leaderboardCount) {
-            const memberLd = await module.exports.getMemberLeaderboard(leaderboardName, memberId)
+        if(playerLeaderboard) {
+            const playerLd = await module.exports.getPlayerLeaderboard(playerDatas.id, leaderboardName)
 
             await Leaderboard.update({
                 playerId: playerDatas.id,
@@ -302,57 +297,68 @@ module.exports = {
                 rank: playerDatas.rank,
                 countryRank: playerDatas.countryRank,
                 averageRankedAccuracy: playerDatas.averageRankedAccuracy,
-                serverRankPP: memberLd.serverRankPP,
-                serverRankAcc: memberLd.serverRankAcc
-            },
-            {
+                serverRankPP: playerLd.serverRankPP,
+                serverRankAcc: playerLd.serverRankAcc
+            }, {
                 where: {
-                    leaderboardName: leaderboardName,
-                    memberId: memberId
+                    memberId: memberId,
+                    leaderboard: leaderboardName
                 }
             })
         }
 
-        return module.exports.getMember(leaderboardName, memberId)
+        return module.exports.getPlayer(memberId, leaderboardName)
     },
 
     /**
-     * Suppression du classement serveur d'un membre
-     * @param {string} memberId identifiant Discord du membre
+     * Suppression du classement serveur d'un joueur
+     * @param {string} playerId identifiant du joueur
+     * @param {string} leaderboard nom du leaderboard
      */
-    delMemberLeaderboard: async function(memberId) {
+    removePlayerLeaderboard: async function(playerId, leaderboard) {
         await Leaderboard.destroy({
             where: {
-                memberId: memberId
+                playerId: playerId,
+                leaderboard: leaderboard
             }
         })
     },
 
     /**
-     * Actualise le classement de tous les membres du serveur
-     * puis met à jour leurs rôles de pp
-     * @param {Collection<GuildMember>} members liste des membres de la guild 
+     * Actualise le classement de tous les membres du serveur puis met à jour leurs rôles de pp
+     * @param {Collection<GuildMember>} members liste des membres de la guild
+     * @param {string} leaderboardName nom du leaderboard
      */
-    refreshLeaderboard: async function(members) {
-        const ld = await Leaderboard.findAll({
+    refreshLeaderboard: async function(members, leaderboardName = 'scoresaber') {
+        const leaderboard = module.exports._leaderboard(leaderboardName)
+
+        const players = await Players.findAll({
             where: {
-                leaderboardName: 'scoresaber'
+                leaderboard: leaderboardName
             }
         })
 
-        for(const lm of ld) {
-            Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${lm.playerName}"...`)
+        for(const p of players) {
+            Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${p.playerName}"...`)
 
-            const playerDatas = await scoresaber.getPlayerDatas(lm.playerId)
-            const member = members.find(m => m.id === lm.memberId)
+            const playerDatas = await leaderboard.getPlayerDatas(p.playerId)
+
+            if(!playerDatas.banned) {
+                await module.exports.updatePlayerLeaderboard(p.memberId, leaderboardName, playerDatas)
+            } else {
+                await Players.destroy({ where: { memberId: p.memberId } })
+                await Leaderboard.destroy({ where: { memberId: p.memberId } })
+            }
+
+            const member = members.find(m => m.id === p.memberId)
 
             if(member) {
                 const pp = playerDatas.banned ? 0 : playerDatas.pp
                 await roles.updateMemberPpRoles(member, pp)
 
-                Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${lm.playerName}" terminée`)
+                Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${p.playerName}" terminée`)
             } else {
-                Logger.log('Leaderboard', 'WARNING', `Le joueur "${lm.playerName}" est introuvable`)
+                Logger.log('Leaderboard', 'WARNING', `Le joueur "${p.playerName}" est introuvable`)
             }
         }
     }

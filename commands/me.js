@@ -3,7 +3,7 @@ const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const { countryCodeEmoji } = require('../utils/country-code-emoji')
 const roles = require('../controllers/roles')
-const members = require('../controllers/members')
+const players = require('../controllers/players')
 const leaderboard = require('../controllers/leaderboard')
 const scoresaber = require('../controllers/scoresaber')
 const beatleader = require('../controllers/beatleader')
@@ -49,59 +49,62 @@ module.exports = {
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const otherMember = interaction.options.getUser('joueur')
 
-            let member, memberId
+            await interaction.deferReply()
+
+            let player, memberId
 
             if(otherMember) {
                 // Identifiant du membre pour lequel aficher les informations
                 memberId = otherMember.id
 
-                // Informations sur le membre
-                member = await members.getMember(memberId)
+                // Informations sur le joueur
+                player = await players.get(memberId, leaderboardChoice)
 
-                // On vérifie ici si le membre a lié son compte ScoreSaber ou non
-                if(!member) throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié pour le compte Discord ${userMention(memberId)}`)
+                // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
+                if(!player) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n\'est lié pour le compte Discord ${userMention(memberId)}`)
             } else {
                 // Identifiant du membre exécutant la commande
                 memberId = interaction.member.id
 
-                // Informations sur le membre
-                member = await members.getMember(memberId)
+                // Informations sur le joueur
+                player = await players.get(memberId, leaderboardChoice)
 
-                // On vérifie ici si le membre a lié son compte ScoreSaber ou non
-                if(!member) {
+                // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
+                if(!player) {
                     const linkCommand = interaction.guild.commands.cache.find(c => c.name === 'link')
-                    throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
+                    throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
                 }
             }
 
-            await interaction.deferReply()
-
-            // Données de classement du membre
+            // Données de classement du joueur
             let playerDatas
             if(leaderboardChoice === 'scoresaber') {
-                playerDatas = await scoresaber.getPlayerDatas(member.playerId)
+                playerDatas = await scoresaber.getPlayerDatas(player.playerId)
             } else if(leaderboardChoice === 'beatleader') {
-                playerDatas = await beatleader.getPlayerDatas(member.playerId)
+                playerDatas = await beatleader.getPlayerDatas(player.playerId)
             }
 
             // Liste des embeds
             const embeds = []
 
-            // Données de classement du membre
-            let oldLd = await leaderboard.getMember(leaderboardChoice, memberId)
+            // Données de classement du joueur
+            let oldLd = await leaderboard.getPlayer(memberId, leaderboardChoice)
             let ld = oldLd
 
-            // Si le membre n'a pas de données de classement, on ajoute celui-ci au classement du serveur
+            // Si le joueur n'a pas de données de classement, on ajoute celui-ci au classement du serveur
             if(!oldLd) {
-                ld = await leaderboard.addMemberLeaderboard(leaderboardChoice, memberId, playerDatas)
+                ld = await leaderboard.addPlayerLeaderboard(memberId, leaderboardChoice, playerDatas)
 
                 embeds.push(new Embed()
                     .setColor('#2ECC71')
                     .setDescription(`👏 ${userMention(memberId)} a été ajouté au classement du serveur !`)
                 )
             } else { // Sinon, on le met à jour
-                ld = await leaderboard.updateMemberLeaderboard(leaderboardChoice, memberId, playerDatas)
+                ld = await leaderboard.updatePlayerLeaderboard(memberId, leaderboardChoice, playerDatas)
             }
+
+            // Mise à jour du joueur
+            await players.update(memberId, leaderboardChoice, playerDatas, ld)
 
             // Progressions du joueur
             let rankProgress = '', countryRankProgress = '', ppProgress = '', accProgress = ''
@@ -160,7 +163,7 @@ module.exports = {
             const memberToUpdate = otherMember ? interaction.guild.members.cache.find(m => m.id === otherMember.id) : interaction.member
             if(leaderboardChoice === 'scoresaber') await roles.updateMemberPpRoles(memberToUpdate, playerDatas.pp)
 
-            // On affiche les informations ScoreSaber du membre
+            // On affiche les informations du joueur
             const ldIconName = leaderboardChoice === 'scoresaber' ? 'ss' : (leaderboardChoice === 'beatleader' ? 'bl' : '')
             const ldIcon = interaction.guild.emojis.cache.find(e => e.name === ldIconName)
             const ldIconId = ldIcon?.id

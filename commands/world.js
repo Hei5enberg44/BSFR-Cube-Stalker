@@ -53,8 +53,8 @@ module.exports = {
             // On affiche le classement
             const embed = new Embed()
                 .setColor('#000000')
-                .setTitle('Classement Mondial')
-                .setURL('https://scoresaber.com/global')
+                .setTitle(`Classement Mondial ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'}`)
+                .setURL(`https://${leaderboardChoice === 'scoresaber' ? 'scoresaber.com/global' : 'beatleader.xyz/ranking'}`)
                 .setDescription(ld)
             
             await interaction.editReply({ embeds: [ embed ] })

@@ -21,7 +21,7 @@ module.exports = {
      * @param {string} commandName nom de la commande
      * @param {string} memberId identifiant du membre
      * @param {number} duration durée du cooldown
-     * @returns {{timestamp: number, date: string}} informations sur le cooldown
+     * @returns {Promise<{timestamp: number, date: string}>} informations sur le cooldown
      */
     checkCooldown: async function(commandName, memberId, duration) {
         const date = Math.floor(new Date().getTime() / 1000)

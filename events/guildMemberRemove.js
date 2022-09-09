@@ -1,4 +1,4 @@
-const members = require('../controllers/members')
+const players = require('../controllers/players')
 const Logger = require('../utils/logger')
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
         const memberId = member.id
         const memberTag = member.user.tag
 
-        await members.delMember(memberId)
+        await players.remove(memberId)
 
         Logger.log('EventManager', 'INFO', `Le membre "${memberTag}" vient de quitter le serveur. Celui-ci a été supprimé du classement de Cube Stalker.`)
     }

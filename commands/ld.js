@@ -1,8 +1,7 @@
-const { ApplicationCommandOptionType, CommandInteraction, channelMention } = require('discord.js')
+const { ApplicationCommandOptionType, CommandInteraction } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
 const leaderboard = require('../controllers/leaderboard')
-const config = require('../config.json')
 
 module.exports = {
     data: {
@@ -58,11 +57,6 @@ module.exports = {
      */
     async execute(interaction) {
         try {
-            // On vérifie que la commande est exécutée dans le bon channel
-            const cubeStalkerChannelId = config.guild.channels.cubeStalker
-            if(interaction.channelId != cubeStalkerChannelId)
-                throw new CommandInteractionError(`Merci d\'effectuer la commande dans ${channelMention(cubeStalkerChannelId)}`)
-            
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
             const type = interaction.options.getString('classement')
             const page = interaction.options.getInteger('page') ?? 1

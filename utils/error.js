@@ -25,7 +25,7 @@ class CommandInteractionError extends Error {
     }
 }
 
-class MemberError extends Error {
+class PlayerError extends Error {
     constructor(message) {
         super(message)
         this.name = this.constructor.name
@@ -85,5 +85,5 @@ class BeatSaverError extends Error {
 }
 
 module.exports = {
-    DatabaseError, CommandError, CommandInteractionError, MemberError, LeaderboardError, Top1Error, CooldownError, ScoreSaberError, BeatLeaderError, BeatSaverError
+    DatabaseError, CommandError, CommandInteractionError, PlayerError, LeaderboardError, Top1Error, CooldownError, ScoreSaberError, BeatLeaderError, BeatSaverError
 }

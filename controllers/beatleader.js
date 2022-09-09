@@ -59,11 +59,13 @@ module.exports = {
      * @property {string} country
      * @property {number} rank
      * @property {number} pp
+     * @property {boolean} banned
+     * @property {boolean} inactive
      */
 
     /**
      * Récupération des données de profil BeatLeader d'un joueur
-     * @param {string} url lien ou identifiant du profil BeatLeader du joueur
+     * @param {string} url lien du profil BeatLeader du joueur
      * @returns {Promise<BeatLeaderProfile>} données de profil BeatLeader du joueur
      */
     getProfile: async function(url) {
@@ -79,7 +81,9 @@ module.exports = {
                 url: `${beatleaderUrl}/u/${playerInfos.id}`,
                 country: playerInfos.country,
                 rank: playerInfos.rank,
-                pp: playerInfos.pp
+                pp: playerInfos.pp,
+                banned: playerInfos.banned,
+                inactive: playerInfos.inactive
             }
 
             return player

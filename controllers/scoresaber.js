@@ -60,11 +60,13 @@ module.exports = {
      * @property {string} country
      * @property {number} rank
      * @property {number} pp
+     * @property {boolean} banned
+     * @property {boolean} inactive
      */
 
     /**
      * Récupération des données de profil ScoreSaber d'un joueur
-     * @param {string} url lien ou identifiant du profil ScoreSaber du joueur
+     * @param {string} url lien du profil ScoreSaber du joueur
      * @returns {Promise<ScoreSaberProfile>} données de profil ScoreSaber du joueur
      */
     getProfile: async function(url) {
@@ -80,7 +82,9 @@ module.exports = {
                 url: `${scoresaberUrl}/u/${playerInfos.id}`,
                 country: playerInfos.country,
                 rank: playerInfos.rank,
-                pp: playerInfos.pp
+                pp: playerInfos.pp,
+                banned: playerInfos.banned,
+                inactive: playerInfos.inactive
             }
 
             return player

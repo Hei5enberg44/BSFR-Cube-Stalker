@@ -1,7 +1,7 @@
 const { ApplicationCommandOptionType, CommandInteraction } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, Top1Error } = require('../utils/error')
-const members = require('../controllers/members')
+const players = require('../controllers/players')
 const top1 = require('../controllers/top1')
 const Logger = require('../utils/logger')
 
@@ -33,7 +33,7 @@ module.exports = {
             const memberId = interaction.member.id
 
             // Informations sur le membre
-            const member = await members.getMember(memberId)
+            const member = await players.get(memberId, 'scoresaber')
             
             // On vérifie ici si le membre a lié son compte ScoreSaber ou non
             if(!member) {
@@ -52,11 +52,11 @@ module.exports = {
 
             let message = ''
             if(isSubscribed) {
-                await top1.subscribe(member.playerId, false)
+                await top1.subscribe(memberId, false)
                 Logger.log('Top1FR', 'INFO', `${interaction.user.tag} est maintenant désinscrit du top 1 FR`)
                 message = 'Vous êtes maintenant désinscrit du top 1 FR'
             } else {
-                await top1.subscribe(member.playerId, true)
+                await top1.subscribe(memberId, true)
                 Logger.log('Top1FR', 'INFO', `${interaction.user.tag} est maintenant sinscrit au top 1 FR`)
                 message = 'Vous êtes maintenant inscrit au top 1 FR'
             }

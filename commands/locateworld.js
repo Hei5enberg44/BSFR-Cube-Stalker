@@ -1,7 +1,7 @@
 const { ApplicationCommandOptionType, CommandInteraction, userMention } = require('discord.js')
 const Embed = require('../utils/embed')
 const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
-const members = require('../controllers/members')
+const players = require('../controllers/players')
 const leaderboard = require('../controllers/leaderboard')
 
 module.exports = {
@@ -57,30 +57,37 @@ module.exports = {
 
             if(rank && rank < 1) throw new CommandInteractionError('Le rang du joueur doit être supérieur ou égal à 1')
 
-            let member
+            let player, memberId
 
             if(otherMember) {
-                // Informations sur le membre
-                member = await members.getMember(otherMember.id)
+                // Identifiant du membre pour lequel aficher les informations
+                memberId = otherMember.id
 
-                // On vérifie ici si le membre a lié son compte ScoreSaber/BeatLeader ou non
-                if(!member) {
-                    throw new CommandInteractionError(`Aucun profil ScoreSaber/BeatLeader n\'est lié pour le compte Discord ${userMention(otherMember.id)}`)
+                // Informations sur le joueur
+                player = await players.get(memberId, leaderboardChoice)
+
+                // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
+                if(!player) {
+                    throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n\'est lié pour le compte Discord ${userMention(memberId)}`)
                 }
             } else {
-                // Informations sur le membre
-                member = await members.getMember(interaction.member.id)
+                // Identifiant du membre exécutant la commande
+                memberId = interaction.member.id
 
-                // On vérifie ici si le membre a lié son compte ScoreSaber/BeatLeader ou non
-                if(!member) {
-                    throw new CommandInteractionError('Aucun profil ScoreSaber/BeatLeader n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande `/link` afin de lier celui-ci')
+                // Informations sur le joueur
+                player = await players.get(memberId, leaderboardChoice)
+
+                // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
+                if(!player) {
+                    const linkCommand = interaction.guild.commands.cache.find(c => c.name === 'link')
+                    throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
                 }
             }
 
             await interaction.deferReply()
 
             // Données de classement ScoreSaber du joueur
-            const ld = rank ? await leaderboard.getGlobalLeaderboardByPlayerRank(leaderboardChoice, rank) : await leaderboard.getGlobalLeaderboardByPlayerId(leaderboardChoice, member.playerId)
+            const ld = rank ? await leaderboard.getGlobalLeaderboardByPlayerRank(leaderboardChoice, rank) : await leaderboard.getGlobalLeaderboardByPlayerId(leaderboardChoice, player.playerId)
 
             // On affiche le classement
             const embed = new Embed()

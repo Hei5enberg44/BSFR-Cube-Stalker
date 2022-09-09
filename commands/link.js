@@ -1,7 +1,7 @@
 const { ApplicationCommandOptionType, CommandInteraction } = require('discord.js')
 const Embed = require('../utils/embed')
-const { CommandError, CommandInteractionError, MemberError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
-const members = require('../controllers/members')
+const { CommandError, CommandInteractionError, PlayerError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
+const players = require('../controllers/players')
 const scoresaber = require('../controllers/scoresaber')
 const beatleader = require('../controllers/beatleader')
 
@@ -10,6 +10,22 @@ module.exports = {
         name: 'link',
         description: 'Lie votre profil ScoreSaber ou BeatLeader à votre compte Discord',
         options: [
+            {
+                type: ApplicationCommandOptionType.String,
+                name: 'leaderboard',
+                description: 'Choix du leaderboard',
+                choices: [
+                    {
+                        name: 'ScoreSaber',
+                        value: 'scoresaber'
+                    },
+                    {
+                        name: 'BeatLeader',
+                        value: 'beatleader'
+                    }
+                ],
+                required: true
+            },
             {
                 type: ApplicationCommandOptionType.String,
                 name: 'lien_leaderboard',
@@ -27,20 +43,25 @@ module.exports = {
      */
     async execute(interaction) {
         try {
+            const leaderboardChoice = interaction.options.getString('leaderboard')
             const url = interaction.options.getString('lien_leaderboard')
 
             await interaction.deferReply()
 
             let playerProfil
-            if(url.includes('scoresaber')) {
+            
+            if(leaderboardChoice === 'scoresaber') {
+                if(!url.includes('scoresaber')) throw new CommandInteractionError('Le lien entré n\'est pas un lien ScoreSaber valide')
                 playerProfil = await scoresaber.getProfile(url)
-            } else if(url.includes('beatleader')) {
-                playerProfil = await beatleader.getProfile(url)
             } else {
-                throw new CommandInteractionError('Le lien entré n\'est pas un lien ScoreSaber ou BeatLeader valide')
+                if(!url.includes('beatleader')) throw new CommandInteractionError('Le lien entré n\'est pas un lien BeatLeader valide')
+                playerProfil = await beatleader.getProfile(url)
             }
 
-            await members.addMember(interaction.member.id, playerProfil.id)
+            // On ne lie pas le profil du joueur si celui-ci est banni du leaderboard
+            if(playerProfil.banned) throw new CommandInteractionError('Impossible de lier le profil de ce joueur car celui-ci est banni')
+
+            await players.add(interaction.member.id, playerProfil.id, leaderboardChoice)
 
             const meCommand = interaction.guild.commands.cache.find(c => c.name === 'me')
             
@@ -49,11 +70,11 @@ module.exports = {
                     .setTitle(playerProfil.name)
                     .setURL(playerProfil.url)
                     .setThumbnail(playerProfil.avatar)
-                    .setDescription(`Votre profil ScoreSaber/BeatLeader a bien été lié avec votre compte Discord\nℹ️ Utilisez la commande </${meCommand.name}:${meCommand.id}> pour pouvoir être ajouté au classement du serveur`)
+                    .setDescription(`Votre profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} a bien été lié avec votre compte Discord\nℹ️ Utilisez la commande </${meCommand.name}:${meCommand.id}> pour pouvoir être ajouté au classement du serveur`)
 
             await interaction.editReply({ embeds: [ embed ] })
         } catch(error) {
-            if(error instanceof CommandInteractionError || error instanceof ScoreSaberError|| error instanceof BeatLeaderError || error instanceof MemberError) {
+            if(error instanceof CommandInteractionError || error instanceof ScoreSaberError|| error instanceof BeatLeaderError || error instanceof PlayerError) {
                 throw new CommandError(error.message, interaction.commandName)
             } else {
                 throw Error(error.message)
