@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.12.3-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.13.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
@@ -44,18 +44,19 @@ __Paramètres :__
 
 |    Nom    | Obligatoire | Contenu |
 | --------- |:-----------:| ------- |
+| **leaderboard** | ☑ | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
 | **lien_leaderboard** | ☑ | Lien du profil ScoreSaber ou BeatLeader |
 
 __Exemples :__
 
 ```
-/link lien_leaderboard:https://scoresaber.com/u/76561198125542519
-/link lien_leaderboard:https://beatleader.xyz/u/76561198125542519
+/link leaderboard:ScoreSaber lien_leaderboard:https://scoresaber.com/u/76561198125542519
+/link leaderboard:BeatLeader lien_leaderboard:https://beatleader.xyz/u/76561198125542519
 ```
 
 ***
 
-- ### /link : Délie le profil ScoreSaber/BeatLeader d'un membre Discord
+- ### /unlink : Délie le profil ScoreSaber/BeatLeader d'un membre Discord
 
 Permet de délier le profil ScoreSaber ou BeatLeader d'un membre Discord.
 
@@ -63,13 +64,14 @@ __Paramètres :__
 
 |    Nom    | Obligatoire | Contenu |
 | --------- |:-----------:| ------- |
-| **joueur** |   | Membre de la guild à délier |
+| **leaderboard** | ☑ | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
+| **joueur** |   | Membre de la guild à délier (Staff uniquement) |
 
 __Exemples :__
 
 ```
-/unlink
-/unlink joueur:@Hei5enberg#6969
+/unlink leaderboard:ScoreSaber
+/unlink leaderboard:BeatLeader joueur:@Hei5enberg#6969
 ```
 
 ***
@@ -82,14 +84,15 @@ __Paramètres :__
 
 |    Nom    | Obligatoire | Contenu |
 | --------- |:-----------:| ------- |
+| **leaderboard** | ☑ | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
 | **lien_leaderboard** | ☑ | Lien du profil ScoreSaber ou BeatLeader |
 | **joueur** | ☑ | Membre de la guild à lier |
 
 __Exemples :__
 
 ```
-/setprofile lien_leaderboard:https://scoresaber.com/u/76561198125542519 joueur:@Hei5enberg#6969
-/setprofile lien_leaderboard:https://beatleader.xyz/u/76561198125542519 joueur:@Hei5enberg#6969
+/setprofile leaderboard:ScoreSaber lien_leaderboard:https://scoresaber.com/u/76561198125542519 joueur:@Hei5enberg#6969
+/setprofile leaderboard:BeatLeader lien_leaderboard:https://beatleader.xyz/u/76561198125542519 joueur:@Hei5enberg#6969
 ```
 
 ***
