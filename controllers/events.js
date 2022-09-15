@@ -1,7 +1,7 @@
-const Logger = require('../utils/logger')
-const fs = require('fs')
+import Logger from '../utils/logger.js'
+import * as fs from 'node:fs'
 
-class Events {
+export default class Events {
     /**
      * @param {Client} client client Discord
      */
@@ -16,21 +16,19 @@ class Events {
         const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'))
 
         for(const file of eventFiles) {
-            const eventFunction = require(`../events/${file}`)
-            if (eventFunction.disabled) return
-            const name = eventFunction.name || file.split('.')[0]
-            const emitter = (typeof eventFunction.emitter === 'string' ? this.client[eventFunction.emitter] : eventFunction.emitter) || this.client
-            const once = eventFunction.once
+            const { default: event } = await import(`../events/${file}`)
+            if(event.disabled) return
+            const name = event.name || file.split('.')[0]
+            const emitter = (typeof event.emitter === 'string' ? this.client[event.emitter] : event.emitter) || this.client
+            const once = event.once
 
             Logger.log('EventManager', 'INFO', `Évènement "${name}" trouvé`)
 
             try {
-                emitter[once ? 'once' : 'on'](name, (...args) => eventFunction.execute(...args))
+                emitter[once ? 'once' : 'on'](name, (...args) => event.execute(...args))
             } catch(error) {
                 console.error(error.stack)
             }
         }
     }
 }
-
-module.exports = Events

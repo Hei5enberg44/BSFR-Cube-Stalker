@@ -1,8 +1,8 @@
-const leaderboard = require('./leaderboard')
-const { PlayerError } = require('../utils/error')
-const { Players, Leaderboard } = require('./database')
+import leaderboard from './leaderboard.js'
+import { PlayerError } from '../utils/error.js'
+import { Players, Leaderboard } from './database.js'
 
-module.exports = {
+export default {
     /**
      * @typedef {Object} Player
      * @property {string} leaderboard
@@ -25,7 +25,7 @@ module.exports = {
      * @param {string} leaderboardName nom du leaderboard
      * @returns {Promise<Player>} informations du joueur
      */
-    get: async function(memberId, leaderboardName) {
+    async get(memberId, leaderboardName) {
         return await Players.findOne({
             where: {
                 memberId: memberId,
@@ -41,7 +41,7 @@ module.exports = {
      * @param {string} leaderboardName nom du leaderboard
      * @param {boolean} isAdmin indique si il s'agit d'un admin/modérateur qui a exécuté la commande
      */
-    add: async function(memberId, playerId, leaderboardName, isAdmin = false) {
+    async add(memberId, playerId, leaderboardName, isAdmin = false) {
         if(!isAdmin) {
             // On vérifie si le membre Discord à déjà un profil ScoreSaber ou BeatLeader lié
             const profileIsAlreadyLinked = await Players.count({
@@ -128,7 +128,7 @@ module.exports = {
      * @param {PlayerRanking} playerRanking données de classement serveur du joueur
      * @returns {Promise<Player>} informations du joueur
      */
-    update: async function(memberId, leaderboardName, playerDatas, playerRanking) {
+    async update(memberId, leaderboardName, playerDatas, playerRanking) {
         const player = await Players.findOne({
             where: {
                 memberId: memberId,
@@ -155,14 +155,14 @@ module.exports = {
             })
         }
 
-        return module.exports.get(memberId, leaderboardName)
+        return this.get(memberId, leaderboardName)
     },
 
     /**
      * Suppression des données d'un joueur
      * @param {string} memberId identifiant Discord du membre
      */
-    remove: async function(memberId) {
+    async remove(memberId) {
         await Players.destroy({ where: { memberId: memberId } })
         await Leaderboard.destroy({ where: { memberId: memberId } })
     }

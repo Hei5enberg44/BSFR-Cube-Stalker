@@ -1,19 +1,19 @@
-const fetch = require('node-fetch')
-const Logger = require('../utils/logger')
-const { BeatSaverError } = require('../utils/error')
+import fetch from 'node-fetch'
+import Logger from '../utils/logger.js'
+import { BeatSaverError } from '../utils/error.js'
 
 const beatSaverApiUrl = 'https://api.beatsaver.com/'
 const mapsHashUrl = beatSaverApiUrl + '/maps/hash/'
 
 const wait = (s) => new Promise((res) => setTimeout(res, s * 1000))
 
-module.exports = {
+export default {
     /**
      * Envoi d'une requête à l'API de BeatSaver
      * @param {string} url url de la requête
      * @returns {Promise<Object>} résultat de la requête
      */
-    send: async function(url) {
+    async send(url) {
         let data
         let error = true
 
@@ -69,9 +69,9 @@ module.exports = {
      * @param {string} hash hash de la map
      * @returns {Promise<BeatSaverMap>} détail de la map
      */
-    geMapByHash: async function(hash) {
+    async geMapByHash(hash) {
         try {
-            const map = await module.exports.send(mapsHashUrl + hash)
+            const map = await this.send(mapsHashUrl + hash)
 
             return map
         } catch(error) {
@@ -84,7 +84,7 @@ module.exports = {
      * @param {number} notes nombre de notes
      * @returns {Number} score maximum
      */
-    getMapMaxScore: function(notes) {
+    getMapMaxScore(notes) {
         let maxScore = 0
         if(notes < 14) {
             if(notes === 1) {

@@ -1,14 +1,14 @@
-const { createCanvas, loadImage, registerFont } = require('canvas')
-const scoresaber = require('./scoresaber')
-const beatleader = require('./beatleader')
-const tmp = require('tmp')
-const fs = require('fs')
+import { createCanvas, loadImage, registerFont } from 'canvas'
+import scoresaber from './scoresaber.js'
+import beatleader from './beatleader.js'
+import tmp from 'tmp'
+import * as fs from 'node:fs'
 
 registerFont('./assets/fonts/NeonTubes2.otf', { family: 'Neon Tubes' })
 
 // const removeSpecialChars = (text) => text.replace(/[]/ig, ' ')
 
-function getDiffColor(diff) {
+const getDiffColor = (diff) => {
     switch(diff) {
         case 'Easy':
             return '#3CB371'
@@ -23,8 +23,8 @@ function getDiffColor(diff) {
     }
 }
 
-module.exports = {
-    getCard: async function(playerId, leaderboard) {
+export default {
+    async getCard(playerId, leaderboard) {
         let player
         if(leaderboard === 'scoresaber') {
             player = await scoresaber.getPlayerDatas(playerId)

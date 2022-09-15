@@ -1,11 +1,15 @@
-const fs = require('fs')
-const chalk = require('chalk')
+import { appendFileSync } from 'node:fs'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+import chalk from 'chalk'
 
-module.exports = {
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
+export default {
     /**
      * Retourne la date actuelle
      */
-    date: function() {
+    date() {
         const d = new Date()
         const year = d.getFullYear()
         const month = d.getMonth() < 9 ? `0${d.getMonth() + 1}` : d.getMonth() + 1
@@ -28,8 +32,8 @@ module.exports = {
      * @param {string} content log à formatter
      * @returns {string} logs formattées
      */
-    log: function(scope, level, content) {
-        const date = module.exports.date()
+    log(scope, level, content) {
+        const date = this.date()
 
         let logLevel
         switch(level) {
@@ -48,7 +52,7 @@ module.exports = {
 
         const logContent = `[${scope}] [${logLevel}] ${content}`
 
-        fs.appendFileSync(`${__dirname}/../logs/${date.date}.log`, `[${date.time}] [${scope}] [${level}] ${content}\n`)
+        appendFileSync(`${__dirname}/../logs/${date.date}.log`, `[${date.time}] [${scope}] [${level}] ${content}\n`)
         console.log(logContent)
     }
 }

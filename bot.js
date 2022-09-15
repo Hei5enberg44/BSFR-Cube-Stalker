@@ -1,28 +1,26 @@
-const Logger = require('./utils/logger')
-const { DatabaseError } = require('./utils/error')
+import { Client, GatewayIntentBits, ActivityType, PresenceUpdateStatus } from 'discord.js'
+import Commands from './controllers/commands.js'
+import Events from './controllers/events.js'
+import top1 from './controllers/top1.js'
+import crons from './controllers/crons.js'
+import Logger from './utils/logger.js'
+import { DatabaseError } from './utils/error.js'
+import database from './controllers/database.js'
+import * as fs from 'node:fs'
 
 try {
-    const database = require('./controllers/database')
-    const fs = require('fs')
+    Logger.log('Application', 'INFO', 'Démarrage du bot')
 
     // Création du répertoire de logs si celui-ci n'existe pas
     if(!fs.existsSync('./logs')) fs.mkdirSync('./logs')
 
-    Logger.log('Application', 'INFO', 'Démarrage du bot')
-
     // Chargement de la configuration du bot
     if(!fs.existsSync('./config.json')) throw Error('Le fichier de configuration "config.json" est manquant')
-    const config = require('./config.json')
-
-    const { Client, GatewayIntentBits, ActivityType, PresenceUpdateStatus } = require('discord.js')
-    const Commands = require('./controllers/commands')
-    const Events = require('./controllers/events')
-    const top1 = require('./controllers/top1')
-    const crons = require('./controllers/crons')
-
-    Logger.log('Discord', 'INFO', 'Initialisation...')
+    const { default: config } = await import('./config.json', { assert: { type: 'json' } })
 
     try {
+        Logger.log('Discord', 'INFO', 'Initialisation...')
+
         const client = new Client({
             intents: [
                 GatewayIntentBits.Guilds,
@@ -81,7 +79,6 @@ try {
         Logger.log('Discord', 'ERROR', `Une erreur est survenue : ${error.message}`)
     }
 } catch(error) {
-    console.log(error)
     Logger.log('Application', 'ERROR', `Démarrage du bot impossible : ${error.message}`)
 }
 

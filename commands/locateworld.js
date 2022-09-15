@@ -1,10 +1,10 @@
-const { ApplicationCommandOptionType, CommandInteraction, userMention } = require('discord.js')
-const Embed = require('../utils/embed')
-const { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
-const players = require('../controllers/players')
-const leaderboard = require('../controllers/leaderboard')
+import { ApplicationCommandOptionType, CommandInteraction, userMention } from 'discord.js'
+import Embed from '../utils/embed.js'
+import { CommandError, CommandInteractionError, LeaderboardError, ScoreSaberError, BeatLeaderError } from '../utils/error.js'
+import players from '../controllers/players.js'
+import leaderboard from '../controllers/leaderboard.js'
 
-module.exports = {
+export default {
     data: {
         name: 'locateworld',
         description: 'Affiche votre position dans le classement mondial',

@@ -1,11 +1,11 @@
-const { ApplicationCommandOptionType, CommandInteraction } = require('discord.js')
-const Embed = require('../utils/embed')
-const { CommandError, CommandInteractionError, Top1Error } = require('../utils/error')
-const players = require('../controllers/players')
-const top1 = require('../controllers/top1')
-const Logger = require('../utils/logger')
+import { ApplicationCommandOptionType, CommandInteraction } from 'discord.js'
+import Embed from '../utils/embed.js'
+import { CommandError, CommandInteractionError, Top1Error } from '../utils/error.js'
+import players from '../controllers/players.js'
+import top1 from '../controllers/top1.js'
+import Logger from '../utils/logger.js'
 
-module.exports = {
+export default {
     data: {
         name: 'top1',
         description: 'S\'inscrire ou se désinscrire du top 1 FR',

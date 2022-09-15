@@ -1,4 +1,4 @@
-const Logger = require('./logger')
+import Logger from './logger.js'
 
 class DatabaseError extends Error {
     constructor(message) {
@@ -84,6 +84,6 @@ class BeatSaverError extends Error {
     }
 }
 
-module.exports = {
+export {
     DatabaseError, CommandError, CommandInteractionError, PlayerError, LeaderboardError, Top1Error, CooldownError, ScoreSaberError, BeatLeaderError, BeatSaverError
 }

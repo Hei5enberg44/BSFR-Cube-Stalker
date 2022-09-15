@@ -1,6 +1,6 @@
-const { Sequelize, DataTypes } = require('sequelize')
-const { DatabaseError } = require('../utils/error')
-const config = require('../config.json')
+import { Sequelize, DataTypes } from 'sequelize'
+import { DatabaseError } from '../utils/error.js'
+import config from '../config.json' assert { type: 'json' }
 
 const sequelize = new Sequelize(config.database.name, config.database.username, config.database.password, {
     host: config.database.host,
@@ -13,11 +13,13 @@ const sequelize = new Sequelize(config.database.name, config.database.username, 
     }
 })
 
-const test = async function() {
-    try {
-        await sequelize.authenticate()
-    } catch(error) {
-        throw new DatabaseError('Échec de la connexion à la base de données : ' + error.message)
+export default {
+    async test() {
+        try {
+            await sequelize.authenticate()
+        } catch(error) {
+            throw new DatabaseError('Échec de la connexion à la base de données : ' + error.message)
+        }
     }
 }
 
@@ -71,6 +73,6 @@ const Leaderboard = sequelize.define('leaderboard', {
     serverRankPP: DataTypes.INTEGER,
 })
 
-module.exports = {
-    test, Cooldowns, Players, Leaderboard
+export {
+    Cooldowns, Players, Leaderboard
 }

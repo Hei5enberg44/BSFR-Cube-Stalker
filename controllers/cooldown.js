@@ -1,8 +1,8 @@
-const { CooldownError } = require('../utils/error')
-const { Cooldowns } = require('./database')
-const { Op } = require('sequelize')
+import { CooldownError } from '../utils/error.js'
+import { Cooldowns } from './database.js'
+import { Op } from 'sequelize'
 
-function millisecondsToDate(m) {
+const millisecondsToDate = (m) => {
     const d = new Date(m * 1000)
 
     const year = d.getFullYear()
@@ -15,7 +15,7 @@ function millisecondsToDate(m) {
     return `${date}/${month}/${year} à ${hours}:${minutes}:${seconds}`
 }
 
-module.exports = {
+export default {
     /**
      * Vérifie le cooldown d'une commande pour un membre
      * @param {string} commandName nom de la commande
@@ -23,7 +23,7 @@ module.exports = {
      * @param {number} duration durée du cooldown
      * @returns {Promise<{timestamp: number, date: string}>} informations sur le cooldown
      */
-    checkCooldown: async function(commandName, memberId, duration) {
+    async checkCooldown(commandName, memberId, duration) {
         const date = Math.floor(new Date().getTime() / 1000)
         
         // On vérifie si le membre a déjà un cooldown et si celui-ci est expiré
@@ -54,7 +54,7 @@ module.exports = {
      * @param {string} memberId identifiant du membre
      * @param {number} expirationDate date d'expiration du cooldown (au format timestamp)
      */
-    addCooldown: async function(commandName, memberId, expirationDate) {
+    async addCooldown(commandName, memberId, expirationDate) {
         const cd = await Cooldowns.findOne({
             where: {
                 [Op.and]: [

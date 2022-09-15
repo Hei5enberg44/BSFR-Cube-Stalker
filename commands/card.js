@@ -1,10 +1,10 @@
-const { ApplicationCommandOptionType, CommandInteraction, userMention } = require('discord.js')
-const Embed = require('../utils/embed')
-const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
-const players = require('../controllers/players')
-const cardgenerator = require('../controllers/cardgenerator')
+import { ApplicationCommandOptionType, CommandInteraction, userMention } from 'discord.js'
+import Embed from '../utils/embed.js'
+import { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } from '../utils/error.js'
+import players from '../controllers/players.js'
+import cardgenerator from '../controllers/cardgenerator.js'
 
-module.exports = {
+export default {
     data: {
         name: 'card',
         description: 'Génère votre carte de joueur',

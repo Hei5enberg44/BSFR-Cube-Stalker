@@ -1,14 +1,14 @@
-const { ApplicationCommandOptionType, CommandInteraction, userMention, bold, hyperlink } = require('discord.js')
-const Embed = require('../utils/embed')
-const { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
-const { countryCodeEmoji } = require('../utils/country-code-emoji')
-const roles = require('../controllers/roles')
-const players = require('../controllers/players')
-const leaderboard = require('../controllers/leaderboard')
-const scoresaber = require('../controllers/scoresaber')
-const beatleader = require('../controllers/beatleader')
+import { ApplicationCommandOptionType, CommandInteraction, userMention, bold, hyperlink } from 'discord.js'
+import Embed from '../utils/embed.js'
+import { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError } from '../utils/error.js'
+import { countryCodeEmoji } from '../utils/country-code-emoji.js'
+import roles from '../controllers/roles.js'
+import players from '../controllers/players.js'
+import leaderboard from '../controllers/leaderboard.js'
+import scoresaber from '../controllers/scoresaber.js'
+import beatleader from '../controllers/beatleader.js'
 
-module.exports = {
+export default {
     data: {
         name: 'me',
         description: 'Affiche vos informations de joueur',

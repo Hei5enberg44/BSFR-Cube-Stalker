@@ -1,8 +1,8 @@
-const { CommandInteraction, inlineCode } = require('discord.js')
-const Embed = require('../utils/embed')
-const { CommandError, CommandInteractionError } = require('../utils/error')
+import { CommandInteraction } from 'discord.js'
+import Embed from '../utils/embed.js'
+import { CommandError, CommandInteractionError } from '../utils/error.js'
 
-module.exports = {
+export default {
     data: {
         name: 'help',
         description: 'Affiche l\'aide',
@@ -48,6 +48,3 @@ module.exports = {
         }
     }
 }
-
-///////////////////////////////////////
-// Mentions des commandes dans l'aide

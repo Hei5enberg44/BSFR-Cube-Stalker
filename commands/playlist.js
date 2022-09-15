@@ -1,10 +1,10 @@
-const { ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction } = require('discord.js')
-const Embed = require('../utils/embed')
-const { CommandError, CommandInteractionError, ScoreSaberError } = require('../utils/error')
-const players = require('../controllers/players')
-const scoresaber = require('../controllers/scoresaber')
+import { ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction } from 'discord.js'
+import Embed from '../utils/embed.js'
+import { CommandError, CommandInteractionError, ScoreSaberError } from '../utils/error.js'
+import players from '../controllers/players.js'
+import scoresaber from '../controllers/scoresaber.js'
 
-module.exports = {
+export default {
     data: {
         name: 'playlist',
         description: 'Génère une playlist en fonction de vos maps jouées et de vos critères choisis en options de commande',
@@ -52,10 +52,10 @@ module.exports = {
      */
     async execute(interaction) {
         try {
-            const starsMin = interaction.options.getNumber('stars_min') ?? module.exports.data.options.find(o => o.name === 'stars_min').minValue
-            const starsMax = interaction.options.getNumber('stars_max') ?? module.exports.data.options.find(o => o.name === 'stars_max').maxValue
-            const accMin = interaction.options.getNumber('acc_min') ?? module.exports.data.options.find(o => o.name === 'acc_min').minValue
-            const accMax = interaction.options.getNumber('acc_max') ?? module.exports.data.options.find(o => o.name === 'acc_max').maxValue
+            const starsMin = interaction.options.getNumber('stars_min') ?? this.data.options.find(o => o.name === 'stars_min').minValue
+            const starsMax = interaction.options.getNumber('stars_max') ?? this.data.options.find(o => o.name === 'stars_max').maxValue
+            const accMin = interaction.options.getNumber('acc_min') ?? this.data.options.find(o => o.name === 'acc_min').minValue
+            const accMax = interaction.options.getNumber('acc_max') ?? this.data.options.find(o => o.name === 'acc_max').maxValue
 
             // Identifiant du membre exécutant la commande
             const memberId = interaction.member.id

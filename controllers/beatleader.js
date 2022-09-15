@@ -1,6 +1,7 @@
-const fetch = require('node-fetch')
-const Logger = require('../utils/logger')
-const { BeatLeaderError } = require('../utils/error')
+import fetch from 'node-fetch'
+import Logger from '../utils/logger.js'
+import { BeatLeaderError } from '../utils/error.js'
+
 const beatleaderUrl = 'https://beatleader.xyz'
 const beatleaderApiUrl = 'https://api.beatleader.xyz/'
 const playerUrl = beatleaderApiUrl + 'player/'
@@ -8,14 +9,14 @@ const leaderboardUrl = beatleaderApiUrl + 'leaderboard/'
 
 const wait = (s) => new Promise((res) => setTimeout(res, s * 1000))
 
-module.exports = {
+export default {
     /**
      * Envoi d'une requête à l'API de BeatLeader
      * @param {string} url url de la requête
      * @param {boolean} log true|false pour logger la requête
      * @returns {Promise<Object>} résultat de la requête
      */
-    send: async function(url, log = true) {
+    async send(url, log = true) {
         let data
         let error = true
         let retries = 0
@@ -68,11 +69,11 @@ module.exports = {
      * @param {string} url lien du profil BeatLeader du joueur
      * @returns {Promise<BeatLeaderProfile>} données de profil BeatLeader du joueur
      */
-    getProfile: async function(url) {
+    async getProfile(url) {
         try {
             const playerId = url.replace(/^https?:\/\/(www\.)?beatleader\.xyz\/u\/([0-9]+).*$/, '$2')
 
-            const playerInfos = await module.exports.send(playerUrl + playerId)
+            const playerInfos = await this.send(playerUrl + playerId)
 
             const player = {
                 id: playerInfos.id,
@@ -130,10 +131,10 @@ module.exports = {
      * @param {string} playerId identifiant BeatLeader du joueur
      * @returns {Promise<BeatLeaderPlayerDatas>} données BeatLeader du joueur
      */
-    getPlayerDatas: async function(playerId) {
+    async getPlayerDatas(playerId) {
         try {
-            const playerInfos = await module.exports.send(playerUrl + playerId)
-            const playerTopScore = await module.exports.send(playerUrl + playerId + '/scores?sortBy=pp&page=1')
+            const playerInfos = await this.send(playerUrl + playerId)
+            const playerTopScore = await this.send(playerUrl + playerId + '/scores?sortBy=pp&page=1')
 
             const scoreStats = playerInfos.scoreStats
             const player = {
@@ -179,11 +180,11 @@ module.exports = {
      * @param {number} page page du classement
      * @returns {Promise<Array<BeatLeaderProfile>>} liste des joueurs
      */
-    getGlobal: async function(page) {
+    async getGlobal(page) {
         try {
             const players = []
 
-            const playersInfos = await module.exports.send(beatleaderApiUrl + 'players?page=' + page)
+            const playersInfos = await this.send(beatleaderApiUrl + 'players?page=' + page)
 
             for(const playerInfos of playersInfos.data) {
                 const player = {
@@ -209,8 +210,8 @@ module.exports = {
      * @param {string} beatLeaderId identifiant BeatLeader du joueur
      * @returns {Promise<number>} rang du joueur
      */
-    getPlayerRankById: async function(beatLeaderId) {
-        const playerDatas = await module.exports.getPlayerDatas(beatLeaderId)
+    async getPlayerRankById(beatLeaderId) {
+        const playerDatas = await this.getPlayerDatas(beatLeaderId)
         return playerDatas.rank
     },
 
@@ -221,9 +222,9 @@ module.exports = {
      * @param {number} page page du classement
      * @returns {Promise<Array>} liste des scores du classement
      */
-    getMapCountryLeaderboard: async function(leaderboardId, country, page = 1) {
+    async getMapCountryLeaderboard(leaderboardId, country, page = 1) {
         try {
-            const datas = await module.exports.send(leaderboardUrl + 'id/' + leaderboardId + '?countries=' + country + '&page=' + page, false)
+            const datas = await this.send(leaderboardUrl + 'id/' + leaderboardId + '?countries=' + country + '&page=' + page, false)
 
             return datas.scores
         } catch(error) {

@@ -1,9 +1,9 @@
-const { CommandInteraction } = require('discord.js')
-const Embed = require('../utils/embed')
-const { CommandError, CommandInteractionError } = require('../utils/error')
-const leaderboard = require('../controllers/leaderboard')
+import { CommandInteraction } from 'discord.js'
+import Embed from '../utils/embed.js'
+import { CommandError, CommandInteractionError } from '../utils/error.js'
+import leaderboard from '../controllers/leaderboard.js'
 
-module.exports = {
+export default {
     data: {
         name: 'forcerefresh',
         description: 'Actualise l\'ensemble du serveur',

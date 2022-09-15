@@ -1,7 +1,7 @@
-const players = require('../controllers/players')
-const Logger = require('../utils/logger')
+import players from '../controllers/players.js'
+import Logger from '../utils/logger.js'
 
-module.exports = {
+export default {
     /**
      * Emitted whenever a member leaves a guild, or is kicked
      * @param {GuildMember} member The member that has left/been kicked from the guild

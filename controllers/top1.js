@@ -1,21 +1,21 @@
-const { WebSocket } = require('ws')
-const scoresaber = require('./scoresaber')
-const beatsaver = require('./beatsaver')
-const roles = require('./roles')
-const { userMention, bold, hyperlink, time } = require('discord.js')
-const Embed = require('../utils/embed')
-const { Players } = require('./database')
-const { Top1Error, ScoreSaberError, BeatSaverError } = require('../utils/error')
-const config = require('../config.json')
-const Logger = require('../utils/logger')
+import { WebSocket } from 'ws'
+import scoresaber from './scoresaber.js'
+import beatsaver from './beatsaver.js'
+import roles from './roles.js'
+import { userMention, bold, hyperlink, time } from 'discord.js'
+import Embed from '../utils/embed.js'
+import { Players } from './database.js'
+import { Top1Error, ScoreSaberError, BeatSaverError } from '../utils/error.js'
+import Logger from '../utils/logger.js'
+import config from '../config.json' assert { type: 'json' }
 
-function calcAcc(mapDetails, levelDifficulty, levelGameMode, score) {
+const calcAcc = (mapDetails, levelDifficulty, levelGameMode, score) => {
     const notes = mapDetails.versions[0].diffs.filter(diff => diff.difficulty === levelDifficulty && diff.characteristic === levelGameMode)[0].notes
     const maxScore = beatsaver.getMapMaxScore(notes)
     return score / maxScore * 100
 }
 
-module.exports = {
+export default {
     /**
      * @typedef {Object} Top1
      * @property {number} rank
@@ -43,7 +43,7 @@ module.exports = {
      * Scan pour des nouveaux top 1 FR
      * @param {Client} client client Discord
      */
-    listen: function(client) {
+    listen(client) {
         Logger.log('Top1FR', 'INFO', 'Écoute des tops 1 FR sur le websocket de ScoreSaber')
 
         const ws = new WebSocket('wss://scoresaber.com/ws')
@@ -104,7 +104,7 @@ module.exports = {
                                         memberId: player.memberId
                                     }
 
-                                    await module.exports.publish(client, top1)
+                                    await this.publish(client, top1)
                                 }
                             } catch(error) {
                                 if(error instanceof BeatSaverError || error instanceof ScoreSaberError) {
@@ -124,7 +124,7 @@ module.exports = {
         ws.on('close', () => {
             Logger.log('Top1FR', 'WARNING', 'Le websocket de ScoreSaber s\'est fermé')
             setTimeout(function() {
-                module.exports.listen(client)
+                this.listen(client)
             }, 60 * 1000)
         })
     },
@@ -134,7 +134,7 @@ module.exports = {
      * @param {Client} client client Discord
      * @param {Top1} top1 données du top 1 FR
      */
-    publish: async function(client, top1) {
+    async publish(client, top1) {
         const guild = client.guilds.cache.find(g => g.id === config.guild.id)
         await guild.members.fetch()
 
@@ -173,7 +173,7 @@ module.exports = {
      * Récupère la liste des joueurs inscrits au top 1 FR
      * @returns {Promise<Array<{memberId: string, playerId: string, top1: boolean}>>}
      */
-    getSubscribed: async function() {
+    async getSubscribed() {
         const subscribed = await Players.findAll({
             where: {
                 top1: true,
@@ -188,7 +188,7 @@ module.exports = {
      * @param {string} memberId identifiant Discord du membre
      * @param {boolean} subscribe
      */
-    subscribe: async function(memberId, subscribe) {
+    async subscribe(memberId, subscribe) {
         await Players.update({ top1: subscribe }, {
             where: {
                 memberId: memberId,

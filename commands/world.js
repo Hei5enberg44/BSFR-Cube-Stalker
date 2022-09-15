@@ -1,9 +1,9 @@
-const { ApplicationCommandOptionType, CommandInteraction } = require('discord.js')
-const Embed = require('../utils/embed')
-const { CommandError, CommandInteractionError, LeaderboardError } = require('../utils/error')
-const leaderboard = require('../controllers/leaderboard')
+import { ApplicationCommandOptionType, CommandInteraction } from 'discord.js'
+import Embed from '../utils/embed.js'
+import { CommandError, CommandInteractionError, LeaderboardError } from '../utils/error.js'
+import leaderboard from '../controllers/leaderboard.js'
 
-module.exports = {
+export default {
     data: {
         name: 'world',
         description: 'Affiche le classement mondial',

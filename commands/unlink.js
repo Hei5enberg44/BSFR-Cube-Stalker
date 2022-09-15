@@ -1,11 +1,11 @@
-const { ApplicationCommandOptionType, CommandInteraction, userMention } = require('discord.js')
-const Embed = require('../utils/embed')
-const { CommandError, CommandInteractionError, CooldownError } = require('../utils/error')
-const cooldown = require('../controllers/cooldown')
-const players = require('../controllers/players')
-const roles = require('../controllers/roles')
+import { ApplicationCommandOptionType, CommandInteraction, userMention } from 'discord.js'
+import Embed from '../utils/embed.js'
+import { CommandError, CommandInteractionError, CooldownError } from '../utils/error.js'
+import cooldown from '../controllers/cooldown.js'
+import players from '../controllers/players.js'
+import roles from '../controllers/roles.js'
 
-module.exports = {
+export default {
     data: {
         name: 'unlink',
         description: 'Délie le profil ScoreSaber ou BeatLeader d\'un membre Discord',

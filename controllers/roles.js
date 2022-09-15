@@ -1,12 +1,12 @@
-const { GuildMember, Collection, Role } = require('discord.js')
+import { GuildMember, Collection, Role } from 'discord.js'
 
-module.exports = {
+export default {
     /**
      * Récupère la liste des rôles de pp d'un membre
      * @param {GuildMember} member membre Discord
      * @returns {Collection<Role>} rôle de pp le plus élevé du membre
      */
-    getMemberPpRoles: function(member) {
+    getMemberPpRoles(member) {
         const roles = member.roles.cache.filter(role => role.name.match(/^[0-9\s]+pp$/))
         return roles
     },
@@ -16,8 +16,8 @@ module.exports = {
      * @param {GuildMember} member membre Discord
      * @returns {string|null}
      */
-    getMemberPpRoleColor: function(member) {
-        const memberPpRoles = module.exports.getMemberPpRoles(member)
+    getMemberPpRoleColor(member) {
+        const memberPpRoles = this.getMemberPpRoles(member)
 
         if(memberPpRoles.size > 0) {
             const memberPpRolesSorted = memberPpRoles.sort((r1, r2) => parseInt((r1.name).replace(/(\s|pp)/, '')) - parseInt((r2.name).replace(/(\s|pp)/, '')))
@@ -32,8 +32,8 @@ module.exports = {
      * @param {GuildMember} member membre Discord à mettre à jour
      * @param {number} pp nombre de pp du membre
      */
-    updateMemberPpRoles: async function(member, pp) {
-        const memberPpRoles = module.exports.getMemberPpRoles(member)
+    async updateMemberPpRoles(member, pp) {
+        const memberPpRoles = this.getMemberPpRoles(member)
 
         // On détermine la liste des rôles de pp à assigner au membre
         const t = Math.floor(pp / 1000)

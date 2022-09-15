@@ -1,10 +1,10 @@
-const { Client, Collection, EmbedBuilder, InteractionType, CommandInteractionOption, ApplicationCommandOptionType, channelMention } = require('discord.js')
-const { CommandError } = require('../utils/error')
-const Logger = require('../utils/logger')
-const config = require('../config.json')
-const fs = require('fs')
+import { Client, Collection, EmbedBuilder, InteractionType, ApplicationCommandOptionType, channelMention } from 'discord.js'
+import { CommandError } from '../utils/error.js'
+import Logger from '../utils/logger.js'
+import config from '../config.json' assert { type: 'json' }
+import * as fs from 'node:fs'
 
-class Commands {
+export default class Commands {
     /**
      * @param {Client} client client Discord
      */
@@ -14,7 +14,7 @@ class Commands {
 
     /**
      * Récupération des options d'une commande exécutée
-     * @param {Array<CommandInteractionOption>} commandInteractionOptions données de la commande exécutée
+     * @param {Array<Object>} commandInteractionOptions données de la commande exécutée
      * @returns {Array<string>} liste des options de la commande exécutée
      */
     getCommandOptions(commandInteractionOptions) {
@@ -44,7 +44,7 @@ class Commands {
 
         // On récupère les commandes
         for(const file of commandFiles) {
-            const command = require(`../commands/${file}`)
+            const { default: command } = await import(`../commands/${file}`)
             commands.push(command.data)
             Logger.log('CommandManager', 'INFO', `Commande "/${command.data.name}" trouvée`)
             this.client.commands.set(command.data.name, command)
@@ -104,5 +104,3 @@ class Commands {
         })
     }
 }
-
-module.exports = Commands

@@ -1,11 +1,11 @@
-const { ApplicationCommandOptionType, CommandInteraction } = require('discord.js')
-const Embed = require('../utils/embed')
-const { CommandError, CommandInteractionError, PlayerError, ScoreSaberError, BeatLeaderError } = require('../utils/error')
-const players = require('../controllers/players')
-const scoresaber = require('../controllers/scoresaber')
-const beatleader = require('../controllers/beatleader')
+import { ApplicationCommandOptionType, CommandInteraction } from 'discord.js'
+import Embed from '../utils/embed.js'
+import { CommandError, CommandInteractionError, PlayerError, ScoreSaberError, BeatLeaderError } from '../utils/error.js'
+import players from '../controllers/players.js'
+import scoresaber from '../controllers/scoresaber.js'
+import beatleader from '../controllers/beatleader.js'
 
-module.exports = {
+export default {
     data: {
         name: 'link',
         description: 'Lie votre profil ScoreSaber ou BeatLeader à votre compte Discord',
