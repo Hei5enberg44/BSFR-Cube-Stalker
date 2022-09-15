@@ -65,6 +65,7 @@ module.exports = {
                         const player = await Players.findOne({
                             where: {
                                 playerId : playerId,
+                                leaderboard: 'scoresaber',
                                 top1: true
                             }
                         })
