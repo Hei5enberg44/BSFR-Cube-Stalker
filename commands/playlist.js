@@ -90,7 +90,7 @@ export default {
             // Génération du fichier playlist
             const playlistName = `${starsMin}⭐ to ${starsMax}⭐ - ${accMin}% to ${accMax}%`
 
-            let playlist = {
+            const playlist = {
                 playlistTitle: playlistName,
                 playlistAuthor: 'Cube Stalker',
                 playlistDescription: '',
@@ -98,7 +98,7 @@ export default {
                 songs: []
             }
 
-            let hashes = []
+            const hashes = []
             for(const score of playerScoresFiltered) {
                 const songName = `${score.songName}${score.songSubName !== '' ? ` ${score.songSubName}` : ''} - ${score.songAuthorName}`
                 const diff = score.difficultyRaw.split('_')[1].toLowerCase().replace('expertplus', 'expertPlus')

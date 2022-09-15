@@ -13,7 +13,7 @@ class CommandError extends Error {
         super(message)
         this.name = this.constructor.name
         Error.captureStackTrace(this, this.constructor)
-        Logger.log('CommandManager', 'INFO', `L\'exécution de la commande "/${commandName}" a échoué : ${(message).replace(/:[^:]+:\s/g, '').replace('\n', ' ')}`)
+        Logger.log('CommandManager', 'INFO', `L'exécution de la commande "/${commandName}" a échoué : ${(message).replace(/:[^:]+:\s/g, '').replace('\n', ' ')}`)
     }
 }
 

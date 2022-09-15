@@ -38,6 +38,7 @@ export default {
                 if(res.status === 500) {
                     Logger.log('ScoreSaber', 'ERROR', 'Erreur 500, nouvel essai dans 3 secondes')
                     if(retries < 5) await wait(3)
+                    retries++
                 }
                 if(res.status === 429) {
                     Logger.log('ScoreSaber', 'ERROR', 'Erreur 429, nouvel essai dans 60 secondes')
@@ -281,10 +282,9 @@ export default {
 
         try {
             let nextPage = null
-            let limit = 100
 
             do {
-                const datas = await this.send(playerUrl + scoreSaberId + '/scores?sort=recent&limit=' + limit + '&page=' + (nextPage ?? 1), false)
+                const datas = await this.send(playerUrl + scoreSaberId + '/scores?sort=recent&limit=100&page=' + (nextPage ?? 1), false)
                 const playerScores = datas.playerScores
                 const metadata = datas.metadata
 

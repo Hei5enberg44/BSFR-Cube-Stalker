@@ -40,7 +40,7 @@ export default {
             
             await interaction.reply({ embeds: [ embed ], ephemeral: true })
         } catch(error) {
-            if(error instanceof CommandInteractionError || error instanceof Top1Error) {
+            if(error instanceof CommandInteractionError) {
                 throw new CommandError(error.message, interaction.commandName)
             } else {
                 throw Error(error.message)

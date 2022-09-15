@@ -105,7 +105,7 @@ export default {
 
         let start = pos - 5 >= 0 ? pos - 5 : pos
         if(pos - 5 < 0 && page > 1) {
-            let _ld = await leaderboard.getGlobal(page - 1)
+            const _ld = await leaderboard.getGlobal(page - 1)
             ld = _ld.concat(ld)
             pos += playersPerPage
             start = pos - 5
@@ -173,8 +173,8 @@ export default {
         })
 
         // Récupération des rangs Discord du membre
-        let serverRankPP = ld.sort((a, b) => b.pp - a.pp).findIndex(ld => ld.playerId === playerId && ld.leaderboard === leaderboardName)
-        let serverRankAcc = ld.sort((a, b) => b.averageRankedAccuracy - a.averageRankedAccuracy).findIndex(ld => ld.playerId === playerId && ld.leaderboard === leaderboardName)
+        const serverRankPP = ld.sort((a, b) => b.pp - a.pp).findIndex(ld => ld.playerId === playerId && ld.leaderboard === leaderboardName)
+        const serverRankAcc = ld.sort((a, b) => b.averageRankedAccuracy - a.averageRankedAccuracy).findIndex(ld => ld.playerId === playerId && ld.leaderboard === leaderboardName)
 
         if(serverRankPP === -1 || serverRankAcc === -1) return null
 

@@ -57,7 +57,7 @@ export default {
                 player = await players.get(memberId, leaderboardChoice)
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
-                if(!player) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n\'est lié pour le compte Discord ${userMention(memberId)}`)
+                if(!player) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n'est lié pour le compte Discord ${userMention(memberId)}`)
             } else {
                 // Identifiant du membre exécutant la commande
                 memberId = interaction.member.id
@@ -68,7 +68,7 @@ export default {
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
                 if(!player) {
                     const linkCommand = interaction.guild.commands.cache.find(c => c.name === 'link')
-                    throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
+                    throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
                 }
             }
 

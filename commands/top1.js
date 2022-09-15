@@ -38,7 +38,7 @@ export default {
             // On vérifie ici si le membre a lié son compte ScoreSaber ou non
             if(!member) {
                 const linkCommand = interaction.guild.commands.cache.find(c => c.name === 'link')
-                throw new CommandInteractionError(`Aucun profil ScoreSaber n\'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
+                throw new CommandInteractionError(`Aucun profil ScoreSaber n'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
             }
 
             const isSubscribed = member.top1

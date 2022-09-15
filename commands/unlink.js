@@ -43,7 +43,7 @@ export default {
      */
     async execute(interaction) {
         try {
-            const isAdmin = interaction.member.roles.cache.find(role => ["Admin", "Modérateur"].indexOf(role.name) !== -1) !== undefined
+            const isAdmin = interaction.member.roles.cache.find(role => ['Admin', 'Modérateur'].indexOf(role.name) !== -1) !== undefined
 
             const leaderboardChoice = interaction.options.getString('leaderboard')
             const member = interaction.options.getUser('joueur') ? interaction.options.getUser('joueur') : interaction.member
@@ -106,7 +106,7 @@ export default {
 
                         await interaction.editReply({ embeds: [embed] })
                     }
-                }).catch(async (collected) => {
+                }).catch(async () => {
                     await confirmMessage.reactions.removeAll()
 
                     embed = new Embed()
