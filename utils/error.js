@@ -71,7 +71,7 @@ class BeatLeaderError extends Error {
         super(message)
         this.name = this.constructor.name
         Error.captureStackTrace(this, this.constructor)
-        Logger.log('ScoreSaber', 'ERROR', message)
+        Logger.log('BeatLeader', 'ERROR', message)
     }
 }
 
