@@ -44,6 +44,8 @@ export default {
      * @param {Client} client client Discord
      */
     listen(client) {
+        const self = this
+
         Logger.log('Top1FR', 'INFO', 'Écoute des tops 1 FR sur le websocket de ScoreSaber')
 
         const ws = new WebSocket('wss://scoresaber.com/ws')
@@ -104,7 +106,7 @@ export default {
                                         memberId: player.memberId
                                     }
 
-                                    await this.publish(client, top1)
+                                    await self.publish(client, top1)
                                 }
                             } catch(error) {
                                 if(error instanceof BeatSaverError || error instanceof ScoreSaberError) {
@@ -124,7 +126,7 @@ export default {
         ws.on('close', () => {
             Logger.log('Top1FR', 'WARNING', 'Le websocket de ScoreSaber s\'est fermé')
             setTimeout(function() {
-                this.listen(client)
+                self.listen(client)
             }, 60 * 1000)
         })
     },
