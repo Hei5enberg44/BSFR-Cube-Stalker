@@ -24,13 +24,15 @@ const getDiffColor = (diff) => {
 }
 
 export default {
-    async getCard(playerId, leaderboard) {
+    async getCard(playerId, leaderboard, debug = false) {
         let player
         if(leaderboard === 'scoresaber') {
             player = await scoresaber.getPlayerDatas(playerId)
         } else if(leaderboard === 'beatleader') {
             player = await beatleader.getPlayerDatas(playerId)
         }
+
+        const date = new Date()
 
         const canvas = createCanvas(950, 380)
         const ctx = canvas.getContext('2d')
@@ -44,6 +46,20 @@ export default {
         // Fond
         const background = await loadImage('./assets/images/card/background.png')
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
+
+        // Affichage de la carte d'Halloween si la date du jour est comprise entre le 1er Octobre et le 31 Octobre
+        const halloweenDateStart = new Date()
+        halloweenDateStart.setMonth(9)
+        halloweenDateStart.setDate(1)
+        const halloweenDateEnd = new Date()
+        halloweenDateEnd.setMonth(9)
+        halloweenDateEnd.setDate(31)
+
+        if(date >= halloweenDateStart && date <= halloweenDateEnd) {
+            // Foreground halloween
+            const snow = await loadImage('./assets/images/card/halloween.png')
+            ctx.drawImage(snow, 0, 0, canvas.width, canvas.height)
+        }
 
         // Avatar
         ctx.save()
@@ -134,7 +150,6 @@ export default {
         ctx.fillText(`#${player.topPP.rank} | ${(player.topPP.pp).toFixed(2)}pp | ${(player.topPP.acc).toFixed(2)}%`, 186, 319)
 
         // Affichage de la carte de Noël si la date du jour est comprise entre le 1er Décembre et le 31 Décembre
-        const date = new Date()
         const christmasDateStart = new Date()
         christmasDateStart.setMonth(11)
         christmasDateStart.setDate(1)
@@ -157,86 +172,88 @@ export default {
         }
 
         // Grille (pour tests)
-        // ctx.beginPath()
-        // ctx.moveTo(0, 56)
-        // ctx.lineTo(950, 56)
-        // ctx.strokeStyle = 'yellow'
-        // ctx.stroke()
+        if(debug) {
+            ctx.beginPath()
+            ctx.moveTo(0, 56)
+            ctx.lineTo(950, 56)
+            ctx.strokeStyle = 'yellow'
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(0, 111)
-        // ctx.lineTo(950, 111)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(0, 111)
+            ctx.lineTo(950, 111)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(0, 166)
-        // ctx.lineTo(950, 166)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(0, 166)
+            ctx.lineTo(950, 166)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(0, 186)
-        // ctx.lineTo(950, 186)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(0, 186)
+            ctx.lineTo(950, 186)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(0, 216)
-        // ctx.lineTo(950, 216)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(0, 216)
+            ctx.lineTo(950, 216)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(0, 236)
-        // ctx.lineTo(950, 236)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(0, 236)
+            ctx.lineTo(950, 236)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(0, 266)
-        // ctx.lineTo(950, 266)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(0, 266)
+            ctx.lineTo(950, 266)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(0, 296)
-        // ctx.lineTo(950, 296)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(0, 296)
+            ctx.lineTo(950, 296)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(0, 326)
-        // ctx.lineTo(950, 326)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(0, 326)
+            ctx.lineTo(950, 326)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(56, 0)
-        // ctx.lineTo(56, 380)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(56, 0)
+            ctx.lineTo(56, 380)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(166, 0)
-        // ctx.lineTo(166, 380)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(166, 0)
+            ctx.lineTo(166, 380)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(186, 0)
-        // ctx.lineTo(186, 380)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(186, 0)
+            ctx.lineTo(186, 380)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(226, 0)
-        // ctx.lineTo(226, 380)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(226, 0)
+            ctx.lineTo(226, 380)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(242, 0)
-        // ctx.lineTo(242, 380)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(242, 0)
+            ctx.lineTo(242, 380)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(690, 0)
-        // ctx.lineTo(690, 380)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(690, 0)
+            ctx.lineTo(690, 380)
+            ctx.stroke()
 
-        // ctx.beginPath()
-        // ctx.moveTo(894, 0)
-        // ctx.lineTo(894, 380)
-        // ctx.stroke()
+            ctx.beginPath()
+            ctx.moveTo(894, 0)
+            ctx.lineTo(894, 380)
+            ctx.stroke()
+        }
 
         // Enregistrement de l'image dans un fichier temporaire
         const base64Image = canvas.toDataURL().split(';base64,').pop()
