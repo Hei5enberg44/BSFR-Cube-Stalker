@@ -33,11 +33,11 @@ export default {
      */
     async getLastRankedMaps() {
         new CronJob('0 */4 * * *', async function() {
-            Logger.log('BeatLeader', 'INFO', 'Recherche de nouvelles maps ranked')
+            Logger.log('BeatSaver', 'INFO', 'Recherche de nouvelles maps ranked')
 
             const newMaps = await ranked.getLastRanked()
 
-            Logger.log('BeatLeader', 'INFO', `Recherche de nouvelles maps ranked terminée : ${newMaps} nouvelles maps ranked ont été ajoutées en base de données.`)
+            Logger.log('BeatSaver', 'INFO', `Recherche de nouvelles maps ranked terminée : ${newMaps} nouvelles maps ranked ont été ajoutées en base de données.`)
         }, null, true, 'Europe/Paris')
 
         Logger.log('CronManager', 'INFO', 'Tâche "getLastRankedMaps" chargée')
