@@ -111,7 +111,7 @@ export default {
 
     /**
      * Données de joueur BeatLeader
-     * @typedef {Object} BeatLeaderPlayerDatas
+     * @typedef {Object} BeatLeaderPlayerData
      * @property {string} id
      * @property {string} name
      * @property {string} avatar
@@ -129,9 +129,9 @@ export default {
     /**
      * Récuparation des données BeatLeader d'un joueur
      * @param {string} playerId identifiant BeatLeader du joueur
-     * @returns {Promise<BeatLeaderPlayerDatas>} données BeatLeader du joueur
+     * @returns {Promise<BeatLeaderPlayerData>} données BeatLeader du joueur
      */
-    async getPlayerDatas(playerId) {
+    async getPlayerData(playerId) {
         try {
             const playerInfos = await this.send(playerUrl + playerId)
             const playerTopScore = await this.send(playerUrl + playerId + '/scores?sortBy=pp&page=1')
@@ -211,8 +211,8 @@ export default {
      * @returns {Promise<number>} rang du joueur
      */
     async getPlayerRankById(beatLeaderId) {
-        const playerDatas = await this.getPlayerDatas(beatLeaderId)
-        return playerDatas.rank
+        const playerData = await this.getPlayerData(beatLeaderId)
+        return playerData.rank
     },
 
     /**
@@ -224,9 +224,9 @@ export default {
      */
     async getMapCountryLeaderboard(leaderboardId, country, page = 1) {
         try {
-            const datas = await this.send(leaderboardUrl + 'id/' + leaderboardId + '?countries=' + country + '&page=' + page, false)
+            const data = await this.send(leaderboardUrl + 'id/' + leaderboardId + '?countries=' + country + '&page=' + page, false)
 
-            return datas.scores
+            return data.scores
         } catch(error) {
             throw new BeatLeaderError('Une erreur est survenue lors de la récupération du top 1 du pays sur la map')
         }

@@ -210,17 +210,17 @@ export default {
         })
 
         // Récupération des données de classement du joueur
-        const ldDatas = ld.find(l => l.memberId === memberId && l.leaderboard === leaderboardName)
+        const ldData = ld.find(l => l.memberId === memberId && l.leaderboard === leaderboardName)
 
-        if(!ldDatas) return null
+        if(!ldData) return null
 
         return {
-            pp: ldDatas.pp,
-            rank: ldDatas.rank,
-            countryRank: ldDatas.countryRank,
-            averageRankedAccuracy: ldDatas.averageRankedAccuracy,
-            serverRankPP: ldDatas.serverRankPP,
-            serverRankAcc: ldDatas.serverRankAcc,
+            pp: ldData.pp,
+            rank: ldData.rank,
+            countryRank: ldData.countryRank,
+            averageRankedAccuracy: ldData.averageRankedAccuracy,
+            serverRankPP: ldData.serverRankPP,
+            serverRankAcc: ldData.serverRankAcc,
             serverLdTotal: ld.length
         }
     },
@@ -229,10 +229,10 @@ export default {
      * Ajout d'un joueur au classement serveur
      * @param {string} memberId identifiant Discord du membre
      * @param {string} leaderboardName nom du leaderboard
-     * @param {Object} playerDatas données du profil ScoreSaber ou BeatLeader du joueur
+     * @param {Object} playerData données du profil ScoreSaber ou BeatLeader du joueur
      * @returns {Promise<(PlayerRanking|null)>} classement serveur du joueur
      */
-    async addPlayerLeaderboard(memberId, leaderboardName, playerDatas) {
+    async addPlayerLeaderboard(memberId, leaderboardName, playerData) {
         const playerLeaderboard = await Leaderboard.findOne({
             where: {
                 memberId: memberId,
@@ -244,18 +244,18 @@ export default {
             await Leaderboard.create({
                 leaderboard: leaderboardName,
                 memberId: memberId,
-                playerId: playerDatas.id,
-                playerName: playerDatas.name,
-                playerCountry: playerDatas.country,
-                pp: playerDatas.pp,
-                rank: playerDatas.rank,
-                countryRank: playerDatas.countryRank,
-                averageRankedAccuracy: playerDatas.averageRankedAccuracy,
+                playerId: playerData.id,
+                playerName: playerData.name,
+                playerCountry: playerData.country,
+                pp: playerData.pp,
+                rank: playerData.rank,
+                countryRank: playerData.countryRank,
+                averageRankedAccuracy: playerData.averageRankedAccuracy,
                 serverRankAcc: 0,
                 serverRankPP: 0
             })
 
-            const playerLd = await this.getPlayerLeaderboard(playerDatas.id, leaderboardName)
+            const playerLd = await this.getPlayerLeaderboard(playerData.id, leaderboardName)
 
             await Leaderboard.update({
                 serverRankPP: playerLd.serverRankPP,
@@ -275,10 +275,10 @@ export default {
      * Mise à jour du classement serveur d'un joueur
      * @param {string} memberId identifiant Discord du membre
      * @param {string} leaderboardName nom du leaderboard
-     * @param {Object} playerDatas données du profil ScoreSaber ou BeatLeader du joueur
+     * @param {Object} playerData données du profil ScoreSaber ou BeatLeader du joueur
      * @returns {Promise<(PlayerRanking|null)>} classement serveur du joueur
      */
-    async updatePlayerLeaderboard(memberId, leaderboardName, playerDatas) {
+    async updatePlayerLeaderboard(memberId, leaderboardName, playerData) {
         const playerLeaderboard = await Leaderboard.findOne({
             where: {
                 memberId: memberId,
@@ -287,16 +287,16 @@ export default {
         })
 
         if(playerLeaderboard) {
-            const playerLd = await this.getPlayerLeaderboard(playerDatas.id, leaderboardName)
+            const playerLd = await this.getPlayerLeaderboard(playerData.id, leaderboardName)
 
             await Leaderboard.update({
-                playerId: playerDatas.id,
-                playerName: playerDatas.name,
-                playerCountry: playerDatas.country,
-                pp: playerDatas.pp,
-                rank: playerDatas.rank,
-                countryRank: playerDatas.countryRank,
-                averageRankedAccuracy: playerDatas.averageRankedAccuracy,
+                playerId: playerData.id,
+                playerName: playerData.name,
+                playerCountry: playerData.country,
+                pp: playerData.pp,
+                rank: playerData.rank,
+                countryRank: playerData.countryRank,
+                averageRankedAccuracy: playerData.averageRankedAccuracy,
                 serverRankPP: playerLd.serverRankPP,
                 serverRankAcc: playerLd.serverRankAcc
             }, {
@@ -341,10 +341,10 @@ export default {
         for(const p of players) {
             Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${p.playerName}"...`)
 
-            const playerDatas = await leaderboard.getPlayerDatas(p.playerId)
+            const playerData = await leaderboard.getPlayerData(p.playerId)
 
-            if(!playerDatas.banned) {
-                await this.updatePlayerLeaderboard(p.memberId, leaderboardName, playerDatas)
+            if(!playerData.banned) {
+                await this.updatePlayerLeaderboard(p.memberId, leaderboardName, playerData)
             } else {
                 await Players.destroy({ where: { memberId: p.memberId } })
                 await Leaderboard.destroy({ where: { memberId: p.memberId } })
@@ -353,7 +353,7 @@ export default {
             const member = members.find(m => m.id === p.memberId)
 
             if(member) {
-                const pp = playerDatas.banned ? 0 : playerDatas.pp
+                const pp = playerData.banned ? 0 : playerData.pp
                 await roles.updateMemberPpRoles(member, pp)
 
                 Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${p.playerName}" terminée`)

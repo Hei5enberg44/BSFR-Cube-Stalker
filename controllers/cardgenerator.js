@@ -27,9 +27,9 @@ export default {
     async getCard(playerId, leaderboard, debug = false) {
         let player
         if(leaderboard === 'scoresaber') {
-            player = await scoresaber.getPlayerDatas(playerId)
+            player = await scoresaber.getPlayerData(playerId)
         } else if(leaderboard === 'beatleader') {
-            player = await beatleader.getPlayerDatas(playerId)
+            player = await beatleader.getPlayerData(playerId)
         }
 
         const date = new Date()

@@ -94,7 +94,7 @@ export default {
 
     /**
      * Données de joueur ScoreSaber
-     * @typedef {Object} ScoreSaberPlayerDatas
+     * @typedef {Object} ScoreSaberPlayerData
      * @property {string} id
      * @property {string} name
      * @property {string} avatar
@@ -124,11 +124,11 @@ export default {
      * Mise à jour d'un joueur
      * @param {string} memberId identifiant Discord du membre
      * @param {string} leaderboardName nom du leaderboard
-     * @param {ScoreSaberPlayerDatas} playerDatas données du profil ScoreSaber ou BeatLeader du joueur
+     * @param {ScoreSaberPlayerData} playerData données du profil ScoreSaber ou BeatLeader du joueur
      * @param {PlayerRanking} playerRanking données de classement serveur du joueur
      * @returns {Promise<Player>} informations du joueur
      */
-    async update(memberId, leaderboardName, playerDatas, playerRanking) {
+    async update(memberId, leaderboardName, playerData, playerRanking) {
         const player = await Players.findOne({
             where: {
                 memberId: memberId,
@@ -138,13 +138,13 @@ export default {
 
         if(player) {
             await Players.update({
-                playerId: playerDatas.id,
-                playerName: playerDatas.name,
-                playerCountry: playerDatas.country,
-                pp: playerDatas.pp,
-                rank: playerDatas.rank,
-                countryRank: playerDatas.countryRank,
-                averageRankedAccuracy: playerDatas.averageRankedAccuracy,
+                playerId: playerData.id,
+                playerName: playerData.name,
+                playerCountry: playerData.country,
+                pp: playerData.pp,
+                rank: playerData.rank,
+                countryRank: playerData.countryRank,
+                averageRankedAccuracy: playerData.averageRankedAccuracy,
                 serverRankPP: playerRanking.serverRankPP,
                 serverRankAcc: playerRanking.serverRankAcc
             }, {

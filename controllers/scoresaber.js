@@ -113,7 +113,7 @@ export default {
 
     /**
      * Données de joueur ScoreSaber
-     * @typedef {Object} ScoreSaberPlayerDatas
+     * @typedef {Object} ScoreSaberPlayerData
      * @property {string} id
      * @property {string} name
      * @property {string} avatar
@@ -131,9 +131,9 @@ export default {
     /**
      * Récuparation des données ScoreSaber d'un joueur
      * @param {string} playerId identifiant ScoreSaber du joueur
-     * @returns {Promise<ScoreSaberPlayerDatas>} données ScoreSaber du joueur
+     * @returns {Promise<ScoreSaberPlayerData>} données ScoreSaber du joueur
      */
-    async getPlayerDatas(playerId) {
+    async getPlayerData(playerId) {
         try {
             const playerInfos = await this.send(playerUrl + playerId + '/full')
             const playerTopScore = await this.send(playerUrl + playerId + '/scores?sort=top&page=1&limit=1')
@@ -223,8 +223,8 @@ export default {
      * @returns {Promise<number>} rang du joueur
      */
     async getPlayerRankById(scoreSaberId) {
-        const playerDatas = await this.getPlayerDatas(scoreSaberId)
-        return playerDatas.rank
+        const playerData = await this.getPlayerData(scoreSaberId)
+        return playerData.rank
     },
 
     /**
@@ -236,9 +236,9 @@ export default {
      */
     async getMapCountryLeaderboard(leaderboardId, country, page = 1) {
         try {
-            const datas = await this.send(leaderboardUrl + 'by-id/' + leaderboardId + '/scores?countries=' + country + '&page=' + page, false)
+            const data = await this.send(leaderboardUrl + 'by-id/' + leaderboardId + '/scores?countries=' + country + '&page=' + page, false)
 
-            return datas.scores
+            return data.scores
         } catch(error) {
             throw new ScoreSaberError('Une erreur est survenue lors de la récupération du top 1 du pays sur la map')
         }
@@ -284,9 +284,9 @@ export default {
             let nextPage = null
 
             do {
-                const datas = await this.send(playerUrl + scoreSaberId + '/scores?sort=recent&limit=100&page=' + (nextPage ?? 1), false)
-                const playerScores = datas.playerScores
-                const metadata = datas.metadata
+                const data = await this.send(playerUrl + scoreSaberId + '/scores?sort=recent&limit=100&page=' + (nextPage ?? 1), false)
+                const playerScores = data.playerScores
+                const metadata = data.metadata
 
                 for(const playerScore of playerScores) {
                     scores.push({
