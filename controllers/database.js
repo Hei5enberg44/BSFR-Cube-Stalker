@@ -70,9 +70,18 @@ const Leaderboard = sequelize.define('leaderboard', {
     countryRank: DataTypes.INTEGER,
     averageRankedAccuracy: DataTypes.DOUBLE,
     serverRankAcc: DataTypes.INTEGER,
-    serverRankPP: DataTypes.INTEGER,
+    serverRankPP: DataTypes.INTEGER
+})
+
+const Ranked = sequelize.define('ranked', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    map: DataTypes.JSON
 })
 
 export {
-    Cooldowns, Players, Leaderboard
+    Cooldowns, Players, Leaderboard, Ranked
 }
