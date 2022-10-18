@@ -56,6 +56,7 @@ try {
 
             // Tâches planifiées
             await crons.refreshLeaderboard(client)
+            await crons.getLastRankedMaps()
 
             // Top 1 FR
             top1.listen(client)
