@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.14.4-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.15.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
@@ -224,7 +224,7 @@ __Exemples :__
 
 ***
 
-- ### /playlist : Créer une playlist
+- ### /playlist played : Créer une playlist à partir des maps jouées du joueur
 
 Permet de générer une playlist de maps en fonction du nombre d'étoiles et/ou de l'accuracy du joueur sur celles-ci.
 
@@ -240,7 +240,26 @@ __Paramètres :__
 __Exemples :__
 
 ```
-/playlist stars_min:8 stars_max:10 acc_min:90 acc_max:94
+/playlist played stars_min:8 stars_max:10 acc_min:90 acc_max:94
+```
+
+***
+
+- ### /playlist ranked : Créer une playlist à partir des maps ranked
+
+Permet de générer une playlist de maps ranked en fonction du nombre d'étoiles sur celles-ci.
+
+__Paramètres :__
+
+|    Nom    | Obligatoire | Contenu |
+| --------- |:-----------:| ------- |
+| **min_stars** |   | Nombre d'étoiles minimum |
+| **max_stars** |   | Nombre d'étoiles maximum |
+
+__Exemples :__
+
+```
+/playlist ranked stars_min:8 stars_max:10
 ```
 
 ***
