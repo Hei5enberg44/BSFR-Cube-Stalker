@@ -4,6 +4,7 @@ import { BeatSaverError } from '../utils/error.js'
 
 const beatSaverApiUrl = 'https://api.beatsaver.com/'
 const mapsHashUrl = beatSaverApiUrl + '/maps/hash/'
+const latestMapsUrl = beatSaverApiUrl + '/maps/latest'
 
 const wait = (s) => new Promise((res) => setTimeout(res, s * 1000))
 
@@ -45,7 +46,7 @@ export default {
 
     /**
      * Metadonnées d'une map BeatSaver
-     * @typedef {Object} BeatSaverMapMetadatas
+     * @typedef {Object} BeatSaverMapMetadata
      * @property {number} duration
      * @property {string} levelAuthorName
      * @property {string} songAuthorName
@@ -61,7 +62,7 @@ export default {
      * @property {string} name
      * @property {boolean} qualified
      * @property {boolean} ranked
-     * @property {BeatSaverMapMetadatas} metadata
+     * @property {BeatSaverMapMetadata} metadata
      */
 
     /**
@@ -77,6 +78,27 @@ export default {
         } catch(error) {
             throw new BeatSaverError(`Récupération des informations de la map depuis BeatSaver impossible : ${error.message}`)
         }
+    },
+
+    /**
+     * Récupère une liste de maps en fonction de filtres
+     * @param {string} before récupère les maps avant cette date
+     * @param {string} after récupère les maps après cette date
+     * @param {string} sort méthode de tri des maps
+     * @param {boolean} automapper afficher les maps auto-générées
+     */
+    async getMaps(before, after, sort = 'CREATED', automapper = false) {
+        const args = {}
+        if(before) args.before = before
+        if(after) args.after = after
+        if(sort) args.sort = sort
+        if(automapper) args.automapper = automapper
+
+        const params = new URLSearchParams(args).toString()
+        const maps = await this.send(latestMapsUrl + `?${params}`, {
+            method: 'GET'
+        })
+        return maps
     },
 
     /**
