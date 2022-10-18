@@ -66,17 +66,11 @@ export default {
     async getLastRanked() {
         let newMaps = 0
 
-        const lastMap = await Ranked.findOne({
-            order: [
-                [ 'map.uploaded', 'desc' ]
-            ]
-        })
-
-        let page = lastMap?.map?.uploaded ? lastMap.map.uploaded : new Date(2018, 4, 8).toISOString()
+        let page = new Date().toISOString()
         let end = false
 
         do {
-            const data = await beatsaver.getMaps(null, page, 'CREATED', false)
+            const data = await beatsaver.getMaps(page, null, 'CREATED', false)
             const maps = data.docs
             const ranked = maps.filter(m => m.ranked)
             for(const map of ranked) {
