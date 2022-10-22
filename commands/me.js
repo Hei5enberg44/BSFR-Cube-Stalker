@@ -51,26 +51,26 @@ export default {
 
             await interaction.deferReply()
 
-            let player, memberId
+            let oldPlayerData, memberId
 
             if(otherMember) {
                 // Identifiant du membre pour lequel aficher les informations
                 memberId = otherMember.id
 
                 // Informations sur le joueur
-                player = await players.get(memberId, leaderboardChoice)
+                oldPlayerData = await players.get(memberId, leaderboardChoice)
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
-                if(!player) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n'est lié pour le compte Discord ${userMention(memberId)}`)
+                if(!oldPlayerData) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n'est lié pour le compte Discord ${userMention(memberId)}`)
             } else {
                 // Identifiant du membre exécutant la commande
                 memberId = interaction.member.id
 
                 // Informations sur le joueur
-                player = await players.get(memberId, leaderboardChoice)
+                oldPlayerData = await players.get(memberId, leaderboardChoice)
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
-                if(!player) {
+                if(!oldPlayerData) {
                     const linkCommand = interaction.guild.commands.cache.find(c => c.name === 'link')
                     throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
                 }
@@ -79,84 +79,83 @@ export default {
             // Données de classement du joueur
             let playerData
             if(leaderboardChoice === 'scoresaber') {
-                playerData = await scoresaber.getPlayerData(player.playerId)
+                playerData = await scoresaber.getPlayerData(oldPlayerData.playerId)
             } else if(leaderboardChoice === 'beatleader') {
-                playerData = await beatleader.getPlayerData(player.playerId)
+                playerData = await beatleader.getPlayerData(oldPlayerData.playerId)
             }
 
             // Liste des embeds
             const embeds = []
 
             // Données de classement du joueur
-            const oldLd = await leaderboard.getPlayer(memberId, leaderboardChoice)
-            let ld = oldLd
+            const oldPlayerLd = await leaderboard.getPlayer(memberId, leaderboardChoice)
+            let playerLd = oldPlayerLd
 
             // Si le joueur n'a pas de données de classement, on ajoute celui-ci au classement du serveur
-            if(!oldLd) {
-                ld = await leaderboard.addPlayerLeaderboard(memberId, leaderboardChoice, playerData)
+            if(!oldPlayerLd) {
+                playerLd = await leaderboard.addPlayerLeaderboard(memberId, leaderboardChoice, playerData)
 
                 embeds.push(new Embed()
                     .setColor('#2ECC71')
                     .setDescription(`👏 ${userMention(memberId)} a été ajouté au classement du serveur !`)
                 )
             } else { // Sinon, on le met à jour
-                ld = await leaderboard.updatePlayerLeaderboard(memberId, leaderboardChoice, playerData)
+                playerLd = await leaderboard.updatePlayerLeaderboard(memberId, leaderboardChoice, playerData)
             }
 
             // Mise à jour du joueur
-            await players.update(memberId, leaderboardChoice, playerData, ld)
+            await players.update(memberId, leaderboardChoice, playerData, playerLd)
 
             // Progressions du joueur
             let rankProgress = '', countryRankProgress = '', ppProgress = '', accProgress = ''
             let serverRankPPProgress = '', serverRankAccProgress = ''
-            if(oldLd) {
-                // Rang global
-                const rankDiff = Math.abs(playerData.rank - oldLd.rank)
-                if(playerData.rank < oldLd.rank) {
-                    rankProgress = bold(`▲${rankDiff}`)
-                } else if(playerData.rank > oldLd.rank) {
-                    rankProgress = bold(`▼${rankDiff}`)
-                }
 
-                // Rank pays
-                const countryRankDiff = Math.abs(playerData.countryRank - oldLd.countryRank)
-                if(playerData.countryRank < oldLd.countryRank) {
-                    countryRankProgress = bold(`▲${countryRankDiff}`)
-                } else if(playerData.countryRank > oldLd.countryRank) {
-                    countryRankProgress = bold(`▼${countryRankDiff}`)
-                }
+            // Rang global
+            const rankDiff = Math.abs(playerLd.rank - oldPlayerData.rank)
+            if(playerLd.rank < oldPlayerData.rank) {
+                rankProgress = bold(`▲${rankDiff}`)
+            } else if(playerLd.rank > oldPlayerData.rank) {
+                rankProgress = bold(`▼${rankDiff}`)
+            }
 
-                // PP
-                const ppDiff = new Intl.NumberFormat('en-US').format(Math.abs(playerData.pp - oldLd.pp))
-                if(playerData.pp > oldLd.pp) {
-                    ppProgress = bold(`▲${ppDiff}pp`)
-                } else if(playerData.pp < oldLd.pp) {
-                    ppProgress = bold(`▼${ppDiff}pp`)
-                }
+            // Rank pays
+            const countryRankDiff = Math.abs(playerLd.countryRank - oldPlayerData.countryRank)
+            if(playerLd.countryRank < oldPlayerData.countryRank) {
+                countryRankProgress = bold(`▲${countryRankDiff}`)
+            } else if(playerLd.countryRank > oldPlayerData.countryRank) {
+                countryRankProgress = bold(`▼${countryRankDiff}`)
+            }
 
-                // Acc
-                const accDiff = (playerData.averageRankedAccuracy - oldLd.averageRankedAccuracy).toFixed(2)
-                if(accDiff > 0) {
-                    accProgress = bold(`▲${Math.abs(accDiff)}%`)
-                } else if(accDiff < 0) {
-                    accProgress = bold(`▼${Math.abs(accDiff)}%`)
-                }
+            // PP
+            const ppDiff = new Intl.NumberFormat('en-US').format(Math.abs(playerLd.pp - oldPlayerData.pp))
+            if(playerLd.pp > oldPlayerData.pp) {
+                ppProgress = bold(`▲${ppDiff}pp`)
+            } else if(playerLd.pp < oldPlayerData.pp) {
+                ppProgress = bold(`▼${ppDiff}pp`)
+            }
 
-                // Rank Server PP
-                const serverPPDiff = Math.abs(ld.serverRankPP - oldLd.serverRankPP)
-                if(ld.serverRankPP < oldLd.serverRankPP) {
-                    serverRankPPProgress = bold(`▲${serverPPDiff}`)
-                } else if(ld.serverRankPP > oldLd.serverRankPP) {
-                    serverRankPPProgress = bold(`▼${serverPPDiff}`)
-                }
+            // Acc
+            const accDiff = (playerLd.averageRankedAccuracy - oldPlayerData.averageRankedAccuracy).toFixed(2)
+            if(accDiff > 0) {
+                accProgress = bold(`▲${Math.abs(accDiff)}%`)
+            } else if(accDiff < 0) {
+                accProgress = bold(`▼${Math.abs(accDiff)}%`)
+            }
 
-                // Rank Server Acc
-                const serverAccDiff = Math.abs(ld.serverRankAcc - oldLd.serverRankAcc)
-                if(ld.serverRankAcc < oldLd.serverRankAcc) {
-                    serverRankAccProgress = bold(`▲${serverAccDiff}`)
-                } else if(ld.serverRankAcc > oldLd.serverRankAcc) {
-                    serverRankAccProgress = bold(`▼${serverAccDiff}`)
-                }
+            // Rank Server PP
+            const serverPPDiff = Math.abs(playerLd.serverRankPP - oldPlayerData.serverRankPP)
+            if(playerLd.serverRankPP < oldPlayerData.serverRankPP) {
+                serverRankPPProgress = bold(`▲${serverPPDiff}`)
+            } else if(playerLd.serverRankPP > oldPlayerData.serverRankPP) {
+                serverRankPPProgress = bold(`▼${serverPPDiff}`)
+            }
+
+            // Rank Server Acc
+            const serverAccDiff = Math.abs(playerLd.serverRankAcc - oldPlayerData.serverRankAcc)
+            if(playerLd.serverRankAcc < oldPlayerData.serverRankAcc) {
+                serverRankAccProgress = bold(`▲${serverAccDiff}`)
+            } else if(playerLd.serverRankAcc > oldPlayerData.serverRankAcc) {
+                serverRankAccProgress = bold(`▼${serverAccDiff}`)
             }
 
             // On met à jour les rôles du membre en fonction de son nombre de pp
@@ -175,7 +174,7 @@ export default {
                 .setThumbnail(playerData.avatar)
                 .addFields(
                     { name: 'Rang', value: `🌍 #${playerData.rank} ${rankProgress} | ${playerData.country !== '' ? countryCodeEmoji(playerData.country) : '🏴‍☠️'} #${playerData.countryRank} ${countryRankProgress}` },
-                    { name: 'Rang Discord', value: `${bold('PP')}: ${(`#${ld.serverRankPP}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${ld.serverLdTotal} joueurs ${serverRankPPProgress}\n${bold('Précision')}: ${(`#${ld.serverRankAcc}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${ld.serverLdTotal} joueurs ${serverRankAccProgress}` },
+                    { name: 'Rang Discord', value: `${bold('PP')}: ${(`#${playerLd.serverRankPP}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${playerLd.serverLdTotal} joueurs ${serverRankPPProgress}\n${bold('Précision')}: ${(`#${playerLd.serverRankAcc}`).replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')} / ${playerLd.serverLdTotal} joueurs ${serverRankAccProgress}` },
                     { name: 'Points de performance', value: `👏 ${new Intl.NumberFormat('en-US').format(playerData.pp)}pp ${ppProgress}`, inline: true },
                     { name: 'Précision en classé', value: `🎯 ${(playerData.averageRankedAccuracy).toFixed(2)}% ${accProgress}`, inline: true },
                     { name: 'Meilleur score', value: `1️⃣ ${playerData.topPP.name} [${playerData.topPP.difficulty.replace('ExpertPlus', 'Expert+')}] by ${playerData.topPP.author}` },
