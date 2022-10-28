@@ -79,7 +79,7 @@ export default {
                                 if(ldFR[0].leaderboardPlayerInfo.id === playerId) {
                                     Logger.log('Top1FR', 'INFO', `Nouveau top 1 FR de « ${playerName} » sur « ${leaderboard.songName} »`)
 
-                                    const mapDetails = await beatsaver.geMapByHash(leaderboard.songHash)
+                                    const mapDetails = await beatsaver.getMapByHash(leaderboard.songHash)
                         
                                     const levelDifficulty = leaderboard.difficulty.difficultyRaw.split('_')[1]
                                     const levelGameMode = leaderboard.difficulty.gameMode.replace('Solo', '')

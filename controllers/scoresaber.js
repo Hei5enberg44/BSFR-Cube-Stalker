@@ -157,7 +157,7 @@ export default {
 
             let mapId = null
             try {
-                const mapData = await beatsaver.geMapByHash(topScore.leaderboard.songHash)
+                const mapData = await beatsaver.getMapByHash(topScore.leaderboard.songHash)
                 mapId = mapData.id
             } catch(error) {
                 if(error instanceof BeatSaverError) {

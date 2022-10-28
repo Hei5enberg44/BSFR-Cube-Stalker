@@ -70,7 +70,7 @@ export default {
      * @param {string} hash hash de la map
      * @returns {Promise<BeatSaverMap>} détail de la map
      */
-    async geMapByHash(hash) {
+    async getMapByHash(hash) {
         try {
             const map = await this.send(mapsHashUrl + hash)
 
