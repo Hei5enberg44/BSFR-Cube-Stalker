@@ -110,52 +110,54 @@ export default {
             let rankProgress = '', countryRankProgress = '', ppProgress = '', accProgress = ''
             let serverRankPPProgress = '', serverRankAccProgress = ''
 
-            // Rang global
-            const rankDiff = Math.abs(playerLd.rank - oldPlayerData.rank)
-            if(playerLd.rank < oldPlayerData.rank) {
-                rankProgress = bold(`▲${rankDiff}`)
-            } else if(playerLd.rank > oldPlayerData.rank) {
-                rankProgress = bold(`▼${rankDiff}`)
-            }
+            if(oldPlayerLd) {
+                // Rang global
+                const rankDiff = Math.abs(playerLd.rank - oldPlayerData.rank)
+                if(playerLd.rank < oldPlayerData.rank) {
+                    rankProgress = bold(`▲${rankDiff}`)
+                } else if(playerLd.rank > oldPlayerData.rank) {
+                    rankProgress = bold(`▼${rankDiff}`)
+                }
 
-            // Rank pays
-            const countryRankDiff = Math.abs(playerLd.countryRank - oldPlayerData.countryRank)
-            if(playerLd.countryRank < oldPlayerData.countryRank) {
-                countryRankProgress = bold(`▲${countryRankDiff}`)
-            } else if(playerLd.countryRank > oldPlayerData.countryRank) {
-                countryRankProgress = bold(`▼${countryRankDiff}`)
-            }
+                // Rank pays
+                const countryRankDiff = Math.abs(playerLd.countryRank - oldPlayerData.countryRank)
+                if(playerLd.countryRank < oldPlayerData.countryRank) {
+                    countryRankProgress = bold(`▲${countryRankDiff}`)
+                } else if(playerLd.countryRank > oldPlayerData.countryRank) {
+                    countryRankProgress = bold(`▼${countryRankDiff}`)
+                }
 
-            // PP
-            const ppDiff = new Intl.NumberFormat('en-US').format(Math.abs(playerLd.pp - oldPlayerData.pp))
-            if(playerLd.pp > oldPlayerData.pp) {
-                ppProgress = bold(`▲${ppDiff}pp`)
-            } else if(playerLd.pp < oldPlayerData.pp) {
-                ppProgress = bold(`▼${ppDiff}pp`)
-            }
+                // PP
+                const ppDiff = new Intl.NumberFormat('en-US').format(Math.abs(playerLd.pp - oldPlayerData.pp))
+                if(playerLd.pp > oldPlayerData.pp) {
+                    ppProgress = bold(`▲${ppDiff}pp`)
+                } else if(playerLd.pp < oldPlayerData.pp) {
+                    ppProgress = bold(`▼${ppDiff}pp`)
+                }
 
-            // Acc
-            const accDiff = (playerLd.averageRankedAccuracy - oldPlayerData.averageRankedAccuracy).toFixed(2)
-            if(accDiff > 0) {
-                accProgress = bold(`▲${Math.abs(accDiff)}%`)
-            } else if(accDiff < 0) {
-                accProgress = bold(`▼${Math.abs(accDiff)}%`)
-            }
+                // Acc
+                const accDiff = (playerLd.averageRankedAccuracy - oldPlayerData.averageRankedAccuracy).toFixed(2)
+                if(accDiff > 0) {
+                    accProgress = bold(`▲${Math.abs(accDiff)}%`)
+                } else if(accDiff < 0) {
+                    accProgress = bold(`▼${Math.abs(accDiff)}%`)
+                }
 
-            // Rank Server PP
-            const serverPPDiff = Math.abs(playerLd.serverRankPP - oldPlayerData.serverRankPP)
-            if(playerLd.serverRankPP < oldPlayerData.serverRankPP) {
-                serverRankPPProgress = bold(`▲${serverPPDiff}`)
-            } else if(playerLd.serverRankPP > oldPlayerData.serverRankPP) {
-                serverRankPPProgress = bold(`▼${serverPPDiff}`)
-            }
+                // Rank Server PP
+                const serverPPDiff = Math.abs(playerLd.serverRankPP - oldPlayerData.serverRankPP)
+                if(playerLd.serverRankPP < oldPlayerData.serverRankPP) {
+                    serverRankPPProgress = bold(`▲${serverPPDiff}`)
+                } else if(playerLd.serverRankPP > oldPlayerData.serverRankPP) {
+                    serverRankPPProgress = bold(`▼${serverPPDiff}`)
+                }
 
-            // Rank Server Acc
-            const serverAccDiff = Math.abs(playerLd.serverRankAcc - oldPlayerData.serverRankAcc)
-            if(playerLd.serverRankAcc < oldPlayerData.serverRankAcc) {
-                serverRankAccProgress = bold(`▲${serverAccDiff}`)
-            } else if(playerLd.serverRankAcc > oldPlayerData.serverRankAcc) {
-                serverRankAccProgress = bold(`▼${serverAccDiff}`)
+                // Rank Server Acc
+                const serverAccDiff = Math.abs(playerLd.serverRankAcc - oldPlayerData.serverRankAcc)
+                if(playerLd.serverRankAcc < oldPlayerData.serverRankAcc) {
+                    serverRankAccProgress = bold(`▲${serverAccDiff}`)
+                } else if(playerLd.serverRankAcc > oldPlayerData.serverRankAcc) {
+                    serverRankAccProgress = bold(`▼${serverAccDiff}`)
+                }
             }
 
             // On met à jour les rôles du membre en fonction de son nombre de pp
