@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.16.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.16.1-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
