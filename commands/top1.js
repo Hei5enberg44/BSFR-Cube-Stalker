@@ -8,12 +8,12 @@ import Logger from '../utils/logger.js'
 export default {
     data: {
         name: 'top1',
-        description: 'S\'inscrire ou se désinscrire du top 1 FR',
+        description: 'S\'inscrire ou se désinscrire du top 1 pays',
         options: [
             {
                 type: ApplicationCommandOptionType.Boolean,
                 name: 'subscribe',
-                description: 'True: s\'inscrire au top 1 FR, False: se désinscrire du top 1 FR',
+                description: 'True: s\'inscrire au top 1 pays, False: se désinscrire du top 1 pays',
                 required: true
             }
         ],
@@ -43,23 +43,23 @@ export default {
 
             const isSubscribed = member.top1
 
-            // Si le membre est déjà inscrit au top 1 FR
+            // Si le membre est déjà inscrit au top 1 pays
             if(isSubscribed === subscribe && subscribe === true)
-                throw new Top1Error('Vous êtes déjà inscrit au top 1 FR')
+                throw new Top1Error('Vous êtes déjà inscrit au top 1 pays')
 
-            // Si le membre est déjà désinscrit du top 1 FR
+            // Si le membre est déjà désinscrit du top 1 pays
             if(isSubscribed === subscribe && subscribe === false)
-                throw new Top1Error('Vous êtes déjà désinscrit du top 1 FR')
+                throw new Top1Error('Vous êtes déjà désinscrit du top 1 pays')
 
             let message = ''
             if(isSubscribed) {
                 await top1.subscribe(memberId, false)
-                Logger.log('Top1FR', 'INFO', `${interaction.user.tag} est maintenant désinscrit du top 1 FR`)
-                message = 'Vous êtes maintenant désinscrit du top 1 FR'
+                Logger.log('Top1', 'INFO', `${interaction.user.tag} est maintenant désinscrit du top 1 pays`)
+                message = 'Vous êtes maintenant désinscrit du top 1 pays'
             } else {
                 await top1.subscribe(memberId, true)
-                Logger.log('Top1FR', 'INFO', `${interaction.user.tag} est maintenant sinscrit au top 1 FR`)
-                message = 'Vous êtes maintenant inscrit au top 1 FR'
+                Logger.log('Top1', 'INFO', `${interaction.user.tag} est maintenant sinscrit au top 1 pays`)
+                message = 'Vous êtes maintenant inscrit au top 1 pays'
             }
 
             const embed = new Embed()

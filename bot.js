@@ -58,7 +58,7 @@ try {
             await crons.refreshLeaderboard(client)
             await crons.getLastRankedMaps()
 
-            // Top 1 FR
+            // Top 1 pays
             top1.listen(client)
 
             // Statut du bot

@@ -23,7 +23,7 @@ export default {
                 { name: 'card', description: 'Génère votre carte de joueur ou celle d\'un autre joueur' },
                 { name: 'ld', description: 'Affiche le classement du serveur (pp ou acc)' },
                 { name: 'locateworld', description: 'Affiche votre position ou celle d\'un autre joueur dans le classement mondial' },
-                { name: 'top1', description: 'S\'inscire ou se désinscrire du top 1 FR' },
+                { name: 'top1', description: 'S\'inscire ou se désinscrire du top 1 pays' },
                 { name: 'world', description: 'Affiche le classement mondial' },
                 { name: 'playlist', description: 'Génère une playlist en fonction de vos maps jouées et de vos critères choisis en options de commande' },
             ]

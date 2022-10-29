@@ -6,6 +6,7 @@ import { userMention, bold, hyperlink, time } from 'discord.js'
 import Embed from '../utils/embed.js'
 import { Players } from './database.js'
 import { Top1Error, ScoreSaberError, BeatSaverError } from '../utils/error.js'
+import { countryCodeEmoji } from '../utils/country-code-emoji.js'
 import Logger from '../utils/logger.js'
 import config from '../config.json' assert { type: 'json' }
 
@@ -33,6 +34,7 @@ export default {
      * @property {boolean} ranked
      * @property {string} scoreSaberId
      * @property {string} scoreSaberName
+     * @property {string} scoreSaberCountry
      * @property {string} beatenScoreSaberId
      * @property {string} beatenScoreSaberName
      * @property {string|null} replay
@@ -40,13 +42,13 @@ export default {
      */
 
     /**
-     * Scan pour des nouveaux top 1 FR
+     * Scan pour des nouveaux top 1 pays
      * @param {Client} client client Discord
      */
     listen(client) {
         const self = this
 
-        Logger.log('Top1FR', 'INFO', 'Écoute des tops 1 FR sur le websocket de ScoreSaber')
+        Logger.log('Top1', 'INFO', 'Écoute des tops 1 pays sur le websocket de ScoreSaber')
 
         const ws = new WebSocket('wss://scoresaber.com/ws')
 
@@ -63,68 +65,68 @@ export default {
                     const playerName = score?.leaderboardPlayerInfo?.name
                     const country = score?.leaderboardPlayerInfo?.country
 
-                    if(country === 'FR') {
-                        const player = await Players.findOne({
-                            where: {
-                                playerId : playerId,
-                                leaderboard: 'scoresaber',
-                                top1: true
+                    const player = await Players.findOne({
+                        where: {
+                            leaderboard: 'scoresaber',
+                            playerId: playerId,
+                            playerCountry: country,
+                            top1: true
+                        }
+                    })
+
+                    if(player) {
+                        try {
+                            const mapLd = await scoresaber.getMapCountryLeaderboard(leaderboard.id, country)
+
+                            if(mapLd[0].leaderboardPlayerInfo.id === playerId) {
+                                Logger.log('Top1', 'INFO', `Nouveau top 1 pays de « ${playerName} » sur « ${leaderboard.songName} »`)
+
+                                const mapDetails = await beatsaver.getMapByHash(leaderboard.songHash)
+                    
+                                const levelDifficulty = leaderboard.difficulty.difficultyRaw.split('_')[1]
+                                const levelGameMode = leaderboard.difficulty.gameMode.replace('Solo', '')
+                    
+                                const top1 = {
+                                    rank: score.rank,
+                                    score: score.modifiedScore,
+                                    acc: leaderboard.maxScore > 0 ? score.modifiedScore / leaderboard.maxScore * 100 : calcAcc(mapDetails, levelDifficulty, levelGameMode, score.modifiedScore),
+                                    pp: score.pp,
+                                    timeSet: score.timeSet,
+                                    leaderboardId: leaderboard.id,
+                                    songName: leaderboard.songName,
+                                    songCoverUrl: leaderboard.coverImage,
+                                    levelKey: mapDetails.id,
+                                    levelAuthorName: leaderboard.levelAuthorName,
+                                    levelDifficulty: levelDifficulty,
+                                    levelGameMode: levelGameMode,
+                                    ranked: leaderboard.ranked,
+                                    scoreSaberId: mapLd[0].leaderboardPlayerInfo.id,
+                                    scoreSaberName: mapLd[0].leaderboardPlayerInfo.name,
+                                    scoreSaberCountry: mapLd[0].leaderboardPlayerInfo.country,
+                                    beatenScoreSaberId: mapLd.length > 1 ? mapLd[1].leaderboardPlayerInfo.id : '',
+                                    beatenScoreSaberName: mapLd.length > 1 ? mapLd[1].leaderboardPlayerInfo.name : '',
+                                    replay: score.hasReplay ? `https://www.replay.beatleader.xyz/?id=${mapDetails.id}&difficulty=${levelDifficulty}&playerID=${playerId}` : null,
+                                    memberId: player.memberId
+                                }
+
+                                await self.publish(client, top1)
                             }
-                        })
-
-                        if(player) {
-                            try {
-                                const ldFR = await scoresaber.getMapCountryLeaderboard(leaderboard.id, 'FR')
-
-                                if(ldFR[0].leaderboardPlayerInfo.id === playerId) {
-                                    Logger.log('Top1FR', 'INFO', `Nouveau top 1 FR de « ${playerName} » sur « ${leaderboard.songName} »`)
-
-                                    const mapDetails = await beatsaver.getMapByHash(leaderboard.songHash)
-                        
-                                    const levelDifficulty = leaderboard.difficulty.difficultyRaw.split('_')[1]
-                                    const levelGameMode = leaderboard.difficulty.gameMode.replace('Solo', '')
-                        
-                                    const top1 = {
-                                        rank: score.rank,
-                                        score: score.modifiedScore,
-                                        acc: leaderboard.maxScore > 0 ? score.modifiedScore / leaderboard.maxScore * 100 : calcAcc(mapDetails, levelDifficulty, levelGameMode, score.modifiedScore),
-                                        pp: score.pp,
-                                        timeSet: score.timeSet,
-                                        leaderboardId: leaderboard.id,
-                                        songName: leaderboard.songName,
-                                        songCoverUrl: leaderboard.coverImage,
-                                        levelKey: mapDetails.id,
-                                        levelAuthorName: leaderboard.levelAuthorName,
-                                        levelDifficulty: levelDifficulty,
-                                        levelGameMode: levelGameMode,
-                                        ranked: leaderboard.ranked,
-                                        scoreSaberId: ldFR[0].leaderboardPlayerInfo.id,
-                                        scoreSaberName: ldFR[0].leaderboardPlayerInfo.name,
-                                        beatenScoreSaberId: ldFR.length > 1 ? ldFR[1].leaderboardPlayerInfo.id : '',
-                                        beatenScoreSaberName: ldFR.length > 1 ? ldFR[1].leaderboardPlayerInfo.name : '',
-                                        replay: score.hasReplay ? `https://www.replay.beatleader.xyz/?id=${mapDetails.id}&difficulty=${levelDifficulty}&playerID=${playerId}` : null,
-                                        memberId: player.memberId
-                                    }
-
-                                    await self.publish(client, top1)
-                                }
-                            } catch(error) {
-                                if(error instanceof BeatSaverError || error instanceof ScoreSaberError) {
-                                    throw new Top1Error(`Ajout du top 1 impossible (${error.message})`)
-                                }
+                        } catch(error) {
+                            if(error instanceof BeatSaverError || error instanceof ScoreSaberError) {
+                                throw new Top1Error(`Ajout du top 1 pays impossible (${error.message})`)
                             }
                         }
                     }
                 }
             } catch(error) {
                 if(error instanceof Top1Error) {
-                    Logger.log('Top1FR', 'ERROR', error.message)
+                    Logger.log('Top1', 'ERROR', error.message)
                 }
             }
         })
 
         ws.on('close', () => {
-            Logger.log('Top1FR', 'WARNING', 'Le websocket de ScoreSaber s\'est fermé')
+            Logger.log('Top1', 'WARNING', 'Le websocket de ScoreSaber s\'est fermé')
             setTimeout(function() {
                 self.listen(client)
             }, 60 * 1000)
@@ -132,9 +134,9 @@ export default {
     },
 
     /**
-     * Publication d'un top 1 FR dans le channel #top-1-fr
+     * Publication d'un top 1 pays dans le channel #top-1-pays
      * @param {Client} client client Discord
-     * @param {Top1} top1 données du top 1 FR
+     * @param {Top1} top1 données du top 1 pays
      */
     async publish(client, top1) {
         const guild = client.guilds.cache.find(g => g.id === config.guild.id)
@@ -154,6 +156,7 @@ export default {
             .setThumbnail(top1.songCoverUrl)
             .setDescription(`${(top1.ranked && rankedIcon) ? `<:${rankedIconName}:${rankedIconId}> ` : ''}${bold(`${top1.levelDifficulty.replace('ExpertPlus', 'Expert+')} (${top1.levelGameMode})`)} par ${bold(top1.levelAuthorName)}\n${bold('Date')} : ${time(new Date(top1.timeSet))}`)
             .addFields(
+                { name: 'Pays', value: `${countryCodeEmoji(top1.scoreSaberCountry)}`, inline: true },
                 { name: 'Joueur', value: `${userMention(top1.memberId)}`, inline: true },
                 { name: 'ScoreSaber', value: hyperlink(top1.scoreSaberName, `https://scoresaber.com/u/${top1.scoreSaberId}`), inline: true },
                 { name: '\u200b', value: '\u200b', inline: true },
@@ -167,12 +170,12 @@ export default {
 
         if(top1.beatenScoreSaberId !== '') embed.addFields({ name: 'Bien joué !', value: `Tu es passé(e) devant ${hyperlink(top1.beatenScoreSaberName, `https://scoresaber.com/u/${top1.beatenScoreSaberId}`)}` })
 
-        const top1FRChannel = guild.channels.cache.find(c => c.id === config.guild.channels.top1fr)
-        await top1FRChannel.send({ embeds: [embed] })
+        const top1paysChannel = guild.channels.cache.find(c => c.id === config.guild.channels.top1pays)
+        await top1paysChannel.send({ embeds: [embed] })
     },
 
     /**
-     * Récupère la liste des joueurs inscrits au top 1 FR
+     * Récupère la liste des joueurs inscrits au top 1 pays
      * @returns {Promise<Array<{memberId: string, playerId: string, top1: boolean}>>}
      */
     async getSubscribed() {
@@ -186,7 +189,7 @@ export default {
     },
 
     /**
-     * Inscrit/Désinscrit un membre au top 1 FR
+     * Inscrit/Désinscrit un membre au top 1 pays
      * @param {string} memberId identifiant Discord du membre
      * @param {boolean} subscribe
      */
