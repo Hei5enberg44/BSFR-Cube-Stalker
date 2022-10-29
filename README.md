@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.15.3-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.16.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
@@ -205,9 +205,9 @@ __Exemples :__
 
 ***
 
-- ### /top1 : S'inscrire ou se désinscrire du top 1 FR
+- ### /top1 : S'inscrire ou se désinscrire du top 1 pays
 
-Permet de s'inscrire au top 1 FR afin que vos top 1 France soient publiés dans le channel #top-1-fr.
+Permet de s'inscrire au top 1 pays afin que vos tops 1 de votre pays soient publiés dans le channel #top-1-pays.
 
 __Paramètres :__
 
