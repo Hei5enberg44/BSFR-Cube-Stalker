@@ -159,7 +159,6 @@ export default {
                 { name: 'Pays', value: `${countryCodeEmoji(top1.scoreSaberCountry)}`, inline: true },
                 { name: 'Joueur', value: `${userMention(top1.memberId)}`, inline: true },
                 { name: 'ScoreSaber', value: hyperlink(top1.scoreSaberName, `https://scoresaber.com/u/${top1.scoreSaberId}`), inline: true },
-                { name: '\u200b', value: '\u200b', inline: true },
                 { name: 'Score', value: `${new Intl.NumberFormat('en-US').format(top1.score)}`, inline: true },
                 { name: 'Précision', value: `${(top1.acc).toFixed(2)}%`, inline: true },
                 { name: 'Rang 🌍', value: `#${top1.rank}`, inline: true },
