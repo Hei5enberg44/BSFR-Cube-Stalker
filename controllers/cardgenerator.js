@@ -48,12 +48,8 @@ export default {
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
 
         // Affichage de la carte d'Halloween si la date du jour est comprise entre le 1er Octobre et le 31 Octobre
-        const halloweenDateStart = new Date()
-        halloweenDateStart.setMonth(9)
-        halloweenDateStart.setDate(1)
-        const halloweenDateEnd = new Date()
-        halloweenDateEnd.setMonth(9)
-        halloweenDateEnd.setDate(31)
+        const halloweenDateStart = new Date((new Date()).getFullYear(), 9, 1, 0, 0, 0)
+        const halloweenDateEnd = new Date((new Date()).getFullYear(), 9, 31, 23, 59, 59)
 
         if(date >= halloweenDateStart && date <= halloweenDateEnd) {
             // Foreground halloween
@@ -150,12 +146,8 @@ export default {
         ctx.fillText(`#${player.topPP.rank} | ${(player.topPP.pp).toFixed(2)}pp | ${(player.topPP.acc).toFixed(2)}%`, 186, 319)
 
         // Affichage de la carte de Noël si la date du jour est comprise entre le 1er Décembre et le 31 Décembre
-        const christmasDateStart = new Date()
-        christmasDateStart.setMonth(11)
-        christmasDateStart.setDate(1)
-        const christmasDateEnd = new Date()
-        christmasDateEnd.setMonth(11)
-        christmasDateEnd.setDate(31)
+        const christmasDateStart = new Date((new Date()).getFullYear(), 11, 1, 0, 0, 0)
+        const christmasDateEnd = new Date((new Date()).getFullYear(), 11, 31, 23, 59, 59)
 
         if(date >= christmasDateStart && date <= christmasDateEnd) {
             // Santa's hat
