@@ -2,7 +2,7 @@ import fetch from 'node-fetch'
 import Logger from '../utils/logger.js'
 import { BeatSaverError } from '../utils/error.js'
 
-const beatSaverApiUrl = 'https://api.beatsaver.com/'
+const beatSaverApiUrl = 'https://beatsaver.com/api'
 const mapsHashUrl = beatSaverApiUrl + '/maps/hash/'
 const latestMapsUrl = beatSaverApiUrl + '/maps/latest'
 
