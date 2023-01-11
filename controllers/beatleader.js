@@ -31,6 +31,7 @@ export default {
 
                 error = false
             } else {
+                if(res.status === 401) throw Error(`Erreur 401 : ${await res.text()}`)
                 if(res.status === 404) throw Error('Erreur 404 : Page introuvable')
                 if(res.status === 422) throw Error('Erreur 422 : La ressource demandée est introuvable')
                 if(res.status === 500) {
@@ -230,5 +231,98 @@ export default {
         } catch(error) {
             throw new BeatLeaderError('Une erreur est survenue lors de la récupération du top 1 du pays sur la map')
         }
+    },
+
+    /**
+     * Données de joueur ScoreSaber
+     * @typedef {Object} BeatLeaderPlayerScore
+     * @property {number} rank
+     * @property {number} scoreId
+     * @property {number} score
+     * @property {number} unmodififiedScore
+     * @property {string} modifiers
+     * @property {number} pp
+     * @property {number} weight
+     * @property {string} timeSet
+     * @property {number} badCuts
+     * @property {number} missedNotes
+     * @property {number} maxCombo
+     * @property {boolean} fullCombo
+     * @property {number} leaderboardId
+     * @property {string} songHash
+     * @property {string} songName
+     * @property {string} songSubName
+     * @property {string} songAuthorName
+     * @property {string} levelAuthorName
+     * @property {number} difficulty
+     * @property {string} difficultyRaw
+     * @property {number} maxScore
+     * @property {boolean} ranked
+     * @property {number} stars
+     */
+
+    /**
+     * Récupère la liste des scores d'un joueur par rapport à son identifiant BeatLeader
+     * @param {string} beatLeaderId identifiant BeatLeader du joueur
+     * @returns {Promise<Array.<BeatLeaderPlayerScore>>} liste des scores du joueur
+     */
+     async getPlayerScores(beatLeaderId) {
+        const scores = []
+
+        try {
+            let nextPage = null
+
+            do {
+                const data = await this.send(playerUrl + beatLeaderId + '/scores?sortBy=date&order=desc&count=100&page=' + (nextPage ?? 1), false)
+                const playerScores = data.data
+                const metadata = data.metadata
+
+                for(const playerScore of playerScores) {
+                    scores.push({
+                        rank: playerScore.rank,
+                        scoreId: playerScore.id,
+                        score: playerScore.modifiedScore,
+                        unmodififiedScore: playerScore.baseScore,
+                        modifiers: playerScore.modifiers,
+                        pp: playerScore.pp,
+                        weight: playerScore.weight,
+                        timeSet: playerScore.timeset,
+                        badCuts: playerScore.badCuts,
+                        missedNotes: playerScore.missedNotes,
+                        maxCombo: playerScore.maxCombo,
+                        fullCombo: playerScore.fullCombo,
+                        leaderboardId: playerScore.leaderboard.id,
+                        songHash: playerScore.leaderboard.song.hash,
+                        songName: playerScore.leaderboard.song.name,
+                        songSubName: playerScore.leaderboard.song.subName,
+                        songAuthorName: playerScore.leaderboard.song.author,
+                        levelAuthorName: playerScore.leaderboard.song.mapper,
+                        difficulty: playerScore.leaderboard.difficulty.value,
+                        difficultyRaw: playerScore.leaderboard.difficulty.difficultyName,
+                        maxScore: playerScore.leaderboard.difficulty.maxScore,
+                        ranked: playerScore.leaderboard.difficulty.stars ? true : false,
+                        stars: playerScore.leaderboard.difficulty.stars
+                    })
+                }
+                
+                nextPage = metadata.page + 1 <= Math.ceil(metadata.total / metadata.itemsPerPage) ? metadata.page + 1 : null
+            } while(nextPage)
+
+            return scores
+        } catch(error) {
+            throw new BeatLeaderError('Une erreur est survenue lors de la récupération des scores du joueur')
+        }
+    },
+
+    /**
+     * Récupère les maps ranked en fonction de différents critères de recherche
+     * @param {number} starsMin nombre d'étoiles minimum
+     * @param {number} starsMax nombre d'étoiles maximum
+     * @returns {Promise<Array>} liste des maps ranked
+     */
+    async searchRanked(starsMin = 0, starsMax = 16) {
+        const playlist = await this.send(beatleaderApiUrl + 'playlist/generate?count=2000&stars_from=' + starsMin + '&stars_to=' + starsMax, false)
+        if(playlist) return playlist.songs
+        return []
     }
 }

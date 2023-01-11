@@ -1,9 +1,10 @@
 import { ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction } from 'discord.js'
 import Embed from '../utils/embed.js'
-import { CommandError, CommandInteractionError, ScoreSaberError } from '../utils/error.js'
+import { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError, BeatSaverError } from '../utils/error.js'
 import players from '../controllers/players.js'
 import scoresaber from '../controllers/scoresaber.js'
-import ranked from '../controllers/ranked.js'
+import beatleader from '../controllers/beatleader.js'
+import beatsaver from '../controllers/beatsaver.js'
 
 export default {
     data: {
@@ -16,11 +17,27 @@ export default {
                 description: 'Génénérer une playlist à partir de vos maps jouées',
                 options: [
                     {
+                        type: ApplicationCommandOptionType.String,
+                        name: 'leaderboard',
+                        description: 'Choix du leaderboard',
+                        choices: [
+                            {
+                                name: 'ScoreSaber',
+                                value: 'scoresaber'
+                            },
+                            {
+                                name: 'BeatLeader',
+                                value: 'beatleader'
+                            }
+                        ],
+                        required: true
+                    },
+                    {
                         type: ApplicationCommandOptionType.Number,
                         name: 'stars_min',
                         description: 'Nombre d\'étoiles minimum',
                         minValue: 0,
-                        maxValue: 14,
+                        maxValue: 16,
                         required: false
                     },
                     {
@@ -28,7 +45,7 @@ export default {
                         name: 'stars_max',
                         description: 'Nombre d\'étoiles maximum',
                         minValue: 0,
-                        maxValue: 14,
+                        maxValue: 16,
                         required: false
                     },
                     {
@@ -54,6 +71,22 @@ export default {
                 name: 'ranked',
                 description: 'Génénérer une playlist à partir des maps ranked',
                 options: [
+                    {
+                        type: ApplicationCommandOptionType.String,
+                        name: 'leaderboard',
+                        description: 'Choix du leaderboard',
+                        choices: [
+                            {
+                                name: 'ScoreSaber',
+                                value: 'scoresaber'
+                            },
+                            {
+                                name: 'BeatLeader',
+                                value: 'beatleader'
+                            }
+                        ],
+                        required: true
+                    },
                     {
                         type: ApplicationCommandOptionType.Number,
                         name: 'stars_min',
@@ -95,6 +128,7 @@ export default {
 
             switch(action) {
                 case 'played': {
+                    const leaderboardChoice = interaction.options.getString('leaderboard')
                     const playedOptions = this.data.options.find(o => o.name === 'played').options
                     const starsMin = interaction.options.getNumber('stars_min') ?? playedOptions.find(o => o.name === 'stars_min').minValue
                     const starsMax = interaction.options.getNumber('stars_max') ?? playedOptions.find(o => o.name === 'stars_max').maxValue
@@ -122,7 +156,12 @@ export default {
                     await interaction.editReply({ embeds: [embed] })
 
                     // Récupération des scores
-                    const playerScores = await scoresaber.getPlayerScores(member.playerId)
+                    let playerScores = []
+                    if(leaderboardChoice === 'scoresaber') {
+                        playerScores = await scoresaber.getPlayerScores(member.playerId)
+                    } else {
+                        playerScores = await beatleader.getPlayerScores(member.playerId)
+                    }
                     const playerScoresFiltered = playerScores.filter(ps => {
                         if(!ps.ranked || ps.maxScore === 0) return false
                         const acc = ps.score / ps.maxScore * 100
@@ -132,7 +171,7 @@ export default {
                     if(playerScoresFiltered.length === 0) throw new CommandInteractionError('Aucune map correspondant aux critères choisis n\'a été trouvée')
 
                     // Génération du fichier playlist
-                    const playlistName = `Maps jouées ${starsMin}⭐ à ${starsMax}⭐ - ${accMin}% à ${accMax}%`
+                    const playlistName = `[${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'}] Maps jouées ${starsMin}⭐ à ${starsMax}⭐ - ${accMin}% à ${accMax}%`
 
                     const playlist = {
                         playlistTitle: playlistName,
@@ -145,7 +184,7 @@ export default {
                     const hashes = []
                     for(const score of playerScoresFiltered) {
                         const songName = `${score.songName}${score.songSubName !== '' ? ` ${score.songSubName}` : ''} - ${score.songAuthorName}`
-                        const diff = score.difficultyRaw.split('_')[1].toLowerCase().replace('expertplus', 'expertPlus')
+                        const diff = leaderboardChoice === 'scoresaber' ? score.difficultyRaw.split('_')[1].toLowerCase().replace('expertplus', 'expertPlus') : score.difficultyRaw.toLowerCase().replace('expertplus', 'expertPlus')
 
                         const index = hashes.indexOf(score.songHash)
                         if(index < 0) {
@@ -166,6 +205,7 @@ export default {
                     break
                 }
                 case 'ranked': {
+                    const leaderboardChoice = interaction.options.getString('leaderboard')
                     const rankedOptions = this.data.options.find(o => o.name === 'ranked').options
                     const starsMin = interaction.options.getNumber('stars_min') ?? rankedOptions.find(o => o.name === 'stars_min').minValue
                     const starsMax = interaction.options.getNumber('stars_max') ?? rankedOptions.find(o => o.name === 'stars_max').maxValue
@@ -180,12 +220,17 @@ export default {
                     await interaction.editReply({ embeds: [embed] })
 
                     // Récupération des maps ranked
-                    const maps = await ranked.search(starsMin, starsMax)
+                    let maps = []
+                    if(leaderboardChoice === 'scoresaber') {
+                        maps = await beatsaver.searchRanked(starsMin, starsMax)
+                    } else {
+                        maps = await beatleader.searchRanked(starsMin, starsMax)
+                    }
 
                     if(maps.length === 0) throw new CommandInteractionError('Aucune map ranked correspondant aux critères choisis n\'a été trouvée')
 
                     // Génération du fichier playlist
-                    const playlistName = `Maps ranked ${starsMin}⭐ à ${starsMax}⭐`
+                    const playlistName = `[${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'}] Maps ranked ${starsMin}⭐ à ${starsMax}⭐`
 
                     const playlist = {
                         playlistTitle: playlistName,
@@ -195,19 +240,23 @@ export default {
                         songs: []
                     }
 
-                    for(const map of maps) {
-                        const version = map.versions[0]
-                        const hash = version.hash
-                        const songName = `${map.metadata.songName}${map.metadata.songSubName !== '' ? ` ${map.metadata.songSubName}` : ''} - ${map.metadata.songAuthorName}`
-                        const difficulties = version.diffs.map(d => {
-                            return {
-                                characteristic: d.characteristic,
-                                name: d.difficulty.toLowerCase().replace('expertplus', 'expertPlus')
-                            }
-                        })
+                    if(leaderboardChoice === 'scoresaber') {
+                        for(const map of maps) {
+                            const version = map.versions[0]
+                            const hash = version.hash
+                            const songName = `${map.metadata.songName}${map.metadata.songSubName !== '' ? ` ${map.metadata.songSubName}` : ''} - ${map.metadata.songAuthorName}`
+                            const difficulties = version.diffs.map(d => {
+                                return {
+                                    characteristic: d.characteristic,
+                                    name: d.difficulty.toLowerCase().replace('expertplus', 'expertPlus')
+                                }
+                            })
 
-                        const song = { hash: hash, songName: songName, difficulties: difficulties }
-                        playlist.songs.push(song)
+                            const song = { hash: hash, songName: songName, difficulties: difficulties }
+                            playlist.songs.push(song)
+                        }
+                    } else {
+                        playlist.songs = maps
                     }
 
                     const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlist)), { name: playlistName + '.json' })
@@ -218,7 +267,7 @@ export default {
                 }
             }
         } catch(error) {
-            if(error instanceof CommandInteractionError || error instanceof ScoreSaberError) {
+            if(error instanceof CommandInteractionError || error instanceof ScoreSaberError || error instanceof BeatLeaderError || error instanceof BeatSaverError) {
                 throw new CommandError(error.message, interaction.commandName)
             } else {
                 throw Error(error.message)

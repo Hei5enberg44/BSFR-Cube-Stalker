@@ -2,7 +2,7 @@ import { CronJob } from 'cron'
 import { Client } from 'discord.js'
 import Logger from '../utils/logger.js'
 import leaderboard from './leaderboard.js'
-import ranked from './ranked.js'
+import beatsaver from './beatsaver.js'
 import config from '../config.json' assert { type: 'json' }
 
 export default {
@@ -35,7 +35,7 @@ export default {
         new CronJob('0 */4 * * *', async function() {
             Logger.log('BeatSaver', 'INFO', 'Recherche de nouvelles maps ranked')
 
-            const newMaps = await ranked.getLastRanked()
+            const newMaps = await beatsaver.getLastRanked()
 
             Logger.log('BeatSaver', 'INFO', `Recherche de nouvelles maps ranked terminée : ${newMaps} nouvelles maps ranked ont été ajoutées en base de données.`)
         }, null, true, 'Europe/Paris')
