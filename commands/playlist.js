@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction } from 'discord.js'
+import { ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction, userMention } from 'discord.js'
 import Embed from '../utils/embed.js'
 import { CommandError, CommandInteractionError, ScoreSaberError, BeatLeaderError, BeatSaverError } from '../utils/error.js'
 import players from '../controllers/players.js'
@@ -37,7 +37,6 @@ export default {
                         name: 'stars_min',
                         description: 'Nombre d\'étoiles minimum',
                         minValue: 0,
-                        maxValue: 16,
                         required: false
                     },
                     {
@@ -45,7 +44,6 @@ export default {
                         name: 'stars_max',
                         description: 'Nombre d\'étoiles maximum',
                         minValue: 0,
-                        maxValue: 16,
                         required: false
                     },
                     {
@@ -92,7 +90,6 @@ export default {
                         name: 'stars_min',
                         description: 'Nombre d\'étoiles minimum',
                         minValue: 0,
-                        maxValue: 14,
                         required: false
                     },
                     {
@@ -100,8 +97,36 @@ export default {
                         name: 'stars_max',
                         description: 'Nombre d\'étoiles maximum',
                         minValue: 0,
-                        maxValue: 14,
                         required: false
+                    }
+                ]
+            },
+            {
+                type: ApplicationCommandOptionType.Subcommand,
+                name: 'snipe',
+                description: 'Génénérer une playlist de maps à sniper par rapport aux scores d\'un autre joueur',
+                options: [
+                    {
+                        type: ApplicationCommandOptionType.String,
+                        name: 'leaderboard',
+                        description: 'Choix du leaderboard',
+                        choices: [
+                            {
+                                name: 'ScoreSaber',
+                                value: 'scoresaber'
+                            },
+                            {
+                                name: 'BeatLeader',
+                                value: 'beatleader'
+                            }
+                        ],
+                        required: true
+                    },
+                    {
+                        type: ApplicationCommandOptionType.User,
+                        name: 'joueur',
+                        description: 'Joueur à sniper',
+                        required: true
                     }
                 ]
             }
@@ -131,7 +156,7 @@ export default {
                     const leaderboardChoice = interaction.options.getString('leaderboard')
                     const playedOptions = this.data.options.find(o => o.name === 'played').options
                     const starsMin = interaction.options.getNumber('stars_min') ?? playedOptions.find(o => o.name === 'stars_min').minValue
-                    const starsMax = interaction.options.getNumber('stars_max') ?? playedOptions.find(o => o.name === 'stars_max').maxValue
+                    const starsMax = interaction.options.getNumber('stars_max') ?? 99
                     const accMin = interaction.options.getNumber('acc_min') ?? playedOptions.find(o => o.name === 'acc_min').minValue
                     const accMax = interaction.options.getNumber('acc_max') ?? playedOptions.find(o => o.name === 'acc_max').maxValue
 
@@ -139,11 +164,11 @@ export default {
                     const memberId = interaction.member.id
 
                     // Informations sur le membre
-                    const member = await players.get(memberId, 'scoresaber')
+                    const member = await players.get(memberId, leaderboardChoice)
 
-                    // On vérifie ici si le membre a lié son compte ScoreSaber
+                    // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
                     const linkCommand = interaction.guild.commands.cache.find(c => c.name === 'link')
-                    if(!member) throw new CommandInteractionError(`Aucun profil ScoreSaber n'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
+                    if(!member) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
 
                     // On vérifie la cohérence des données renseignées par l'utilisateur
                     if(starsMin > starsMax) throw new CommandInteractionError('Le nombre d\'étoiles minimum ne peut pas être supérieur au nombre d\'étoiles maximum')
@@ -208,7 +233,7 @@ export default {
                     const leaderboardChoice = interaction.options.getString('leaderboard')
                     const rankedOptions = this.data.options.find(o => o.name === 'ranked').options
                     const starsMin = interaction.options.getNumber('stars_min') ?? rankedOptions.find(o => o.name === 'stars_min').minValue
-                    const starsMax = interaction.options.getNumber('stars_max') ?? rankedOptions.find(o => o.name === 'stars_max').maxValue
+                    const starsMax = interaction.options.getNumber('stars_max') ?? 99
 
                     // On vérifie la cohérence des données renseignées par l'utilisateur
                     if(starsMin > starsMax) throw new CommandInteractionError('Le nombre d\'étoiles minimum ne peut pas être supérieur au nombre d\'étoiles maximum')
@@ -257,6 +282,88 @@ export default {
                         }
                     } else {
                         playlist.songs = maps
+                    }
+
+                    const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlist)), { name: playlistName + '.json' })
+
+                    await interaction.editReply({ content: `Ta playlist est prête ! (${playlist.songs.length} maps)`, embeds: [], files: [attachment] })
+
+                    break
+                }
+                case 'snipe': {
+                    const leaderboardChoice = interaction.options.getString('leaderboard')
+                    const targetMember = interaction.options.getUser('joueur')
+
+                    // Identifiant du membre exécutant la commande
+                    const memberId = interaction.member.id
+
+                    // Identifiant du membre à sniper
+                    const targetMemberId = targetMember.id
+
+                    // Informations sur les membres
+                    const member = await players.get(memberId, leaderboardChoice)
+
+                    // Informations sur les membres
+                    const memberToSnipe = await players.get(targetMemberId, leaderboardChoice)
+
+                    // On vérifie ici si les membres (celui exécutant la commande et celui à sniper) ont lié leur compte ScoreSaber ou BeatLeader
+                    const linkCommand = interaction.guild.commands.cache.find(c => c.name === 'link')
+                    if(!member) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande </${linkCommand.name}:${linkCommand.id}> afin de lier celui-ci`)
+                    if(!memberToSnipe) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} n'est lié pour le compte Discord ${userMention(targetMemberId)}`)
+
+                    const embed = new Embed()
+                        .setColor('#F1C40F')
+                        .setDescription('🛠️ Génération de la playlist en cours...')
+
+                    await interaction.editReply({ embeds: [embed] })
+
+                    // Récupération des scores des joueurs
+                    let playerToSnipe, playerScores = [], playerToSnipeScores = []
+                    if(leaderboardChoice === 'scoresaber') {
+                        playerToSnipe = await scoresaber.getPlayerData(memberToSnipe.playerId)
+                        playerScores = await scoresaber.getPlayerScores(member.playerId)
+                        playerToSnipeScores = await scoresaber.getPlayerScores(memberToSnipe.playerId)
+                    } else {
+                        playerToSnipe = await beatleader.getPlayerData(memberToSnipe.playerId)
+                        playerScores = await beatleader.getPlayerScores(member.playerId)
+                        playerToSnipeScores = await beatleader.getPlayerScores(memberToSnipe.playerId)
+                    }
+
+                    const scoresToSnipe = []
+                    for(const s1 of playerScores) {
+                        if(playerToSnipeScores.find(s2 => s1.songHash === s2.songHash && s1.difficulty === s2.difficulty && s2.score > s1.score)) {
+                            scoresToSnipe.push(s1)
+                        }
+                    }
+
+                    if(scoresToSnipe.length === 0) throw new CommandInteractionError('Aucune map à sniper n\'a été trouvée')
+
+                    // Génération du fichier playlist
+                    const playlistName = `[${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'}] Snipe ${playerToSnipe.name}`
+
+                    const playlist = {
+                        playlistTitle: playlistName,
+                        playlistAuthor: playlistAuthor,
+                        playlistDescription: playlistDescription,
+                        image: playlistImage,
+                        songs: []
+                    }
+
+                    const hashes = []
+                    for(const score of scoresToSnipe) {
+                        const songName = `${score.songName}${score.songSubName !== '' ? ` ${score.songSubName}` : ''} - ${score.songAuthorName}`
+                        const diff = leaderboardChoice === 'scoresaber' ? score.difficultyRaw.split('_')[1].toLowerCase().replace('expertplus', 'expertPlus') : score.difficultyRaw.toLowerCase().replace('expertplus', 'expertPlus')
+
+                        const index = hashes.indexOf(score.songHash)
+                        if(index < 0) {
+                            hashes.push(score.songHash)
+                            const song = { hash: score.songHash, songName: songName, difficulties: [{ characteristic: 'Standard', name: diff }] }
+                            playlist.songs.push(song)
+                        } else {
+                            const song = playlist.songs[index]
+                            const difficulty = { characteristic: 'Standard', name: diff }
+                            song.difficulties.push(difficulty)
+                        }
                     }
 
                     const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlist)), { name: playlistName + '.json' })
