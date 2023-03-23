@@ -43,15 +43,15 @@ export default {
     async execute(interaction) {
         try {
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
-            const otherMember = interaction.options.getUser('joueur')
+            const targetMember = interaction.options.getUser('joueur')
 
             await interaction.deferReply()
 
             let player, memberId
 
-            if(otherMember) {
+            if(targetMember) {
                 // Identifiant du membre pour lequel aficher la carte
-                memberId = otherMember.id
+                memberId = targetMember.id
 
                 // Informations sur le joueur
                 player = await players.get(memberId, leaderboardChoice)

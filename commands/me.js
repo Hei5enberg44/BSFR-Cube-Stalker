@@ -47,15 +47,15 @@ export default {
     async execute(interaction) {
         try {
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
-            const otherMember = interaction.options.getUser('joueur')
+            const targetMember = interaction.options.getUser('joueur')
 
             await interaction.deferReply()
 
             let oldPlayerData, memberId
 
-            if(otherMember) {
+            if(targetMember) {
                 // Identifiant du membre pour lequel aficher les informations
-                memberId = otherMember.id
+                memberId = targetMember.id
 
                 // Informations sur le joueur
                 oldPlayerData = await players.get(memberId, leaderboardChoice)
@@ -161,7 +161,7 @@ export default {
             }
 
             // On met à jour les rôles du membre en fonction de son nombre de pp
-            const memberToUpdate = otherMember ? interaction.guild.members.cache.find(m => m.id === otherMember.id) : interaction.member
+            const memberToUpdate = targetMember ? interaction.guild.members.cache.find(m => m.id === targetMember.id) : interaction.member
             if(leaderboardChoice === 'scoresaber') await roles.updateMemberPpRoles(memberToUpdate, playerData.pp)
 
             // On affiche les informations du joueur

@@ -49,19 +49,19 @@ export default {
     async execute(interaction) {
         try {
             const leaderboardChoice = interaction.options.getString('leaderboard') ?? 'scoresaber'
-            const otherMember = interaction.options.getUser('joueur')
+            const targetMember = interaction.options.getUser('joueur')
             const rank = interaction.options.getInteger('rang')
 
             // On vérifie que les 2 arguments n'ont pas été passés en même temps
-            if(otherMember && rank) throw new CommandInteractionError('Vous ne pouvez pas combiner les 2 arguments')
+            if(targetMember && rank) throw new CommandInteractionError('Vous ne pouvez pas combiner les 2 arguments')
 
             if(rank && rank < 1) throw new CommandInteractionError('Le rang du joueur doit être supérieur ou égal à 1')
 
             let player, memberId
 
-            if(otherMember) {
+            if(targetMember) {
                 // Identifiant du membre pour lequel aficher les informations
-                memberId = otherMember.id
+                memberId = targetMember.id
 
                 // Informations sur le joueur
                 player = await players.get(memberId, leaderboardChoice)
