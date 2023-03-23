@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.17.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.18.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
@@ -232,6 +232,7 @@ __Paramètres :__
 
 |    Nom    | Obligatoire | Contenu |
 | --------- |:-----------:| ------- |
+| **leaderboard** | ☑ | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
 | **min_stars** |   | Nombre d'étoiles minimum |
 | **max_stars** |   | Nombre d'étoiles maximum |
 | **min_acc** |   | Accuracy minimum |
@@ -253,6 +254,7 @@ __Paramètres :__
 
 |    Nom    | Obligatoire | Contenu |
 | --------- |:-----------:| ------- |
+| **leaderboard** | ☑ | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
 | **min_stars** |   | Nombre d'étoiles minimum |
 | **max_stars** |   | Nombre d'étoiles maximum |
 
@@ -260,6 +262,26 @@ __Exemples :__
 
 ```
 /playlist ranked stars_min:8 stars_max:10
+```
+
+***
+
+- ### /playlist snipe : Créer une playlist à partir des maps ranked
+
+Permet de générer une playlist de maps à sniper par rapport aux scores d'un autre joueur.
+
+__Paramètres :__
+
+|    Nom    | Obligatoire | Contenu |
+| --------- |:-----------:| ------- |
+| **leaderboard** | ☑ | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
+| **joueur** | ☑ | Joueur à sniper |
+
+__Exemples :__
+
+```
+/playlist snipe leaderboard:ScoreSaber joueur:@Hei5enberg
+/playlist snipe leaderboard:BeatLeader joueur:@Hei5enberg
 ```
 
 ***
