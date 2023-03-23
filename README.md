@@ -266,7 +266,7 @@ __Exemples :__
 
 ***
 
-- ### /playlist snipe : Créer une playlist à partir des maps ranked
+- ### /playlist snipe : Créer une playlist de maps à sniper
 
 Permet de générer une playlist de maps à sniper par rapport aux scores d'un autre joueur.
 
