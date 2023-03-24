@@ -1,6 +1,7 @@
 import fetch from 'node-fetch'
 import beatsaver from './beatsaver.js'
 import Logger from '../utils/logger.js'
+import { getTodayDate } from '../utils/date.js'
 import { ScoreSaberError, BeatSaverError } from '../utils/error.js'
 
 const scoresaberUrl = 'https://scoresaber.com'
@@ -139,7 +140,7 @@ export default {
             const playerTopScore = await this.send(playerUrl + playerId + '/scores?sort=top&page=1&limit=1')
 
             const scoreStats = playerInfos.scoreStats
-            const player = {
+            const player = getTodayDate() !== '01/04' ? {
                 id: playerInfos.id,
                 name: playerInfos.name,
                 avatar: playerInfos.profilePicture,
@@ -151,6 +152,18 @@ export default {
                 history: playerInfos.histories,
                 banned: playerInfos.banned,
                 averageRankedAccuracy: scoreStats.averageRankedAccuracy
+            } : {
+                id: playerInfos.id,
+                name: playerInfos.name,
+                avatar: playerInfos.profilePicture,
+                url: `${scoresaberUrl}/u/${playerInfos.id}`,
+                rank: playerInfos.rank + Math.floor(Math.random() * (300 - 100 + 1)) + 100,
+                countryRank: playerInfos.countryRank + Math.floor(Math.random() * (50 - 20 + 1)) + 20,
+                pp: playerInfos.pp * (Math.random() * (0.8 - 0.5) + 0.5),
+                country: playerInfos.country,
+                history: playerInfos.histories,
+                banned: playerInfos.banned,
+                averageRankedAccuracy: scoreStats.averageRankedAccuracy * (Math.random() * (0.95 - 0.85) + 0.85)
             }
 
             const topScore = playerTopScore.playerScores[0]
@@ -167,7 +180,7 @@ export default {
 
             const difficulty = topScore.leaderboard.difficulty.difficultyRaw.split('_')[1]
 
-            player.topPP = {
+            player.topPP = getTodayDate() !== '01/04' ? {
                 rank: topScore.score.rank,
                 pp: topScore.score.pp,
                 score: topScore.score.modifiedScore,
@@ -179,6 +192,18 @@ export default {
                 author: topScore.leaderboard.levelAuthorName,
                 cover: topScore.leaderboard.coverImage,
                 replay: topScore.score.hasReplay && mapId ? `https://www.replay.beatleader.xyz/?id=${mapId}&difficulty=${difficulty}&playerID=${player.id}` : null
+            } : {
+                rank: 666,
+                pp: 420,
+                score: 666666,
+                acc: 69,
+                fc: false,
+                stars: 4.20,
+                name: 'Rick Astley - Never Gonna Give You Up',
+                difficulty: 'Expert+',
+                author: 'KyleT',
+                cover: 'https://eu.cdn.beatsaver.com/103d39b43966277c5e4167ab086f404e0943891f.jpg',
+                replay: null
             }
 
             return player
