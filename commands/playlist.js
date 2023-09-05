@@ -330,8 +330,8 @@ export default {
                     }
 
                     const scoresToSnipe = []
-                    for(const s1 of playerScores) {
-                        if(playerToSnipeScores.find(s2 => s1.songHash === s2.songHash && s1.difficulty === s2.difficulty && s2.score > s1.score)) {
+                    for(const s1 of playerToSnipeScores) {
+                        if(playerScores.find(s2 => s1.songHash === s2.songHash && s1.difficulty === s2.difficulty && s2.score > s1.score)) {
                             scoresToSnipe.push(s1)
                         }
                     }
