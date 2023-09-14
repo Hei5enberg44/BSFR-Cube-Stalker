@@ -63,17 +63,10 @@ const getImageLightness = (ctx: CanvasRenderingContext2D, width: number, height:
 }
 
 const lightenDarkenColor = (color: number, magnitude: number) => {
-    let r = (color >> 16) + magnitude
-    r > 255 && (r = 255)
-    r < 0 && (r = 0)
-    let g = (color & 0x0000ff) + magnitude
-    g > 255 && (g = 255)
-    g < 0 && (g = 0)
-    let b = ((color >> 8) & 0x00ff) + magnitude
-    b > 255 && (b = 255)
-    b < 0 && (b = 0)
-    const newColor = g | (b << 8) | (r << 16)
-    return `#${newColor.toString(16)}`
+    const R = (color >> 16) + magnitude
+    const B = (color >> 8 & 0x00FF) + magnitude
+    const G = (color & 0x0000FF) + magnitude
+    return '#' + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (B<255?B<1?0:B:255)*0x100 + (G<255?G<1?0:G:255)).toString(16).slice(1)
 }
 
 const fittingString = (ctx: CanvasRenderingContext2D, str: string, maxWidth: number) => {
