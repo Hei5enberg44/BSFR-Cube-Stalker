@@ -1,27 +1,35 @@
 {
   "name": "cube-stalker",
-  "version": "5.18.0",
+  "version": "5.19.0",
   "description": "Cube Stalker est un bot permettant d'obtenir des informations et statistiques sur des joueurs à partir de Score Saber ou Beat Leader",
-  "main": "bot.js",
+  "main": "dist/bot.js",
   "type": "module",
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
-    "run": "node bot.js",
-    "lint": "eslint ."
+    "build": "tsc --project tsconfig.json",
+    "start": "npm run start:bot",
+    "start:bot": "npm run build && node --enable-source-maps dist/bot.js",
+    "lint": "eslint . --cache --ext .js,.jsx,.ts,.tsx"
   },
   "author": "BSFR",
   "license": "ISC",
   "dependencies": {
-    "canvas": "^2.11.0",
-    "chalk": "^5.2.0",
-    "cron": "^2.3.0",
-    "discord.js": "^14.8.0",
-    "mariadb": "^3.1.1",
-    "node-fetch": "^3.3.1",
-    "sequelize": "^6.29.3",
+    "canvas": "^2.11.2",
+    "chalk": "^5.3.0",
+    "cron": "^2.4.3",
+    "discord.js": "^14.13.0",
+    "mariadb": "^3.2.0",
+    "sequelize": "^6.33.0",
+    "sharp": "^0.31.3",
     "tmp": "^0.2.1",
-    "ws": "^8.13.0"
+    "ws": "^8.14.1"
   },
   "devDependencies": {
-    "eslint": "^8.36.0"
+    "@types/sharp": "^0.31.1",
+    "@types/tmp": "^0.2.4",
+    "eslint": "^8.49.0",
+    "typescript": "^5.2.2"
   }
 }
