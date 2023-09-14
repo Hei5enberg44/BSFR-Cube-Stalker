@@ -118,27 +118,6 @@ __Exemples :__
 
 ***
 
-- ### /card : Génère votre carte de joueur
-
-Permet de générer votre carte de joueur ou celle d'un autre joueur.
-
-__Paramètres :__
-
-|    Nom    | Obligatoire | Contenu |
-| --------- |:-----------:| ------- |
-| **leaderboard** |   | Choix du leaderboard entre `ScoreSaber` *(par défaut)* et `BeatLeader` |
-| **joueur** |   | Joueur pour lequel afficher la carte |
-
-__Exemples :__
-
-```
-/card
-/card leaderboard:BeatLeader
-/card leaderboard:BeatLeader joueur:@Hei5enberg#6969
-```
-
-***
-
 - ### /ld : Affiche le classement du serveur
 
 Permet d'afficher le classement des membres du serveur pour un leaderboard donné.
