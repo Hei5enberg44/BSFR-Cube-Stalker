@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "baseUrl": "./",
+        "outDir": "dist",
+        "target": "ESNext",
+        "module": "NodeNext",
+        "moduleResolution": "nodenext",
+        "declaration": false,
+        "resolveJsonModule": true,
+        "allowUnreachableCode": false,
+        "importHelpers": true,
+        "experimentalDecorators": true,
+        "useUnknownInCatchVariables": false,
+        "skipLibCheck": true,
+        "removeComments": false,
+        "noEmitOnError": true,
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "sourceMap": false
+    },
+    "include": [
+        "src/**/*",
+        "src/**/*.json"
+    ],
+    "exclude": ["dist", "node_modules", "tests"]
+}

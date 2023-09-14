@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.18.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.19.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
@@ -114,27 +114,6 @@ __Exemples :__
 /me
 /me leaderboard:BeatLeader
 /me leaderboard:BeatLeader joueur:@Hei5enberg#6969
-```
-
-***
-
-- ### /card : Génère votre carte de joueur
-
-Permet de générer votre carte de joueur ou celle d'un autre joueur.
-
-__Paramètres :__
-
-|    Nom    | Obligatoire | Contenu |
-| --------- |:-----------:| ------- |
-| **leaderboard** |   | Choix du leaderboard entre `ScoreSaber` *(par défaut)* et `BeatLeader` |
-| **joueur** |   | Joueur pour lequel afficher la carte |
-
-__Exemples :__
-
-```
-/card
-/card leaderboard:BeatLeader
-/card leaderboard:BeatLeader joueur:@Hei5enberg#6969
 ```
 
 ***

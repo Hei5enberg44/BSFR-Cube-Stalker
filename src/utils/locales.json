@@ -1,0 +1,24 @@
+{
+    "en-US": {
+        "command_error": "An error occurred while executing this command",
+        "modal_error": "An error occurred while submitting the modal",
+        "wrong_channel": "You must perform this command in one of the following channels:\n%s",
+        "page_info": "%s of %s",
+        "page_error": "Page number must be greater than or equal to 1",
+        "page_not_found": "The page you are looking for does not exist",
+        "invalid_duration": "Invalid duration: %s",
+        "invalid_date": "Invalid date. Date must be in the format DD/MM/YYYY",
+        "invalid_datetime": "Invalid date. Date must be in the format JJ/MM/AAAA HH:II"
+    },
+    "fr": {
+        "command_error": "Une erreur est survenue lors de l'exécution de la commande",
+        "modal_error": "Une erreur est survenue lors la soumission de la modale",
+        "wrong_channel": "Merci d'effectuer cette commande dans un des channels suivant :\n%s",
+        "page_info": "%s sur %s",
+        "page_error": "Le numéro de page doit être supérieur ou égal à 1",
+        "page_not_found": "La page demandée n'existe pas",
+        "invalid_duration": "Durée invalide : %s",
+        "invalid_date": "Date invalide. La date doit être au format JJ/MM/AAAA",
+        "invalid_datetime": "Date invalide. La date doit être au format JJ/MM/AAAA HH:II"
+    }
+}
