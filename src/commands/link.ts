@@ -2,9 +2,7 @@ import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandIntera
 import Embed from '../utils/embed.js'
 import { CommandError, CommandInteractionError } from '../utils/error.js'
 import players from '../controllers/players.js'
-import scoresaber from '../controllers/scoresaber.js'
-import beatleader from '../controllers/beatleader.js'
-import { Leaderboards } from '../controllers/gameLeaderboard.js'
+import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
 import config from '../config.json' assert { type: 'json' }
 
 export default {
@@ -45,15 +43,10 @@ export default {
 
             await interaction.deferReply()
 
-            let playerProfil
-            
-            if(leaderboardChoice === Leaderboards.ScoreSaber) {
-                if(!url.includes('scoresaber')) throw new CommandInteractionError('Le lien entré n\'est pas un lien ScoreSaber valide')
-                playerProfil = await scoresaber.getProfile(url)
-            } else {
-                if(!url.includes('beatleader')) throw new CommandInteractionError('Le lien entré n\'est pas un lien BeatLeader valide')
-                playerProfil = await beatleader.getProfile(url)
-            }
+            if(!url.includes(leaderboardChoice)) throw new CommandInteractionError(`Le lien entré n\'est pas un lien ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} valide`)
+
+            const gameLeaderboard = new GameLeaderboard(leaderboardChoice)
+            const playerProfil = await gameLeaderboard.requests.getProfile(url)
 
             // On ne lie pas le profil du joueur si celui-ci est banni du leaderboard
             if(playerProfil.banned) throw new CommandInteractionError('Impossible de lier le profil de ce joueur car celui-ci est banni')
