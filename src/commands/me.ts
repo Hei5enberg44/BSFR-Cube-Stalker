@@ -116,7 +116,7 @@ export default {
                 // Rang global
                 const rankDiff = Math.abs(playerProgress.rankDiff)
                 if(playerLd.rank !== oldPlayerLd.rank)
-                    progressStatus.push(`Tu as ${bold(`${playerLd.rank < oldPlayerLd.rank ? 'gagné' : 'perdu'} ${rankDiff} place${rankDiff > 1 ? 's' : ''}`)} dans le classement global`)
+                    progressStatus.push(`Tu as ${bold(`${playerLd.rank < oldPlayerLd.rank ? 'gagné' : 'perdu'} ${rankDiff} place${rankDiff > 1 ? 's' : ''}`)} dans le classement mondial`)
 
                 // Rank pays
                 const countryRankDiff = Math.abs(playerProgress.countryRankDiff)
@@ -130,7 +130,7 @@ export default {
 
                 // Acc
                 const accDiff = Math.abs(playerProgress.accDiff)
-                if(playerLd.averageRankedAccuracy !== oldPlayerLd.averageRankedAccuracy)
+                if(parseFloat(playerLd.averageRankedAccuracy.toFixed(2)) !== parseFloat(oldPlayerLd.averageRankedAccuracy.toFixed(2)))
                     progressStatus.push(`Tu as ${bold(`${playerLd.averageRankedAccuracy > oldPlayerLd.averageRankedAccuracy ? 'gagné' : 'perdu'} ${accDiff}%`)} de précision moyenne en classé`)
 
                 // Rank Server PP
