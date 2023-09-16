@@ -86,3 +86,12 @@ export interface PlayerScore {
     ranked: boolean,
     stars: number
 }
+
+export interface PlayerProgress {
+    rankDiff: number,
+    countryRankDiff: number,
+    ppDiff: number,
+    accDiff: number,
+    serverPPDiff: number,
+    serverAccDiff: number
+}

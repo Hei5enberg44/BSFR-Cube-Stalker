@@ -5,13 +5,11 @@ import tmp from 'tmp'
 import * as fs from 'node:fs'
 import { Leaderboards } from './gameLeaderboard.js'
 import roles from './roles.js'
-import { PlayerData, PlayerRanking } from '..//interfaces/player.interface.js'
+import { PlayerData, PlayerRanking, PlayerProgress } from '../interfaces/player.interface.js'
 
 registerFont('./assets/fonts/Poppins-Regular.ttf', { family: 'Poppins-Regular' })
 registerFont('./assets/fonts/Poppins-Medium.ttf', { family: 'Poppins-Medium' })
 registerFont('./assets/fonts/Poppins-SemiBold.ttf', { family: 'Poppins-SemiBold' })
-
-// const removeSpecialChars = (text) => text.replace(/[]/ig, ' ')
 
 type difficulties = 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus'
 
@@ -95,7 +93,7 @@ const downloadImage = async (url: string) => {
 }
 
 export default {
-    async getCard(leaderboardChoice: Leaderboards, member: GuildMember, playerData: PlayerData, playerLd: PlayerRanking, debug = false) {
+    async getCard(leaderboardChoice: Leaderboards, member: GuildMember | null, playerData: PlayerData, playerLd: PlayerRanking, playerProgress: PlayerProgress | null, debug = false) {
         // Fabrication de la carte
         const canvas = createCanvas(1900, 760)
         const ctx = canvas.getContext('2d')
@@ -128,10 +126,12 @@ export default {
             let colorStart = '#231b60'
             let colorStop = '#d50078'
 
-            const memberPpRoleColor = roles.getMemberPpRoleColor(member)
-            if(memberPpRoleColor) {
-                colorStart = lightenDarkenColor(memberPpRoleColor, -80)
-                colorStop = lightenDarkenColor(memberPpRoleColor, 0)
+            if(member) {
+                const memberPpRoleColor = roles.getMemberPpRoleColor(member)
+                if(memberPpRoleColor) {
+                    colorStart = lightenDarkenColor(memberPpRoleColor, -80)
+                    colorStop = lightenDarkenColor(memberPpRoleColor, 0)
+                }
             }
 
             const gradient = ctx.createLinearGradient(0, canvas.height, canvas.width, 0)
@@ -265,12 +265,30 @@ export default {
         ctx.quadraticCurveTo(50, 370, 60, 370)
         ctx.stroke()
 
+        const progressWidth = Math.ceil(1796 * progress / 100)
+
         ctx.save()
         roundedImage(ctx, 52, 372, 1796, 66, 8)
         ctx.clip()
         ctx.fillStyle = '#27AE60'
-        ctx.fillRect(52, 372, Math.ceil(1796 * progress / 100), 66)
+        ctx.fillRect(52, 372, progressWidth, 66)
         ctx.restore()
+
+        if(playerProgress) {
+            const ppDiff = playerProgress.ppDiff
+
+            if(ppDiff !== 0) {
+                const progress = Math.ceil(ppDiff * 100 / 1000)
+                const progressDiffWidth = Math.ceil(1796 * progress / 100)
+
+                ctx.save()
+                roundedImage(ctx, 52, 372, 1796, 66, 8)
+                ctx.clip()
+                ctx.fillStyle = progressDiffWidth > 0 ? '#3498DB' : '#E74C3C'
+                ctx.fillRect(52 + progressWidth - progressDiffWidth, 372, progressDiffWidth, 66)
+                ctx.restore()
+            }
+        }
 
         ctx.font = '50px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
