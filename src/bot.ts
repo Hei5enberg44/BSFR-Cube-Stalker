@@ -51,6 +51,11 @@ try {
             await commands.load()
             await commands.listen()
 
+            // Chargement des modales
+            const modals = new Modals(client)
+            await modals.load()
+            await modals.listen()
+
             // Chargement des évènements
             const events = new Events(client)
             await events.load()
