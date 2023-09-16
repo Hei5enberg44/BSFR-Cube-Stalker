@@ -14,10 +14,9 @@ import {
 import Embed from '../utils/embed.js'
 import { CommandError, CommandInteractionError } from '../utils/error.js'
 import players from '../controllers/players.js'
-import scoresaber from '../controllers/scoresaber.js'
 import beatleader from '../controllers/beatleader.js'
 import beatsaver from '../controllers/beatsaver.js'
-import { Leaderboards } from '../controllers/gameLeaderboard.js'
+import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
 import config from '../config.json' assert { type: 'json' }
 
 type Playlist = {
@@ -176,12 +175,8 @@ export default {
                     await interaction.editReply({ embeds: [embed] })
 
                     // Récupération des scores
-                    let playerScores = []
-                    if(leaderboardChoice === Leaderboards.ScoreSaber) {
-                        playerScores = await scoresaber.getPlayerScores(member.playerId)
-                    } else {
-                        playerScores = await beatleader.getPlayerScores(member.playerId)
-                    }
+                    const gameLeaderboard = new GameLeaderboard(leaderboardChoice)
+                    const playerScores = await gameLeaderboard.requests.getPlayerScores(member.playerId)
                     const playerScoresFiltered = playerScores.filter(ps => {
                         if(!ps.ranked || ps.maxScore === 0) return false
                         const acc = ps.score / ps.maxScore * 100
@@ -310,16 +305,10 @@ export default {
                     await interaction.editReply({ embeds: [embed] })
 
                     // Récupération des scores des joueurs
-                    let playerToSnipe, playerScores = [], playerToSnipeScores = []
-                    if(leaderboardChoice === Leaderboards.ScoreSaber) {
-                        playerToSnipe = await scoresaber.getPlayerData(memberToSnipe.playerId)
-                        playerScores = await scoresaber.getPlayerScores(member.playerId)
-                        playerToSnipeScores = await scoresaber.getPlayerScores(memberToSnipe.playerId)
-                    } else {
-                        playerToSnipe = await beatleader.getPlayerData(memberToSnipe.playerId)
-                        playerScores = await beatleader.getPlayerScores(member.playerId)
-                        playerToSnipeScores = await beatleader.getPlayerScores(memberToSnipe.playerId)
-                    }
+                    const gameLeaderboard = new GameLeaderboard(leaderboardChoice)
+                    const playerToSnipe = await gameLeaderboard.requests.getPlayerData(memberToSnipe.playerId)
+                    const playerScores = await gameLeaderboard.requests.getPlayerScores(member.playerId)
+                    const playerToSnipeScores = await gameLeaderboard.requests.getPlayerScores(memberToSnipe.playerId)
 
                     const scoresToSnipe = []
                     for(const s1 of playerToSnipeScores) {

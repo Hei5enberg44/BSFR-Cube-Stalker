@@ -6,7 +6,7 @@ import players from '../controllers/players.js'
 import leaderboard from '../controllers/leaderboard.js'
 import cardgenerator from '../controllers/cardgenerator.js'
 import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
-import { PlayerRanking } from '../interfaces/player.interface.js'
+import { PlayerRanking, PlayerProgress } from '../interfaces/player.interface.js'
 import { countryCodeEmoji } from '../utils/country-code-emoji.js'
 import config from '../config.json' assert { type: 'json' }
 
@@ -101,41 +101,51 @@ export default {
             await players.update(memberId, leaderboardChoice, playerData, playerLd)
 
             // Progressions du joueur
-            const progress = []
+            let playerProgress: PlayerProgress | null = null
+            const progressStatus = []
             if(oldPlayerLd) {
+                playerProgress = {
+                    rankDiff: playerLd.rank - oldPlayerLd.rank,
+                    countryRankDiff: playerLd.countryRank - oldPlayerLd.countryRank,
+                    ppDiff: playerLd.pp - oldPlayerLd.pp,
+                    accDiff: parseFloat((parseFloat(playerLd.averageRankedAccuracy.toFixed(2)) - parseFloat(oldPlayerLd.averageRankedAccuracy.toFixed(2))).toFixed(2)),
+                    serverPPDiff: playerLd.serverRankPP - oldPlayerLd.serverRankPP,
+                    serverAccDiff: playerLd.serverRankAcc - oldPlayerLd.serverRankAcc
+                }
+
                 // Rang global
-                const rankDiff = Math.abs(playerLd.rank - oldPlayerLd.rank)
+                const rankDiff = Math.abs(playerProgress.rankDiff)
                 if(playerLd.rank !== oldPlayerLd.rank)
-                    progress.push(`Tu as ${bold(`${playerLd.rank < oldPlayerLd.rank ? 'gagné' : 'perdu'} ${rankDiff} place${rankDiff > 1 ? 's' : ''}`)} dans le classement global`)
+                    progressStatus.push(`Tu as ${bold(`${playerLd.rank < oldPlayerLd.rank ? 'gagné' : 'perdu'} ${rankDiff} place${rankDiff > 1 ? 's' : ''}`)} dans le classement global`)
 
                 // Rank pays
-                const countryRankDiff = Math.abs(playerLd.countryRank - oldPlayerLd.countryRank)
+                const countryRankDiff = Math.abs(playerProgress.countryRankDiff)
                 if(playerLd.countryRank !== oldPlayerLd.countryRank)
-                    progress.push(`Tu as ${bold(`${playerLd.countryRank < oldPlayerLd.countryRank ? 'gagné' : 'perdu'} ${countryRankDiff} place${countryRankDiff > 1 ? 's' : ''}`)} dans le classement ${countryCodeEmoji(playerData.country)}`)
+                    progressStatus.push(`Tu as ${bold(`${playerLd.countryRank < oldPlayerLd.countryRank ? 'gagné' : 'perdu'} ${countryRankDiff} place${countryRankDiff > 1 ? 's' : ''}`)} dans le classement ${countryCodeEmoji(playerData.country)}`)
 
                 // PP
-                const ppDiff = new Intl.NumberFormat('en-US').format(Math.abs(playerLd.pp - oldPlayerLd.pp))
+                const ppDiff = new Intl.NumberFormat('en-US').format(Math.abs(playerProgress.ppDiff))
                 if(playerLd.pp !== oldPlayerLd.pp)
-                    progress.push(`Tu as ${bold(`${playerLd.pp > oldPlayerLd.pp ? 'gagné' : 'perdu'} ${ppDiff}pp`)}`)
+                    progressStatus.push(`Tu as ${bold(`${playerLd.pp > oldPlayerLd.pp ? 'gagné' : 'perdu'} ${ppDiff}pp`)}`)
 
                 // Acc
-                const accDiff = Math.abs(parseFloat(playerLd.averageRankedAccuracy.toFixed(2)) - parseFloat(oldPlayerLd.averageRankedAccuracy.toFixed(2))).toFixed(2)
+                const accDiff = Math.abs(playerProgress.accDiff)
                 if(playerLd.averageRankedAccuracy !== oldPlayerLd.averageRankedAccuracy)
-                    progress.push(`Tu as ${bold(`${playerLd.averageRankedAccuracy > oldPlayerLd.averageRankedAccuracy ? 'gagné' : 'perdu'} ${accDiff}%`)} de précision moyenne en classé`)
+                    progressStatus.push(`Tu as ${bold(`${playerLd.averageRankedAccuracy > oldPlayerLd.averageRankedAccuracy ? 'gagné' : 'perdu'} ${accDiff}%`)} de précision moyenne en classé`)
 
                 // Rank Server PP
-                const serverPPDiff = Math.abs(playerLd.serverRankPP - oldPlayerLd.serverRankPP)
+                const serverPPDiff = Math.abs(playerProgress.serverPPDiff)
                 if(playerLd.serverRankPP !== oldPlayerLd.serverRankPP)
-                    progress.push(`Tu as ${bold(`${playerLd.serverRankPP < oldPlayerLd.serverRankPP ? 'gagné' : 'perdu'} ${serverPPDiff} place${serverPPDiff > 1 ? 's' : ''}`)} dans le classement des points de performance du serveur`)
+                    progressStatus.push(`Tu as ${bold(`${playerLd.serverRankPP < oldPlayerLd.serverRankPP ? 'gagné' : 'perdu'} ${serverPPDiff} place${serverPPDiff > 1 ? 's' : ''}`)} dans le classement des points de performance du serveur`)
 
                 // Rank Server Acc
-                const serverAccDiff = Math.abs(playerLd.serverRankAcc - oldPlayerLd.serverRankAcc)
+                const serverAccDiff = Math.abs(playerProgress.serverAccDiff)
                 if(playerLd.serverRankAcc !== oldPlayerLd.serverRankAcc)
-                    progress.push(`Tu as ${bold(`${playerLd.serverRankAcc < oldPlayerLd.serverRankAcc ? 'gagné' : 'perdu'} ${serverAccDiff} place${serverAccDiff > 1 ? 's' : ''}`)} dans le classement de précision moyenne en classé du serveur`)
+                    progressStatus.push(`Tu as ${bold(`${playerLd.serverRankAcc < oldPlayerLd.serverRankAcc ? 'gagné' : 'perdu'} ${serverAccDiff} place${serverAccDiff > 1 ? 's' : ''}`)} dans le classement de précision moyenne en classé du serveur`)
             }
 
             const meCommand = <ApplicationCommand>guild.commands.cache.find(c => c.name === 'me')
-            if(progress.length === 0) progress.push(`Pas de progression depuis le dernier ${chatInputApplicationCommandMention(meCommand.name, meCommand.id)}`)
+            if(progressStatus.length === 0) progressStatus.push(`Pas de progression depuis le dernier ${chatInputApplicationCommandMention(meCommand.name, meCommand.id)}`)
 
             // On met à jour les rôles du membre en fonction de son nombre de pp
             const memberToUpdate = (targetMember ? guild.members.cache.find(m => m.id === targetMember.id) : interaction.member)  as GuildMember
@@ -150,7 +160,7 @@ export default {
                 .setColor(roles.getMemberPpRoleColor(memberToUpdate) ?? memberToUpdate.displayHexColor)
                 .setTitle(`${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} Profil de ${playerData.name}`)
                 .setURL(playerData.url)
-                .setDescription(progress.map(p => `- ${p}`).join('\n'))
+                .setDescription(progressStatus.map(p => `- ${p}`).join('\n'))
             )
 
             const embedProgress = new Embed()
@@ -159,7 +169,7 @@ export default {
 
             await interaction.editReply({ embeds: [embedProgress] })
 
-            const card = await cardgenerator.getCard(leaderboardChoice, memberToUpdate, playerData, playerLd)
+            const card = await cardgenerator.getCard(leaderboardChoice, memberToUpdate, playerData, playerLd, playerProgress)
 
             await interaction.editReply({ files: [{attachment: card.name, name: `${playerData.id}.png`}], embeds: embeds })
 
