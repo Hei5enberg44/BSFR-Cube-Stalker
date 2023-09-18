@@ -6,9 +6,9 @@ import Logger from '../utils/logger.js'
 type MapDetail = BeatSaverAPI['schemas']['MapDetail']
 type SearchResponse = BeatSaverAPI['schemas']['SearchResponse']
 
-const BEATSAVER_API_URL = 'https://beatsaver.com/api'
-const MAPS_HASH_URL = BEATSAVER_API_URL + '/maps/hash/'
-const LATEST_MAPS_URL = BEATSAVER_API_URL + '/maps/latest'
+const BEATSAVER_API_URL = 'https://api.beatsaver.com/'
+const MAPS_HASH_URL = BEATSAVER_API_URL + 'maps/hash/'
+const SEARCH_MAPS_URL = BEATSAVER_API_URL + 'search/text/'
 
 const wait = (s: number) => new Promise((res) => setTimeout(res, s * 1000))
 
@@ -67,25 +67,6 @@ export default class BeatSaver {
     }
 
     /**
-     * Récupère une liste de maps en fonction de filtres
-     * @param before récupère les maps avant cette date
-     * @param after récupère les maps après cette date
-     * @param sort méthode de tri des maps
-     * @param automapper afficher les maps auto-générées
-     */
-    static async getMaps(before: string, after: string = '', sort: string = 'CREATED', automapper: boolean = false) {
-        const args: Record<string, string> = {}
-        if(before !== '') args.before = before
-        if(after !== '') args.after = after
-        if(sort !== '') args.sort = sort
-        if(automapper) args.automapper = automapper ? 'true' : 'false'
-
-        const params = new URLSearchParams(args).toString()
-        const maps = await this.send<SearchResponse>(LATEST_MAPS_URL + `?${params}`)
-        return maps
-    }
-
-    /**
      * Détermine le score maximum d'une map en fonction du nombre de notes
      * @param notes nombre de notes
      * @returns score maximum
@@ -141,14 +122,17 @@ export default class BeatSaver {
     static async getLastRanked() {
         let newMaps = 0
 
-        let page = new Date().toISOString()
+        let page: number|null = 0
         let end = false
 
         do {
-            const data = await this.getMaps(page)
-            const maps = data.docs
-            const ranked = maps.filter(m => m.ranked)
-            for(const map of ranked) {
+            const params = new URLSearchParams({
+                ranked: 'true',
+                sortOrder: 'Latest'
+            }).toString()
+            const data = await this.send<SearchResponse>(SEARCH_MAPS_URL + `${page}?${params}`)
+
+            for(const map of data.docs) {
                 const exists = await RankedModel.findOne({ where: { 'map.id': map.id } })
                 if(!exists) {
                     await RankedModel.create({ map: map })
@@ -157,7 +141,15 @@ export default class BeatSaver {
                     end = true
                 }
             }
-            page = maps.length > 0 ? maps[maps.length - 1].createdAt : ''
+
+            if(data.docs.length === 0) end = true
+
+            if(!end) {
+                page++
+                await wait(3)
+            } else {
+                page = null
+            }
         } while(page !== null && !end)
 
         return newMaps
