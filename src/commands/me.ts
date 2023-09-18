@@ -54,6 +54,9 @@ export default {
                 // Identifiant du membre pour lequel aficher les informations
                 memberId = targetMember.id
 
+                // Si le membre cible est le bot
+                if(memberId === config.clientId) throw new CommandInteractionError('Moi ? Je ne joue pas à ce vulgaire jeu. Je me contente d\'afficher vos piètres scores, c\'est déjà pas mal.')
+
                 // Informations sur le joueur
                 oldPlayerData = await players.get(memberId, leaderboardChoice)
 
