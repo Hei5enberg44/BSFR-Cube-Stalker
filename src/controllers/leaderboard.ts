@@ -308,7 +308,7 @@ export default class Leaderboard {
      * @param members liste des membres de la guild
      */
     static async refreshLeaderboard(leaderboardName: Leaderboards, members: Collection<string, GuildMember>) {
-        const players = await PlayerModel.findAll({
+        const players = await LeaderboardModel.findAll({
             where: {
                 leaderboard: leaderboardName
             }
