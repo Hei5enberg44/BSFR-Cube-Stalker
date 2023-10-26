@@ -82,6 +82,7 @@ export interface PlayerScore {
     levelAuthorName: string,
     difficulty: number,
     difficultyRaw: string,
+    gameMode: string,
     maxScore: number,
     ranked: boolean,
     stars: number

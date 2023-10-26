@@ -234,6 +234,7 @@ export default class ScoreSaber {
                         levelAuthorName: playerScore.leaderboard.levelAuthorName,
                         difficulty: playerScore.leaderboard.difficulty.difficulty,
                         difficultyRaw: playerScore.leaderboard.difficulty.difficultyRaw,
+                        gameMode: playerScore.leaderboard.difficulty.gameMode,
                         maxScore: playerScore.leaderboard.maxScore,
                         ranked: playerScore.leaderboard.ranked,
                         stars: playerScore.leaderboard.stars

@@ -257,6 +257,7 @@ export default class BeatLeader {
                             levelAuthorName: playerScore.leaderboard.song.mapper,
                             difficulty: playerScore.leaderboard.difficulty.value,
                             difficultyRaw: playerScore.leaderboard.difficulty.difficultyName,
+                            gameMode: playerScore.leaderboard.difficulty.modeName,
                             maxScore: playerScore.leaderboard.difficulty.maxScore,
                             ranked: playerScore.leaderboard.difficulty.stars ? true : false,
                             stars: playerScore.leaderboard.difficulty.stars ?? 0
