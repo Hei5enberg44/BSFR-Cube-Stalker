@@ -320,9 +320,7 @@ export default class Leaderboard {
             const gameLd = new GameLeaderboard(leaderboardName)
             const playerData = await gameLd.requests.getPlayerData(p.playerId)
 
-            if(!playerData.banned) {
-                await this.updatePlayerLeaderboard(leaderboardName, p.memberId, playerData)
-            } else {
+            if(playerData.banned) {
                 await PlayerModel.destroy({ where: { memberId: p.memberId } })
                 await LeaderboardModel.destroy({ where: { memberId: p.memberId } })
             }
