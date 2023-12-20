@@ -174,7 +174,7 @@ export default {
 
             const card = await cardgenerator.getCard(leaderboardChoice, memberToUpdate, playerData, playerLd, playerProgress)
 
-            await interaction.editReply({ files: [{attachment: card.name, name: `${playerData.id}.png`}], embeds: embeds })
+            await interaction.editReply({ files: [{attachment: card.name, name: `${playerData.id}.webp`}], embeds: embeds })
 
             card.removeCallback()
         } catch(error) {
