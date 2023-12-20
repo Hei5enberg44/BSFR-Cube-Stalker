@@ -1,10 +1,11 @@
 import { GuildMember } from 'discord.js'
-import { createCanvas, loadImage, registerFont, CanvasRenderingContext2D } from 'canvas'
+import { createCanvas, loadImage, Image, registerFont, CanvasRenderingContext2D } from 'canvas'
 import sharp from 'sharp'
 import tmp from 'tmp'
 import * as fs from 'node:fs'
 import { Leaderboards } from './gameLeaderboard.js'
 import roles from './roles.js'
+import { CardsModel } from './database.js'
 import { PlayerData, PlayerRanking, PlayerProgress } from '../interfaces/player.interface.js'
 
 registerFont('./assets/fonts/Poppins-Regular.ttf', { family: 'Poppins-Regular' })
@@ -42,22 +43,11 @@ const roundedImage = (ctx: CanvasRenderingContext2D, x: number, y: number, width
     ctx.closePath()
 }
 
-const getImageLightness = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
-    let colorSum = 0
-    const imageData = ctx.getImageData(0, 0, width, height)
-    const data = imageData.data
-
-    for(let x = 0, len = data.length; x < len; x += 4) {
-        const r = data[x]
-        const g = data[x+1]
-        const b = data[x+2]
-
-        const avg = Math.floor((r + g + b) / 3)
-        colorSum += avg
-    }
-
-    const brightness = Math.floor(colorSum / (width * height))
-    return brightness
+const getMemberCard = async (memberId: string) => {
+    const card = await CardsModel.findOne({
+        where: { memberId, status: 1 }
+    })
+    return card ? card.image : null
 }
 
 const lightenDarkenColor = (color: number, magnitude: number) => {
@@ -65,6 +55,16 @@ const lightenDarkenColor = (color: number, magnitude: number) => {
     const B = (color >> 8 & 0x00FF) + magnitude
     const G = (color & 0x0000FF) + magnitude
     return '#' + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (B<255?B<1?0:B:255)*0x100 + (G<255?G<1?0:G:255)).toString(16).slice(1)
+}
+
+const drawImageScaled = (img: Image, ctx: CanvasRenderingContext2D) => {
+    const canvas = ctx.canvas
+    const hRatio = canvas.width  / img.width
+    const vRatio =  canvas.height / img.height
+    const ratio = Math.max(hRatio, vRatio)
+    const centerShift_x = (canvas.width - img.width * ratio) / 2
+    const centerShift_y = (canvas.height - img.height * ratio) / 2
+    ctx.drawImage(img, 0, 0, img.width, img.height, centerShift_x,centerShift_y, img.width * ratio, img.height * ratio)
 }
 
 const fittingString = (ctx: CanvasRenderingContext2D, str: string, maxWidth: number) => {
@@ -83,15 +83,6 @@ const fittingString = (ctx: CanvasRenderingContext2D, str: string, maxWidth: num
     }
 }
 
-const downloadImage = async (url: string) => {
-    const imageRequest = await fetch(url)
-    if(!imageRequest.ok) return null
-    const imageData = await imageRequest.arrayBuffer()
-    const imageBuffer = Buffer.from(imageData)
-    const image = await sharp(imageBuffer).toFormat('png').resize(1900).toBuffer()
-    return image
-}
-
 export default {
     async getCard(leaderboardChoice: Leaderboards, member: GuildMember | null, playerData: PlayerData, playerLd: PlayerRanking, playerProgress: PlayerProgress | null, debug = false) {
         // Fabrication de la carte
@@ -100,28 +91,23 @@ export default {
         ctx.textBaseline = 'middle'
 
         // Fond
-        let profileCover = null
-        if(playerData.profileCover) profileCover = await downloadImage(playerData.profileCover)
+        const profileCover = member ? await getMemberCard(member.id) : null
         if(profileCover) {
             const background = await loadImage(profileCover)
-            const backgroundY = background.height - canvas.height < 0 ? 0 : -(background.height - canvas.height) / 2
 
             ctx.save()
             roundedImage(ctx, 0, 0, canvas.width, canvas.height, 20)
             ctx.clip()
-            ctx.drawImage(background, 0, backgroundY, canvas.width, backgroundY < 0 ? background.height : canvas.height)
+            drawImageScaled(background, ctx)
             ctx.restore()
 
-            const brightness = getImageLightness(ctx, canvas.width, canvas.height)
-            if(brightness > 150) {
-                ctx.save()
-                roundedImage(ctx, 0, 0, canvas.width, canvas.height, 20)
-                ctx.clip()
-                ctx.globalAlpha = 0.5
-                ctx.fillStyle = 'black'
-                ctx.fillRect(0, 0, canvas.width, canvas.height)
-                ctx.restore()
-            }
+            ctx.save()
+            roundedImage(ctx, 0, 0, canvas.width, canvas.height, 20)
+            ctx.clip()
+            ctx.globalAlpha = 0.3
+            ctx.fillStyle = 'black'
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+            ctx.restore()
         } else {
             let colorStart = '#231b60'
             let colorStop = '#d50078'
@@ -420,11 +406,12 @@ export default {
             ctx.stroke()
         }
 
-        // Enregistrement de l'image dans un fichier temporaire
-        const base64Image = <string>canvas.toDataURL().split(';base64,').pop()
+        // Convertion de l'image au format webp
+        const card = await sharp(canvas.toBuffer()).webp({ quality: 80 }).toBuffer()
 
+        // Enregistrement de l'image dans un fichier temporaire
         const tmpCard = tmp.fileSync()
-        fs.writeFileSync(tmpCard.name, base64Image, {encoding: 'base64'})
+        fs.writeFileSync(tmpCard.name, card)
 
         return tmpCard
     }

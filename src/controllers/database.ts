@@ -131,9 +131,28 @@ const RankedModel = sequelize.define<RankedModel>('ranked', {
     map: DataTypes.JSON()
 })
 
+interface CardsModel extends Model<InferAttributes<CardsModel>, InferCreationAttributes<CardsModel>> {
+    id: CreationOptional<number>,
+    memberId: string,
+    image: Buffer,
+    status: number
+}
+
+const CardsModel = sequelize.define<CardsModel>('cards', {
+    id: {
+        type: DataTypes.INTEGER(),
+        autoIncrement: true,
+        primaryKey: true
+    },
+    memberId: DataTypes.STRING(255),
+    image: DataTypes.BLOB(),
+    status: DataTypes.INTEGER()
+})
+
 export {
     CooldownModel,
     PlayerModel,
     LeaderboardModel,
-    RankedModel
+    RankedModel,
+    CardsModel
 }
