@@ -7,6 +7,7 @@ import { Leaderboards } from './gameLeaderboard.js'
 import roles from './roles.js'
 import { CardsModel } from './database.js'
 import { PlayerData, PlayerRanking, PlayerProgress } from '../interfaces/player.interface.js'
+import config from '../config.json' assert { type: 'json' }
 
 registerFont('./assets/fonts/Poppins-Regular.ttf', { family: 'Poppins-Regular' })
 registerFont('./assets/fonts/Poppins-Medium.ttf', { family: 'Poppins-Medium' })
@@ -43,9 +44,10 @@ const roundedImage = (ctx: CanvasRenderingContext2D, x: number, y: number, width
     ctx.closePath()
 }
 
-const getMemberCard = async (memberId: string) => {
+const getMemberCard = async (member: GuildMember) => {
+    if(member.premiumSince === null && !member.roles.cache.find(r => r.id === config.guild.roles['Admin'] || r.id === config.guild.roles['Modérateur'])) return null
     const card = await CardsModel.findOne({
-        where: { memberId, status: 1 }
+        where: { memberId: member.id, status: 1 }
     })
     return card ? card.image : null
 }
@@ -91,7 +93,7 @@ export default {
         ctx.textBaseline = 'middle'
 
         // Fond
-        const profileCover = member ? await getMemberCard(member.id) : null
+        const profileCover = member ? await getMemberCard(member) : null
         if(profileCover) {
             const background = await loadImage(profileCover)
 
