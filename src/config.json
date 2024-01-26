@@ -21,5 +21,8 @@
         "username": "",
         "password": "",
         "name": ""
+    },
+    "api": {
+        "status": ""
     }
 }
