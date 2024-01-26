@@ -1,6 +1,6 @@
 {
   "name": "cube-stalker",
-  "version": "5.21.2",
+  "version": "5.22.0",
   "description": "Cube Stalker est un bot permettant d'obtenir des informations et statistiques sur des joueurs à partir de Score Saber ou Beat Leader",
   "main": "dist/bot.js",
   "type": "module",
@@ -27,7 +27,6 @@
     "ws": "^8.16.0"
   },
   "devDependencies": {
-    "@types/sharp": "^0.32.0",
     "@types/tmp": "^0.2.6",
     "eslint": "^8.56.0",
     "typescript": "^5.3.3"
