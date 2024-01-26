@@ -64,6 +64,7 @@ try {
             const crons = new Crons(client)
             await crons.refreshLeaderboard()
             await crons.getLastRankedMaps()
+            await crons.alive()
 
             // Top 1 pays
             top1.listen(client)
