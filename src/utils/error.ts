@@ -58,6 +58,14 @@ class PlayerError extends Error {
     }
 }
 
+class PlaylistError extends Error {
+    constructor(message: string) {
+        super(message)
+        this.name = 'PLAYLIST_ERROR'
+        Error.captureStackTrace(this, this.constructor)
+    }
+}
+
 class LeaderboardError extends Error {
     constructor(message: string) {
         super(message)
@@ -117,6 +125,7 @@ export {
     ModalSubmissionError,
     PageNotFoundError,
     PlayerError,
+    PlaylistError,
     LeaderboardError,
     Top1Error,
     CooldownError,
