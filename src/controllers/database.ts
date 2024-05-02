@@ -1,3 +1,5 @@
+import { components as ScoreSaberAPI } from '../api/scoresaber.js'
+import { components as BeatLeaderAPI } from '../api/beatleader.js'
 import { components as BeatSaverAPI } from '../api/beatsaver.js'
 import { Sequelize, DataTypes, Model, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize'
 import { DatabaseError } from '../utils/error.js'
@@ -81,6 +83,46 @@ const PlayerModel = sequelize.define<PlayerModel>('players', {
     top1: DataTypes.BOOLEAN()
 })
 
+type ScoreSaberPlayerScore = ScoreSaberAPI['schemas']['PlayerScore']
+
+interface ScoreSaberPlayerScoresModel extends Model<InferAttributes<ScoreSaberPlayerScoresModel>, InferCreationAttributes<ScoreSaberPlayerScoresModel>> {
+    id: CreationOptional<number>,
+    leaderboard: string,
+    playerId: string,
+    playerScore: ScoreSaberPlayerScore
+}
+
+const ScoreSaberPlayerScoresModel = sequelize.define<ScoreSaberPlayerScoresModel>('player_scores', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    leaderboard: DataTypes.STRING(255),
+    playerId: DataTypes.STRING(255),
+    playerScore: DataTypes.JSON()
+})
+
+type BeatLeaderPlayerScore = BeatLeaderAPI['schemas']['ScoreResponseWithMyScore']
+
+interface BeatLeaderPlayerScoresModel extends Model<InferAttributes<BeatLeaderPlayerScoresModel>, InferCreationAttributes<BeatLeaderPlayerScoresModel>> {
+    id: CreationOptional<number>,
+    leaderboard: string,
+    playerId: string,
+    playerScore: BeatLeaderPlayerScore
+}
+
+const BeatLeaderPlayerScoresModel = sequelize.define<BeatLeaderPlayerScoresModel>('player_scores', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    leaderboard: DataTypes.STRING(255),
+    playerId: DataTypes.STRING(255),
+    playerScore: DataTypes.JSON()
+})
+
 interface LeaderboardModel extends Model<InferAttributes<LeaderboardModel>, InferCreationAttributes<LeaderboardModel>> {
     id: CreationOptional<number>,
     leaderboard: string,
@@ -152,6 +194,8 @@ const CardsModel = sequelize.define<CardsModel>('cards', {
 export {
     CooldownModel,
     PlayerModel,
+    ScoreSaberPlayerScoresModel,
+    BeatLeaderPlayerScoresModel,
     LeaderboardModel,
     RankedModel,
     CardsModel

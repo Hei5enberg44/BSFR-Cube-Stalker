@@ -1,5 +1,6 @@
 import { components as BeatLeaderAPI } from '../api/beatleader.js'
 import { PlayerData, PlayerScore } from '../interfaces/player.interface.js'
+import { BeatLeaderPlayerScoresModel } from '../controllers/database.js'
 import Logger from '../utils/logger.js'
 import { BeatLeaderError } from '../utils/error.js'
 
@@ -224,7 +225,12 @@ export default class BeatLeader {
      * @returns liste des scores du joueur
      */
     static async getPlayerScores(beatLeaderId: string): Promise<PlayerScore[]> {
-        const scores = []
+        const cachedPlayerScores = await BeatLeaderPlayerScoresModel.findAll({
+            where: {
+                leaderboard: 'beatleader',
+                playerId: beatLeaderId
+            }
+        })
 
         try {
             let nextPage: number | null = null
@@ -234,39 +240,67 @@ export default class BeatLeader {
                 const playerScores = data.data
                 const metadata = data.metadata
 
+                nextPage = metadata.page + 1 <= Math.ceil(metadata.total / metadata.itemsPerPage) ? metadata.page + 1 : null
+
                 if(playerScores) {
                     for(const playerScore of playerScores) {
-                        scores.push({
-                            rank: playerScore.rank,
-                            scoreId: playerScore.id,
-                            score: playerScore.modifiedScore,
-                            unmodififiedScore: playerScore.baseScore,
-                            modifiers: playerScore.modifiers,
-                            pp: playerScore.pp,
-                            weight: playerScore.weight,
-                            timeSet: playerScore.timeset,
-                            badCuts: playerScore.badCuts,
-                            missedNotes: playerScore.missedNotes,
-                            maxCombo: playerScore.maxCombo,
-                            fullCombo: playerScore.fullCombo,
-                            leaderboardId: playerScore.leaderboard.id,
-                            songHash: playerScore.leaderboard.song.hash,
-                            songName: playerScore.leaderboard.song.name,
-                            songSubName: playerScore.leaderboard.song.subName,
-                            songAuthorName: playerScore.leaderboard.song.author,
-                            levelAuthorName: playerScore.leaderboard.song.mapper,
-                            difficulty: playerScore.leaderboard.difficulty.value,
-                            difficultyRaw: playerScore.leaderboard.difficulty.difficultyName,
-                            gameMode: playerScore.leaderboard.difficulty.modeName,
-                            maxScore: playerScore.leaderboard.difficulty.maxScore,
-                            ranked: playerScore.leaderboard.difficulty.stars ? true : false,
-                            stars: playerScore.leaderboard.difficulty.stars ?? 0
-                        })
+                        const cachedScore = cachedPlayerScores.find(cs => cs.playerScore.leaderboard.id === playerScore.leaderboardId)
+                        if(cachedScore) {
+                            if(playerScore.baseScore !== cachedScore.playerScore.baseScore) {
+                                cachedScore.playerScore = playerScore
+                                await cachedScore.save()
+                            } else {
+                                nextPage = null
+                                break
+                            }
+                        } else {
+                            await BeatLeaderPlayerScoresModel.create({
+                                leaderboard: 'beatleader',
+                                playerId: beatLeaderId,
+                                playerScore: playerScore
+                            })
+                        }
                     }
                 }
-
-                nextPage = metadata.page + 1 <= Math.ceil(metadata.total / metadata.itemsPerPage) ? metadata.page + 1 : null
             } while(nextPage)
+
+            const playerScores = await BeatLeaderPlayerScoresModel.findAll({
+                where: {
+                    leaderboard: 'beatleader',
+                    playerId: beatLeaderId
+                }
+            })
+
+            const scores = playerScores.map(ps => {
+                return {
+                    rank: ps.playerScore.rank,
+                    scoreId: ps.playerScore.id,
+                    score: ps.playerScore.modifiedScore,
+                    unmodififiedScore: ps.playerScore.baseScore,
+                    modifiers: ps.playerScore.modifiers,
+                    pp: ps.playerScore.pp,
+                    weight: ps.playerScore.weight,
+                    timeSet: ps.playerScore.timeset,
+                    badCuts: ps.playerScore.badCuts,
+                    missedNotes: ps.playerScore.missedNotes,
+                    maxCombo: ps.playerScore.maxCombo,
+                    fullCombo: ps.playerScore.fullCombo,
+                    leaderboardId: ps.playerScore.leaderboard.id,
+                    songHash: ps.playerScore.leaderboard.song.hash,
+                    songName: ps.playerScore.leaderboard.song.name,
+                    songSubName: ps.playerScore.leaderboard.song.subName,
+                    songAuthorName: ps.playerScore.leaderboard.song.author,
+                    levelAuthorName: ps.playerScore.leaderboard.song.mapper,
+                    difficulty: ps.playerScore.leaderboard.difficulty.value,
+                    difficultyRaw: ps.playerScore.leaderboard.difficulty.difficultyName,
+                    gameMode: ps.playerScore.leaderboard.difficulty.modeName,
+                    maxScore: ps.playerScore.leaderboard.difficulty.maxScore,
+                    ranked: ps.playerScore.leaderboard.difficulty.stars ? true : false,
+                    stars: ps.playerScore.leaderboard.difficulty.stars ?? 0
+                }
+            }).sort((a: PlayerScore, b: PlayerScore) => {
+                return (new Date(b.timeSet)).getTime() - (new Date(a.timeSet)).getTime()
+            })
 
             return scores
         } catch(error) {

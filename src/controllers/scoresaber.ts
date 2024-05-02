@@ -1,5 +1,6 @@
 import { components as ScoreSaberAPI } from '../api/scoresaber.js'
 import { PlayerData, PlayerScore } from '../interfaces/player.interface.js'
+import { ScoreSaberPlayerScoresModel } from '../controllers/database.js'
 import Logger from '../utils/logger.js'
 import { ScoreSaberError } from '../utils/error.js'
 
@@ -202,9 +203,14 @@ export default class ScoreSaber {
      * @returns liste des scores du joueur
      */
     static async getPlayerScores(scoreSaberId: string): Promise<PlayerScore[]> {
-        const scores = []
-
         try {
+            const cachedPlayerScores = await ScoreSaberPlayerScoresModel.findAll({
+                where: {
+                    leaderboard: 'scoresaber',
+                    playerId: scoreSaberId
+                }
+            })
+
             let nextPage = null
 
             do {
@@ -212,37 +218,65 @@ export default class ScoreSaber {
                 const playerScores = data.playerScores
                 const metadata = data.metadata
 
-                for(const playerScore of playerScores) {
-                    scores.push({
-                        rank: playerScore.score.rank,
-                        scoreId: playerScore.score.id,
-                        score: playerScore.score.modifiedScore,
-                        unmodififiedScore: playerScore.score.baseScore,
-                        modifiers: playerScore.score.modifiers,
-                        pp: playerScore.score.pp,
-                        weight: playerScore.score.weight,
-                        timeSet: playerScore.score.timeSet,
-                        badCuts: playerScore.score.badCuts,
-                        missedNotes: playerScore.score.missedNotes,
-                        maxCombo: playerScore.score.maxCombo,
-                        fullCombo: playerScore.score.fullCombo,
-                        leaderboardId: playerScore.leaderboard.id,
-                        songHash: playerScore.leaderboard.songHash,
-                        songName: playerScore.leaderboard.songName,
-                        songSubName: playerScore.leaderboard.songSubName,
-                        songAuthorName: playerScore.leaderboard.songAuthorName,
-                        levelAuthorName: playerScore.leaderboard.levelAuthorName,
-                        difficulty: playerScore.leaderboard.difficulty.difficulty,
-                        difficultyRaw: playerScore.leaderboard.difficulty.difficultyRaw,
-                        gameMode: playerScore.leaderboard.difficulty.gameMode,
-                        maxScore: playerScore.leaderboard.maxScore,
-                        ranked: playerScore.leaderboard.ranked,
-                        stars: playerScore.leaderboard.stars
-                    })
-                }
-                
                 nextPage = metadata.page + 1 <= Math.ceil(metadata.total / metadata.itemsPerPage) ? metadata.page + 1 : null
+
+                for(const playerScore of playerScores) {
+                    const cachedScore = cachedPlayerScores.find(cs => cs.playerScore.leaderboard.id === playerScore.leaderboard.id)
+                    if(cachedScore) {
+                        if(playerScore.score.baseScore !== cachedScore.playerScore.score.baseScore) {
+                            cachedScore.playerScore = playerScore
+                            await cachedScore.save()
+                        } else {
+                            nextPage = null
+                            break
+                        }
+                    } else {
+                        await ScoreSaberPlayerScoresModel.create({
+                            leaderboard: 'scoresaber',
+                            playerId: scoreSaberId,
+                            playerScore: playerScore
+                        })
+                    }
+                }
             } while(nextPage)
+
+            const playerScores = await ScoreSaberPlayerScoresModel.findAll({
+                where: {
+                    leaderboard: 'scoresaber',
+                    playerId: scoreSaberId
+                }
+            })
+
+            const scores = playerScores.map(ps => {
+                return {
+                    rank: ps.playerScore.score.rank,
+                    scoreId: ps.playerScore.score.id,
+                    score: ps.playerScore.score.modifiedScore,
+                    unmodififiedScore: ps.playerScore.score.baseScore,
+                    modifiers: ps.playerScore.score.modifiers,
+                    pp: ps.playerScore.score.pp,
+                    weight: ps.playerScore.score.weight,
+                    timeSet: ps.playerScore.score.timeSet,
+                    badCuts: ps.playerScore.score.badCuts,
+                    missedNotes: ps.playerScore.score.missedNotes,
+                    maxCombo: ps.playerScore.score.maxCombo,
+                    fullCombo: ps.playerScore.score.fullCombo,
+                    leaderboardId: ps.playerScore.leaderboard.id,
+                    songHash: ps.playerScore.leaderboard.songHash,
+                    songName: ps.playerScore.leaderboard.songName,
+                    songSubName: ps.playerScore.leaderboard.songSubName,
+                    songAuthorName: ps.playerScore.leaderboard.songAuthorName,
+                    levelAuthorName: ps.playerScore.leaderboard.levelAuthorName,
+                    difficulty: ps.playerScore.leaderboard.difficulty.difficulty,
+                    difficultyRaw: ps.playerScore.leaderboard.difficulty.difficultyRaw,
+                    gameMode: ps.playerScore.leaderboard.difficulty.gameMode,
+                    maxScore: ps.playerScore.leaderboard.maxScore,
+                    ranked: ps.playerScore.leaderboard.ranked,
+                    stars: ps.playerScore.leaderboard.stars
+                }
+            }).sort((a: PlayerScore, b: PlayerScore) => {
+                return (new Date(b.timeSet)).getTime() - (new Date(a.timeSet)).getTime()
+            })
 
             return scores
         } catch(error) {
