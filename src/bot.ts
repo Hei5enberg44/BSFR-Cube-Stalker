@@ -7,7 +7,8 @@ import Events from './controllers/events.js'
 import Modals from './controllers/modals.js'
 import database from './controllers/database.js'
 import Crons from './controllers/crons.js'
-import top1 from './controllers/top1.js'
+import Top1 from './controllers/top1.js'
+import BeatLeaderCLan from './controllers/beatleader-clan.js'
 import Logger from './utils/logger.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -64,10 +65,12 @@ try {
             const crons = new Crons(client)
             await crons.refreshLeaderboard()
             await crons.getLastRankedMaps()
-            await crons.alive()
 
             // Top 1 pays
-            top1.listen(client)
+            Top1.listen(client)
+
+            // Clan wars BeatLeader
+            BeatLeaderCLan.listen(client)
 
             // Statut du bot
             client.user?.setPresence({
