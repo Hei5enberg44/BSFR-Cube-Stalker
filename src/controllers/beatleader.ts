@@ -8,6 +8,7 @@ type PlayerResponseFull = BeatLeaderAPI['schemas']['PlayerResponseFull']
 type ScoreResponseWithMyScoreResponseWithMetadata = BeatLeaderAPI['schemas']['ScoreResponseWithMyScoreResponseWithMetadata']
 type PlayerResponseWithStatsResponseWithMetadata = BeatLeaderAPI['schemas']['PlayerResponseWithStatsResponseWithMetadata']
 type LeaderboardResponse = BeatLeaderAPI['schemas']['LeaderboardResponse']
+type PlayerResponseClanResponseFullResponseWithMetadataAndContainer = BeatLeaderAPI['schemas']['PlayerResponseClanResponseFullResponseWithMetadataAndContainer']
 
 interface PlaylistResponse {
     playlistTitle: string,
@@ -31,6 +32,7 @@ const BEATLEADER_URL = 'https://beatleader.xyz'
 const BEATLEADER_API_URL = 'https://api.beatleader.xyz/'
 const PLAYER_URL = `${BEATLEADER_API_URL}player/`
 const LEADERBOARD_URL = `${BEATLEADER_API_URL}leaderboard/`
+const CLAN_URL = `${BEATLEADER_API_URL}clan/`
 
 const wait = (s: number) => new Promise((res) => setTimeout(res, s * 1000))
 
@@ -61,8 +63,12 @@ export default class BeatLeader {
                 if(res.status === 422) throw Error('Erreur 422 : La ressource demandée est introuvable')
                 if(res.status === 500) {
                     Logger.log('BeatLeader', 'ERROR', 'Erreur 500, nouvel essai dans 3 secondes')
-                    if(retries < 5) await wait(3)
-                    retries++
+                    if(retries < 5) {
+                        await wait(3)
+                        retries++
+                    } else {
+                        throw Error('Erreur 500 : Erreur interne du serveur')
+                    }
                 }
                 if(res.status === 429) {
                     Logger.log('BeatLeader', 'ERROR', 'Erreur 429, nouvel essai dans 60 secondes')
@@ -85,7 +91,7 @@ export default class BeatLeader {
         try {
             const playerId = url.replace(/^https?:\/\/(www\.)?beatleader\.xyz\/u\/([0-9]+).*$/, '$2')
 
-            const playerInfos = await this.send<PlayerResponseFull>(PLAYER_URL + playerId)
+            const playerInfos = await this.send<PlayerResponseFull>(`${PLAYER_URL}${playerId}`)
 
             const player = {
                 id: playerInfos.id,
@@ -113,7 +119,7 @@ export default class BeatLeader {
     static async getPlayerData(playerId: string): Promise<PlayerData> {
         try {
             const playerInfos = await this.send<PlayerResponseFull>(PLAYER_URL + playerId)
-            const playerTopScore = await this.send<ScoreResponseWithMyScoreResponseWithMetadata>(PLAYER_URL + playerId + '/scores?sortBy=pp&page=1')
+            const playerTopScore = await this.send<ScoreResponseWithMyScoreResponseWithMetadata>(`${PLAYER_URL}${playerId}/scores?sortBy=pp&page=1`)
 
             let topPP = null
             if(playerTopScore.data && playerTopScore.data[0]) {
@@ -169,7 +175,7 @@ export default class BeatLeader {
         try {
             const players = []
 
-            const playersInfos = await this.send<PlayerResponseWithStatsResponseWithMetadata>(BEATLEADER_API_URL + 'players?page=' + page)
+            const playersInfos = await this.send<PlayerResponseWithStatsResponseWithMetadata>(`${BEATLEADER_API_URL}players?page=${page}`)
 
             if(playersInfos.data) {
                 for(const playerInfos of playersInfos.data) {
@@ -209,13 +215,29 @@ export default class BeatLeader {
      * @param page page du classement
      * @returns liste des scores du classement
      */
-    static async getMapCountryLeaderboard(leaderboardId: number, country: string, page: number = 1) {
+    static async getMapCountryLeaderboard(leaderboardId: string, country: string, page: number = 1) {
         try {
-            const data = await this.send<LeaderboardResponse>(LEADERBOARD_URL + leaderboardId + '?countries=' + country + '&page=' + page, false)
+            const data = await this.send<LeaderboardResponse>(`${LEADERBOARD_URL}${leaderboardId}?countries=${country}&page=${page}`, false)
 
             return data.scores
         } catch(error) {
             throw new BeatLeaderError('Une erreur est survenue lors de la récupération du top 1 du pays sur la map')
+        }
+    }
+
+    /**
+     * Récupération du classement d'une map
+     * @param leaderboardId identifiant du classement
+     * @param count nombre de scores à retourner (défaut: 10)
+     * @returns classement de la map
+     */
+    static async getMapLeaderboardById(leaderboardId: string, count: number = 10) {
+        try {
+            const data = await this.send<LeaderboardResponse>(`${LEADERBOARD_URL}${leaderboardId}?count=${count}`, false)
+
+            return data
+        } catch(error) {
+            throw new BeatLeaderError('Une erreur est survenue lors de la récupération du classement de la map')
         }
     }
 
@@ -236,7 +258,7 @@ export default class BeatLeader {
             let nextPage: number | null = null
 
             do {
-                const data: ScoreResponseWithMyScoreResponseWithMetadata = await this.send<ScoreResponseWithMyScoreResponseWithMetadata>(PLAYER_URL + beatLeaderId + '/scores?sortBy=date&order=desc&count=100&page=' + (nextPage ?? 1), false)
+                const data: ScoreResponseWithMyScoreResponseWithMetadata = await this.send<ScoreResponseWithMyScoreResponseWithMetadata>(`${PLAYER_URL}${beatLeaderId}/scores?sortBy=date&order=desc&count=100&page=${nextPage ?? 1}`, false)
                 const playerScores = data.data
                 const metadata = data.metadata
 
@@ -315,8 +337,23 @@ export default class BeatLeader {
      * @returns liste des maps ranked
      */
     static async searchRanked(starsMin: number = 0, starsMax: number = 16) {
-        const playlist = await this.send<PlaylistResponse>(BEATLEADER_API_URL + 'playlist/generate?count=2000&stars_from=' + starsMin + '&stars_to=' + starsMax, false)
+        const playlist = await this.send<PlaylistResponse>(`${BEATLEADER_API_URL}playlist/generate?count=2000&stars_from=${starsMin}&stars_to=${starsMax}`, false)
         if(playlist) return playlist.songs
         return []
+    }
+
+    /**
+     * Récupération des informations concernant un clan par rapport à son identifiant
+     * @param clanId identifiant du clan
+     * @returns informations du clan
+     */
+    static async getClanById(clanId: number) {
+        try {
+            const data = await this.send<PlayerResponseClanResponseFullResponseWithMetadataAndContainer>(`${CLAN_URL}id/${clanId}?count=1`, false)
+
+            return data
+        } catch(error) {
+            throw new BeatLeaderError('Une erreur est survenue lors de la récupération des informations du clan')
+        }
     }
 }

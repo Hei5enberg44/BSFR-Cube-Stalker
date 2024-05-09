@@ -98,6 +98,36 @@ export interface components {
             tag: string;
             color: string;
         };
+        ClanResponseFull: {
+            /** Format: int32 */
+            id: number;
+            name: string | null;
+            color: string | null;
+            icon: string | null;
+            tag: string | null;
+            leaderID: string | null;
+            description: string | null;
+            bio: string | null;
+            richBio: string | null;
+            discordInvite: string | null;
+            /** Format: int32 */
+            playersCount: number;
+            /** Format: float */
+            pp: number;
+            /** Format: int32 */
+            rank: number;
+            /** Format: float */
+            averageRank: number;
+            /** Format: float */
+            averageAccuracy: number;
+            /** Format: float */
+            rankedPoolPercentCaptured: number;
+            /** Format: int32 */
+            captureLeaderboardCount: number;
+            playerChangesCallback: string | null;
+            clanRankingDiscordHook: string | null;
+            featuredPlaylists: (components["schemas"]["FeaturedPlaylistResponse"])[] | null;
+        }
         DifficultyDescription: {
             /** Format: int32 */
             id: number;
@@ -215,6 +245,17 @@ export interface components {
         FailedScoreResponseWithMetadata: {
             metadata: components["schemas"]["Metadata"];
             data: (components["schemas"]["FailedScore"])[] | null;
+        };
+        FeaturedPlaylistResponse: {
+            /** Format: int32 */
+            id: number;
+            playlistLink: string | null;
+            cover: string | null;
+            title: string | null;
+            description: string | null;
+            owner: string | null;
+            ownerCover: string | null;
+            ownerLink: string | null;
         };
         FriendActivity: {
             player: components["schemas"]["PlayerResponse"];
@@ -539,6 +580,11 @@ export interface components {
         PlayerResponseWithStatsResponseWithMetadata: {
             metadata: components["schemas"]["Metadata"];
             data: (components["schemas"]["PlayerResponseWithStats"])[] | null;
+        };
+        PlayerResponseClanResponseFullResponseWithMetadataAndContainer: {
+            metadata: components["schemas"]["Metadata"];
+            data: (components["schemas"]["PlayerResponse"])[] | null;
+            container: components["schemas"]["ClanResponseFull"];
         };
         PlayerScoreStats: {
             /** Format: int32 */
