@@ -43,7 +43,7 @@ export default class BeatLeader {
      * @param log true|false pour logger la requête
      * @returns résultat de la requête
      */
-    private static async send<T>(url: string, log: boolean = true): Promise<T> {
+    private static async send<T>(url: string, log: boolean = false): Promise<T> {
         let data
         let error = false
         let retries = 0
@@ -217,7 +217,7 @@ export default class BeatLeader {
      */
     static async getMapCountryLeaderboard(leaderboardId: string, country: string, page: number = 1) {
         try {
-            const data = await this.send<LeaderboardResponse>(`${LEADERBOARD_URL}${leaderboardId}?countries=${country}&page=${page}`, false)
+            const data = await this.send<LeaderboardResponse>(`${LEADERBOARD_URL}${leaderboardId}?countries=${country}&page=${page}`)
 
             return data.scores
         } catch(error) {
@@ -233,7 +233,7 @@ export default class BeatLeader {
      */
     static async getMapLeaderboardById(leaderboardId: string, count: number = 10) {
         try {
-            const data = await this.send<LeaderboardResponse>(`${LEADERBOARD_URL}${leaderboardId}?count=${count}`, false)
+            const data = await this.send<LeaderboardResponse>(`${LEADERBOARD_URL}${leaderboardId}?count=${count}`)
 
             return data
         } catch(error) {
@@ -258,7 +258,7 @@ export default class BeatLeader {
             let nextPage: number | null = null
 
             do {
-                const data: ScoreResponseWithMyScoreResponseWithMetadata = await this.send<ScoreResponseWithMyScoreResponseWithMetadata>(`${PLAYER_URL}${beatLeaderId}/scores?sortBy=date&order=desc&count=100&page=${nextPage ?? 1}`, false)
+                const data: ScoreResponseWithMyScoreResponseWithMetadata = await this.send<ScoreResponseWithMyScoreResponseWithMetadata>(`${PLAYER_URL}${beatLeaderId}/scores?sortBy=date&order=desc&count=100&page=${nextPage ?? 1}`)
                 const playerScores = data.data
                 const metadata = data.metadata
 
@@ -337,7 +337,7 @@ export default class BeatLeader {
      * @returns liste des maps ranked
      */
     static async searchRanked(starsMin: number = 0, starsMax: number = 16) {
-        const playlist = await this.send<PlaylistResponse>(`${BEATLEADER_API_URL}playlist/generate?count=2000&stars_from=${starsMin}&stars_to=${starsMax}`, false)
+        const playlist = await this.send<PlaylistResponse>(`${BEATLEADER_API_URL}playlist/generate?count=2000&stars_from=${starsMin}&stars_to=${starsMax}`)
         if(playlist) return playlist.songs
         return []
     }
@@ -349,7 +349,7 @@ export default class BeatLeader {
      */
     static async getClanById(clanId: number) {
         try {
-            const data = await this.send<PlayerResponseClanResponseFullResponseWithMetadataAndContainer>(`${CLAN_URL}id/${clanId}?count=1`, false)
+            const data = await this.send<PlayerResponseClanResponseFullResponseWithMetadataAndContainer>(`${CLAN_URL}id/${clanId}?count=1`)
 
             return data
         } catch(error) {

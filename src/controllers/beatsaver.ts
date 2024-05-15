@@ -18,7 +18,7 @@ export default class BeatSaver {
      * @param url url de la requête
      * @returns résultat de la requête
      */
-    static async send<T>(url: string, log: boolean = true): Promise<T> {
+    static async send<T>(url: string, log: boolean = false): Promise<T> {
         let data
         let error = true
         let retries = 0
