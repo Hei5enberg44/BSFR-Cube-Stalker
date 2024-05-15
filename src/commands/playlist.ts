@@ -108,6 +108,10 @@ export default {
                         .setRequired(true)
                 )
         )
+        .addSubcommand(subcommand =>
+            subcommand.setName('clan-wars')
+                .setDescription('Génénérer une playlist de maps à capturer pour la guerre de clans BeatLeader')
+        )
         .setDMPermission(false)
         .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
     ,
@@ -229,6 +233,26 @@ export default {
                     // Génération de la playlist
                     try {
                         const playlistData = await playlist.getSnipe(leaderboardChoice, member.playerId, memberToSnipe.playerId)
+
+                        const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlistData)), { name: playlistData.playlistTitle + '.json' })
+
+                        await interaction.editReply({ content: `Ta playlist est prête ! (${playlistData.songs.length} maps)`, embeds: [], files: [attachment] })
+                    } catch(error) {
+                        if(error.name === 'PLAYLIST_ERROR') throw new CommandInteractionError(error.message)
+                    }
+
+                    break
+                }
+                case 'clan-wars': {
+                    const embed = new Embed()
+                        .setColor('#F1C40F')
+                        .setDescription('🛠️ Génération de la playlist en cours...')
+
+                    await interaction.editReply({ embeds: [embed] })
+
+                    // Génération de la playlist
+                    try {
+                        const playlistData = await playlist.getClan()
 
                         const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlistData)), { name: playlistData.playlistTitle + '.json' })
 

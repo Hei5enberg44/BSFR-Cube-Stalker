@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.25.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.26.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
@@ -261,6 +261,18 @@ __Exemples :__
 ```
 /playlist snipe leaderboard:ScoreSaber joueur:@Hei5enberg
 /playlist snipe leaderboard:BeatLeader joueur:@Hei5enberg
+```
+
+***
+
+- ### /playlist clan-wars : Créer une playlist de maps à conquerir
+
+Permet de génénérer une playlist de maps à capturer pour la guerre de clans BeatLeader.
+
+__Exemples :__
+
+```
+/playlist clan-wars
 ```
 
 ***

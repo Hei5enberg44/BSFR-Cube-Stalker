@@ -127,7 +127,35 @@ export interface components {
             playerChangesCallback: string | null;
             clanRankingDiscordHook: string | null;
             featuredPlaylists: (components["schemas"]["FeaturedPlaylistResponse"])[] | null;
-        }
+        };
+        ClanRankingResponse: {
+            /** Format: int32 */
+            id: number;
+            clan: components["schemas"]["Clan"];
+            /** Format: int32 */
+            lastUpdateTime: number;
+            /** Format: float */
+            averageRank: number;
+            /** Format: int32 */
+            rank: number;
+            /** Format: float */
+            pp: number;
+            /** Format: float */
+            averageAccuracy: number;
+            /** Format: float */
+            totalScore: number;
+            leaderboardId: string | null;
+            leaderboard: components["schemas"]["Leaderboard"];
+            associatedScores: (components["schemas"]["ScoreResponse"])[] | null;
+            /** Format: int32 */
+            associatedScoresCount: number;
+            myScore: components["schemas"]["ScoreResponseWithAcc"] | null;
+        };
+        ClanRankingResponseClanResponseFullResponseWithMetadataAndContainer: {
+            metadata: components["schemas"]["Metadata"];
+            data: (components["schemas"]["ClanRankingResponse"])[] | null;
+            container: components["schemas"]["ClanResponseFull"];
+        };
         DifficultyDescription: {
             /** Format: int32 */
             id: number;

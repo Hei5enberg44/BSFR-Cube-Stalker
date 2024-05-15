@@ -23,7 +23,7 @@ export default class ScoreSaber {
      * @param log true|false pour logger la requête
      * @returns résultat de la requête
      */
-    private static async send<T>(url: string, log: boolean = true): Promise<T> {
+    private static async send<T>(url: string, log: boolean = false): Promise<T> {
         let data
         let error = false
         let retries = 0
@@ -190,7 +190,7 @@ export default class ScoreSaber {
      */
     static async getMapCountryLeaderboard(leaderboardId: number, country: string, page: number = 1) {
         try {
-            const data = await this.send<ScoreCollection>(LEADERBOARD_URL + 'by-id/' + leaderboardId + '/scores?countries=' + country + '&page=' + page, false)
+            const data = await this.send<ScoreCollection>(LEADERBOARD_URL + 'by-id/' + leaderboardId + '/scores?countries=' + country + '&page=' + page)
             return data.scores
         } catch(error) {
             throw new ScoreSaberError('Une erreur est survenue lors de la récupération du top 1 du pays sur la map')
@@ -214,7 +214,7 @@ export default class ScoreSaber {
             let nextPage = null
 
             do {
-                const data: PlayerScoreCollection = await this.send<PlayerScoreCollection>(PLAYER_URL + scoreSaberId + '/scores?sort=recent&limit=100&page=' + (nextPage ?? 1), false)
+                const data: PlayerScoreCollection = await this.send<PlayerScoreCollection>(PLAYER_URL + scoreSaberId + '/scores?sort=recent&limit=100&page=' + (nextPage ?? 1))
                 const playerScores = data.playerScores
                 const metadata = data.metadata
 

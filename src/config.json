@@ -8,11 +8,17 @@
         "id": "",
         "channels": {
             "cube-stalker": "",
-            "top-1-pays": ""
+            "top-1-pays": "",
+            "clan-updates": ""
         },
         "roles": {
             "Admin": "",
             "Modérateur": ""
+        }
+    },
+    "beatleader": {
+        "clan": {
+            "id": 0
         }
     },
     "database": {
@@ -21,8 +27,5 @@
         "username": "",
         "password": "",
         "name": ""
-    },
-    "api": {
-        "status": ""
     }
 }
