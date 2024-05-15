@@ -53,7 +53,7 @@ export default class BeatLeaderClan {
                     const parsedData: ClanRanking = JSON.parse(message)
                     await this.processCapture(parsedData)
                 } catch(err) {
-                    console.log(err)
+                    Logger.log('ClanWars', 'ERROR', 'Le traitement du message websocket à échoué')
                 }
             }
         })
@@ -70,17 +70,14 @@ export default class BeatLeaderClan {
     static async processCapture(data: ClanRanking) {
         if(data.message !== 'globalmap') return
 
+        const bsfrClanId = config.beatleader.clan.id
         const captureData = data.data
-        // const changes = captureData.changes !== null ? captureData.changes.filter(c => c.currentCaptorId === 182 || c.previousCaptorId === 182) : null
-        const changes = captureData.changes
-
-        const message = await this.getActionMessage(captureData)
-        if(changes !== null && changes.length > 0 && message !== null)
-            await this.postChangesWithMessage(changes, message)
+        const changes = captureData.changes !== null ? captureData.changes.filter(c => c.currentCaptorId === bsfrClanId || c.previousCaptorId === bsfrClanId) : null
 
         if(changes !== null && changes.length > 0) {
-            if(captureData.score !== null)
-                await this.postChangesWithScore(changes, captureData.score)
+            const message = await this.getActionMessage(captureData)
+            if(message !== null) await this.postChangesWithMessage(changes, message)
+            if(captureData.score !== null) await this.postChangesWithScore(changes, captureData.score)
         }
     }
 
