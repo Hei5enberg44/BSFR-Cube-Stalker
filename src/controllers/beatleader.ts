@@ -9,6 +9,7 @@ type ScoreResponseWithMyScoreResponseWithMetadata = BeatLeaderAPI['schemas']['Sc
 type PlayerResponseWithStatsResponseWithMetadata = BeatLeaderAPI['schemas']['PlayerResponseWithStatsResponseWithMetadata']
 type LeaderboardResponse = BeatLeaderAPI['schemas']['LeaderboardResponse']
 type PlayerResponseClanResponseFullResponseWithMetadataAndContainer = BeatLeaderAPI['schemas']['PlayerResponseClanResponseFullResponseWithMetadataAndContainer']
+type ClanRankingResponseClanResponseFullResponseWithMetadataAndContainer = BeatLeaderAPI['schemas']['ClanRankingResponseClanResponseFullResponseWithMetadataAndContainer']
 
 interface PlaylistResponse {
     playlistTitle: string,
@@ -354,6 +355,20 @@ export default class BeatLeader {
             return data
         } catch(error) {
             throw new BeatLeaderError('Une erreur est survenue lors de la récupération des informations du clan')
+        }
+    }
+
+    /**
+     * Récupération des maps à conquerir pour la guerre de clan BeatLeader
+     * @param clanId identifiant du clan BeatLeader
+     */
+    static async getClanMaps(clanId: number, count: number = 100) {
+        try {
+            const data = await this.send<ClanRankingResponseClanResponseFullResponseWithMetadataAndContainer>(`${CLAN_URL}id/${clanId}/maps?page=1&count=${count}&sortBy=toconquer`)
+
+            return data.data
+        } catch(error) {
+            throw new BeatLeaderError('Une erreur est survenue lors de la récupération des maps du clan')
         }
     }
 }

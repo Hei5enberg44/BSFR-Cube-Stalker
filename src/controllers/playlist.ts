@@ -4,6 +4,7 @@ import beatsaver from '../controllers/beatsaver.js'
 import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
 import { PlayerData } from '../interfaces/player.interface.js'
 import { createCanvas, loadImage } from 'canvas'
+import config from '../config.json' assert { type: 'json' }
 
 type PlaylistFull = {
     playlistTitle: string,
@@ -22,7 +23,8 @@ type PlaylistSong = {
 enum PlaylistType {
     Played,
     Ranked,
-    Snipe
+    Snipe,
+    ClanWars
 }
 
 export default class Playlist {
@@ -60,6 +62,15 @@ export default class Playlist {
 
                 const ldIcon = await loadImage(`./assets/images/card/${leaderboard === Leaderboards.ScoreSaber ? 'ss' : (leaderboard === 'beatleader' ? 'bl' : '')}.png`)
                 ctx.drawImage(ldIcon, canvas.width - 70, 10, 60, 60)
+
+                const pepeBox = await loadImage(`./assets/images/pepe_box.png`)
+                ctx.drawImage(pepeBox, 0, canvas.height - pepeBox.height, pepeBox.width, pepeBox.height)
+
+                break
+            }
+            case PlaylistType.ClanWars: {
+                const ldIcon = await loadImage(`./assets/images/card/${leaderboard === Leaderboards.ScoreSaber ? 'ss' : (leaderboard === 'beatleader' ? 'bl' : '')}.png`)
+                ctx.drawImage(ldIcon, 0, 0, 300, 300)
 
                 const pepeBox = await loadImage(`./assets/images/pepe_box.png`)
                 ctx.drawImage(pepeBox, 0, canvas.height - pepeBox.height, pepeBox.width, pepeBox.height)
@@ -194,6 +205,43 @@ export default class Playlist {
             if(index < 0) {
                 hashes.push(score.songHash)
                 const song = { hash: score.songHash, songName: songName, difficulties: [{ characteristic: 'Standard', name: diff }] }
+                playlist.songs.push(song)
+            } else {
+                const song = playlist.songs[index]
+                const difficulty = { characteristic: 'Standard', name: diff }
+                song.difficulties.push(difficulty)
+            }
+        }
+
+        return playlist
+    }
+
+    static async getClan() {
+        const bsfrClanId = config.beatleader.clan.id
+        const clanMaps = await beatleader.getClanMaps(bsfrClanId)
+
+        if(!clanMaps || clanMaps.length === 0) throw new PlaylistError('Aucune map à conquerir n\'a été trouvée')
+
+        // Génération du fichier playlist
+        const playlistName = `[BeatLeader] Guerre de clans`
+
+        const playlist: PlaylistFull = {
+            playlistTitle: playlistName,
+            playlistAuthor: this.playlistAuthor,
+            playlistDescription: this.getDescription(),
+            image: await this.getImage(PlaylistType.ClanWars, Leaderboards.BeatLeader),
+            songs: []
+        }
+
+        const hashes = []
+        for(const map of clanMaps) {
+            const songName = `${map.leaderboard.song.name}${map.leaderboard.song.subName !== '' ? ` ${map.leaderboard.song.subName}` : ''} - ${map.leaderboard.song.author}`
+            const diff = map.leaderboard.difficulty.difficultyName.toLowerCase().replace('expertplus', 'expertPlus')
+
+            const index = hashes.indexOf(map.leaderboard.song.hash)
+            if(index < 0) {
+                hashes.push(map.leaderboard.song.hash)
+                const song = { hash: map.leaderboard.song.hash, songName: songName, difficulties: [{ characteristic: 'Standard', name: diff }] }
                 playlist.songs.push(song)
             } else {
                 const song = playlist.songs[index]
