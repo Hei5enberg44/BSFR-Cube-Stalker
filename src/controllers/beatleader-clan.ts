@@ -82,7 +82,7 @@ export default class BeatLeaderClan {
     }
 
     static async getActionMessage(captureData: ClanRankingData) {
-        if(captureData.playerAction === GlobalMapEvent.ranked) return 'Un nouveau lot de maps a été classé:'
+        if(captureData.playerAction === GlobalMapEvent.ranked) return 'Un nouveau lot de maps a été classé, ce qui a'
         if(captureData.playerId === null) return null
 
         const player = await beatleader.getPlayerData(captureData.playerId)
@@ -124,12 +124,12 @@ export default class BeatLeaderClan {
                 const songDifficulty = leaderboard?.difficulty.difficultyName
 
                 if(!currentCaptor)
-                    message += 'impliqué une égalité sur '
+                    message += 'effectué une égalité sur '
                 else
                     message += 'capturé '
 
                 if(songName && songDifficulty)
-                    message += `${hyperlink(`[${songName} - ${songDifficulty}]`, `https://beatleader.net/leaderboard/clanranking/${change.leaderboardId}`)} `
+                    message += `${hyperlink(`[${songName} - ${songDifficulty}]`, `https://beatleader.net/leaderboard/clanranking/${change.leaderboardId}`)}`
 
                 if(currentCaptor) {
                     message += ` pour ${bold(`[${currentCaptor.container.tag}]`)}`
@@ -164,7 +164,7 @@ export default class BeatLeaderClan {
 
             let message = `${bold(player.name)} `
             if(!currentCaptor)
-                message += 'impliqué une égalité sur '
+                message += 'a effectué une égalité sur '
             else
                 message += `${bold(`[${currentCaptor.container.tag}]`)} a capturé `
 
@@ -176,7 +176,7 @@ export default class BeatLeaderClan {
             if(currentCaptor) {
                 if(previousCaptor)
                     message += `Reprenant la map à ${bold(`[${previousCaptor.container.tag}]`)}`
-                message += ` ce qui amène ${bold(`[${currentCaptor.container.tag}]`)} à ${Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(currentCaptor.container.rankedPoolPercentCaptured * 100)}% de domination mondiale!`
+                message += ` ce qui amène ${bold(`[${currentCaptor.container.tag}]`)} à ${Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(currentCaptor.container.rankedPoolPercentCaptured * 100)}% de domination mondiale !`
             }
 
             const gif = change.leaderboardId ? await this.getAnimatedScreenshot(change.leaderboardId) : null
