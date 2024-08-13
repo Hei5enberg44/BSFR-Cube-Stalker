@@ -218,13 +218,13 @@ export default class BeatLeaderClan {
         const totalFrames = duration * frameRate
         const delayBetweenFrames = 1000 / frameRate
 
-        const frames = []
+        const frames: Buffer[] = []
 
         await new Promise(res => setTimeout(res, 600))
 
         for(let i = 0; i < totalFrames; i++) {
             const screenshot = await page.screenshot({ omitBackground: true })
-            if(screenshot.subarray(100, -100).find((value) => value !== 0)) frames.push(screenshot)
+            if(screenshot.subarray(100, -100).find((value) => value !== 0)) frames.push(Buffer.from(screenshot))
             await new Promise(res => setTimeout(res, delayBetweenFrames))
         }
 
