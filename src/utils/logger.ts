@@ -33,7 +33,7 @@ export default class Logger {
      * @param level niveau de log (INFO, WARNING, ERROR)
      * @param content log à formatter
      */
-    static log(scope: string, level: string, content: string) {
+    static log(scope: string, level: 'INFO' | 'WARNING' | 'ERROR', content: string) {
         const date = this.date()
 
         const _scope = chalk.blackBright(scope)
