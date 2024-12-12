@@ -23,7 +23,7 @@ export default {
             await BeatLeaderOAuth.sendClanInvitation(playerProfil.id)
             Logger.log('BeatLeaderOAuth', 'INFO', `Une invitation à rejoindre le clan BSFR a été envoyée au joueur « ${playerProfil.name} »`)
             
-            await interaction.editReply({ content: 'Invitation envoyée' })
+            await interaction.editReply({ content: 'Invitation envoyée ! [Cliquez ici](https://beatleader.xyz/clans) pour accepter l\'invitation.' })
         } catch(error) {
             if(error.name === 'MODAL_SUBMISSION_ERROR' || error.name === 'BEATLEADER_ERROR' || error.name === 'PLAYER_ERROR') {
                 throw new ModalError(error.message, interaction.customId)
