@@ -38,7 +38,7 @@ export default {
             const profilUrlInput = new TextInputBuilder()
                 .setCustomId('url')
                 .setLabel('Lien du profil')
-                .setPlaceholder(leaderboardChoice === 'scoresaber' ? 'https://scoresaber.com/u/76561198796531407' : 'https://www.beatleader.xyz/u/76561199233450694')
+                .setPlaceholder(leaderboardChoice === 'scoresaber' ? 'https://scoresaber.com/u/76561198796531407' : 'https://beatleader.xyz/u/76561199233450694')
                 .setMinLength(25)
                 .setMaxLength(100)
                 .setStyle(TextInputStyle.Short)

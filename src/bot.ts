@@ -65,6 +65,7 @@ try {
             const crons = new Crons(client)
             await crons.refreshLeaderboard()
             await crons.getLastRankedMaps()
+            await crons.checkBeatLeaderOAuthTokens()
 
             // Top 1 pays
             Top1.listen(client)

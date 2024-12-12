@@ -191,6 +191,30 @@ const CardsModel = sequelize.define<CardsModel>('cards', {
     status: DataTypes.INTEGER()
 })
 
+interface OAuthModel extends Model<InferAttributes<OAuthModel>, InferCreationAttributes<OAuthModel>> {
+    id: CreationOptional<number>,
+    name: string,
+    client_id: string,
+    client_secret: string,
+    access_token: string,
+    refresh_token: string,
+    expires: number
+}
+
+const OAuthModel = sequelize.define<OAuthModel>('oauth', {
+    id: {
+        type: DataTypes.INTEGER(),
+        autoIncrement: true,
+        primaryKey: true
+    },
+    name: DataTypes.STRING(255),
+    client_id: DataTypes.STRING(255),
+    client_secret: DataTypes.STRING(255),
+    access_token: DataTypes.TEXT(),
+    refresh_token: DataTypes.TEXT(),
+    expires: DataTypes.INTEGER()
+})
+
 export {
     CooldownModel,
     PlayerModel,
@@ -198,5 +222,6 @@ export {
     BeatLeaderPlayerScoresModel,
     LeaderboardModel,
     RankedModel,
-    CardsModel
+    CardsModel,
+    OAuthModel
 }

@@ -3,6 +3,8 @@ import { Client, Guild } from 'discord.js'
 import leaderboard from './leaderboard.js'
 import beatsaver from './beatsaver.js'
 import { Leaderboards } from './gameLeaderboard.js'
+import { BeatLeaderOAuth } from './beatleader-oauth.js'
+import { OAuthModel } from './database.js'
 import Logger from '../utils/logger.js'
 import config from '../config.json' assert { type: 'json' }
 
@@ -49,5 +51,21 @@ export default class Crons {
         }, null, true, 'Europe/Paris')
 
         Logger.log('CronManager', 'INFO', 'Tâche "getLastRankedMaps" chargée')
+    }
+
+    /**
+     * Vérification de la validité des tokens OAuth et actualisation de ceux-ci si nécessaire
+     */
+    async checkBeatLeaderOAuthTokens() {
+        new CronJob('* * * * *', async function() {
+            const tokens = await OAuthModel.findAll()
+            for(const token of tokens) {
+                if(token.name.match(/^beatleader_/)) {
+                    await BeatLeaderOAuth.checkToken(token)
+                }
+            }
+        }, null, true, 'Europe/Paris')
+
+        Logger.log('CronManager', 'INFO', 'Tâche "checkBeatLeaderOAuthTokens" chargée')
     }
 }
