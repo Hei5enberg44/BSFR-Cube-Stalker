@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.26.3-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.27.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
@@ -28,10 +28,17 @@ Compléter le fichier `config.json` à la racine du projet avec les données cor
 
 Permet d'afficher la liste des commandes et leur fonction.
 
+__Paramètres :__
+
+|    Nom    | Obligatoire | Contenu |
+| --------- |:-----------:| ------- |
+| **page** |   | Numéro de page à afficher |
+
 __Exemples :__
 
 ```
 /help
+/help page:2
 ```
 
 ***
@@ -287,10 +294,24 @@ __Exemples :__
 /forcerefresh
 ```
 
+***
+
+- ### /clan invitation : Envoi une invitation au joueur à rejoindre le clan BSFR sur BeatLeader
+
+Permet d'envoyer une demande au joueur à rejoindre le clan BSFR sur BeatLeader.
+Après avoir exécuter la commande, le joueur peut ensuite accepter l'invitation depuis ses notifications sur le site de BeatLeader.
+
+__Exemples :__
+
+```
+/clan invitation
+```
+
 ## Auteur
 
-👤 **Hei5enberg#6969**
+👤 **hei5enberg**
 
 * Site Web: [bsaber.fr](https://bsaber.fr)
 * Twitter: [@BltAntoine](https://twitter.com/BltAntoine)
+* BlueSky: [@hei5enberg.bsky.social](https://bsky.app/profile/hei5enberg.bsky.social)
 * Github: [@hei5enberg44](https://github.com/hei5enberg44)
