@@ -36,7 +36,7 @@ export default {
                         await interaction.deferReply({ ephemeral: true })
                         await BeatLeaderOAuth.sendClanInvitation(player.playerId)
                         Logger.log('BeatLeaderOAuth', 'INFO', `Une invitation à rejoindre le clan BSFR a été envoyée au joueur « ${player.playerName} »`)
-                        await interaction.editReply({ content: 'Invitation envoyée' })
+                        await interaction.editReply({ content: 'Invitation envoyée ! [Cliquez ici](https://beatleader.xyz/clans) pour accepter l\'invitation.' })
                     } else {
                         const modal = new ModalBuilder()
                             .setCustomId('blClanInvite')
