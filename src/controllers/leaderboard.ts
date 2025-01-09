@@ -329,7 +329,7 @@ export default class Leaderboard {
 
             if(member) {
                 const pp = playerData.banned ? 0 : playerData.pp
-                await roles.updateMemberPpRoles(member, pp)
+                await roles.updateMemberPpRoles(leaderboardName, member, pp)
 
                 Logger.log('Leaderboard', 'INFO', `Actualisation du joueur "${p.playerName}" terminée`)
             } else {

@@ -1,10 +1,8 @@
-import { components as BeatSaverAPI } from '../api/beatsaver.js'
+import { MapDetail, SearchResponse } from '../api/beatsaver.js'
 import { RankedModel } from './database.js'
+import { Leaderboards } from './gameLeaderboard.js'
 import { BeatSaverError } from '../utils/error.js'
 import Logger from '../utils/logger.js'
-
-type MapDetail = BeatSaverAPI['schemas']['MapDetail']
-type SearchResponse = BeatSaverAPI['schemas']['SearchResponse']
 
 const BEATSAVER_API_URL = 'https://api.beatsaver.com/'
 const MAPS_HASH_URL = BEATSAVER_API_URL + 'maps/hash/'
@@ -89,12 +87,14 @@ export default class BeatSaver {
 
     /**
      * Récupère les maps ranked en fonction de différents critères de recherche
+     * @param leaderboard choix du leaderboard
      * @param starsMin nombre d'étoiles minimum
      * @param starsMax nombre d'étoiles maximum
      * @returns liste des maps ranked
      */
-    static async searchRanked(starsMin: number = 0, starsMax: number = 16) {
+    static async searchRanked(leaderboard: Leaderboards, starsMin: number = 0, starsMax: number = 16) {
         const ranked = await RankedModel.findAll({
+            where: { leaderboard },
             order: [
                 [ 'map.updatedAt', 'desc' ]
             ],
@@ -107,9 +107,8 @@ export default class BeatSaver {
             if(diffsFiltered.length > 0) {
                 version.diffs = diffsFiltered
                 return true
-            } else {
-                return false
             }
+            return false
         })
 
         return rankedFiltered.map(rf => rf.map)
@@ -119,28 +118,26 @@ export default class BeatSaver {
      * Récupère les dernières maps ranked puis les insert en base de données
      * @returns nombre de nouvelles maps ranked ajoutées en base de données
      */
-    static async getLastRanked() {
-        let newMaps = 0
-
+    static async getRanked(leaderboard: Leaderboards) {
         let page: number|null = 0
         let end = false
 
         do {
             const params = new URLSearchParams({
-                ranked: 'true',
-                sortOrder: 'Latest'
+                leaderboard: leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader',
+                sortOrder: 'Latest',
+                pageSize: '100'
             }).toString()
             const data = await this.send<SearchResponse>(SEARCH_MAPS_URL + `${page}?${params}`)
 
-            for(const map of data.docs) {
-                const exists = await RankedModel.findOne({ where: { 'map.id': map.id } })
-                if(!exists) {
-                    await RankedModel.create({ map: map })
-                    newMaps++
-                } else {
-                    end = true
+            const maps = data.docs.map(map => {
+                return {
+                    leaderboard,
+                    map
                 }
-            }
+            })
+
+            await RankedModel.bulkCreate(maps)
 
             if(data.docs.length === 0) end = true
 
@@ -151,7 +148,5 @@ export default class BeatSaver {
                 page = null
             }
         } while(page !== null && !end)
-
-        return newMaps
     }
 }

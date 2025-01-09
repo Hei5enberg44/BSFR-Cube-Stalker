@@ -1,7 +1,8 @@
 import { existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Client, GatewayIntentBits, ActivityType, PresenceUpdateStatus } from 'discord.js'
+import { Client, GatewayIntentBits, ActivityType, PresenceUpdateStatus, Guild } from 'discord.js'
+import Config from './controllers/config.js'
 import Commands from './controllers/commands.js'
 import Events from './controllers/events.js'
 import Modals from './controllers/modals.js'
@@ -46,6 +47,14 @@ try {
                     process.exit(1)
                 }
             }
+
+            const guild = <Guild>client.guilds.cache.get(config.guild.id)
+            await guild.members.fetch()
+            await guild.channels.fetch()
+            await guild.roles.fetch()
+
+            // Test de la configuration
+            Config.test(guild)
         
             // Chargement des commandes
             const commands = new Commands(client)
@@ -64,7 +73,7 @@ try {
             // Tâches planifiées
             const crons = new Crons(client)
             await crons.refreshLeaderboard()
-            await crons.getLastRankedMaps()
+            await crons.getRankedMaps()
             await crons.checkBeatLeaderOAuthTokens()
 
             // Top 1 pays
@@ -89,7 +98,11 @@ try {
         
         client.login(config.token)
     } catch(error) {
-        Logger.log('Discord', 'ERROR', `Une erreur est survenue : ${error.message}`)
+        if(error.name === 'CONFIG_ERROR') {
+            process.exit(1)
+        } else {
+            Logger.log('Discord', 'ERROR', `Une erreur est survenue : ${error.message}`)
+        }
     }
 } catch(error) {
     Logger.log('Application', 'ERROR', `Démarrage du bot impossible : ${error.message}`)

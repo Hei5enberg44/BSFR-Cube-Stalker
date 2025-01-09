@@ -34,6 +34,11 @@ export default {
                         )
                         .setRequired(true)
                 )
+                .addUserOption(option =>
+                    option.setName('joueur')
+                        .setDescription('Génère une playlist pour un autre joueur')
+                        .setRequired(false)
+                )
                 .addNumberOption(option =>
                     option.setName('stars_min')
                         .setDescription('Nombre d\'étoiles minimum')
@@ -134,6 +139,7 @@ export default {
             switch(action) {
                 case 'played': {
                     const leaderboardChoice = interaction.options.getString('leaderboard', true) as Leaderboards
+                    const targetMember = interaction.options.getUser('joueur')
                     const playedSubCommand = <APIApplicationCommandSubcommandOption>this.data.options.find(o => o.toJSON().name === 'played')?.toJSON()
                     const playedOptions = <APIApplicationCommandBasicOption[]>playedSubCommand.options
                     const starsMin = interaction.options.getNumber('stars_min') ?? (<APIApplicationCommandNumberOption>playedOptions.find(o => o.name === 'stars_min')).min_value as number
@@ -141,8 +147,8 @@ export default {
                     const accMin = interaction.options.getNumber('acc_min') ?? (<APIApplicationCommandNumberOption>playedOptions.find(o => o.name === 'acc_min')).min_value as number
                     const accMax = interaction.options.getNumber('acc_max') ?? (<APIApplicationCommandNumberOption>playedOptions.find(o => o.name === 'acc_max')).max_value as number
 
-                    // Identifiant du membre exécutant la commande
-                    const memberId = interaction.user.id
+                    // Identifiant du membre pour lequel générer la playlist
+                    const memberId = targetMember ? targetMember.id : interaction.user.id
 
                     // Informations sur le membre
                     const member = await players.get(memberId, leaderboardChoice)

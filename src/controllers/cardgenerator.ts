@@ -15,6 +15,13 @@ registerFont('./assets/fonts/Poppins-SemiBold.ttf', { family: 'Poppins-SemiBold'
 
 type difficulties = 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus'
 
+enum MemberCardStatus {
+    Preview = 0,
+    Pending = 1,
+    Approved = 2,
+    Denied = 3
+}
+
 const getDiffColor = (diff: difficulties) => {
     switch(diff) {
         case 'Easy':
@@ -47,7 +54,7 @@ const roundedImage = (ctx: CanvasRenderingContext2D, x: number, y: number, width
 const getMemberCard = async (member: GuildMember) => {
     if(member.premiumSince === null && !member.roles.cache.find(r => r.id === config.guild.roles['Admin'] || r.id === config.guild.roles['Modérateur'])) return null
     const card = await CardsModel.findOne({
-        where: { memberId: member.id, status: 1 }
+        where: { memberId: member.id, status: MemberCardStatus.Approved }
     })
     return card ? card.image : null
 }
@@ -115,7 +122,7 @@ export default {
             let colorStop = '#d50078'
 
             if(member) {
-                const memberPpRoleColor = roles.getMemberPpRoleColor(member)
+                const memberPpRoleColor = roles.getMemberPpRoleColor(leaderboardChoice, member)
                 if(memberPpRoleColor) {
                     colorStart = lightenDarkenColor(memberPpRoleColor, -80)
                     colorStop = lightenDarkenColor(memberPpRoleColor, 0)

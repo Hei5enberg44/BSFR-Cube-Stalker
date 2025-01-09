@@ -1,6 +1,6 @@
 import { components as ScoreSaberAPI } from '../api/scoresaber.js'
 import { components as BeatLeaderAPI } from '../api/beatleader.js'
-import { components as BeatSaverAPI } from '../api/beatsaver.js'
+import { MapDetail } from '../api/beatsaver.js'
 import { Sequelize, DataTypes, Model, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize'
 import { DatabaseError } from '../utils/error.js'
 import config from '../config.json' assert { type: 'json' }
@@ -157,10 +157,9 @@ const LeaderboardModel = sequelize.define<LeaderboardModel>('leaderboard', {
     serverRankPP: DataTypes.INTEGER()
 })
 
-type MapDetail = BeatSaverAPI['schemas']['MapDetail']
-
 interface RankedModel extends Model<InferAttributes<RankedModel>, InferCreationAttributes<RankedModel>> {
     id: CreationOptional<number>,
+    leaderboard: string,
     map: MapDetail
 }
 
@@ -170,6 +169,7 @@ const RankedModel = sequelize.define<RankedModel>('ranked', {
         autoIncrement: true,
         primaryKey: true
     },
+    leaderboard: DataTypes.STRING(255),
     map: DataTypes.JSON()
 })
 

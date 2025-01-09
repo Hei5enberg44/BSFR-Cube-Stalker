@@ -9,6 +9,15 @@ export default {
     data: new SlashCommandBuilder()
         .setName('forcerefresh')
         .setDescription('Actualise l\'ensemble du serveur')
+        .addStringOption(option =>
+            option.setName('leaderboard')
+                .setDescription('Leaderboard a actualiser')
+                .addChoices([
+                    { name: 'ScoreSaber', value: 'scoresaber' },
+                    { name: 'BeatLeader', value: 'beatleader' }
+                ])
+                .setRequired(true)
+        )
         .setDMPermission(false)
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
     ,
@@ -22,7 +31,7 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const leaderboardChoice = Leaderboards.ScoreSaber
+            const leaderboardChoice = interaction.options.getString('leaderboard') as Leaderboards
 
             const guild = <Guild>interaction.guild
 
@@ -32,7 +41,6 @@ export default {
 
             await interaction.reply({ embeds: [embed] })
 
-            await guild.members.fetch()
             const members = guild.members.cache
             await leaderboard.refreshLeaderboard(leaderboardChoice, members)
 

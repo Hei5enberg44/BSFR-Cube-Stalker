@@ -1,4 +1,5 @@
 import { Op } from 'sequelize'
+import { time, TimestampStyles } from 'discord.js'
 import { CooldownModel } from './database.js'
 import { CooldownError } from '../utils/error.js'
 
@@ -21,7 +22,7 @@ export default class Cooldown {
      * @param commandName nom de la commande
      * @param memberId identifiant du membre
      * @param duration durée du cooldown
-     * @returns informations sur le cooldown
+     * @returns date d'expiration du cooldown
      */
     static async checkCooldown(commandName: string, memberId: string, duration: number) {
         const date = Math.floor(new Date().getTime() / 1000)
@@ -36,16 +37,10 @@ export default class Cooldown {
             }
         })
 
-        if(cd) {
-            if(cd.expirationDate > date) throw new CooldownError(`Vous ne pouvez pas encore exécuter la commande \`/${commandName}\`\nVous pourrez exécuter cette commande de nouveau le \`${millisecondsToDate(cd.expirationDate)}\``)
-        }
+        if(cd && cd.expirationDate > date)
+            throw new CooldownError(`Vous ne pouvez pas encore exécuter la commande \`/${commandName}\`\nVous pourrez exécuter cette commande de nouveau \`${time(cd.expirationDate, TimestampStyles.RelativeTime)}\``)
 
-        const expirationDate = date + duration
-
-        return {
-            timestamp: expirationDate,
-            date: millisecondsToDate(expirationDate)
-        }
+        return date + duration
     }
 
     /**

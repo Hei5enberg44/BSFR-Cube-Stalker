@@ -1,4 +1,4 @@
-import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, ApplicationCommand, chatInputApplicationCommandMention, userMention, bold, hyperlink, GuildMember } from 'discord.js'
+import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, ApplicationCommand, chatInputApplicationCommandMention, userMention, bold, GuildMember } from 'discord.js'
 import Embed from '../utils/embed.js'
 import { CommandError, CommandInteractionError } from '../utils/error.js'
 import roles from '../controllers/roles.js'
@@ -152,7 +152,7 @@ export default {
 
             // On met à jour les rôles du membre en fonction de son nombre de pp
             const memberToUpdate = (targetMember ? guild.members.cache.find(m => m.id === targetMember.id) : interaction.member)  as GuildMember
-            if(leaderboardChoice === Leaderboards.ScoreSaber) await roles.updateMemberPpRoles(memberToUpdate, playerData.pp)
+            await roles.updateMemberPpRoles(leaderboardChoice, memberToUpdate, playerData.pp)
 
             // On affiche les informations du joueur
             const ldIconName = leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : (leaderboardChoice === 'beatleader' ? 'bl' : '')
@@ -160,7 +160,7 @@ export default {
             const ldIconId = ldIcon?.id
 
             embeds.push(new Embed()
-                .setColor(roles.getMemberPpRoleColor(memberToUpdate) ?? memberToUpdate.displayHexColor)
+                .setColor(roles.getMemberPpRoleColor(leaderboardChoice, memberToUpdate) ?? memberToUpdate.displayHexColor)
                 .setTitle(`${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} Profil de ${playerData.name}`)
                 .setURL(playerData.url)
                 .setDescription(progressStatus.map(p => `- ${p}`).join('\n'))

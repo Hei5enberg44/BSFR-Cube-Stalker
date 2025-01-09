@@ -1,22 +1,31 @@
 import { GuildMember } from 'discord.js'
+import { Leaderboards } from './gameLeaderboard.js'
+import config from '../config.json' assert { type: 'json' }
 
 export default class Roles {
+    private static ldRoleExists<T extends object>(key: string | number | symbol, obj: T): key is keyof T {
+        return key in obj
+    }
+
     /**
      * Récupère la liste des rôles de pp d'un membre
+     * @param leaderboard nom du leaderboard (scoresaber | beatleader)
      * @param member membre Discord
      * @returns rôle de pp le plus élevé du membre
      */
-    private static getMemberPpRoles(member: GuildMember) {
-        const roles = member.roles.cache.filter(role => role.name.match(/^[0-9\s]+pp$/))
+    private static getMemberPpRoles(leaderboard: Leaderboards, member: GuildMember) {
+        const ldRoles = leaderboard === Leaderboards.ScoreSaber ? config.guild.roles.pp.scoresaber : config.guild.roles.pp.beatleader
+        const roles = member.roles.cache.filter(role => Object.values(ldRoles).includes(role.id))
         return roles
     }
 
     /**
      * Récupère la couleur du rôle de pp le plus élevé d'un membre
+     * @param leaderboard nom du leaderboard (scoresaber | beatleader)
      * @param member membre Discord
      */
-    static getMemberPpRoleColor(member: GuildMember) {
-        const memberPpRoles = this.getMemberPpRoles(member)
+    static getMemberPpRoleColor(leaderboard: Leaderboards, member: GuildMember) {
+        const memberPpRoles = this.getMemberPpRoles(leaderboard, member)
 
         if(memberPpRoles.size > 0) {
             const memberPpRolesSorted = memberPpRoles.sort((r1, r2) => parseInt((r1.name).replace(/(\s|pp)/, '')) - parseInt((r2.name).replace(/(\s|pp)/, '')))
@@ -28,11 +37,13 @@ export default class Roles {
 
     /**
      * Met à jour les rôles de pp d'un membre
+     * @param leaderboard nom du leaderboard (scoresaber | beatleader)
      * @param member membre Discord à mettre à jour
      * @param pp nombre de pp du membre
      */
-    static async updateMemberPpRoles(member: GuildMember, pp: number) {
-        const memberPpRoles = this.getMemberPpRoles(member)
+    static async updateMemberPpRoles(leaderboard: Leaderboards, member: GuildMember, pp: number) {
+        const ldRoles = leaderboard === Leaderboards.ScoreSaber ? config.guild.roles.pp.scoresaber : config.guild.roles.pp.beatleader
+        const memberPpRoles = this.getMemberPpRoles(leaderboard, member)
 
         // On détermine la liste des rôles de pp à assigner au membre
         const t = Math.floor(pp / 1000)
@@ -45,8 +56,7 @@ export default class Roles {
         // Si l'utilisateur n'a pas déjà les bons rôles, on met à jour ceux-ci
         if(!(oldPpRoles.length === newPpRoles.length && oldPpRoles.every((m, i) => m === newPpRoles[i]))) {
             // Liste des rôles du serveur
-            await member.guild.roles.fetch()
-            const roles = member.guild.roles.cache
+            const roles = await member.guild.roles.fetch()
 
             // Suppression des rôles de pp au membre
             for(const [, role] of memberPpRoles) {
@@ -56,19 +66,17 @@ export default class Roles {
                     newPpRoles.splice(roleSearch, 1)
                 } else {
                     // Sinon, on le supprime
-                    const roleToDelete = roles.find(r => r.name === role.name)
-                    if(roleToDelete) {
-                        await member.roles.remove(roleToDelete)
-                    }
+                    const roleId = this.ldRoleExists(role.name, ldRoles) ? ldRoles[role.name] : null
+                    const roleToDelete = roleId ? roles.find(r => r.id === roleId) : null
+                    if(roleToDelete) await member.roles.remove(roleToDelete)
                 }
             }
 
             // Ajout des rôles de pp au membre
             for(const roleName of newPpRoles) {
-                const roleToAdd = roles.find(r => r.name === roleName)
-                if(roleToAdd) {
-                    await member.roles.add(roleToAdd)
-                }
+                const roleId = this.ldRoleExists(roleName, ldRoles) ? ldRoles[roleName] : null
+                const roleToAdd = roleId ? roles.find(r => r.id === roleId) : null
+                if(roleToAdd) await member.roles.add(roleToAdd)
             }
         }
     }
