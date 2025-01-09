@@ -4,7 +4,7 @@ import leaderboard from './leaderboard.js'
 import beatsaver from './beatsaver.js'
 import { Leaderboards } from './gameLeaderboard.js'
 import { BeatLeaderOAuth } from './beatleader-oauth.js'
-import { OAuthModel } from './database.js'
+import { OAuthModel, RankedModel } from './database.js'
 import Logger from '../utils/logger.js'
 import config from '../config.json' assert { type: 'json' }
 
@@ -22,35 +22,38 @@ export default class Crons {
     async refreshLeaderboard() {
         const client = this.client
 
-        new CronJob('0 */12 * * *', async function() {
-            Logger.log('Leaderboard', 'INFO', 'Actualisation du classement des joueurs du serveur')
-
+        new CronJob('0 0 * * *', async function() {
             const guild = <Guild>client.guilds.cache.find(g => g.id === config.guild.id)
 
-            await guild.members.fetch()
             const members = guild.members.cache
 
+            Logger.log('Leaderboard', 'INFO', 'Actualisation du classement ScoreSaber des joueurs du serveur')
             await leaderboard.refreshLeaderboard(Leaderboards.ScoreSaber, members)
+            Logger.log('Leaderboard', 'INFO', 'Actualisation du classement ScoreSaber des joueurs du serveur terminée')
 
-            Logger.log('Leaderboard', 'INFO', 'Actualisation du classement des joueurs du serveur terminée')
+            Logger.log('Leaderboard', 'INFO', 'Actualisation du classement BeatLeader des joueurs du serveur')
+            await leaderboard.refreshLeaderboard(Leaderboards.BeatLeader, members)
+            Logger.log('Leaderboard', 'INFO', 'Actualisation du classement BeatLeader des joueurs du serveur terminée')
         }, null, true, 'Europe/Paris')
 
         Logger.log('CronManager', 'INFO', 'Tâche "refreshLeaderboard" chargée')
     }
 
     /**
-     * Requête l'api de BeatSaver afin de récupérer les dernières maps ranked
+     * Requête l'api de BeatSaver afin de mettre à jour les maps ranked
      */
-    async getLastRankedMaps() {
-        new CronJob('0 0 * * *', async function() {
-            Logger.log('BeatSaver', 'INFO', 'Recherche de nouvelles maps ranked')
+    async getRankedMaps() {
+        new CronJob('59 17 * * *', async function() {
+            Logger.log('BeatSaver', 'INFO', 'Actualisation des maps ranked')
 
-            const newMaps = await beatsaver.getLastRanked()
+            await RankedModel.truncate({ force: true })
+            await beatsaver.getRanked(Leaderboards.ScoreSaber)
+            await beatsaver.getRanked(Leaderboards.BeatLeader)
 
-            Logger.log('BeatSaver', 'INFO', `Recherche de nouvelles maps ranked terminée : ${newMaps} nouvelles maps ranked ont été ajoutées en base de données.`)
+            Logger.log('BeatSaver', 'INFO', `Actualisation des maps ranked terminée.`)
         }, null, true, 'Europe/Paris')
 
-        Logger.log('CronManager', 'INFO', 'Tâche "getLastRankedMaps" chargée')
+        Logger.log('CronManager', 'INFO', 'Tâche "getRankedMaps" chargée')
     }
 
     /**

@@ -1,4 +1,4 @@
-import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, GuildMember, GuildMemberRoleManager, MessageReaction, User, userMention } from 'discord.js'
+import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, GuildMember, GuildMemberRoleManager, MessageReaction, time, TimestampStyles, User, userMention } from 'discord.js'
 import Embed from '../utils/embed.js'
 import { CommandError, CommandInteractionError } from '../utils/error.js'
 import cooldown from '../controllers/cooldown.js'
@@ -57,7 +57,7 @@ export default {
 
             // On demande confirmation pour exécuter la commande
             let embedDesctiption = member.id === interaction.user.id ? `⚠️ Êtes-vous sûr(e) de vouloir délier votre profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} ?` : `⚠️ Êtes-vous sûr(e) de vouloir délier le profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} pour le membre ${userMention(member.id)} ?`
-            if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau le \`${cd.date}\``
+            if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau \`${time(cd, TimestampStyles.RelativeTime)}\``
             
             let embed = new Embed()
                     .setColor('#2ECC71')
@@ -77,19 +77,19 @@ export default {
                     if(reaction) {
                         if(reaction.emoji.name === '✅') {
                             // On ajoute le cooldown si le membre exécutant la commande n'a pas le rôle Admin ou Modérateur
-                            if(cd) await cooldown.addCooldown(`unlink_${leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : 'bl'}`, interaction.user.id, cd.timestamp)
+                            if(cd) await cooldown.addCooldown(`unlink_${leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : 'bl'}`, interaction.user.id, cd)
 
                             // On délie le profil ScoreSaber ou BeatLeader du membre
                             await players.remove(member.id, leaderboardChoice)
 
                             // On supprime les rôles pp du membre
                             const memberToUpdate = <GuildMember>guild.members.cache.find(m => m.id === member.id)
-                            await roles.updateMemberPpRoles(memberToUpdate, 0)
+                            await roles.updateMemberPpRoles(leaderboardChoice, memberToUpdate, 0)
 
                             await confirmMessage.reactions.removeAll()
 
                             embedDesctiption = `✅ Le profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} a bien été délié du compte ${userMention(member.id)}`
-                            if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau le \`${cd.date}\``
+                            if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau \`${time(cd, TimestampStyles.RelativeTime)}\``
 
                             embed = new Embed()
                                     .setColor('#2ECC71')

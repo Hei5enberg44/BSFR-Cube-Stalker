@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.27.1-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.28.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
@@ -219,6 +219,7 @@ __Paramètres :__
 |    Nom    | Obligatoire | Contenu |
 | --------- |:-----------:| ------- |
 | **leaderboard** | ☑ | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
+| **joueur** |   | Génère une playlist pour un autre joueur |
 | **min_stars** |   | Nombre d'étoiles minimum |
 | **max_stars** |   | Nombre d'étoiles maximum |
 | **min_acc** |   | Accuracy minimum |
@@ -288,10 +289,16 @@ __Exemples :__
 
 Permet d'actualiser les rôles de pp de tous les membres ayant lié leur profil ScoreSaber ou BeatLeader avec leur compte Discord.
 
+__Paramètres :__
+
+|    Nom    | Obligatoire | Contenu |
+| --------- |:-----------:| ------- |
+| **leaderboard** | ☑ | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
+
 __Exemples :__
 
 ```
-/forcerefresh
+/forcerefresh leaderboard:ScoreSaber
 ```
 
 ***

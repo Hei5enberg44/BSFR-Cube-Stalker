@@ -1,8 +1,9 @@
 import { WebSocket } from 'ws'
 import { Client, Guild, TextChannel, userMention, bold, hyperlink, time } from 'discord.js'
+import { Leaderboards } from './gameLeaderboard.js'
 import scoresaber from './scoresaber.js'
 import beatsaver from './beatsaver.js'
-import { components } from '../api/beatsaver.js'
+import { MapDetail } from '../api/beatsaver.js'
 import roles from './roles.js'
 import Embed from '../utils/embed.js'
 import { PlayerModel } from './database.js'
@@ -11,8 +12,6 @@ import { Top1Error, ScoreSaberError, BeatSaverError } from '../utils/error.js'
 import { countryCodeEmoji } from '../utils/country-code-emoji.js'
 import Logger from '../utils/logger.js'
 import config from '../config.json' assert { type: 'json' }
-
-type MapDetail = components['schemas']['MapDetail']
 
 const calcAcc = (mapDetail: MapDetail, levelDifficulty: string, levelGameMode: string, score: number) => {
     const notes = mapDetail.versions[mapDetail.versions.length - 1].diffs.filter(diff => diff.difficulty === levelDifficulty && diff.characteristic === levelGameMode)[0].notes
@@ -123,7 +122,7 @@ export default class Top1 {
         await guild.members.fetch()
 
         const member = guild.members.cache.find(m => m.id === top1.memberId)
-        const color = member ? roles.getMemberPpRoleColor(member) : null
+        const color = member ? roles.getMemberPpRoleColor(Leaderboards.ScoreSaber, member) : null
 
         const rankedIconName = 'ss'
         const rankedIcon = guild.emojis.cache.find(e => e.name === rankedIconName)

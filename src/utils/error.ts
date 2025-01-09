@@ -1,5 +1,14 @@
 import Logger from './logger.js'
 
+class ConfigError extends Error {
+    constructor(message: string) {
+        super(message)
+        this.name = 'CONFIG_ERROR'
+        Error.captureStackTrace(this, this.constructor)
+        Logger.log('Config', 'ERROR', this.message)
+    }
+}
+
 class DatabaseError extends Error {
     constructor(message: string) {
         super(message)
@@ -118,6 +127,7 @@ class BeatSaverError extends Error {
 }
 
 export {
+    ConfigError,
     DatabaseError,
     CommandError,
     CommandInteractionError,

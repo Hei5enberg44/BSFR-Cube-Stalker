@@ -141,29 +141,23 @@ export default class Playlist {
             songs: []
         }
 
-        if(leaderboard === Leaderboards.ScoreSaber) {
-            const maps = await beatsaver.searchRanked(starsMin, starsMax)
-            if(maps.length === 0) throw new PlaylistError('Aucune map ranked correspondant aux critères choisis n\'a été trouvée')
+        const maps = await beatsaver.searchRanked(leaderboard, starsMin, starsMax)
+        
+        if(maps.length === 0) throw new PlaylistError('Aucune map ranked correspondant aux critères choisis n\'a été trouvée')
 
-            for(const map of maps) {
-                const version = map.versions[map.versions.length - 1]
-                const hash = version.hash
-                const songName = `${map.metadata.songName}${map.metadata.songSubName !== '' ? ` ${map.metadata.songSubName}` : ''} - ${map.metadata.levelAuthorName}`
-                const difficulties = version.diffs.map(d => {
-                    return {
-                        characteristic: d.characteristic,
-                        name: d.difficulty.toLowerCase().replace('expertplus', 'expertPlus')
-                    }
-                })
+        for(const map of maps) {
+            const version = map.versions[map.versions.length - 1]
+            const hash = version.hash
+            const songName = `${map.metadata.songName}${map.metadata.songSubName !== '' ? ` ${map.metadata.songSubName}` : ''} - ${map.metadata.levelAuthorName}`
+            const difficulties = version.diffs.map(d => {
+                return {
+                    characteristic: d.characteristic,
+                    name: d.difficulty.toLowerCase().replace('expertplus', 'expertPlus')
+                }
+            })
 
-                const song = { hash: hash, songName: songName, difficulties: difficulties }
-                playlist.songs.push(song)
-            }
-        } else {
-            const maps = await beatleader.searchRanked(starsMin, starsMax)
-            if(maps.length === 0) throw new PlaylistError('Aucune map ranked correspondant aux critères choisis n\'a été trouvée')
-
-            playlist.songs = maps
+            const song = { hash: hash, songName: songName, difficulties: difficulties }
+            playlist.songs.push(song)
         }
 
         return playlist

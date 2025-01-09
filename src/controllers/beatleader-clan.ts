@@ -18,7 +18,11 @@ enum GlobalMapEvent {
     leave = 5,
     score = 6,
     ranked = 7,
-    priorityChange = 8
+    priorityChange = 8,
+    ban = 9,
+    unban = 10,
+    suspend = 11,
+    unsuspend = 12
 }
 
 export default class BeatLeaderClan {
@@ -86,7 +90,20 @@ export default class BeatLeaderClan {
         if(captureData.playerId === null) return null
 
         const player = await beatleader.getPlayerData(captureData.playerId)
-        if(captureData.playerAction === GlobalMapEvent.priorityChange) return `${player.name} a changé l'ordre du clan ce qui a`
+        switch(captureData.playerAction) {
+            case GlobalMapEvent.priorityChange:
+                return `${player.name} a changé l'ordre du clan ce qui a`
+            case GlobalMapEvent.ban:
+                return `${player.name} a été banni ce qui a`
+            case GlobalMapEvent.unban:
+                return `${player.name} a été débanni ce qui a`
+            case GlobalMapEvent.suspend:
+                return `${player.name} a suspendu son profil ce qui a`
+            case GlobalMapEvent.unsuspend:
+                return `${player.name} a réactivé son profil ce qui a`
+            default:
+                break
+        }
 
         if(captureData.clanId === null) return null
         const clan = await beatleader.getClanById(captureData.clanId)
