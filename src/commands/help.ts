@@ -2,7 +2,7 @@ import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandIntera
 import Embed from '../utils/embed.js'
 import Locales from '../utils/locales.js'
 import { CommandError, CommandInteractionError, PageNotFoundError } from '../utils/error.js'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()

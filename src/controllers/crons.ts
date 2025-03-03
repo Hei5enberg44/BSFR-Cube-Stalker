@@ -6,7 +6,7 @@ import { Leaderboards } from './gameLeaderboard.js'
 import { BeatLeaderOAuth } from './beatleader-oauth.js'
 import { OAuthModel, RankedModel } from './database.js'
 import Logger from '../utils/logger.js'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 export default class Crons {
     private client: Client

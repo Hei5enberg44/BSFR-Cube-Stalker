@@ -7,7 +7,7 @@ import Embed from '../utils/embed.js'
 import beatleader from './beatleader.js'
 import { ClanRanking, ClanRankingData, ClanRankingScore, ClanRankingChange } from '../interfaces/clan.interface.js'
 import Logger from '../utils/logger.js'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 enum GlobalMapEvent {
     create = 0,

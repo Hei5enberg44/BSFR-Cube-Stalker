@@ -4,7 +4,7 @@ import beatsaver from '../controllers/beatsaver.js'
 import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
 import { PlayerData } from '../interfaces/player.interface.js'
 import { createCanvas, loadImage } from 'canvas'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 type PlaylistFull = {
     playlistTitle: string,

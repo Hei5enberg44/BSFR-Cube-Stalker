@@ -19,7 +19,7 @@ try {
 
     // Chargement de la configuration du bot
     if(!existsSync(resolve(__dirname, './config.json'))) throw Error('Le fichier de configuration "config.json" est manquant')
-    const { default: config } = await import('./config.json', { assert: { type: 'json' } })
+    const { default: config } = await import('./config.json', { with: { type: 'json' } })
 
     try {
         Logger.log('Discord', 'INFO', 'Initialisation...')

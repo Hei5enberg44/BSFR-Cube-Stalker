@@ -11,7 +11,7 @@ import { Top1Data } from '../interfaces/player.interface.js'
 import { Top1Error, ScoreSaberError, BeatSaverError } from '../utils/error.js'
 import { countryCodeEmoji } from '../utils/country-code-emoji.js'
 import Logger from '../utils/logger.js'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 const calcAcc = (mapDetail: MapDetail, levelDifficulty: string, levelGameMode: string, score: number) => {
     const notes = mapDetail.versions[mapDetail.versions.length - 1].diffs.filter(diff => diff.difficulty === levelDifficulty && diff.characteristic === levelGameMode)[0].notes
