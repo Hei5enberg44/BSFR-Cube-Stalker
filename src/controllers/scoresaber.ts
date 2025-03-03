@@ -66,7 +66,7 @@ export default class ScoreSaber {
      */
     static async getProfile(url: string) {
         try {
-            const playerId = url.replace(/^https?:\/\/(new\.|www\.)?scoresaber\.com\/u\/([0-9]+).*$/, '$2')
+            const playerId = url.replace(/^https?:\/\/(?:new\.|www\.)?scoresaber\.com\/u\/([0-9]+).*$/, '$1')
 
             const playerInfos = await this.send<Player>(PLAYER_URL + playerId + '/basic')
 

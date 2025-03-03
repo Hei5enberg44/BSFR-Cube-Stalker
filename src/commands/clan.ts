@@ -4,7 +4,7 @@ import players from '../controllers/players.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
 import { BeatLeaderOAuth } from '../controllers/beatleader-oauth.js'
 import Logger from '../utils/logger.js'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()

@@ -1,6 +1,6 @@
 import { GuildMember } from 'discord.js'
 import { Leaderboards } from './gameLeaderboard.js'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 export default class Roles {
     private static ldRoleExists<T extends object>(key: string | number | symbol, obj: T): key is keyof T {

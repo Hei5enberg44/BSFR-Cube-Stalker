@@ -16,7 +16,7 @@ import { CommandError, CommandInteractionError } from '../utils/error.js'
 import playlist from '../controllers/playlist.js'
 import players from '../controllers/players.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()

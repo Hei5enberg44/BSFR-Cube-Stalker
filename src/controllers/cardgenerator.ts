@@ -7,7 +7,7 @@ import { Leaderboards } from './gameLeaderboard.js'
 import roles from './roles.js'
 import { CardsModel } from './database.js'
 import { PlayerData, PlayerRanking, PlayerProgress } from '../interfaces/player.interface.js'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 registerFont('./assets/fonts/Poppins-Regular.ttf', { family: 'Poppins-Regular' })
 registerFont('./assets/fonts/Poppins-Medium.ttf', { family: 'Poppins-Medium' })

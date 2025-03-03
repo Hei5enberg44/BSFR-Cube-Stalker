@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle } from 'discord.js'
 import { CommandError } from '../utils/error.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()

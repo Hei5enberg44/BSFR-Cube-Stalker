@@ -8,7 +8,7 @@ import cardgenerator from '../controllers/cardgenerator.js'
 import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
 import { PlayerRanking, PlayerProgress } from '../interfaces/player.interface.js'
 import { countryCodeEmoji } from '../utils/country-code-emoji.js'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()
@@ -41,7 +41,7 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const leaderboardChoice = interaction.options.getString('leaderboard') as Leaderboards ?? Leaderboards.ScoreSaber
+            let leaderboardChoice = interaction.options.getString('leaderboard') as Leaderboards | null
             const targetMember = interaction.options.getUser('joueur')
             
             const guild = <Guild>interaction.guild
@@ -58,19 +58,28 @@ export default {
                 if(memberId === config.clientId) throw new CommandInteractionError('Moi ? Je ne joue pas à ce vulgaire jeu. Je me contente d\'afficher vos piètres scores, c\'est déjà pas mal.')
 
                 // Informations sur le joueur
-                oldPlayerData = await players.get(memberId, leaderboardChoice)
+                oldPlayerData = leaderboardChoice ? await players.get(memberId, leaderboardChoice) : await players.get(memberId, Leaderboards.ScoreSaber) || await players.get(memberId, Leaderboards.BeatLeader)
+                if(!leaderboardChoice && oldPlayerData) leaderboardChoice = oldPlayerData.leaderboard as Leaderboards
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
-                if(!oldPlayerData) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié pour le compte Discord ${userMention(memberId)}`)
+                if(!leaderboardChoice) {
+                    throw new CommandInteractionError(`Aucun profil ScoreSaber ou BeatLeader n'est lié pour le compte Discord ${userMention(memberId)}`)
+                } else if(!oldPlayerData) {
+                    throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié pour le compte Discord ${userMention(memberId)}`)
+                }
             } else {
                 // Identifiant du membre exécutant la commande
                 memberId = interaction.user.id
 
                 // Informations sur le joueur
-                oldPlayerData = await players.get(memberId, leaderboardChoice)
+                oldPlayerData = leaderboardChoice ? await players.get(memberId, leaderboardChoice) : await players.get(memberId, Leaderboards.ScoreSaber) || await players.get(memberId, Leaderboards.BeatLeader)
+                if(!leaderboardChoice && oldPlayerData) leaderboardChoice = oldPlayerData.leaderboard as Leaderboards
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
-                if(!oldPlayerData) {
+                if(!leaderboardChoice) {
+                    const linkCommand = <ApplicationCommand>guild.commands.cache.find(c => c.name === 'link')
+                    throw new CommandInteractionError(`Aucun profil ScoreSaber ou BeatLeader n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`)
+                } else if(!oldPlayerData) {
                     const linkCommand = <ApplicationCommand>guild.commands.cache.find(c => c.name === 'link')
                     throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`)
                 }

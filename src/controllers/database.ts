@@ -3,7 +3,7 @@ import { components as BeatLeaderAPI } from '../api/beatleader.js'
 import { MapDetail } from '../api/beatsaver.js'
 import { Sequelize, DataTypes, Model, CreationOptional, InferAttributes, InferCreationAttributes } from 'sequelize'
 import { DatabaseError } from '../utils/error.js'
-import config from '../config.json' assert { type: 'json' }
+import config from '../config.json' with { type: 'json' }
 
 const sequelize = new Sequelize(config.database.name, config.database.username, config.database.password, {
     host: config.database.host,
