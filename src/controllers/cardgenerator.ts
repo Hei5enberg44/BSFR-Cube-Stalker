@@ -423,5 +423,132 @@ export default {
         fs.writeFileSync(tmpCard.name, card)
 
         return tmpCard
+    },
+
+    async getStonkerCard(leaderboardChoice: Leaderboards, member: GuildMember | null, playerData: PlayerData, playerLd: PlayerRanking, playerProgress: PlayerProgress | null, debug = false) {
+        const playerHistory = playerData.history.split(',')
+        const playerWeekHistory = playerHistory.length >= 7 ? parseInt(playerHistory[playerHistory.length - 7]) : null
+        let diff = playerWeekHistory ? playerWeekHistory - playerData.rank : 0
+
+        let mode
+
+        if (diff > 0) {
+            mode = 'stonks'
+        } else if (diff === 0) {
+            mode = 'confused'
+        } else if (diff < 0) {
+            mode = 'notstonks'
+            diff = diff * -1
+        }
+
+        // Fabrication de la carte
+        const canvas = createCanvas(1398, 960)
+        const ctx = canvas.getContext('2d')
+
+        // Fond
+        const background = await loadImage(`./assets/images/stonker-card/${mode}.png`)
+        ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
+
+        // Pseudo du joueur
+        ctx.font = '85px "Neon Tubes"'
+        ctx.fillStyle = '#ffffff'
+        ctx.fillText(playerData.name, 400, canvas.height - 150)
+
+        // Drapeau Pays Joueur
+        const flagPath = `./assets/images/card/flags/${playerData.country.toUpperCase()}.png`
+        if(fs.existsSync(flagPath)) {
+            const flag = await loadImage(flagPath)
+            ctx.drawImage(flag, 70, canvas.height - 215, 150, 150)
+        }
+
+        // Ombre drapeau
+        ctx.globalAlpha = 0.5
+        const black = await loadImage('./assets/images/stonker-card/black.png')
+        ctx.drawImage(black, 70, canvas.height - 215, 150, 150)
+        ctx.globalAlpha = 1
+
+        // Classement du joueur dans son pays
+        ctx.font = '58px "Neon Tubes"'
+        ctx.fillStyle = '#ffffff'
+        ctx.textAlign = 'center'
+        ctx.fillText('#' + playerData.countryRank, 142, canvas.height - 117, 140)
+
+        // Avatar
+        ctx.save()
+        const avatar = await loadImage(playerData.avatar)
+        let change, color, str = ''
+        if (mode === 'stonks') {
+            ctx.beginPath()
+            ctx.arc(330, 180, 150, 0, Math.PI * 2, true)
+            ctx.closePath()
+            ctx.clip()
+            ctx.drawImage(avatar, 180, 30, 300, 300)
+
+            str = '+'
+            change = await loadImage('./assets/images/stonker-card/green.png')
+            color = '#ffffff'
+        } else if (mode === 'confused') {
+            ctx.beginPath()
+            ctx.arc(300, 180, 150, 0, Math.PI * 2, true)
+            ctx.closePath()
+            ctx.clip()
+            ctx.drawImage(avatar, 150, 30, 300, 300)
+
+            change = await loadImage('./assets/images/stonker-card/yellow.png')
+            color = '#000000'
+        } else {
+            ctx.beginPath()
+            ctx.arc(280, 155, 150, 0, Math.PI * 2, true)
+            ctx.closePath()
+            ctx.clip()
+            ctx.drawImage(avatar, 130, 5, 300, 300)
+
+            str = '-'
+            change = await loadImage('./assets/images/stonker-card/red.png')
+            color = '#ffffff'
+        }
+        ctx.restore()
+        ctx.drawImage(change, 300, canvas.height - 130, 70, 70)
+
+        // Différence de rang sur la semaine
+        ctx.font = 'Bold 32px "Neon Tubes"'
+        ctx.fillStyle = color
+        ctx.textAlign = 'center'
+        ctx.fillText(str + diff, 335, canvas.height - 83)
+
+        // Classement mondial du joueur
+        ctx.font = '62px "Neon Tubes"'
+        ctx.fillStyle = '#ffffff'
+        ctx.textAlign = 'left'
+        ctx.fillText('#' + playerData.rank + ' (' + playerData.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + 'pp)', 400, canvas.height - 70)
+
+        // Rang
+        let rank
+        let accuracy = parseFloat(playerData.averageRankedAccuracy.toFixed(2))
+        if (accuracy >= 90) {
+            rank = 'SS'
+        } else if (accuracy >= 80 && accuracy < 90) {
+            rank = 'S'
+        } else if (accuracy >= 65 && accuracy < 80) {
+            rank = 'A'
+        } else if (accuracy >= 50 && accuracy < 65) {
+            rank = 'B'
+        } else if (accuracy >= 35 && accuracy < 50) {
+            rank = 'C'
+        } else if (accuracy >= 0 && accuracy < 35) {
+            rank = 'D'
+        }
+
+        let rankImage = await loadImage(`./assets/images/stonker-card/ranks/${rank}.png`)
+        ctx.drawImage(rankImage, 310, canvas.height - 220, 55, 70)
+
+        // Convertion de l'image au format webp
+        const card = await sharp(canvas.toBuffer()).webp({ quality: 80 }).toBuffer()
+
+        // Enregistrement de l'image dans un fichier temporaire
+        const tmpCard = tmp.fileSync()
+        fs.writeFileSync(tmpCard.name, card)
+
+        return tmpCard
     }
 }

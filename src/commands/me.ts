@@ -181,11 +181,20 @@ export default {
 
             await interaction.editReply({ embeds: [embedProgress] })
 
-            const card = await cardgenerator.getCard(leaderboardChoice, memberToUpdate, playerData, playerLd, playerProgress)
+            const date = new Date()
+            if(date.getDate() === 1 && date.getMonth() === 3) {
+                const card = await cardgenerator.getStonkerCard(leaderboardChoice, memberToUpdate, playerData, playerLd, playerProgress)
 
-            await interaction.editReply({ files: [{attachment: card.name, name: `${playerData.id}.webp`}], embeds: embeds })
+                await interaction.editReply({ files: [{attachment: card.name, name: `${playerData.id}.webp`}], embeds: [] })
+    
+                card.removeCallback()
+            } else {
+                const card = await cardgenerator.getCard(leaderboardChoice, memberToUpdate, playerData, playerLd, playerProgress)
 
-            card.removeCallback()
+                await interaction.editReply({ files: [{attachment: card.name, name: `${playerData.id}.webp`}], embeds: embeds })
+    
+                card.removeCallback()
+            }
         } catch(error) {
             if(error.name === 'COMMAND_INTERACTION_ERROR' || error.name === 'SCORESABER_ERROR' || error.name === 'BEATLEADER_ERROR' || error.name === 'LEADERBOARD_ERROR' || error.name === 'PLAYER_ERROR') {
                 throw new CommandError(error.message, interaction.commandName)
