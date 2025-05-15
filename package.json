@@ -1,6 +1,6 @@
 {
   "name": "cube-stalker",
-  "version": "5.30.0",
+  "version": "5.31.0",
   "description": "Cube Stalker est un bot permettant d'obtenir des informations et statistiques sur des joueurs à partir de Score Saber ou Beat Leader",
   "main": "dist/bot.js",
   "type": "module",
@@ -18,22 +18,22 @@
   "dependencies": {
     "canvas": "^3.1.0",
     "chalk": "^5.4.1",
-    "cron": "^4.1.0",
-    "discord.js": "^14.18.0",
+    "cron": "^4.3.0",
+    "discord.js": "^14.19.3",
     "gifencoder": "^2.0.1",
-    "mariadb": "^3.4.0",
+    "mariadb": "^3.4.2",
     "pngjs": "^7.0.0",
-    "puppeteer": "^24.3.0",
-    "sequelize": "^6.37.5",
-    "sharp": "^0.33.5",
+    "puppeteer": "^24.8.2",
+    "sequelize": "^6.37.7",
+    "sharp": "^0.34.1",
     "tmp": "^0.2.3",
-    "ws": "^8.18.1"
+    "ws": "^8.18.2"
   },
   "devDependencies": {
     "@types/gifencoder": "^2.0.3",
     "@types/pngjs": "^6.0.5",
     "@types/tmp": "^0.2.6",
-    "eslint": "^9.21.0",
-    "typescript": "5.8.2"
+    "eslint": "^9.26.0",
+    "typescript": "5.8.3"
   }
 }
