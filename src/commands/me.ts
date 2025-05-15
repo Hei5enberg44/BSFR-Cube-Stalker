@@ -1,4 +1,4 @@
-import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, ApplicationCommand, chatInputApplicationCommandMention, userMention, bold, GuildMember } from 'discord.js'
+import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, ApplicationCommand, chatInputApplicationCommandMention, userMention, bold, GuildMember, MessageFlags, ContainerBuilder, TextDisplayBuilder, MediaGalleryBuilder, AttachmentBuilder, MediaGalleryItemBuilder, FileComponent, FileBuilder, hyperlink } from 'discord.js'
 import Embed from '../utils/embed.js'
 import { CommandError, CommandInteractionError } from '../utils/error.js'
 import roles from '../controllers/roles.js'
@@ -190,12 +190,35 @@ export default {
                 card.removeCallback()
             } else {
                 const card = await cardgenerator.getCard(leaderboardChoice, memberToUpdate, playerData, playerLd, playerProgress)
+                const attachment = new AttachmentBuilder(card.name, { name: `${playerData.id}.webp` })
 
-                await interaction.editReply({ files: [{attachment: card.name, name: `${playerData.id}.webp`}], embeds: embeds })
+                const containerComponent = new ContainerBuilder()
+                    .addTextDisplayComponents(
+                        new TextDisplayBuilder().setContent(`# ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Profil de ${playerData.name}`, playerData.url)}`),
+                        new TextDisplayBuilder().setContent(progressStatus.map(p => `- ${p}`).join('\n'))
+                    )
+                    .addMediaGalleryComponents(
+                        new MediaGalleryBuilder().addItems(
+                            [
+                                new MediaGalleryItemBuilder().setURL(`attachment://${attachment.name}`)
+                            ]
+                        )
+                    )
+
+                await interaction.editReply({
+                    flags: [
+                        MessageFlags.IsComponentsV2,
+                        MessageFlags.SuppressEmbeds
+                    ],
+                    components: [ containerComponent ],
+                    files: [ attachment ],
+                    embeds: []
+                })
     
                 card.removeCallback()
             }
         } catch(error) {
+            console.log(error)
             if(error.name === 'COMMAND_INTERACTION_ERROR' || error.name === 'SCORESABER_ERROR' || error.name === 'BEATLEADER_ERROR' || error.name === 'LEADERBOARD_ERROR' || error.name === 'PLAYER_ERROR') {
                 throw new CommandError(error.message, interaction.commandName)
             } else {
