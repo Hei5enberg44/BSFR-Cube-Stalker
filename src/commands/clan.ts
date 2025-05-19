@@ -1,4 +1,19 @@
-import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } from 'discord.js'
+import {
+    SlashCommandBuilder,
+    InteractionContextType,
+    PermissionFlagsBits,
+    ChatInputCommandInteraction,
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle,
+    ActionRowBuilder,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    SeparatorBuilder,
+    SeparatorSpacingSize,
+    hyperlink,
+    MessageFlags
+} from 'discord.js'
 import { CommandError } from '../utils/error.js'
 import players from '../controllers/players.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
@@ -14,7 +29,7 @@ export default {
             subcommand.setName('invitation')
                 .setDescription('Permet de recevoir une invitation pour rejoindre le clan BSFR')
         )
-        .setDMPermission(false)
+        .setContexts(InteractionContextType.Guild)
         .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
     ,
     allowedChannels: [
@@ -36,7 +51,27 @@ export default {
                         await interaction.deferReply({ ephemeral: true })
                         await BeatLeaderOAuth.sendClanInvitation(player.playerId)
                         Logger.log('BeatLeaderOAuth', 'INFO', `Une invitation à rejoindre le clan BSFR a été envoyée au joueur « ${player.playerName} »`)
-                        await interaction.editReply({ content: 'Invitation envoyée ! [Cliquez ici](https://beatleader.xyz/clans) pour accepter l\'invitation.' })
+
+                        const containerComponent = new ContainerBuilder()
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent('### ✅ Invitation envoyée !')
+                            )
+                            .addSeparatorComponents(
+                                new SeparatorBuilder()
+                                    .setDivider(true)
+                                    .setSpacing(SeparatorSpacingSize.Small)
+                            )
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent(`${hyperlink('Cliquez ici', 'https://beatleader.xyz/clans')} pour accepter l'invitation.`)
+                            )
+                        
+                        await interaction.editReply({
+                            flags: [
+                                MessageFlags.IsComponentsV2,
+                                MessageFlags.SuppressEmbeds
+                            ],
+                            components: [ containerComponent ]
+                        })
                     } else {
                         const modal = new ModalBuilder()
                             .setCustomId('blClanInvite')

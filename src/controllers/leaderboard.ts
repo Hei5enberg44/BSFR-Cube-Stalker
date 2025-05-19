@@ -12,13 +12,12 @@ export default class Leaderboard {
      * Récéupration du classement serveur global
      * @param leaderboardName choix du leaderboard
      * @param type type de classement (pp ou acc)
-     * @param page page à afficher (10 éléments par page)
+     * @param page page à afficher
+     * @param itemsPerPage nombre d'éléments par page (default: 10)
      * @returns classement serveur global
      */
-    static async getLeaderboard(leaderboardName: Leaderboards, type: string, page: number) {
+    static async getLeaderboard(leaderboardName: Leaderboards, type: string, page: number, itemsPerPage: number = 10) {
         // Récupération du classement
-        const itemsPerPage = 10
-        
         const leaderboardCount = await LeaderboardModel.count({ where: { leaderboard: leaderboardName } })
 
         if(leaderboardCount == 0)
@@ -45,14 +44,13 @@ export default class Leaderboard {
             const acc = (ml.averageRankedAccuracy).toFixed(2) + '%'
             const stat = type == 'pp' ? pp : acc
             const leaderboardUrl = `https://${leaderboardName === Leaderboards.ScoreSaber ? 'scoresaber.com' : 'beatleader.xyz'}/u/${ml.playerId}`
-            playersList += `${rank} - ${ml.playerCountry !== '' ? countryCodeEmoji(ml.playerCountry) : '🏴‍☠️'} [${ml.playerName}](${leaderboardUrl}) - ${stat}\n`
+            playersList += `${rank} — ${ml.playerCountry !== '' ? countryCodeEmoji(ml.playerCountry) : '🏴‍☠️'} [${ml.playerName}](${leaderboardUrl}) — ${stat}\n`
         }
 
-        const pageInfo = `Page \`${page}\` sur \`${pageCount}\``
-
         return {
-            title: 'Classement ' + (type == 'pp' ? 'PP' : 'Précision') + ` Serveur (${leaderboardCount} joueurs)`,
-            content: playersList + '\n' + pageInfo
+            content: playersList,
+            page,
+            pageCount
         }
     }
 
@@ -72,7 +70,7 @@ export default class Leaderboard {
             const gl = global[i]
             const r = `#${gl.rank}`.replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')
             const pp = new Intl.NumberFormat('en-US').format(gl.pp ?? 0)
-            playersList += `${r} - ${gl.country && gl.country !== '' ? countryCodeEmoji(gl.country) : '🏴‍☠️'} [${gl.name}](${gl.url}) - ${pp}pp\n`
+            playersList += `${r} — ${gl.country && gl.country !== '' ? countryCodeEmoji(gl.country) : '🏴‍☠️'} [${gl.name}](${gl.url}) — ${pp}pp\n`
         }
 
         return playersList
@@ -122,7 +120,7 @@ export default class Leaderboard {
             const r = `#${gl.rank}`.replace(/^#1$/, '🥇').replace(/^#2$/, '🥈').replace(/^#3$/, '🥉')
             const pp = new Intl.NumberFormat('en-US').format(gl.pp ?? 0)
             const bold = gl.rank === rank ? '**' : ''
-            playersList += `${bold}${r} - ${gl.country && gl.country !== '' ? countryCodeEmoji(gl.country) : '🏴‍☠️'} [${gl.name}](${gl.url}) - ${pp}pp${bold}\n`
+            playersList += `${bold}${r} — ${gl.country && gl.country !== '' ? countryCodeEmoji(gl.country) : '🏴‍☠️'} [${gl.name}](${gl.url}) — ${pp}pp${bold}\n`
         }
 
         return playersList

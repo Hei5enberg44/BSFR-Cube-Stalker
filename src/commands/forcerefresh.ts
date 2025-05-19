@@ -1,4 +1,13 @@
-import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction } from 'discord.js'
+import {
+    Guild,
+    SlashCommandBuilder,
+    InteractionContextType,
+    PermissionFlagsBits,
+    ChatInputCommandInteraction,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    MessageFlags
+} from 'discord.js'
 import Embed from '../utils/embed.js'
 import { CommandError } from '../utils/error.js'
 import leaderboard from '../controllers/leaderboard.js'
@@ -18,7 +27,7 @@ export default {
                 ])
                 .setRequired(true)
         )
-        .setDMPermission(false)
+        .setContexts(InteractionContextType.Guild)
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
     ,
     allowedChannels: [
@@ -39,16 +48,34 @@ export default {
                 .setColor('#F1C40F')
                 .setDescription('🛠️ Actualisation du serveur en cours...')
 
-            await interaction.reply({ embeds: [embed] })
+            let containerBuilder = new ContainerBuilder()
+                .setAccentColor([ 241, 196, 15 ])
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent('### 🛠️ Actualisation du serveur en cours...')
+                )
+
+            await interaction.reply({
+                flags: [
+                    MessageFlags.IsComponentsV2
+                ],
+                components: [ containerBuilder ]
+            })
 
             const members = guild.members.cache
             await leaderboard.refreshLeaderboard(leaderboardChoice, members)
 
-            embed = new Embed()
-                .setColor('#2ECC71')
-                .setDescription('Le serveur a bien été actualisé')
+            containerBuilder = new ContainerBuilder()
+                .setAccentColor([ 46, 204, 113 ])
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent('### ✅ Le serveur a bien été actualisé')
+                )
 
-            await interaction.editReply({ embeds: [embed] })
+            await interaction.editReply({
+                flags: [
+                    MessageFlags.IsComponentsV2
+                ],
+                components: [ containerBuilder ]
+            })
         } catch(error) {
             if(error.name === 'COMMAND_INTERACTION_ERROR') {
                 throw new CommandError(error.message, interaction.commandName)

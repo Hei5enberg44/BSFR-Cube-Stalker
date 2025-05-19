@@ -43,7 +43,7 @@ export default class Crons {
      * Requête l'api de BeatSaver afin de mettre à jour les maps ranked
      */
     async getRankedMaps() {
-        new CronJob('59 17 * * *', async function() {
+        new CronJob('0 */4 * * *', async function() {
             Logger.log('BeatSaver', 'INFO', 'Actualisation des maps ranked')
 
             await RankedModel.truncate({ force: true })

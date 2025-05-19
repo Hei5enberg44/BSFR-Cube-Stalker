@@ -7,6 +7,7 @@ import { createCanvas, loadImage } from 'canvas'
 import config from '../config.json' with { type: 'json' }
 
 type PlaylistFull = {
+    fileName: string,
     playlistTitle: string,
     playlistAuthor: string,
     playlistDescription: string,
@@ -99,9 +100,11 @@ export default class Playlist {
         const playerData = await gameLeaderboard.requests.getPlayerData(playerId)
 
         // Génération du fichier playlist
+        const fileName = `${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}_Maps_jouees_${starsMin}s_a_${starsMax}s_-_${accMin}p_a_${accMax}p`
         const playlistName = `[${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}] Maps jouées ${starsMin}⭐ à ${starsMax}⭐ - ${accMin}% à ${accMax}%`
 
         const playlist: PlaylistFull = {
+            fileName,
             playlistTitle: playlistName,
             playlistAuthor: this.playlistAuthor,
             playlistDescription: this.getDescription(),
@@ -131,9 +134,11 @@ export default class Playlist {
 
     static async getRanked(leaderboard: Leaderboards, starsMin: number, starsMax: number) {
         // Génération du fichier playlist
+        const fileName = `${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}_Maps_ranked_${starsMin}s_a_${starsMax}s`
         const playlistName = `[${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}] Maps ranked ${starsMin}⭐ à ${starsMax}⭐`
 
         const playlist: PlaylistFull = {
+            fileName,
             playlistTitle: playlistName,
             playlistAuthor: this.playlistAuthor,
             playlistDescription: this.getDescription(),
@@ -180,9 +185,11 @@ export default class Playlist {
         if(scoresToSnipe.length === 0) throw new PlaylistError('Aucune map à sniper n\'a été trouvée')
 
         // Génération du fichier playlist
+        const fileName = `${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}_Snipe_${playerToSnipe.name}`
         const playlistName = `[${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}] Snipe ${playerToSnipe.name}`
 
         const playlist: PlaylistFull = {
+            fileName,
             playlistTitle: playlistName,
             playlistAuthor: this.playlistAuthor,
             playlistDescription: this.getDescription(),
@@ -217,9 +224,11 @@ export default class Playlist {
         if(!clanMaps || clanMaps.length === 0) throw new PlaylistError('Aucune map à conquerir n\'a été trouvée')
 
         // Génération du fichier playlist
+        const fileName = `BeatLeader_Guerre_de_clans`
         const playlistName = `[BeatLeader] Guerre de clans`
 
         const playlist: PlaylistFull = {
+            fileName,
             playlistTitle: playlistName,
             playlistAuthor: this.playlistAuthor,
             playlistDescription: this.getDescription(),

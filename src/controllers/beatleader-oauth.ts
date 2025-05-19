@@ -66,7 +66,7 @@ export class BeatLeaderOAuth {
         if(!req.ok) {
             const error = await req.text()
             if(req.status === 400) {
-                throw new BeatLeaderError(`Une erreur est survenue lors de l'envoi de l'invitation à rejoindre le clan BSFR (${error})`)
+                throw new BeatLeaderError(`Une erreur est survenue lors de l'envoi de l'invitation à rejoindre le clan BSFR : ${error}`)
             } else {
                 Logger.log('BeatLeaderOAuth', 'ERROR', `Une erreur est survenue lors de l'envoi de l'invitation à rejoindre le clan BSFR (${error})`)
                 throw new BeatLeaderError('Envoi de l\'invitation impossible')

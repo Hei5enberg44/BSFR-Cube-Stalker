@@ -1,6 +1,17 @@
-import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction } from 'discord.js'
-import Embed from '../utils/embed.js'
-import { CommandError, CommandInteractionError } from '../utils/error.js'
+import {
+    Guild,
+    SlashCommandBuilder,
+    InteractionContextType,
+    PermissionFlagsBits,
+    ChatInputCommandInteraction,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    SeparatorBuilder,
+    SeparatorSpacingSize,
+    MessageFlags,
+    hyperlink
+} from 'discord.js'
+import { CommandError } from '../utils/error.js'
 import leaderboard from '../controllers/leaderboard.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
 import config from '../config.json' with { type: 'json' }
@@ -21,9 +32,11 @@ export default {
         .addIntegerOption(option =>
             option.setName('nombre')
                 .setDescription('Nombre de joueurs à afficher (10 par défaut, 20 maximum)')
+                .setMinValue(1)
+                .setMaxValue(20)
                 .setRequired(false)
         )
-        .setDMPermission(false)
+        .setContexts(InteractionContextType.Guild)
         .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
     ,
     allowedChannels: [
@@ -39,20 +52,38 @@ export default {
             const leaderboardChoice = interaction.options.getString('leaderboard') as Leaderboards ?? Leaderboards.ScoreSaber
             const count = interaction.options.getInteger('nombre') ?? 10
 
-            if(count < 1 || count > 20) throw new CommandInteractionError('Le nombre de joueurs à afficher doit être compris entre 1 et 20')
+            const guild = <Guild>interaction.guild
+
+            // Icône Leaderboard
+            const ldIconName = leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : (leaderboardChoice === Leaderboards.BeatLeader ? 'bl' : '')
+            const ldIcon = guild.emojis.cache.find(e => e.name === ldIconName)
+            const ldIconId = ldIcon?.id
 
             await interaction.deferReply()
 
             const ld = await leaderboard.getGlobalLeaderboard(leaderboardChoice, count)
 
             // On affiche le classement
-            const embed = new Embed()
-                .setColor('#000000')
-                .setTitle(`Classement Mondial ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`)
-                .setURL(`https://${leaderboardChoice === Leaderboards.ScoreSaber ? 'scoresaber.com/global' : 'beatleader.xyz/ranking'}`)
-                .setDescription(ld)
-            
-            await interaction.editReply({ embeds: [ embed ] })
+            const containerBuilder = new ContainerBuilder()
+                .setAccentColor(leaderboardChoice === Leaderboards.ScoreSaber ? [ 255, 222, 24 ] : (leaderboardChoice === Leaderboards.BeatLeader ? [ 217, 16, 65 ] : undefined))
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(`### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Classement Mondial ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`, `https://${leaderboardChoice === Leaderboards.ScoreSaber ? 'scoresaber.com/global' : 'beatleader.xyz/ranking'}`)}`)
+                )
+                .addSeparatorComponents(
+                    new SeparatorBuilder()
+                        .setDivider(true)
+                        .setSpacing(SeparatorSpacingSize.Large)
+                )
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(ld)
+                )
+
+            await interaction.editReply({
+                flags: [
+                    MessageFlags.IsComponentsV2
+                ],
+                components: [ containerBuilder ]
+            })
         } catch(error) {
             if(error.name === 'COMMAND_INTERACTION_ERROR' || error.name === 'LEADERBOARD_ERROR') {
                 throw new CommandError(error.message, interaction.commandName)
