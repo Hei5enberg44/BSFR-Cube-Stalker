@@ -8,7 +8,9 @@
         "page_not_found": "The page you are looking for does not exist",
         "invalid_duration": "Invalid duration: %s",
         "invalid_date": "Invalid date. Date must be in the format DD/MM/YYYY",
-        "invalid_datetime": "Invalid date. Date must be in the format JJ/MM/AAAA HH:II"
+        "invalid_datetime": "Invalid date. Date must be in the format JJ/MM/AAAA HH:II",
+        "previous": "Previous",
+        "next": "Next"
     },
     "fr": {
         "command_error": "Une erreur est survenue lors de l'exécution de la commande",
@@ -19,6 +21,8 @@
         "page_not_found": "La page demandée n'existe pas",
         "invalid_duration": "Durée invalide : %s",
         "invalid_date": "Date invalide. La date doit être au format JJ/MM/AAAA",
-        "invalid_datetime": "Date invalide. La date doit être au format JJ/MM/AAAA HH:II"
+        "invalid_datetime": "Date invalide. La date doit être au format JJ/MM/AAAA HH:II",
+        "previous": "Précédent",
+        "next": "Suivant"
     }
 }

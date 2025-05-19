@@ -1,5 +1,14 @@
-import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, ApplicationCommand, chatInputApplicationCommandMention } from 'discord.js'
-import Embed from '../utils/embed.js'
+import {
+    Guild,
+    SlashCommandBuilder,
+    PermissionFlagsBits,
+    ChatInputCommandInteraction,
+    ApplicationCommand,
+    chatInputApplicationCommandMention,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    MessageFlags
+} from 'discord.js'
 import { CommandError, CommandInteractionError, Top1Error } from '../utils/error.js'
 import players from '../controllers/players.js'
 import top1 from '../controllers/top1.js'
@@ -66,11 +75,19 @@ export default {
                 message = 'Vous êtes maintenant inscrit au top 1 pays'
             }
 
-            const embed = new Embed()
-                .setColor('#2ECC71')
-                .setDescription(message)
-            
-            await interaction.reply({ embeds: [ embed ], ephemeral: true })
+            const containerBuilder = new ContainerBuilder()
+                .setAccentColor([ 46, 204, 113 ])
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(`✅ ${message}`)
+                )
+
+            await interaction.reply({
+                flags: [
+                    MessageFlags.IsComponentsV2,
+                    MessageFlags.Ephemeral
+                ],
+                components: [ containerBuilder ]
+            })
         } catch(error) {
             if(error.name === 'COMMAND_INTERACTION_ERROR' || error.name === 'TOP1_ERROR') {
                 throw new CommandError(error.message, interaction.commandName)

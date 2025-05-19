@@ -1,4 +1,13 @@
-import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, ModalBuilder, TextInputBuilder, ActionRowBuilder, TextInputStyle } from 'discord.js'
+import {
+    SlashCommandBuilder,
+    InteractionContextType,
+    PermissionFlagsBits,
+    ChatInputCommandInteraction,
+    ModalBuilder,
+    TextInputBuilder,
+    ActionRowBuilder,
+    TextInputStyle
+} from 'discord.js'
 import { CommandError } from '../utils/error.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
 import config from '../config.json' with { type: 'json' }
@@ -16,7 +25,7 @@ export default {
                 )
                 .setRequired(true)
         )
-        .setDMPermission(false)
+        .setContexts(InteractionContextType.Guild)
         .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
     ,
     allowedChannels: [

@@ -1,5 +1,24 @@
-import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, GuildMember, GuildMemberRoleManager, MessageReaction, time, TimestampStyles, User, userMention } from 'discord.js'
-import Embed from '../utils/embed.js'
+import {
+    Guild,
+    SlashCommandBuilder,
+    InteractionContextType,
+    PermissionFlagsBits,
+    ChatInputCommandInteraction,
+    GuildMember,
+    GuildMemberRoleManager,
+    time,
+    TimestampStyles,
+    userMention,
+    Message,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    SeparatorBuilder,
+    SeparatorSpacingSize,
+    MessageFlags,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle
+} from 'discord.js'
 import { CommandError, CommandInteractionError } from '../utils/error.js'
 import cooldown from '../controllers/cooldown.js'
 import players from '../controllers/players.js'
@@ -25,7 +44,7 @@ export default {
                 .setDescription('Joueur à délier')
                 .setRequired(false)
         )
-        .setDMPermission(false)
+        .setContexts(InteractionContextType.Guild)
         .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
     ,
     allowedChannels: [
@@ -56,65 +75,141 @@ export default {
             const cd = isAdmin ? null : await cooldown.checkCooldown(`unlink_${leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : 'bl'}`, interaction.user.id, 60 * 60 * 24 * 30)
 
             // On demande confirmation pour exécuter la commande
-            let embedDesctiption = member.id === interaction.user.id ? `⚠️ Êtes-vous sûr(e) de vouloir délier votre profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} ?` : `⚠️ Êtes-vous sûr(e) de vouloir délier le profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} pour le membre ${userMention(member.id)} ?`
-            if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau \`${time(cd, TimestampStyles.RelativeTime)}\``
-            
-            let embed = new Embed()
-                    .setColor('#2ECC71')
-                    .setDescription(embedDesctiption)
-            
-            const confirmMessage = await interaction.reply({ embeds: [embed], fetchReply: true })
+            const containerBuilder = new ContainerBuilder()
+                .setAccentColor(leaderboardChoice === Leaderboards.ScoreSaber ? [ 255, 222, 24 ] : (leaderboardChoice === Leaderboards.BeatLeader ? [ 217, 16, 65 ] : undefined))
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(`### Délier un profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`)
+                )
+                .addSeparatorComponents(
+                    new SeparatorBuilder()
+                        .setDivider(true)
+                        .setSpacing(SeparatorSpacingSize.Large)
+                )
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(member.id === interaction.user.id ? `⚠️ Êtes-vous sûr(e) de vouloir délier votre profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} ?` : `⚠️ Êtes-vous sûr(e) de vouloir délier le profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} pour le membre ${userMention(member.id)} ?`)
+                )
 
-            await confirmMessage.react('✅')
-            await confirmMessage.react('❎')
+            if(cd) {
+                containerBuilder
+                    .addTextDisplayComponents(
+                        new TextDisplayBuilder().setContent(`Vous pourrez exécuter cette commande de nouveau \`${time(cd, TimestampStyles.RelativeTime)}\``)
+                    )
+            }
 
-            const filter = (reaction: MessageReaction, user: User) => reaction.emoji.name && ['✅', '❎'].includes(reaction.emoji.name) && user.id === interaction.user.id ? true : false
+            containerBuilder
+                .addSeparatorComponents(
+                    new SeparatorBuilder()
+                        .setDivider(true)
+                        .setSpacing(SeparatorSpacingSize.Large)
+                )
+                .addActionRowComponents(
+                    new ActionRowBuilder<ButtonBuilder>().setComponents(
+                        new ButtonBuilder()
+                            .setCustomId('unlink_btn_confirm')
+                            .setLabel('Je suis sûr(e)')
+                            .setStyle(ButtonStyle.Danger),
+                        new ButtonBuilder()
+                            .setCustomId('unlink_btn_cancel')
+                            .setLabel('Annuler')
+                            .setStyle(ButtonStyle.Secondary)
+                    )
+                )
 
-            confirmMessage.awaitReactions({ filter, max: 1, time: 15000, errors: ['time'] })
-                .then(async (collected) => {
-                    const reaction = collected.first()
+            const confirmMessage = await interaction.reply({
+                flags: [
+                    MessageFlags.IsComponentsV2
+                ],
+                components: [ containerBuilder ],
+                withResponse: true
+            })
+            const confirmMessageResource = confirmMessage.resource?.message as Message<boolean>
 
-                    if(reaction) {
-                        if(reaction.emoji.name === '✅') {
-                            // On ajoute le cooldown si le membre exécutant la commande n'a pas le rôle Admin ou Modérateur
-                            if(cd) await cooldown.addCooldown(`unlink_${leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : 'bl'}`, interaction.user.id, cd)
+            const collectorFilter = (i: any) => i.user.id === interaction.user.id
 
-                            // On délie le profil ScoreSaber ou BeatLeader du membre
-                            await players.remove(member.id, leaderboardChoice)
+            try {
+                const confirmation = await confirmMessageResource.awaitMessageComponent({ filter: collectorFilter, time: 30_000 })
+                if(confirmation.customId === 'unlink_btn_confirm') {
+                    // On ajoute le cooldown si le membre exécutant la commande n'a pas le rôle Admin ou Modérateur
+                    if(cd) await cooldown.addCooldown(`unlink_${leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : 'bl'}`, interaction.user.id, cd)
 
-                            // On supprime les rôles pp du membre
-                            const memberToUpdate = <GuildMember>guild.members.cache.find(m => m.id === member.id)
-                            await roles.updateMemberPpRoles(leaderboardChoice, memberToUpdate, 0)
+                    // On délie le profil ScoreSaber ou BeatLeader du membre
+                    await players.remove(member.id, leaderboardChoice)
 
-                            await confirmMessage.reactions.removeAll()
+                    // On supprime les rôles pp du membre
+                    const memberToUpdate = <GuildMember>guild.members.cache.find(m => m.id === member.id)
+                    await roles.updateMemberPpRoles(leaderboardChoice, memberToUpdate, 0)
 
-                            embedDesctiption = `✅ Le profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} a bien été délié du compte ${userMention(member.id)}`
-                            if(cd) embedDesctiption += `\nVous pourrez exécuter cette commande de nouveau \`${time(cd, TimestampStyles.RelativeTime)}\``
+                    const containerBuilder = new ContainerBuilder()
+                        .setAccentColor([ 46, 204, 113 ])
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent(`### Délier un profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`)
+                        )
+                        .addSeparatorComponents(
+                            new SeparatorBuilder()
+                                .setDivider(true)
+                                .setSpacing(SeparatorSpacingSize.Large)
+                        )
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent(`✅ Le profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} a bien été délié du compte ${userMention(member.id)}`)
+                        )
 
-                            embed = new Embed()
-                                    .setColor('#2ECC71')
-                                    .setDescription(embedDesctiption)
-
-                            await interaction.editReply({ embeds: [embed] })
-                        } else if(reaction.emoji.name === '❎') {
-                            await confirmMessage.reactions.removeAll()
-
-                            embed = new Embed()
-                                    .setColor('#E74C3C')
-                                    .setDescription('❌ L\'opération a été annulée')
-
-                            await interaction.editReply({ embeds: [embed] })
-                        }
+                    if(cd) {
+                        containerBuilder
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent(`Vous pourrez exécuter cette commande de nouveau \`${time(cd, TimestampStyles.RelativeTime)}\``)
+                            )
                     }
-                }).catch(async () => {
-                    await confirmMessage.reactions.removeAll()
 
-                    embed = new Embed()
-                            .setColor('#E74C3C')
-                            .setDescription('❌ Vous avez mis trop de temps à répondre')
+                    await confirmation.update({
+                        flags: [
+                            MessageFlags.IsComponentsV2
+                        ],
+                        components: [ containerBuilder ]
+                    })
+                } else if(confirmation.customId === 'unlink_btn_cancel') {
+                    const containerBuilder = new ContainerBuilder()
+                        .setAccentColor([ 231, 76, 60 ])
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent(`### Délier un profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`)
+                        )
+                        .addSeparatorComponents(
+                            new SeparatorBuilder()
+                                .setDivider(true)
+                                .setSpacing(SeparatorSpacingSize.Large)
+                        )
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent('❌ L\'opération a été annulée')
+                        )
 
-                    await interaction.editReply({ embeds: [embed] })
+                    await confirmation.update({
+                        flags: [
+                            MessageFlags.IsComponentsV2
+                        ],
+                        components: [ containerBuilder ]
+                    })
+                }
+            } catch {
+                const containerBuilder = new ContainerBuilder()
+                    .setAccentColor([ 231, 76, 60 ])
+                    .addTextDisplayComponents(
+                        new TextDisplayBuilder().setContent(`### Délier un profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`)
+                    )
+                    .addSeparatorComponents(
+                        new SeparatorBuilder()
+                            .setDivider(true)
+                            .setSpacing(SeparatorSpacingSize.Large)
+                    )
+                    .addTextDisplayComponents(
+                        new TextDisplayBuilder().setContent('❌ Vous avez mis trop de temps à répondre')
+                    )
+
+                await interaction.editReply({
+                    flags: [
+                        MessageFlags.IsComponentsV2
+                    ],
+                    components: [ containerBuilder ]
                 })
+            }
         } catch(error) {
             if(error.name === 'COMMAND_INTERACTION_ERROR' || error.name === 'COOLDOWN_ERROR') {
                 throw new CommandError(error.message, interaction.commandName)

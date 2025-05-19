@@ -1,5 +1,15 @@
-import { Guild, ModalSubmitInteraction, ApplicationCommand, chatInputApplicationCommandMention } from 'discord.js'
-import Embed from '../utils/embed.js'
+import {
+    Guild,
+    ModalSubmitInteraction,
+    ApplicationCommand,
+    chatInputApplicationCommandMention,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    SectionBuilder,
+    ThumbnailBuilder,
+    MessageFlags,
+    hyperlink
+} from 'discord.js'
 import { ModalError, ModalSubmissionError } from '../utils/error.js'
 import players from '../controllers/players.js'
 import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
@@ -20,21 +30,40 @@ export default {
             const gameLeaderboard = new GameLeaderboard(Leaderboards.ScoreSaber)
             const playerProfil = await gameLeaderboard.requests.getProfile(url)
 
+            // Icône Leaderboard
+            const ldIconName = 'ss'
+            const ldIcon = guild.emojis.cache.find(e => e.name === ldIconName)
+            const ldIconId = ldIcon?.id
+
             // On ne lie pas le profil du joueur si celui-ci est banni du leaderboard
             if(playerProfil.banned) throw new ModalSubmissionError('Impossible de lier le profil de ce joueur car celui-ci est banni')
 
             await players.add(interaction.user.id, playerProfil.id, Leaderboards.ScoreSaber)
 
             const meCommand = <ApplicationCommand>guild.commands.cache.find(c => c.name === 'me')
-            
-            const embed = new Embed()
-                    .setColor('#2ECC71')
-                    .setTitle(playerProfil.name)
-                    .setURL(playerProfil.url)
-                    .setThumbnail(playerProfil.avatar)
-                    .setDescription(`Votre profil ScoreSaber a bien été lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(meCommand.name, meCommand.id)} pour pouvoir être ajouté au classement du serveur`)
 
-            await interaction.reply({ embeds: [ embed ] })
+            const containerBuilder = new ContainerBuilder()
+                .setAccentColor([ 46, 204, 113 ])
+                .addSectionComponents(
+                    new SectionBuilder()
+                        .setThumbnailAccessory(
+                            new ThumbnailBuilder().setURL(playerProfil.avatar)
+                        )
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent(`### ${ldIcon ? `<:${ldIconName}:${ldIconId}>` : ''} ${hyperlink(playerProfil.name, playerProfil.url)}`),
+                        )
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent('✅ Votre profil ScoreSaber a bien été lié avec votre compte Discord'),
+                            new TextDisplayBuilder().setContent(`ℹ️ Utilisez la commande ${chatInputApplicationCommandMention(meCommand.name, meCommand.id)} pour pouvoir être ajouté au classement du serveur`)
+                        )
+                )
+
+            await interaction.reply({
+                flags: [
+                    MessageFlags.IsComponentsV2
+                ],
+                components: [ containerBuilder ]
+            })
         } catch(error) {
             if(error.name === 'MODAL_SUBMISSION_ERROR' || error.name === 'SCORESABER_ERROR' || error.name === 'PLAYER_ERROR') {
                 throw new ModalError(error.message, interaction.customId)

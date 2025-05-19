@@ -1,7 +1,14 @@
 import * as fs from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Client, Collection, EmbedBuilder, BaseInteraction } from 'discord.js'
+import {
+    Client,
+    Collection,
+    BaseInteraction,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    MessageFlags
+} from 'discord.js'
 import Locales from '../utils/locales.js'
 import Logger from '../utils/logger.js'
 
@@ -64,14 +71,28 @@ export default class Modals {
                         Logger.log('ModalManager', 'ERROR', `La soumission de la modale "${interaction.customId}" a échouée : ${error.message}`)
                     }
 
-                    const embed = new EmbedBuilder()
-                            .setColor('#E74C3C')
-                            .setDescription(`❌ ${errMessage}`)
+                    const containerBuilder = new ContainerBuilder()
+                        .setAccentColor([ 231, 76, 60 ])
+                        .addTextDisplayComponents([
+                            new TextDisplayBuilder().setContent(`❌ ${errMessage}`)
+                        ])
 
                     if(!interaction.deferred && !interaction.replied) {
-                        await interaction.reply({ embeds: [embed], ephemeral: true })
+                        await interaction.reply({
+                            flags: [
+                                MessageFlags.IsComponentsV2
+                            ],
+                            components: [ containerBuilder ],
+                            embeds: []
+                        })
                     } else {
-                        await interaction.editReply({ embeds: [embed] })
+                        await interaction.editReply({
+                            flags: [
+                                MessageFlags.IsComponentsV2
+                            ],
+                            components: [ containerBuilder ],
+                            embeds: []
+                        })
                     }
                 }
             }

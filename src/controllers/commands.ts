@@ -1,7 +1,19 @@
 import * as fs from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Client, Guild, Collection, ApplicationCommand, CommandInteractionOption, BaseInteraction, ApplicationCommandOptionType, EmbedBuilder, channelMention } from 'discord.js'
+import {
+    Client,
+    Guild,
+    Collection,
+    ApplicationCommand,
+    CommandInteractionOption,
+    BaseInteraction,
+    ApplicationCommandOptionType,
+    channelMention,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    MessageFlags
+} from 'discord.js'
 import { CommandError } from '../utils/error.js'
 import Locales from '../utils/locales.js'
 import Logger from '../utils/logger.js'
@@ -110,14 +122,28 @@ export default class Commands {
                         Logger.log('CommandManager', 'ERROR', `L'exécution de la commande "/${interaction.commandName}" a échoué : ${error.message}`)
                     }
 
-                    const embed = new EmbedBuilder()
-                            .setColor('#E74C3C')
-                            .setDescription(`❌ ${errMessage}`)
+                    const containerBuilder = new ContainerBuilder()
+                        .setAccentColor([ 231, 76, 60 ])
+                        .addTextDisplayComponents([
+                            new TextDisplayBuilder().setContent(`❌ ${errMessage}`)
+                        ])
 
                     if(!interaction.deferred && !interaction.replied) {
-                        await interaction.reply({ embeds: [embed], ephemeral: true })
+                        await interaction.reply({
+                            flags: [
+                                MessageFlags.IsComponentsV2
+                            ],
+                            components: [ containerBuilder ],
+                            embeds: []
+                        })
                     } else {
-                        await interaction.editReply({ embeds: [embed] })
+                        await interaction.editReply({
+                            flags: [
+                                MessageFlags.IsComponentsV2
+                            ],
+                            components: [ containerBuilder ],
+                            embeds: []
+                        })
                     }
                 }
             }

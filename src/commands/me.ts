@@ -1,5 +1,24 @@
-import { Guild, SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, ApplicationCommand, chatInputApplicationCommandMention, userMention, bold, GuildMember, MessageFlags, ContainerBuilder, TextDisplayBuilder, MediaGalleryBuilder, AttachmentBuilder, MediaGalleryItemBuilder, FileComponent, FileBuilder, hyperlink } from 'discord.js'
-import Embed from '../utils/embed.js'
+import {
+    Guild,
+    SlashCommandBuilder,
+    InteractionContextType,
+    PermissionFlagsBits,
+    ChatInputCommandInteraction,
+    ApplicationCommand,
+    chatInputApplicationCommandMention,
+    userMention,
+    bold,
+    GuildMember,
+    MessageFlags,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    MediaGalleryBuilder,
+    AttachmentBuilder,
+    MediaGalleryItemBuilder,
+    hyperlink,
+    SeparatorBuilder,
+    SeparatorSpacingSize
+} from 'discord.js'
 import { CommandError, CommandInteractionError } from '../utils/error.js'
 import roles from '../controllers/roles.js'
 import players from '../controllers/players.js'
@@ -28,7 +47,7 @@ export default {
                 .setDescription('Affiche les informations d\'un autre joueur')
                 .setRequired(false)
         )
-        .setDMPermission(false)
+        .setContexts(InteractionContextType.Guild)
         .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
     ,
     allowedChannels: [
@@ -89,23 +108,14 @@ export default {
             const gameLeaderboard = new GameLeaderboard(leaderboardChoice)
             const playerData = await gameLeaderboard.requests.getPlayerData(oldPlayerData.playerId)
 
-            // Liste des embeds
-            const embeds = []
-
             // Données de classement du joueur
             const oldPlayerLd = await leaderboard.getPlayer(leaderboardChoice, memberId)
 
-            // Si le joueur n'a pas de données de classement, on ajoute celui-ci au classement du serveur
-            if(!oldPlayerLd) {
+            // Mise à jour des données de classement du joueur
+            if(!oldPlayerLd)
                 await leaderboard.addPlayerLeaderboard(leaderboardChoice, memberId, playerData)
-
-                embeds.push(new Embed()
-                    .setColor('#2ECC71')
-                    .setDescription(`👏 ${userMention(memberId)} a été ajouté au classement du serveur !`)
-                )
-            } else { // Sinon, on le met à jour
+            else // Sinon, on le met à jour
                 await leaderboard.updatePlayerLeaderboard(leaderboardChoice, memberId, playerData)
-            }
 
             const playerLd = await leaderboard.getPlayer(leaderboardChoice, memberId) as PlayerRanking
 
@@ -168,18 +178,18 @@ export default {
             const ldIcon = guild.emojis.cache.find(e => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 
-            embeds.push(new Embed()
-                .setColor(roles.getMemberPpRoleColor(leaderboardChoice, memberToUpdate) ?? memberToUpdate.displayHexColor)
-                .setTitle(`${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} Profil de ${playerData.name}`)
-                .setURL(playerData.url)
-                .setDescription(progressStatus.map(p => `- ${p}`).join('\n'))
-            )
+            const containerComponent = new ContainerBuilder()
+                .setAccentColor([ 241, 196, 15 ])
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(`### 🛠️ Récupération du profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} en cours...`),
+                )
 
-            const embedProgress = new Embed()
-                .setColor('#F1C40F')
-                .setDescription(`🛠️ Récupération du profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} en cours...`)
-
-            await interaction.editReply({ embeds: [embedProgress] })
+            await interaction.editReply({
+                flags: [
+                    MessageFlags.IsComponentsV2
+                ],
+                components: [ containerComponent ],
+            })
 
             const date = new Date()
             if(date.getDate() === 1 && date.getMonth() === 3) {
@@ -193,8 +203,23 @@ export default {
                 const attachment = new AttachmentBuilder(card.name, { name: `${playerData.id}.webp` })
 
                 const containerComponent = new ContainerBuilder()
+                    .setAccentColor(roles.getMemberPpRoleColor(leaderboardChoice, memberToUpdate) ?? memberToUpdate.displayColor)
+
+                if(!oldPlayerLd) {
+                    containerComponent
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent(`### 👏 ${userMention(memberId)} a été ajouté au classement du serveur !`)
+                        )
+                        .addSeparatorComponents(
+                            new SeparatorBuilder()
+                                .setDivider(true)
+                                .setSpacing(SeparatorSpacingSize.Small)
+                        )
+                }
+
+                containerComponent
                     .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(`# ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Profil de ${playerData.name}`, playerData.url)}`),
+                        new TextDisplayBuilder().setContent(`### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Profil de ${playerData.name}`, playerData.url)}`),
                         new TextDisplayBuilder().setContent(progressStatus.map(p => `- ${p}`).join('\n'))
                     )
                     .addMediaGalleryComponents(
@@ -211,14 +236,12 @@ export default {
                         MessageFlags.SuppressEmbeds
                     ],
                     components: [ containerComponent ],
-                    files: [ attachment ],
-                    embeds: []
+                    files: [ attachment ]
                 })
     
                 card.removeCallback()
             }
         } catch(error) {
-            console.log(error)
             if(error.name === 'COMMAND_INTERACTION_ERROR' || error.name === 'SCORESABER_ERROR' || error.name === 'BEATLEADER_ERROR' || error.name === 'LEADERBOARD_ERROR' || error.name === 'PLAYER_ERROR') {
                 throw new CommandError(error.message, interaction.commandName)
             } else {

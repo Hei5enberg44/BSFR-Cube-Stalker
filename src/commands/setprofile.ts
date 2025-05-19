@@ -1,5 +1,17 @@
-import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, userMention } from 'discord.js'
-import Embed from '../utils/embed.js'
+import {
+    Guild,
+    SlashCommandBuilder,
+    InteractionContextType,
+    PermissionFlagsBits,
+    ChatInputCommandInteraction,
+    userMention,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    MessageFlags,
+    SectionBuilder,
+    ThumbnailBuilder,
+    hyperlink
+} from 'discord.js'
 import { CommandError, CommandInteractionError } from '../utils/error.js'
 import players from '../controllers/players.js'
 import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
@@ -28,7 +40,7 @@ export default {
                 .setDescription('Joueur à lier')
                 .setRequired(true)
         )
-        .setDMPermission(false)
+        .setContexts(InteractionContextType.Guild)
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
     ,
     allowedChannels: [
@@ -45,6 +57,8 @@ export default {
             const url = interaction.options.getString('url', true)
             const member = interaction.options.getUser('joueur', true)
 
+            const guild = <Guild>interaction.guild
+
             await interaction.deferReply()
 
             if(!url.includes(leaderboardChoice)) throw new CommandInteractionError(`Le lien entré n\'est pas un lien ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'} valide`)
@@ -56,15 +70,33 @@ export default {
             if(playerProfil.banned) throw new CommandInteractionError('Impossible de lier le profil de ce joueur car celui-ci est banni')
 
             await players.add(member.id, playerProfil.id, leaderboardChoice, true)
-            
-            const embed = new Embed()
-                    .setColor('#2ECC71')
-                    .setTitle(playerProfil.name)
-                    .setURL(playerProfil.url)
-                    .setThumbnail(playerProfil.avatar)
-                    .setDescription(`Le profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} a bien été lié avec le compte Discord de ${userMention(member.id)}`)
 
-            await interaction.editReply({ embeds: [embed] })
+            // Icône Leaderboard
+            const ldIconName = leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : (leaderboardChoice === Leaderboards.BeatLeader ? 'bl' : '')
+            const ldIcon = guild.emojis.cache.find(e => e.name === ldIconName)
+            const ldIconId = ldIcon?.id
+
+            const containerBuilder = new ContainerBuilder()
+                .setAccentColor(leaderboardChoice === Leaderboards.ScoreSaber ? [ 255, 222, 24 ] : (leaderboardChoice === Leaderboards.BeatLeader ? [ 217, 16, 65 ] : undefined))
+                .addSectionComponents(
+                    new SectionBuilder()
+                        .setThumbnailAccessory(
+                            new ThumbnailBuilder().setURL(playerProfil.avatar)
+                        )
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent(`### ${ldIcon ? `<:${ldIconName}:${ldIconId}>` : ''} ${hyperlink(playerProfil.name, playerProfil.url)}`),
+                        )
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent(`Le profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} a bien été lié avec le compte Discord de ${userMention(member.id)}`)
+                        )
+                )
+
+            await interaction.editReply({
+                flags: [
+                    MessageFlags.IsComponentsV2
+                ],
+                components: [ containerBuilder ]
+            })
         } catch(error) {
             if(error.name === 'COMMAND_INTERACTION_ERROR' || error.name === 'SCORESABER_ERROR' || error.name === 'BEATLEADER_ERROR' || error.name === 'PLAYER_ERROR') {
                 throw new CommandError(error.message, interaction.commandName)

@@ -9,7 +9,13 @@ import {
     ApplicationCommand,
     AttachmentBuilder,
     userMention,
-    chatInputApplicationCommandMention
+    chatInputApplicationCommandMention,
+    ContainerBuilder,
+    TextDisplayBuilder,
+    SeparatorBuilder,
+    SeparatorSpacingSize,
+    MessageFlags,
+    FileBuilder
 } from 'discord.js'
 import Embed from '../utils/embed.js'
 import { CommandError, CommandInteractionError } from '../utils/error.js'
@@ -161,19 +167,54 @@ export default {
                     if(starsMin > starsMax) throw new CommandInteractionError('Le nombre d\'étoiles minimum ne peut pas être supérieur au nombre d\'étoiles maximum')
                     if(accMin > accMax) throw new CommandInteractionError('L\'accuracy minimum ne peut pas être supérieur à l\'accuracy maximum')
 
-                    const embed = new Embed()
-                        .setColor('#F1C40F')
-                        .setDescription('🛠️ Génération de la playlist en cours...')
+                    const containerBuilder = new ContainerBuilder()
+                        .setAccentColor([ 241, 196, 15 ])
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent('### 🛠️ Génération de la playlist en cours...')
+                        )
 
-                    await interaction.editReply({ embeds: [embed] })
+                    await interaction.editReply({
+                        flags: [
+                            MessageFlags.IsComponentsV2
+                        ],
+                        components: [ containerBuilder ]
+                    })
 
                     // Génération de la playlist
                     try {
                         const playlistData = await playlist.getPlayed(leaderboardChoice, member.playerId, starsMin, starsMax, accMin, accMax)
 
-                        const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlistData)), { name: playlistData.playlistTitle + '.json' })
+                        const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlistData)), { name: `${playlistData.fileName}.json` })
 
-                        await interaction.editReply({ content: `Ta playlist est prête ! (${playlistData.songs.length} maps)`, embeds: [], files: [attachment] })
+                        const containerBuilder = new ContainerBuilder()
+                            .setAccentColor(leaderboardChoice === Leaderboards.ScoreSaber ? [ 255, 222, 24 ] : (leaderboardChoice === Leaderboards.BeatLeader ? [ 217, 16, 65 ] : undefined))
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent('### Ta playlist est prête !')
+                            )
+                            .addSeparatorComponents(
+                                new SeparatorBuilder()
+                                    .setDivider(true)
+                                    .setSpacing(SeparatorSpacingSize.Large)
+                            )
+                            .addFileComponents(
+                                new FileBuilder().setURL(`attachment://${attachment.name}`)
+                            )
+                            .addSeparatorComponents(
+                                new SeparatorBuilder()
+                                    .setDivider(false)
+                                    .setSpacing(SeparatorSpacingSize.Small)
+                            )
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent(`-# ${playlistData.songs.length} maps`)
+                            )
+
+                        await interaction.editReply({
+                            flags: [
+                                MessageFlags.IsComponentsV2
+                            ],
+                            components: [ containerBuilder ],
+                            files: [ attachment ]
+                        })
                     } catch(error) {
                         if(error.name === 'PLAYLIST_ERROR') throw new CommandInteractionError(error.message)
                     }
@@ -190,19 +231,54 @@ export default {
                     // On vérifie la cohérence des données renseignées par l'utilisateur
                     if(starsMin > starsMax) throw new CommandInteractionError('Le nombre d\'étoiles minimum ne peut pas être supérieur au nombre d\'étoiles maximum')
 
-                    const embed = new Embed()
-                        .setColor('#F1C40F')
-                        .setDescription('🛠️ Génération de la playlist en cours...')
+                    const containerBuilder = new ContainerBuilder()
+                        .setAccentColor([ 241, 196, 15 ])
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent('### 🛠️ Génération de la playlist en cours...')
+                        )
 
-                    await interaction.editReply({ embeds: [embed] })
+                    await interaction.editReply({
+                        flags: [
+                            MessageFlags.IsComponentsV2
+                        ],
+                        components: [ containerBuilder ]
+                    })
 
                     // Génération de la playlist
                     try {
                         const playlistData = await playlist.getRanked(leaderboardChoice, starsMin, starsMax)
 
-                        const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlistData)), { name: playlistData.playlistTitle + '.json' })
+                        const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlistData)), { name: playlistData.fileName + '.json' })
 
-                        await interaction.editReply({ content: `Ta playlist est prête ! (${playlistData.songs.length} maps)`, embeds: [], files: [attachment] })
+                        const containerBuilder = new ContainerBuilder()
+                            .setAccentColor(leaderboardChoice === Leaderboards.ScoreSaber ? [ 255, 222, 24 ] : (leaderboardChoice === Leaderboards.BeatLeader ? [ 217, 16, 65 ] : undefined))
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent('### Ta playlist est prête !')
+                            )
+                            .addSeparatorComponents(
+                                new SeparatorBuilder()
+                                    .setDivider(true)
+                                    .setSpacing(SeparatorSpacingSize.Large)
+                            )
+                            .addFileComponents(
+                                new FileBuilder().setURL(`attachment://${attachment.name}`)
+                            )
+                            .addSeparatorComponents(
+                                new SeparatorBuilder()
+                                    .setDivider(false)
+                                    .setSpacing(SeparatorSpacingSize.Small)
+                            )
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent(`-# ${playlistData.songs.length} maps`)
+                            )
+
+                        await interaction.editReply({
+                            flags: [
+                                MessageFlags.IsComponentsV2
+                            ],
+                            components: [ containerBuilder ],
+                            files: [ attachment ]
+                        })
                     } catch(error) {
                         if(error.name === 'PLAYLIST_ERROR') throw new CommandInteractionError(error.message)
                     }
@@ -230,19 +306,54 @@ export default {
                     if(!member) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`)
                     if(!memberToSnipe) throw new CommandInteractionError(`Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié pour le compte Discord ${userMention(targetMemberId)}`)
 
-                    const embed = new Embed()
-                        .setColor('#F1C40F')
-                        .setDescription('🛠️ Génération de la playlist en cours...')
+                    const containerBuilder = new ContainerBuilder()
+                        .setAccentColor([ 241, 196, 15 ])
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent('### 🛠️ Génération de la playlist en cours...')
+                        )
 
-                    await interaction.editReply({ embeds: [embed] })
+                    await interaction.editReply({
+                        flags: [
+                            MessageFlags.IsComponentsV2
+                        ],
+                        components: [ containerBuilder ]
+                    })
 
                     // Génération de la playlist
                     try {
                         const playlistData = await playlist.getSnipe(leaderboardChoice, member.playerId, memberToSnipe.playerId)
 
-                        const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlistData)), { name: playlistData.playlistTitle + '.json' })
+                        const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlistData)), { name: playlistData.fileName + '.json' })
 
-                        await interaction.editReply({ content: `Ta playlist est prête ! (${playlistData.songs.length} maps)`, embeds: [], files: [attachment] })
+                        const containerBuilder = new ContainerBuilder()
+                            .setAccentColor(leaderboardChoice === Leaderboards.ScoreSaber ? [ 255, 222, 24 ] : (leaderboardChoice === Leaderboards.BeatLeader ? [ 217, 16, 65 ] : undefined))
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent('### Ta playlist est prête !')
+                            )
+                            .addSeparatorComponents(
+                                new SeparatorBuilder()
+                                    .setDivider(true)
+                                    .setSpacing(SeparatorSpacingSize.Large)
+                            )
+                            .addFileComponents(
+                                new FileBuilder().setURL(`attachment://${attachment.name}`)
+                            )
+                            .addSeparatorComponents(
+                                new SeparatorBuilder()
+                                    .setDivider(false)
+                                    .setSpacing(SeparatorSpacingSize.Small)
+                            )
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent(`-# ${playlistData.songs.length} maps`)
+                            )
+
+                        await interaction.editReply({
+                            flags: [
+                                MessageFlags.IsComponentsV2
+                            ],
+                            components: [ containerBuilder ],
+                            files: [ attachment ]
+                        })
                     } catch(error) {
                         if(error.name === 'PLAYLIST_ERROR') throw new CommandInteractionError(error.message)
                     }
@@ -250,19 +361,54 @@ export default {
                     break
                 }
                 case 'clan-wars': {
-                    const embed = new Embed()
-                        .setColor('#F1C40F')
-                        .setDescription('🛠️ Génération de la playlist en cours...')
+                    const containerBuilder = new ContainerBuilder()
+                        .setAccentColor([ 241, 196, 15 ])
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent('### 🛠️ Génération de la playlist en cours...')
+                        )
 
-                    await interaction.editReply({ embeds: [embed] })
+                    await interaction.editReply({
+                        flags: [
+                            MessageFlags.IsComponentsV2
+                        ],
+                        components: [ containerBuilder ]
+                    })
 
                     // Génération de la playlist
                     try {
                         const playlistData = await playlist.getClan()
 
-                        const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlistData)), { name: playlistData.playlistTitle + '.json' })
+                        const attachment = new AttachmentBuilder(Buffer.from(JSON.stringify(playlistData)), { name: playlistData.fileName + '.json' })
 
-                        await interaction.editReply({ content: `Ta playlist est prête ! (${playlistData.songs.length} maps)`, embeds: [], files: [attachment] })
+                        const containerBuilder = new ContainerBuilder()
+                            .setAccentColor([ 217, 16, 65 ])
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent('### Ta playlist est prête !')
+                            )
+                            .addSeparatorComponents(
+                                new SeparatorBuilder()
+                                    .setDivider(true)
+                                    .setSpacing(SeparatorSpacingSize.Large)
+                            )
+                            .addFileComponents(
+                                new FileBuilder().setURL(`attachment://${attachment.name}`)
+                            )
+                            .addSeparatorComponents(
+                                new SeparatorBuilder()
+                                    .setDivider(false)
+                                    .setSpacing(SeparatorSpacingSize.Small)
+                            )
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent(`-# ${playlistData.songs.length} maps`)
+                            )
+
+                        await interaction.editReply({
+                            flags: [
+                                MessageFlags.IsComponentsV2
+                            ],
+                            components: [ containerBuilder ],
+                            files: [ attachment ]
+                        })
                     } catch(error) {
                         if(error.name === 'PLAYLIST_ERROR') throw new CommandInteractionError(error.message)
                     }

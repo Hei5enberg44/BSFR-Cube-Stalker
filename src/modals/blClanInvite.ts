@@ -1,4 +1,12 @@
-import { ModalSubmitInteraction } from 'discord.js'
+import {
+    ContainerBuilder,
+    MessageFlags,
+    ModalSubmitInteraction,
+    SeparatorBuilder,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
+    hyperlink
+} from 'discord.js'
 import { ModalError, ModalSubmissionError } from '../utils/error.js'
 import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
 import { BeatLeaderOAuth } from '../controllers/beatleader-oauth.js'
@@ -22,8 +30,27 @@ export default {
             
             await BeatLeaderOAuth.sendClanInvitation(playerProfil.id)
             Logger.log('BeatLeaderOAuth', 'INFO', `Une invitation à rejoindre le clan BSFR a été envoyée au joueur « ${playerProfil.name} »`)
+
+            const containerComponent = new ContainerBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent('### ✅ Invitation envoyée !')
+                )
+                .addSeparatorComponents(
+                    new SeparatorBuilder()
+                        .setDivider(true)
+                        .setSpacing(SeparatorSpacingSize.Large)
+                )
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(`${hyperlink('Cliquez ici', 'https://beatleader.xyz/clans')} pour accepter l'invitation.`)
+                )
             
-            await interaction.editReply({ content: 'Invitation envoyée ! [Cliquez ici](https://beatleader.xyz/clans) pour accepter l\'invitation.' })
+            await interaction.editReply({
+                flags: [
+                    MessageFlags.IsComponentsV2,
+                    MessageFlags.SuppressEmbeds
+                ],
+                components: [ containerComponent ]
+            })
         } catch(error) {
             if(error.name === 'MODAL_SUBMISSION_ERROR' || error.name === 'BEATLEADER_ERROR' || error.name === 'PLAYER_ERROR') {
                 throw new ModalError(error.message, interaction.customId)
