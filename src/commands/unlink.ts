@@ -117,7 +117,8 @@ export default {
 
             const confirmMessage = await interaction.reply({
                 flags: [
-                    MessageFlags.IsComponentsV2
+                    MessageFlags.IsComponentsV2,
+                    MessageFlags.Ephemeral
                 ],
                 components: [ containerBuilder ],
                 withResponse: true

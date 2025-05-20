@@ -8,7 +8,6 @@ import {
     TextDisplayBuilder,
     MessageFlags
 } from 'discord.js'
-import Embed from '../utils/embed.js'
 import { CommandError } from '../utils/error.js'
 import leaderboard from '../controllers/leaderboard.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
@@ -44,10 +43,6 @@ export default {
 
             const guild = <Guild>interaction.guild
 
-            let embed = new Embed()
-                .setColor('#F1C40F')
-                .setDescription('🛠️ Actualisation du serveur en cours...')
-
             let containerBuilder = new ContainerBuilder()
                 .setAccentColor([ 241, 196, 15 ])
                 .addTextDisplayComponents(
@@ -56,7 +51,8 @@ export default {
 
             await interaction.reply({
                 flags: [
-                    MessageFlags.IsComponentsV2
+                    MessageFlags.IsComponentsV2,
+                    MessageFlags.Ephemeral
                 ],
                 components: [ containerBuilder ]
             })

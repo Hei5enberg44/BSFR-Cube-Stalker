@@ -17,7 +17,6 @@ import {
     MessageFlags,
     FileBuilder
 } from 'discord.js'
-import Embed from '../utils/embed.js'
 import { CommandError, CommandInteractionError } from '../utils/error.js'
 import playlist from '../controllers/playlist.js'
 import players from '../controllers/players.js'
@@ -140,7 +139,7 @@ export default {
 
             const guild = <Guild>interaction.guild
 
-            await interaction.deferReply()
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
             switch(action) {
                 case 'played': {
