@@ -133,7 +133,7 @@ export default {
             const ldIcon = guild.emojis.cache.find(e => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 
-            const response = await interaction.deferReply({ withResponse: true })
+            const response = await interaction.deferReply({ flags: MessageFlags.Ephemeral, withResponse: true })
             const ldContainerBuilder = await getLeaderboard(page, itemsPerPage)
             await interaction.editReply({
                 flags: [

@@ -59,7 +59,7 @@ export default {
             const ldIcon = guild.emojis.cache.find(e => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 
-            await interaction.deferReply()
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
             const ld = await leaderboard.getGlobalLeaderboard(leaderboardChoice, count)
 

@@ -94,7 +94,7 @@ export default {
                 }
             }
 
-            await interaction.deferReply()
+            await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
             // Données de classement ScoreSaber du joueur
             const ld = rank ? await leaderboard.getGlobalLeaderboardByPlayerRank(leaderboardChoice, rank) : await leaderboard.getGlobalLeaderboardByPlayerId(leaderboardChoice, player.playerId)

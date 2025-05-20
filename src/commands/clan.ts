@@ -48,7 +48,7 @@ export default {
                 case 'invitation': {
                     const player = await players.get(interaction.user.id, Leaderboards.BeatLeader)
                     if(player) {
-                        await interaction.deferReply({ ephemeral: true })
+                        await interaction.deferReply({ flags: MessageFlags.Ephemeral })
                         await BeatLeaderOAuth.sendClanInvitation(player.playerId)
                         Logger.log('BeatLeaderOAuth', 'INFO', `Une invitation à rejoindre le clan BSFR a été envoyée au joueur « ${player.playerName} »`)
 
