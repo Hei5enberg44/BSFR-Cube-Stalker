@@ -90,7 +90,7 @@ export default class BeatLeader {
      */
     static async getProfile(url: string) {
         try {
-            const playerId = url.replace(/^https?:\/\/(?:www\.)?beatleader\.(?:xyz|com)\/u\/([0-9]+).*$/, '$1')
+            const playerId = url.replace(/^https?:\/\/(?:www\.)?beatleader\.(?:xyz|com)\/u\/(.+)\/?.*$/, '$1')
 
             const playerInfos = await this.send<PlayerResponseFull>(`${PLAYER_URL}${playerId}`)
 
