@@ -80,16 +80,16 @@ export default {
             })
 
             // Génération de la playlist
-            // const playlistData = await playlist.getSnipe(
-            //     leaderboardChoice,
-            //     member.playerId,
-            //     memberToSnipe.playerId
-            // )
+            const playlistData = await playlist.getSnipe(
+                leaderboardChoice,
+                member.playerId,
+                memberToSnipe.playerId
+            )
 
-            // const attachment = new AttachmentBuilder(
-            //     Buffer.from(JSON.stringify(playlistData)),
-            //     { name: `${playlistData.fileName}.json` }
-            // )
+            const attachment = new AttachmentBuilder(
+                Buffer.from(JSON.stringify(playlistData)),
+                { name: `${playlistData.fileName}.json` }
+            )
 
             containerBuilder = new ContainerBuilder()
                 .setAccentColor(
@@ -104,29 +104,29 @@ export default {
                         '### Ta playlist est prête !'
                     )
                 )
-            // .addSeparatorComponents(
-            //     new SeparatorBuilder()
-            //         .setDivider(true)
-            //         .setSpacing(SeparatorSpacingSize.Large)
-            // )
-            // .addFileComponents(
-            //     new FileBuilder().setURL(`attachment://${attachment.name}`)
-            // )
-            // .addSeparatorComponents(
-            //     new SeparatorBuilder()
-            //         .setDivider(false)
-            //         .setSpacing(SeparatorSpacingSize.Small)
-            // )
-            // .addTextDisplayComponents(
-            //     new TextDisplayBuilder().setContent(
-            //         `-# ${playlistData.songs.length} maps`
-            //     )
-            // )
+            .addSeparatorComponents(
+                new SeparatorBuilder()
+                    .setDivider(true)
+                    .setSpacing(SeparatorSpacingSize.Large)
+            )
+            .addFileComponents(
+                new FileBuilder().setURL(`attachment://${attachment.name}`)
+            )
+            .addSeparatorComponents(
+                new SeparatorBuilder()
+                    .setDivider(false)
+                    .setSpacing(SeparatorSpacingSize.Small)
+            )
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(
+                    `-# ${playlistData.songs.length} maps`
+                )
+            )
 
             await interaction.editReply({
                 flags: [MessageFlags.IsComponentsV2],
-                components: [containerBuilder]
-                // files: [attachment]
+                components: [containerBuilder],
+                files: [attachment]
             })
         } catch (error) {
             if (
