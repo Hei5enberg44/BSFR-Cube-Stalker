@@ -1,29 +1,36 @@
 import { GuildMember } from 'discord.js'
-import { createCanvas, loadImage, Image, registerFont, CanvasRenderingContext2D } from 'canvas'
+import {
+    createCanvas,
+    loadImage,
+    Image,
+    registerFont,
+    CanvasRenderingContext2D
+} from 'canvas'
 import sharp from 'sharp'
 import tmp from 'tmp'
 import * as fs from 'node:fs'
 import { Leaderboards } from './gameLeaderboard.js'
 import roles from './roles.js'
-import { CardsModel } from './database.js'
-import { PlayerData, PlayerRanking, PlayerProgress } from '../interfaces/player.interface.js'
+import { CardModel, CardStatus } from '../models/card.model.js'
+import {
+    PlayerData,
+    PlayerRanking,
+    PlayerProgress
+} from '../interfaces/player.interface.js'
 import config from '../config.json' with { type: 'json' }
 
-registerFont('./assets/fonts/Poppins-Regular.ttf', { family: 'Poppins-Regular' })
+registerFont('./assets/fonts/Poppins-Regular.ttf', {
+    family: 'Poppins-Regular'
+})
 registerFont('./assets/fonts/Poppins-Medium.ttf', { family: 'Poppins-Medium' })
-registerFont('./assets/fonts/Poppins-SemiBold.ttf', { family: 'Poppins-SemiBold' })
+registerFont('./assets/fonts/Poppins-SemiBold.ttf', {
+    family: 'Poppins-SemiBold'
+})
 
 type difficulties = 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus'
 
-enum MemberCardStatus {
-    Preview = 0,
-    Pending = 1,
-    Approved = 2,
-    Denied = 3
-}
-
 const getDiffColor = (diff: difficulties) => {
-    switch(diff) {
+    switch (diff) {
         case 'Easy':
             return '#3CB371'
         case 'Normal':
@@ -37,7 +44,14 @@ const getDiffColor = (diff: difficulties) => {
     }
 }
 
-const roundedImage = (ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) => {
+const roundedImage = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radius: number
+) => {
     ctx.beginPath()
     ctx.moveTo(x + radius, y)
     ctx.lineTo(x + width - radius, y)
@@ -52,39 +66,71 @@ const roundedImage = (ctx: CanvasRenderingContext2D, x: number, y: number, width
 }
 
 const getMemberCard = async (member: GuildMember) => {
-    if(member.premiumSince === null && !member.roles.cache.find(r => r.id === config.guild.roles['Admin'] || r.id === config.guild.roles['Modérateur'])) return null
-    const card = await CardsModel.findOne({
-        where: { memberId: member.id, status: MemberCardStatus.Approved }
+    if (
+        member.premiumSince === null &&
+        !member.roles.cache.find(
+            (r) =>
+                r.id === config.guild.roles['Admin'] ||
+                r.id === config.guild.roles['Modérateur']
+        )
+    )
+        return null
+    const card = await CardModel.findOne({
+        where: { memberId: member.id, status: CardStatus.Approved }
     })
     return card ? card.image : null
 }
 
 const lightenDarkenColor = (color: number, magnitude: number) => {
     const R = (color >> 16) + magnitude
-    const B = (color >> 8 & 0x00FF) + magnitude
-    const G = (color & 0x0000FF) + magnitude
-    return '#' + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (B<255?B<1?0:B:255)*0x100 + (G<255?G<1?0:G:255)).toString(16).slice(1)
+    const B = ((color >> 8) & 0x00ff) + magnitude
+    const G = (color & 0x0000ff) + magnitude
+    return (
+        '#' +
+        (
+            0x1000000 +
+            (R < 255 ? (R < 1 ? 0 : R) : 255) * 0x10000 +
+            (B < 255 ? (B < 1 ? 0 : B) : 255) * 0x100 +
+            (G < 255 ? (G < 1 ? 0 : G) : 255)
+        )
+            .toString(16)
+            .slice(1)
+    )
 }
 
 const drawImageScaled = (img: Image, ctx: CanvasRenderingContext2D) => {
     const canvas = ctx.canvas
-    const hRatio = canvas.width  / img.width
-    const vRatio =  canvas.height / img.height
+    const hRatio = canvas.width / img.width
+    const vRatio = canvas.height / img.height
     const ratio = Math.max(hRatio, vRatio)
     const centerShift_x = (canvas.width - img.width * ratio) / 2
     const centerShift_y = (canvas.height - img.height * ratio) / 2
-    ctx.drawImage(img, 0, 0, img.width, img.height, centerShift_x,centerShift_y, img.width * ratio, img.height * ratio)
+    ctx.drawImage(
+        img,
+        0,
+        0,
+        img.width,
+        img.height,
+        centerShift_x,
+        centerShift_y,
+        img.width * ratio,
+        img.height * ratio
+    )
 }
 
-const fittingString = (ctx: CanvasRenderingContext2D, str: string, maxWidth: number) => {
+const fittingString = (
+    ctx: CanvasRenderingContext2D,
+    str: string,
+    maxWidth: number
+) => {
     var width = ctx.measureText(str).width
     var ellipsis = '…'
     var ellipsisWidth = ctx.measureText(ellipsis).width
-    if(width <= maxWidth || width <= ellipsisWidth) {
+    if (width <= maxWidth || width <= ellipsisWidth) {
         return str
     } else {
         var len = str.length
-        while(width >= maxWidth-ellipsisWidth && len-- > 0) {
+        while (width >= maxWidth - ellipsisWidth && len-- > 0) {
             str = str.substring(0, len)
             width = ctx.measureText(str).width
         }
@@ -93,7 +139,14 @@ const fittingString = (ctx: CanvasRenderingContext2D, str: string, maxWidth: num
 }
 
 export default {
-    async getCard(leaderboardChoice: Leaderboards, member: GuildMember | null, playerData: PlayerData, playerLd: PlayerRanking, playerProgress: PlayerProgress | null, debug = false) {
+    async getCard(
+        leaderboardChoice: Leaderboards,
+        member: GuildMember | null,
+        playerData: PlayerData,
+        playerLd: PlayerRanking,
+        playerProgress: PlayerProgress | null,
+        debug = false
+    ) {
         // Fabrication de la carte
         const canvas = createCanvas(1900, 760)
         const ctx = canvas.getContext('2d')
@@ -101,7 +154,7 @@ export default {
 
         // Fond
         const profileCover = member ? await getMemberCard(member) : null
-        if(profileCover) {
+        if (profileCover) {
             const background = await loadImage(profileCover)
 
             ctx.save()
@@ -121,15 +174,23 @@ export default {
             let colorStart = '#231b60'
             let colorStop = '#d50078'
 
-            if(member) {
-                const memberPpRoleColor = roles.getMemberPpRoleColor(leaderboardChoice, member)
-                if(memberPpRoleColor) {
+            if (member) {
+                const memberPpRoleColor = roles.getMemberPpRoleColor(
+                    leaderboardChoice,
+                    member
+                )
+                if (memberPpRoleColor) {
                     colorStart = lightenDarkenColor(memberPpRoleColor, -80)
                     colorStop = lightenDarkenColor(memberPpRoleColor, 0)
                 }
             }
 
-            const gradient = ctx.createLinearGradient(0, canvas.height, canvas.width, 0)
+            const gradient = ctx.createLinearGradient(
+                0,
+                canvas.height,
+                canvas.width,
+                0
+            )
             gradient.addColorStop(0, colorStart)
             gradient.addColorStop(1, colorStop)
 
@@ -162,13 +223,23 @@ export default {
          * Classement Leaderboard
          */
         // Icon Leaderboard
-        const ldIcon = await loadImage(`./assets/images/card/${leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : (leaderboardChoice === 'beatleader' ? 'bl' : '')}.png`)
+        const ldIcon = await loadImage(
+            `./assets/images/card/${leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : leaderboardChoice === 'beatleader' ? 'bl' : ''}.png`
+        )
         ctx.drawImage(ldIcon, 365, 135, 60, 60)
 
         // Nom Leaderboard
         ctx.font = '50px "Poppins-Medium"'
         ctx.fillStyle = '#FFFFFF'
-        ctx.fillText(leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : (leaderboardChoice === 'beatleader' ? 'BeatLeader' : ''), 435, 165)
+        ctx.fillText(
+            leaderboardChoice === Leaderboards.ScoreSaber
+                ? 'ScoreSaber'
+                : leaderboardChoice === 'beatleader'
+                  ? 'BeatLeader'
+                  : '',
+            435,
+            165
+        )
 
         // Globe
         const earth = await loadImage('./assets/images/card/earth.png')
@@ -181,9 +252,10 @@ export default {
         ctx.fillText(globalRank, 435, 235)
 
         // Drapeau Pays Joueur
-        const playerCountryFlagLeft = 435 + ctx.measureText(globalRank).width + 30
+        const playerCountryFlagLeft =
+            435 + ctx.measureText(globalRank).width + 30
         const flagPath = `./assets/images/card/flags/${playerData.country.toUpperCase()}.png`
-        if(fs.existsSync(flagPath)) {
+        if (fs.existsSync(flagPath)) {
             const flag = await loadImage(flagPath)
             ctx.drawImage(flag, playerCountryFlagLeft, 205, 60, 60)
         }
@@ -199,14 +271,17 @@ export default {
         ctx.drawImage(dart, 365, 275, 60, 60)
 
         // Précision
-        const acc = `${(playerData.averageRankedAccuracy).toFixed(2)}%`
+        const acc = `${playerData.averageRankedAccuracy.toFixed(2)}%`
         ctx.font = '50px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
         ctx.fillText(acc, 435, 305)
 
         // Séparateur
-        let separatorLeft = ctx.measureText(globalRank).width + ctx.measureText(countryRank).width + 560
-        if(separatorLeft < 750) separatorLeft = 750
+        let separatorLeft =
+            ctx.measureText(globalRank).width +
+            ctx.measureText(countryRank).width +
+            560
+        if (separatorLeft < 750) separatorLeft = 750
         ctx.lineWidth = 4
         ctx.strokeStyle = 'white'
         ctx.beginPath()
@@ -229,12 +304,20 @@ export default {
         // Classement pp serveur
         ctx.font = '45px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
-        ctx.fillText(`PP: ${playerLd.serverRankPP}/${playerLd.serverLdTotal}`, separatorLeft + 30, 235)
+        ctx.fillText(
+            `PP: ${playerLd.serverRankPP}/${playerLd.serverLdTotal}`,
+            separatorLeft + 30,
+            235
+        )
 
         // Classement précision serveur
         ctx.font = '45px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
-        ctx.fillText(`Précision: ${playerLd.serverRankAcc}/${playerLd.serverLdTotal}`, separatorLeft + 30, 305)
+        ctx.fillText(
+            `Précision: ${playerLd.serverRankAcc}/${playerLd.serverLdTotal}`,
+            separatorLeft + 30,
+            305
+        )
 
         /**
          * Bar de progression
@@ -243,7 +326,7 @@ export default {
         const toPp = fromPp + 1000
         const fromPpText = `${Intl.NumberFormat('en-US').format(fromPp)}pp`
         const toPpText = `${Intl.NumberFormat('en-US').format(toPp)}pp`
-        const progress = Math.ceil((playerData.pp - fromPp) * 100 / 1000)
+        const progress = Math.ceil(((playerData.pp - fromPp) * 100) / 1000)
 
         ctx.lineWidth = 4
         ctx.strokeStyle = 'white'
@@ -260,7 +343,7 @@ export default {
         ctx.quadraticCurveTo(50, 370, 60, 370)
         ctx.stroke()
 
-        const progressWidth = Math.ceil(1796 * progress / 100)
+        const progressWidth = Math.ceil((1796 * progress) / 100)
 
         ctx.save()
         roundedImage(ctx, 52, 372, 1796, 66, 8)
@@ -269,18 +352,23 @@ export default {
         ctx.fillRect(52, 372, progressWidth, 66)
         ctx.restore()
 
-        if(playerProgress) {
+        if (playerProgress) {
             const ppDiff = playerProgress.ppDiff
 
-            if(ppDiff !== 0) {
-                const progress = Math.ceil(ppDiff * 100 / 1000)
-                const progressDiffWidth = Math.ceil(1796 * progress / 100)
+            if (ppDiff !== 0) {
+                const progress = Math.ceil((ppDiff * 100) / 1000)
+                const progressDiffWidth = Math.ceil((1796 * progress) / 100)
 
                 ctx.save()
                 roundedImage(ctx, 52, 372, 1796, 66, 8)
                 ctx.clip()
                 ctx.fillStyle = progressDiffWidth > 0 ? '#3498DB' : '#E74C3C'
-                ctx.fillRect(52 + progressWidth - progressDiffWidth, 372, progressDiffWidth, 66)
+                ctx.fillRect(
+                    52 + progressWidth - progressDiffWidth,
+                    372,
+                    progressDiffWidth,
+                    66
+                )
                 ctx.restore()
             }
         }
@@ -291,7 +379,11 @@ export default {
 
         ctx.font = '50px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
-        ctx.fillText(toPpText, canvas.width - ctx.measureText(toPpText).width - 65, 405)
+        ctx.fillText(
+            toPpText,
+            canvas.width - ctx.measureText(toPpText).width - 65,
+            405
+        )
 
         /**
          * Top PP
@@ -305,15 +397,19 @@ export default {
 
         // Image Top PP
         ctx.save()
-        const songCover = await loadImage(playerData.topPP ? playerData.topPP.cover : './assets/images/card/cover-default.png')
+        const songCover = await loadImage(
+            playerData.topPP
+                ? playerData.topPP.cover
+                : './assets/images/card/cover-default.png'
+        )
         roundedImage(ctx, 100, 480, 230, 230, 10)
         ctx.clip()
         ctx.drawImage(songCover, 100, 480, 230, 230)
         ctx.restore()
 
         // Difficulté Top PP
-        if(playerData.topPP) {
-            const mapStars = (playerData.topPP.stars).toFixed(2)
+        if (playerData.topPP) {
+            const mapStars = playerData.topPP.stars.toFixed(2)
             const top = 470
             const left = 190
             const radius = 5
@@ -326,30 +422,49 @@ export default {
             ctx.arcTo(left, top + height, left, top, radius)
             ctx.arcTo(left, top, left + width, top, radius)
             ctx.closePath()
-            ctx.fillStyle = getDiffColor(<difficulties>playerData.topPP.difficulty)
+            ctx.fillStyle = getDiffColor(
+                <difficulties>playerData.topPP.difficulty
+            )
             ctx.fill()
             ctx.font = '40px "Poppins-Medium"'
             ctx.fillStyle = '#FFFFFF'
-            const textLeft = left + (width - ctx.measureText(mapStars).width - 40) / 2
+            const textLeft =
+                left + (width - ctx.measureText(mapStars).width - 40) / 2
             ctx.fillText(mapStars, textLeft, top + 23)
             // Icône Étoile
             const starIcon = await loadImage(`./assets/images/card/star.png`)
-            ctx.drawImage(starIcon, ctx.measureText(mapStars).width + textLeft + 5, top + 4, 35, 35)
+            ctx.drawImage(
+                starIcon,
+                ctx.measureText(mapStars).width + textLeft + 5,
+                top + 4,
+                35,
+                35
+            )
         }
 
         // Détails Top PP
         ctx.font = '50px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
-        if(playerData.topPP) {
-            ctx.fillText(fittingString(ctx, playerData.topPP.name, 1850), 365, 530, 1485)
+        if (playerData.topPP) {
+            ctx.fillText(
+                fittingString(ctx, playerData.topPP.name, 1850),
+                365,
+                530,
+                1485
+            )
             ctx.fillText(`Mapped by ${playerData.topPP.author}`, 365, 595, 1485)
-            ctx.fillText(`#${playerData.topPP.rank} | ${(playerData.topPP.pp).toFixed(2)}pp | ${(playerData.topPP.acc).toFixed(2)}% | ${playerData.topPP.fc ? 'FC ✅' : 'FC ❎'}`, 365, 665, 1485)
+            ctx.fillText(
+                `#${playerData.topPP.rank} | ${playerData.topPP.pp.toFixed(2)}pp | ${playerData.topPP.acc.toFixed(2)}% | ${playerData.topPP.fc ? 'FC ✅' : 'FC ❎'}`,
+                365,
+                665,
+                1485
+            )
         } else {
             ctx.fillText(`Tu n'as pas de top PP pour le moment`, 365, 595, 1485)
         }
 
         // Grille (pour tests)
-        if(debug) {
+        if (debug) {
             ctx.lineWidth = 2
             ctx.strokeStyle = 'yellow'
 
@@ -416,7 +531,9 @@ export default {
         }
 
         // Convertion de l'image au format webp
-        const card = await sharp(canvas.toBuffer()).webp({ quality: 80 }).toBuffer()
+        const card = await sharp(canvas.toBuffer())
+            .webp({ quality: 80 })
+            .toBuffer()
 
         // Enregistrement de l'image dans un fichier temporaire
         const tmpCard = tmp.fileSync()
@@ -425,9 +542,19 @@ export default {
         return tmpCard
     },
 
-    async getStonkerCard(leaderboardChoice: Leaderboards, member: GuildMember | null, playerData: PlayerData, playerLd: PlayerRanking, playerProgress: PlayerProgress | null, debug = false) {
+    async getStonkerCard(
+        leaderboardChoice: Leaderboards,
+        member: GuildMember | null,
+        playerData: PlayerData,
+        playerLd: PlayerRanking,
+        playerProgress: PlayerProgress | null,
+        debug = false
+    ) {
         const playerHistory = playerData.history.split(',')
-        const playerWeekHistory = playerHistory.length >= 7 ? parseInt(playerHistory[playerHistory.length - 7]) : null
+        const playerWeekHistory =
+            playerHistory.length >= 7
+                ? parseInt(playerHistory[playerHistory.length - 7])
+                : null
         let diff = playerWeekHistory ? playerWeekHistory - playerData.rank : 0
 
         let mode
@@ -446,7 +573,9 @@ export default {
         const ctx = canvas.getContext('2d')
 
         // Fond
-        const background = await loadImage(`./assets/images/stonker-card/${mode}.png`)
+        const background = await loadImage(
+            `./assets/images/stonker-card/${mode}.png`
+        )
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
 
         // Pseudo du joueur
@@ -456,7 +585,7 @@ export default {
 
         // Drapeau Pays Joueur
         const flagPath = `./assets/images/card/flags/${playerData.country.toUpperCase()}.png`
-        if(fs.existsSync(flagPath)) {
+        if (fs.existsSync(flagPath)) {
             const flag = await loadImage(flagPath)
             ctx.drawImage(flag, 70, canvas.height - 215, 150, 150)
         }
@@ -471,12 +600,19 @@ export default {
         ctx.font = '58px "Neon Tubes"'
         ctx.fillStyle = '#ffffff'
         ctx.textAlign = 'center'
-        ctx.fillText('#' + playerData.countryRank, 142, canvas.height - 117, 140)
+        ctx.fillText(
+            '#' + playerData.countryRank,
+            142,
+            canvas.height - 117,
+            140
+        )
 
         // Avatar
         ctx.save()
         const avatar = await loadImage(playerData.avatar)
-        let change, color, str = ''
+        let change,
+            color,
+            str = ''
         if (mode === 'stonks') {
             ctx.beginPath()
             ctx.arc(330, 180, 150, 0, Math.PI * 2, true)
@@ -520,7 +656,15 @@ export default {
         ctx.font = '62px "Neon Tubes"'
         ctx.fillStyle = '#ffffff'
         ctx.textAlign = 'left'
-        ctx.fillText('#' + playerData.rank + ' (' + playerData.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + 'pp)', 400, canvas.height - 70)
+        ctx.fillText(
+            '#' +
+                playerData.rank +
+                ' (' +
+                playerData.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') +
+                'pp)',
+            400,
+            canvas.height - 70
+        )
 
         // Rang
         let rank
@@ -539,11 +683,15 @@ export default {
             rank = 'D'
         }
 
-        let rankImage = await loadImage(`./assets/images/stonker-card/ranks/${rank}.png`)
+        let rankImage = await loadImage(
+            `./assets/images/stonker-card/ranks/${rank}.png`
+        )
         ctx.drawImage(rankImage, 310, canvas.height - 220, 55, 70)
 
         // Convertion de l'image au format webp
-        const card = await sharp(canvas.toBuffer()).webp({ quality: 80 }).toBuffer()
+        const card = await sharp(canvas.toBuffer())
+            .webp({ quality: 80 })
+            .toBuffer()
 
         // Enregistrement de l'image dans un fichier temporaire
         const tmpCard = tmp.fileSync()

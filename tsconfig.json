@@ -15,14 +15,9 @@
         "skipLibCheck": true,
         "removeComments": false,
         "noEmitOnError": true,
-        "typeRoots": [
-            "node_modules/@types"
-        ],
+        "typeRoots": ["node_modules/@types"],
         "sourceMap": false
     },
-    "include": [
-        "src/**/*",
-        "src/**/*.json"
-    ],
+    "include": ["src/**/*", "src/**/*.json"],
     "exclude": ["dist", "node_modules", "tests"]
 }

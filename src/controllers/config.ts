@@ -14,10 +14,12 @@ export default class Config {
     }
 
     private static testChannels(guild: Guild, channels: NestedRecord) {
-        for(const [channelName, channelId] of Object.entries(channels)) {
-            if(typeof channelId === 'string') {
-                if(!guild.channels.cache.get(channelId))
-                    throw new ConfigError(`Le salon "${channelName}" ayant pour identifiant "${channelId}" n'existe pas sur la guilde`)
+        for (const [channelName, channelId] of Object.entries(channels)) {
+            if (typeof channelId === 'string') {
+                if (!guild.channels.cache.get(channelId))
+                    throw new ConfigError(
+                        `Le salon "${channelName}" ayant pour identifiant "${channelId}" n'existe pas sur la guilde`
+                    )
             } else {
                 this.testRoles(guild, channels)
             }
@@ -25,10 +27,12 @@ export default class Config {
     }
 
     private static testRoles(guild: Guild, roles: NestedRecord) {
-        for(const [roleName, roleId] of Object.entries(roles)) {
-            if(typeof roleId === 'string') {
-                if(!guild.roles.cache.get(roleId))
-                    throw new ConfigError(`Le rôle "${roleName}" ayant pour identifiant "${roleId}" n'existe pas sur la guilde`)
+        for (const [roleName, roleId] of Object.entries(roles)) {
+            if (typeof roleId === 'string') {
+                if (!guild.roles.cache.get(roleId))
+                    throw new ConfigError(
+                        `Le rôle "${roleName}" ayant pour identifiant "${roleId}" n'existe pas sur la guilde`
+                    )
             } else {
                 this.testRoles(guild, roleId)
             }

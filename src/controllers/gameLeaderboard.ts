@@ -10,7 +10,7 @@ class GameLeaderboard {
     public requests: typeof scoresaber | typeof beatleader
 
     constructor(leaderboardName: Leaderboards) {
-        switch(leaderboardName) {
+        switch (leaderboardName) {
             case Leaderboards.ScoreSaber:
                 this.requests = scoresaber
                 break
@@ -18,12 +18,11 @@ class GameLeaderboard {
                 this.requests = beatleader
                 break
             default:
-                throw new Error(`Leaderboard « ${leaderboardName} » non pris en charge`)
+                throw new Error(
+                    `Leaderboard « ${leaderboardName} » non pris en charge`
+                )
         }
     }
 }
 
-export {
-    Leaderboards,
-    GameLeaderboard
-}
+export { Leaderboards, GameLeaderboard }

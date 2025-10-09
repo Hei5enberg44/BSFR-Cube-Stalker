@@ -1,6 +1,6 @@
-import { Op } from 'sequelize'
+import { Op } from '@sequelize/core'
 import { time, TimestampStyles } from 'discord.js'
-import { CooldownModel } from './database.js'
+import { CooldownModel } from '../models/cooldown.model.js'
 import { CooldownError } from '../utils/error.js'
 
 const millisecondsToDate = (m: number) => {
@@ -24,21 +24,24 @@ export default class Cooldown {
      * @param duration durée du cooldown
      * @returns date d'expiration du cooldown
      */
-    static async checkCooldown(commandName: string, memberId: string, duration: number) {
+    static async checkCooldown(
+        commandName: string,
+        memberId: string,
+        duration: number
+    ) {
         const date = Math.floor(new Date().getTime() / 1000)
-        
+
         // On vérifie si le membre a déjà un cooldown et si celui-ci est expiré
         const cd = await CooldownModel.findOne({
             where: {
-                [Op.and]: [
-                    { commandName: commandName },
-                    { memberId: memberId }
-                ]
+                [Op.and]: [{ commandName: commandName }, { memberId: memberId }]
             }
         })
 
-        if(cd && cd.expirationDate > date)
-            throw new CooldownError(`Vous ne pouvez pas encore exécuter la commande \`/${commandName}\`\nVous pourrez exécuter cette commande de nouveau \`${time(cd.expirationDate, TimestampStyles.RelativeTime)}\``)
+        if (cd && cd.expirationDate > date)
+            throw new CooldownError(
+                `Vous ne pouvez pas encore exécuter la commande \`/${commandName}\`\nVous pourrez exécuter cette commande de nouveau \`${time(cd.expirationDate, TimestampStyles.RelativeTime)}\``
+            )
 
         return date + duration
     }
@@ -49,17 +52,18 @@ export default class Cooldown {
      * @param memberId identifiant du membre
      * @param expirationDate date d'expiration du cooldown (au format timestamp)
      */
-    static async addCooldown(commandName: string, memberId: string, expirationDate: number) {
+    static async addCooldown(
+        commandName: string,
+        memberId: string,
+        expirationDate: number
+    ) {
         const cd = await CooldownModel.findOne({
             where: {
-                [Op.and]: [
-                    { memberId: memberId },
-                    { commandName: commandName }
-                ]
+                [Op.and]: [{ memberId: memberId }, { commandName: commandName }]
             }
         })
 
-        if(!cd) {
+        if (!cd) {
             CooldownModel.create({
                 commandName: commandName,
                 memberId: memberId,

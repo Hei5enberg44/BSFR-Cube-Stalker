@@ -22,7 +22,11 @@ class CommandError extends Error {
         super(message)
         this.name = 'COMMAND_ERROR'
         Error.captureStackTrace(this, this.constructor)
-        Logger.log('CommandManager', 'INFO', `L'exécution de la commande "/${commandName}" a échoué : ${(message).replace(/:[^:]+:\s/g, '').replace('\n', ' ')}`)
+        Logger.log(
+            'CommandManager',
+            'INFO',
+            `L'exécution de la commande "/${commandName}" a échoué : ${message.replace(/:[^:]+:\s/g, '').replace('\n', ' ')}`
+        )
     }
 }
 
@@ -39,7 +43,11 @@ class ModalError extends Error {
         super(message)
         this.name = 'MODAL_ERROR'
         Error.captureStackTrace(this, this.constructor)
-        Logger.log('ModalManager', 'INFO', `La soumission de la modale "${modalName}" a échoué : ${(message).replace(/:[^:]+:\s/g, '').replace('\n', ' ')}`)
+        Logger.log(
+            'ModalManager',
+            'INFO',
+            `La soumission de la modale "${modalName}" a échoué : ${message.replace(/:[^:]+:\s/g, '').replace('\n', ' ')}`
+        )
     }
 }
 
