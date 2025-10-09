@@ -142,7 +142,7 @@ export default {
                 )
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
-                        `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Classement Mondial ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`, `https://${leaderboardChoice === Leaderboards.ScoreSaber ? 'scoresaber.com/global' : 'beatleader.xyz/ranking'}`)}`
+                        `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Classement Mondial ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`, `https://${leaderboardChoice === Leaderboards.ScoreSaber ? 'scoresaber.com/global' : 'beatleader.com/ranking'}`)}`
                     )
                 )
                 .addSeparatorComponents(

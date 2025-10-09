@@ -54,7 +54,7 @@ export default {
                 )
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
-                        `${hyperlink('Cliquez ici', 'https://beatleader.xyz/clans')} pour accepter l'invitation.`
+                        `${hyperlink('Cliquez ici', 'https://beatleader.com/clans')} pour accepter l'invitation.`
                     )
                 )
 
