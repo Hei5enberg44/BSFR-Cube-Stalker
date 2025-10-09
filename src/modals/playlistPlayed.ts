@@ -46,8 +46,8 @@ export default {
                 maxStarsSelectValues.length === 0
                     ? 99
                     : parseInt(maxStarsSelectValues[0])
-            const minAcc = Number(minAccTextInputValue)
-            const maxAcc = Number(maxAccTextInputValue)
+            const minAcc = minAccTextInputValue.length === 0 ? 0 : Number(minAccTextInputValue)
+            const maxAcc = minAccTextInputValue.length === 0 ? 100 : Number(maxAccTextInputValue)
 
             // On vérifie la cohérence des données renseignées par l'utilisateur
             if (minStars > maxStars)
