@@ -1,39 +1,49 @@
 {
-  "name": "cube-stalker",
-  "version": "5.31.3",
-  "description": "Cube Stalker est un bot permettant d'obtenir des informations et statistiques sur des joueurs à partir de Score Saber ou Beat Leader",
-  "main": "dist/bot.js",
-  "type": "module",
-  "engines": {
-    "node": ">=22.13.0"
-  },
-  "scripts": {
-    "build": "tsc --project tsconfig.json",
-    "start": "npm run start:bot",
-    "start:bot": "npm run build && node --enable-source-maps dist/bot.js",
-    "lint": "eslint . --cache --ext .js,.jsx,.ts,.tsx"
-  },
-  "author": "BSFR",
-  "license": "ISC",
-  "dependencies": {
-    "canvas": "^3.1.0",
-    "chalk": "^5.4.1",
-    "cron": "^4.3.0",
-    "discord.js": "^14.19.3",
-    "gifencoder": "^2.0.1",
-    "mariadb": "^3.4.2",
-    "pngjs": "^7.0.0",
-    "puppeteer": "^24.8.2",
-    "sequelize": "^6.37.7",
-    "sharp": "^0.34.1",
-    "tmp": "^0.2.3",
-    "ws": "^8.18.2"
-  },
-  "devDependencies": {
-    "@types/gifencoder": "^2.0.3",
-    "@types/pngjs": "^6.0.5",
-    "@types/tmp": "^0.2.6",
-    "eslint": "^9.26.0",
-    "typescript": "5.8.3"
-  }
+    "name": "cube-stalker",
+    "version": "5.32.0",
+    "description": "Cube Stalker est un bot permettant d'obtenir des informations et statistiques sur des joueurs à partir de Score Saber ou Beat Leader",
+    "main": "dist/bot.js",
+    "type": "module",
+    "engines": {
+        "npm": ">=11.4.0",
+        "node": ">=22.17.0"
+    },
+    "scripts": {
+        "build": "tsc --project tsconfig.json",
+        "start": "npm run start:bot",
+        "start:bot": "npm run build && node --enable-source-maps dist/bot.js",
+        "lint": "eslint . --cache --ext .js,.jsx,.ts,.tsx"
+    },
+    "author": "BSFR",
+    "license": "ISC",
+    "prettier": {
+        "trailingComma": "none",
+        "tabWidth": 4,
+        "semi": false,
+        "singleQuote": true,
+        "bracketSpacing": true,
+        "bracketSameLine": true,
+        "arrowParens": "always"
+    },
+    "dependencies": {
+        "@sequelize/core": "^7.0.0-alpha.46",
+        "@sequelize/mariadb": "^7.0.0-alpha.46",
+        "canvas": "^3.2.0",
+        "chalk": "^5.6.2",
+        "cron": "^4.3.3",
+        "discord.js": "^14.23.2",
+        "gifencoder": "^2.0.1",
+        "pngjs": "^7.0.0",
+        "puppeteer": "^24.23.0",
+        "sharp": "^0.34.4",
+        "tmp": "^0.2.5",
+        "ws": "^8.18.3"
+    },
+    "devDependencies": {
+        "@types/gifencoder": "^2.0.3",
+        "@types/pngjs": "^6.0.5",
+        "@types/tmp": "^0.2.6",
+        "eslint": "^9.37.0",
+        "typescript": "5.9.3"
+    }
 }
