@@ -24,7 +24,7 @@ export class BeatLeaderOAuth {
     }
 
     public static async refreshToken(token: OAuthModel) {
-        const req = await fetch('https://api.beatleader.xyz/oauth2/token', {
+        const req = await fetch('https://api.beatleader.com/oauth2/token', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: new URLSearchParams({
@@ -56,7 +56,7 @@ export class BeatLeaderOAuth {
 
         const params = new URLSearchParams({ player: playerId }).toString()
         const req = await fetch(
-            `https://api.beatleader.xyz/clan/invite?${params}`,
+            `https://api.beatleader.com/clan/invite?${params}`,
             {
                 method: 'POST',
                 headers: { Authorization: `Bearer ${token.access_token}` }

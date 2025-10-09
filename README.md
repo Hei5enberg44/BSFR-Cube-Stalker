@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.32.2-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.32.3-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
@@ -98,7 +98,7 @@ Permet de lier un profil ScoreSaber ou BeatLeader à un membre Discord.
 
 ```
 /setprofile leaderboard:ScoreSaber lien_leaderboard:https://scoresaber.com/u/76561198125542519 joueur:@Hei5enberg#6969
-/setprofile leaderboard:BeatLeader lien_leaderboard:https://beatleader.xyz/u/76561198125542519 joueur:@Hei5enberg#6969
+/setprofile leaderboard:BeatLeader lien_leaderboard:https://beatleader.com/u/76561198125542519 joueur:@Hei5enberg#6969
 ```
 
 ---

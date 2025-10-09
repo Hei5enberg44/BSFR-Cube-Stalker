@@ -58,7 +58,7 @@ export default class BeatLeaderClan {
         )
 
         const ws = new WebSocket(
-            'wss://sockets.api.beatleader.xyz/clansocket',
+            'wss://sockets.api.beatleader.com/clansocket',
             { followRedirects: true }
         )
 
@@ -301,7 +301,7 @@ export default class BeatLeaderClan {
         const page = await browser.newPage()
         page.setViewport({ width: 620, height: 280, deviceScaleFactor: 1 })
         await page.goto(
-            `https://screenshot.beatleader.xyz/clansmap/leaderboard/${leaderboardId}`,
+            `https://screenshot.beatleader.com/clansmap/leaderboard/${leaderboardId}`,
             { waitUntil: ['domcontentloaded'] }
         )
 

@@ -65,7 +65,7 @@ export default class Leaderboard {
             const pp = new Intl.NumberFormat('en-US').format(ml.pp) + 'pp'
             const acc = ml.averageRankedAccuracy.toFixed(2) + '%'
             const stat = type == 'pp' ? pp : acc
-            const leaderboardUrl = `https://${leaderboardName === Leaderboards.ScoreSaber ? 'scoresaber.com' : 'beatleader.xyz'}/u/${ml.playerId}`
+            const leaderboardUrl = `https://${leaderboardName === Leaderboards.ScoreSaber ? 'scoresaber.com' : 'beatleader.com'}/u/${ml.playerId}`
             playersList += `${rank} — ${ml.playerCountry !== '' ? countryCodeEmoji(ml.playerCountry) : '🏴‍☠️'} [${ml.playerName}](${leaderboardUrl}) — ${stat}\n`
         }
 

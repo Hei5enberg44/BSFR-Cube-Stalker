@@ -33,8 +33,8 @@ interface PlaylistSongDifficulty {
     characteristic: string
 }
 
-const BEATLEADER_URL = 'https://beatleader.xyz'
-const BEATLEADER_API_URL = 'https://api.beatleader.xyz/'
+const BEATLEADER_URL = 'https://beatleader.com'
+const BEATLEADER_API_URL = 'https://api.beatleader.com/'
 const PLAYER_URL = `${BEATLEADER_API_URL}player/`
 const LEADERBOARD_URL = `${BEATLEADER_API_URL}leaderboard/`
 const CLAN_URL = `${BEATLEADER_API_URL}clan/`
@@ -184,7 +184,7 @@ export default class BeatLeader {
                     difficulty: difficulty,
                     author: topScore.leaderboard.song.mapper,
                     cover: topScore.leaderboard.song.coverImage,
-                    replay: `https://replay.beatleader.xyz/?scoreId=${topScore.id}`
+                    replay: `https://replay.beatleader.com/?scoreId=${topScore.id}`
                 }
             }
 
