@@ -1,5 +1,5 @@
 import { MapDetail, SearchResponse } from '../api/beatsaver.js'
-import { RankedModel } from './database.js'
+import { RankedModel } from '../models/ranked.model.js'
 import { Leaderboards } from './gameLeaderboard.js'
 import { BeatSaverError } from '../utils/error.js'
 import Logger from '../utils/logger.js'
@@ -22,30 +22,46 @@ export default class BeatSaver {
         let retries = 0
 
         do {
-            if(log) Logger.log('BeatSaver', 'INFO', `Envoi de la requête "${url}"`)
+            if (log)
+                Logger.log('BeatSaver', 'INFO', `Envoi de la requête "${url}"`)
             const res = await fetch(url)
-            
-            if(res.ok) {
-                if(log) Logger.log('BeatSaver', 'INFO', 'Requête envoyée avec succès')
+
+            if (res.ok) {
+                if (log)
+                    Logger.log(
+                        'BeatSaver',
+                        'INFO',
+                        'Requête envoyée avec succès'
+                    )
                 data = await res.json()
 
                 error = false
             } else {
-                if(res.status === 404) throw Error('La ressource demandée est introuvable')
-                if(res.status === 422) throw Error('La ressource demandée est introuvable')
-                if(res.status === 500) {
-                    Logger.log('BeatSaver', 'ERROR', 'Erreur 500, nouvel essai dans 3 secondes')
-                    if(retries < 5) await wait(3)
+                if (res.status === 404)
+                    throw Error('La ressource demandée est introuvable')
+                if (res.status === 422)
+                    throw Error('La ressource demandée est introuvable')
+                if (res.status === 500) {
+                    Logger.log(
+                        'BeatSaver',
+                        'ERROR',
+                        'Erreur 500, nouvel essai dans 3 secondes'
+                    )
+                    if (retries < 5) await wait(3)
                     retries++
                 }
-                if(res.status === 429) {
-                    Logger.log('BeatSaver', 'ERROR', 'Erreur 429, nouvel essai dans 60 secondes')
+                if (res.status === 429) {
+                    Logger.log(
+                        'BeatSaver',
+                        'ERROR',
+                        'Erreur 429, nouvel essai dans 60 secondes'
+                    )
                     await wait(60)
                 }
 
                 error = true
             }
-        } while(error)
+        } while (error)
 
         return data
     }
@@ -59,8 +75,10 @@ export default class BeatSaver {
         try {
             const map = await this.send<MapDetail>(MAPS_HASH_URL + hash)
             return map
-        } catch(error) {
-            throw new BeatSaverError(`Récupération des informations de la map ${hash} depuis BeatSaver impossible : ${error.message}`)
+        } catch (error) {
+            throw new BeatSaverError(
+                `Récupération des informations de la map ${hash} depuis BeatSaver impossible : ${error.message}`
+            )
         }
     }
 
@@ -71,8 +89,8 @@ export default class BeatSaver {
      */
     static getMapMaxScore(notes: number) {
         let maxScore = 0
-        if(notes < 14) {
-            if(notes === 1) {
+        if (notes < 14) {
+            if (notes === 1) {
                 maxScore = 115
             } else if (notes < 5) {
                 maxScore = (notes - 1) * 230 + 115
@@ -92,26 +110,33 @@ export default class BeatSaver {
      * @param starsMax nombre d'étoiles maximum
      * @returns liste des maps ranked
      */
-    static async searchRanked(leaderboard: Leaderboards, starsMin: number = 0, starsMax: number = 16) {
+    static async searchRanked(
+        leaderboard: Leaderboards,
+        starsMin: number = 0,
+        starsMax: number = 16
+    ) {
         const ranked = await RankedModel.findAll({
             where: { leaderboard },
-            order: [
-                [ 'map.updatedAt', 'desc' ]
-            ],
+            order: [['map.updatedAt', 'desc']],
             raw: true
         })
 
-        const rankedFiltered = ranked.filter(r => {
+        const rankedFiltered = ranked.filter((r) => {
             const version = r.map.versions[r.map.versions.length - 1]
-            const diffsFiltered = version.diffs.filter(d => typeof d.stars !== 'undefined' && d.stars >= starsMin && d.stars <= starsMax)
-            if(diffsFiltered.length > 0) {
+            const diffsFiltered = version.diffs.filter(
+                (d) =>
+                    typeof d.stars !== 'undefined' &&
+                    d.stars >= starsMin &&
+                    d.stars <= starsMax
+            )
+            if (diffsFiltered.length > 0) {
                 version.diffs = diffsFiltered
                 return true
             }
             return false
         })
 
-        return rankedFiltered.map(rf => rf.map)
+        return rankedFiltered.map((rf) => rf.map)
     }
 
     /**
@@ -119,34 +144,36 @@ export default class BeatSaver {
      * @returns nombre de nouvelles maps ranked ajoutées en base de données
      */
     static async getRanked(leaderboard: Leaderboards) {
-        let page: number|null = 0
+        let page: number | null = 0
         let end = false
 
         do {
             const params = new URLSearchParams({
-                leaderboard: leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader',
+                leaderboard:
+                    leaderboard === Leaderboards.ScoreSaber
+                        ? 'ScoreSaber'
+                        : 'BeatLeader',
                 sortOrder: 'Latest',
                 pageSize: '100'
             }).toString()
-            const data = await this.send<SearchResponse>(SEARCH_MAPS_URL + `${page}?${params}`)
+            const data = await this.send<SearchResponse>(
+                SEARCH_MAPS_URL + `${page}?${params}`
+            )
 
-            const maps = data.docs.map(map => {
-                return {
-                    leaderboard,
-                    map
-                }
+            const maps = data.docs.map((map) => {
+                return { leaderboard, map }
             })
 
             await RankedModel.bulkCreate(maps)
 
-            if(data.docs.length === 0) end = true
+            if (data.docs.length === 0) end = true
 
-            if(!end) {
+            if (!end) {
                 page++
                 await wait(3)
             } else {
                 page = null
             }
-        } while(page !== null && !end)
+        } while (page !== null && !end)
     }
 }

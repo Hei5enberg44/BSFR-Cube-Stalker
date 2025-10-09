@@ -16,6 +16,10 @@ export default class guildMemberRemove {
         await players.remove(member.id, Leaderboards.ScoreSaber)
         await players.remove(member.id, Leaderboards.BeatLeader)
 
-        Logger.log('EventManager', 'INFO', `Le membre "${member.user.username}" vient de quitter le serveur. Celui-ci a été supprimé du classement de Cube-Stalker.`)
+        Logger.log(
+            'EventManager',
+            'INFO',
+            `Le membre "${member.user.username}" vient de quitter le serveur. Celui-ci a été supprimé du classement de Cube-Stalker.`
+        )
     }
 }

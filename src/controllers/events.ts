@@ -20,20 +20,28 @@ export default class Events {
      * Chargement des écoutes d'évènements au démarrage du Bot
      */
     async load() {
-        const eventFiles = fs.readdirSync(resolve(__dirname, '../events')).filter(file => file.endsWith('.js'))
+        const eventFiles = fs
+            .readdirSync(resolve(__dirname, '../events'))
+            .filter((file) => file.endsWith('.js'))
 
-        for(const file of eventFiles) {
+        for (const file of eventFiles) {
             const { default: event } = await import(`../events/${file}`)
-            if(event.disabled) return
+            if (event.disabled) return
             const name = event.name || file.split('.')[0]
-            const emitter = (typeof event.emitter === 'string' ? this.client[<('on' | 'once' | 'off')>event.emitter] : event.emitter) || this.client
+            const emitter =
+                (typeof event.emitter === 'string'
+                    ? this.client[<'on' | 'once' | 'off'>event.emitter]
+                    : event.emitter) || this.client
             const once = event.once
 
             Logger.log('EventManager', 'INFO', `Évènement "${name}" trouvé`)
 
             try {
-                emitter[once ? 'once' : 'on'](name, (...args: (keyof ClientEvents)[]) => event.execute(...args))
-            } catch(error) {
+                emitter[once ? 'once' : 'on'](
+                    name,
+                    (...args: (keyof ClientEvents)[]) => event.execute(...args)
+                )
+            } catch (error) {
                 console.error(error.stack)
             }
         }

@@ -2,7 +2,8 @@ import leaderboard from './leaderboard.js'
 import { Leaderboards } from './gameLeaderboard.js'
 import { PlayerData, PlayerRanking } from '../interfaces/player.interface.js'
 import { PlayerError } from '../utils/error.js'
-import { PlayerModel, LeaderboardModel } from './database.js'
+import { PlayerModel } from '../models/player.model.js'
+import { LeaderboardModel } from '../models/leaderboard.model.js'
 
 export default class Players {
     /**
@@ -13,10 +14,7 @@ export default class Players {
      */
     static async get(memberId: string, leaderboardName: Leaderboards) {
         return await PlayerModel.findOne({
-            where: {
-                memberId: memberId,
-                leaderboard: leaderboardName
-            }
+            where: { memberId: memberId, leaderboard: leaderboardName }
         })
     }
 
@@ -27,37 +25,39 @@ export default class Players {
      * @param leaderboardName nom du leaderboard
      * @param isAdmin indique si il s'agit d'un admin/modérateur qui a exécuté la commande
      */
-    static async add(memberId: string, playerId: string, leaderboardName: Leaderboards, isAdmin: boolean = false) {
-        if(!isAdmin) {
+    static async add(
+        memberId: string,
+        playerId: string,
+        leaderboardName: Leaderboards,
+        isAdmin: boolean = false
+    ) {
+        if (!isAdmin) {
             // On vérifie si le membre Discord à déjà un profil ScoreSaber ou BeatLeader lié
             const profileIsAlreadyLinked = await PlayerModel.count({
-                where: {
-                    memberId: memberId,
-                    leaderboard: leaderboardName
-                }
+                where: { memberId: memberId, leaderboard: leaderboardName }
             })
-            if(profileIsAlreadyLinked > 0) throw new PlayerError(`Ce compte Discord est déjà lié à un profil ${leaderboardName === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}\nVeuillez utiliser la commande \`/unlink\` avant de lier un autre profil\n(Cette commande peut être utilisée dans la limite de 1 par mois)`)
+            if (profileIsAlreadyLinked > 0)
+                throw new PlayerError(
+                    `Ce compte Discord est déjà lié à un profil ${leaderboardName === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}\nVeuillez utiliser la commande \`/unlink\` avant de lier un autre profil\n(Cette commande peut être utilisée dans la limite de 1 par mois)`
+                )
         }
 
         // On vérifie si le profil ScoreSaber ou BeatLeader est déjà lié à un membre Discord
         const playerIsAlreadyLinked = await PlayerModel.count({
-            where: {
-                playerId: playerId,
-                leaderboard: leaderboardName
-            }
+            where: { playerId: playerId, leaderboard: leaderboardName }
         })
-        if(playerIsAlreadyLinked > 0) throw new PlayerError(`Ce profil ${leaderboardName === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} est déjà relié à un compte Discord`)
+        if (playerIsAlreadyLinked > 0)
+            throw new PlayerError(
+                `Ce profil ${leaderboardName === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} est déjà relié à un compte Discord`
+            )
 
         await leaderboard.removePlayerLeaderboard(leaderboardName, playerId)
 
         const player = await PlayerModel.findOne({
-            where: {
-                playerId: playerId,
-                leaderboard: leaderboardName
-            }
+            where: { playerId: playerId, leaderboard: leaderboardName }
         })
 
-        if(!player) {
+        if (!player) {
             PlayerModel.create({
                 leaderboard: leaderboardName,
                 memberId: memberId,
@@ -86,31 +86,31 @@ export default class Players {
      * @param playerRanking données de classement serveur du joueur
      * @returns informations du joueur
      */
-    static async update(memberId: string, leaderboardName: Leaderboards, playerData: PlayerData, playerRanking: PlayerRanking) {
+    static async update(
+        memberId: string,
+        leaderboardName: Leaderboards,
+        playerData: PlayerData,
+        playerRanking: PlayerRanking
+    ) {
         const player = await PlayerModel.findOne({
-            where: {
-                memberId: memberId,
-                leaderboard: leaderboardName
-            }
+            where: { memberId: memberId, leaderboard: leaderboardName }
         })
 
-        if(player) {
-            await PlayerModel.update({
-                playerId: playerData.id,
-                playerName: playerData.name,
-                playerCountry: playerData.country,
-                pp: playerData.pp,
-                rank: playerData.rank,
-                countryRank: playerData.countryRank,
-                averageRankedAccuracy: playerData.averageRankedAccuracy,
-                serverRankPP: playerRanking.serverRankPP,
-                serverRankAcc: playerRanking.serverRankAcc
-            }, {
-                where: {
-                    memberId: memberId,
-                    leaderboard: leaderboardName
-                }
-            })
+        if (player) {
+            await PlayerModel.update(
+                {
+                    playerId: playerData.id,
+                    playerName: playerData.name,
+                    playerCountry: playerData.country,
+                    pp: playerData.pp,
+                    rank: playerData.rank,
+                    countryRank: playerData.countryRank,
+                    averageRankedAccuracy: playerData.averageRankedAccuracy,
+                    serverRankPP: playerRanking.serverRankPP,
+                    serverRankAcc: playerRanking.serverRankAcc
+                },
+                { where: { memberId: memberId, leaderboard: leaderboardName } }
+            )
         }
 
         return this.get(memberId, leaderboardName)
@@ -121,10 +121,7 @@ export default class Players {
      * @param memberId identifiant Discord du membre
      */
     static async remove(memberId: string, leaderboardChoice: Leaderboards) {
-        const where = {
-            memberId: memberId,
-            leaderboard: leaderboardChoice
-        }
+        const where = { memberId: memberId, leaderboard: leaderboardChoice }
 
         await PlayerModel.destroy({ where })
         await LeaderboardModel.destroy({ where })

@@ -25,16 +25,16 @@ export default {
     data: new SlashCommandBuilder()
         .setName('clan')
         .setDescription('Gestion du clan BeatLeader')
-        .addSubcommand(subcommand =>
-            subcommand.setName('invitation')
-                .setDescription('Permet de recevoir une invitation pour rejoindre le clan BSFR')
+        .addSubcommand((subcommand) =>
+            subcommand
+                .setName('invitation')
+                .setDescription(
+                    'Permet de recevoir une invitation pour rejoindre le clan BSFR'
+                )
         )
         .setContexts(InteractionContextType.Guild)
-        .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
-    ,
-    allowedChannels: [
-        config.guild.channels['cube-stalker']
-    ],
+        .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages),
+    allowedChannels: [config.guild.channels['cube-stalker']],
 
     /**
      * Exécution de la commande
@@ -44,17 +44,30 @@ export default {
         try {
             const action = interaction.options.getSubcommand(true)
 
-            switch(action) {
+            switch (action) {
                 case 'invitation': {
-                    const player = await players.get(interaction.user.id, Leaderboards.BeatLeader)
-                    if(player) {
-                        await interaction.deferReply({ flags: MessageFlags.Ephemeral })
-                        await BeatLeaderOAuth.sendClanInvitation(player.playerId)
-                        Logger.log('BeatLeaderOAuth', 'INFO', `Une invitation à rejoindre le clan BSFR a été envoyée au joueur « ${player.playerName} »`)
+                    const player = await players.get(
+                        interaction.user.id,
+                        Leaderboards.BeatLeader
+                    )
+                    if (player) {
+                        await interaction.deferReply({
+                            flags: MessageFlags.Ephemeral
+                        })
+                        await BeatLeaderOAuth.sendClanInvitation(
+                            player.playerId
+                        )
+                        Logger.log(
+                            'BeatLeaderOAuth',
+                            'INFO',
+                            `Une invitation à rejoindre le clan BSFR a été envoyée au joueur « ${player.playerName} »`
+                        )
 
                         const containerComponent = new ContainerBuilder()
                             .addTextDisplayComponents(
-                                new TextDisplayBuilder().setContent('### ✅ Invitation envoyée !')
+                                new TextDisplayBuilder().setContent(
+                                    '### ✅ Invitation envoyée !'
+                                )
                             )
                             .addSeparatorComponents(
                                 new SeparatorBuilder()
@@ -62,15 +75,17 @@ export default {
                                     .setSpacing(SeparatorSpacingSize.Small)
                             )
                             .addTextDisplayComponents(
-                                new TextDisplayBuilder().setContent(`${hyperlink('Cliquez ici', 'https://beatleader.xyz/clans')} pour accepter l'invitation.`)
+                                new TextDisplayBuilder().setContent(
+                                    `${hyperlink('Cliquez ici', 'https://beatleader.xyz/clans')} pour accepter l'invitation.`
+                                )
                             )
-                        
+
                         await interaction.editReply({
                             flags: [
                                 MessageFlags.IsComponentsV2,
                                 MessageFlags.SuppressEmbeds
                             ],
-                            components: [ containerComponent ]
+                            components: [containerComponent]
                         })
                     } else {
                         const modal = new ModalBuilder()
@@ -80,21 +95,30 @@ export default {
                         const profilUrlInput = new TextInputBuilder()
                             .setCustomId('url')
                             .setLabel('Lien du profil')
-                            .setPlaceholder('https://beatleader.xyz/u/76561199233450694')
+                            .setPlaceholder(
+                                'https://beatleader.xyz/u/76561199233450694'
+                            )
                             .setMinLength(25)
                             .setMaxLength(100)
                             .setStyle(TextInputStyle.Short)
                             .setRequired(true)
 
-                        const actionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(profilUrlInput)
+                        const actionRow =
+                            new ActionRowBuilder<TextInputBuilder>().addComponents(
+                                profilUrlInput
+                            )
                         modal.addComponents(actionRow)
 
                         await interaction.showModal(modal)
                     }
                 }
             }
-        } catch(error) {
-            if(error.name === 'COMMAND_INTERACTION_ERROR' || error.name === 'BEATLEADER_ERROR' || error.name === 'PLAYER_ERROR') {
+        } catch (error) {
+            if (
+                error.name === 'COMMAND_INTERACTION_ERROR' ||
+                error.name === 'BEATLEADER_ERROR' ||
+                error.name === 'PLAYER_ERROR'
+            ) {
                 throw new CommandError(error.message, interaction.commandName)
             } else {
                 throw Error(error.message)

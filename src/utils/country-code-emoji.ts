@@ -8,21 +8,27 @@ const FLAG_LENGTH = 4
 const OFFSET = 127397
 
 export const countryCodeEmoji = (cc: string) => {
-    if(!CC_REGEX.test(cc)) {
+    if (!CC_REGEX.test(cc)) {
         const type = typeof cc
-        throw new TypeError(`cc argument must be an ISO 3166-1 alpha-2 string, but got '${type === 'string' ? cc : type}' instead.`)
+        throw new TypeError(
+            `cc argument must be an ISO 3166-1 alpha-2 string, but got '${type === 'string' ? cc : type}' instead.`
+        )
     }
 
-    const codePoints = [...cc.toUpperCase()].map(c => <number>c.codePointAt(0) + OFFSET)
+    const codePoints = [...cc.toUpperCase()].map(
+        (c) => <number>c.codePointAt(0) + OFFSET
+    )
     return String.fromCodePoint(...codePoints)
 }
 
 export const emojiCountryCode = (flag: string) => {
-    if(flag.length !== FLAG_LENGTH) {
+    if (flag.length !== FLAG_LENGTH) {
         const type = typeof flag
-        throw new TypeError(`flag argument must be a flag emoji, but got '${type === 'string' ? flag : type}' instead.`)
+        throw new TypeError(
+            `flag argument must be a flag emoji, but got '${type === 'string' ? flag : type}' instead.`
+        )
     }
 
-    const codePoints = [...flag].map(c => <number>c.codePointAt(0) - OFFSET)
+    const codePoints = [...flag].map((c) => <number>c.codePointAt(0) - OFFSET)
     return String.fromCodePoint(...codePoints)
 }

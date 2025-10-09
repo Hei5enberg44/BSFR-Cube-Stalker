@@ -1,12 +1,18 @@
 import { existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Client, GatewayIntentBits, ActivityType, PresenceUpdateStatus, Guild } from 'discord.js'
+import {
+    Client,
+    GatewayIntentBits,
+    ActivityType,
+    PresenceUpdateStatus,
+    Guild
+} from 'discord.js'
 import Config from './controllers/config.js'
 import Commands from './controllers/commands.js'
 import Events from './controllers/events.js'
 import Modals from './controllers/modals.js'
-import database from './controllers/database.js'
+import db from './controllers/db.js'
 import Crons from './controllers/crons.js'
 import Top1 from './controllers/top1.js'
 import BeatLeaderCLan from './controllers/beatleader-clan.js'
@@ -18,8 +24,11 @@ try {
     Logger.log('Application', 'INFO', 'Démarrage du bot')
 
     // Chargement de la configuration du bot
-    if(!existsSync(resolve(__dirname, './config.json'))) throw Error('Le fichier de configuration "config.json" est manquant')
-    const { default: config } = await import('./config.json', { with: { type: 'json' } })
+    if (!existsSync(resolve(__dirname, './config.json')))
+        throw Error('Le fichier de configuration "config.json" est manquant')
+    const { default: config } = await import('./config.json', {
+        with: { type: 'json' }
+    })
 
     try {
         Logger.log('Discord', 'INFO', 'Initialisation...')
@@ -30,19 +39,28 @@ try {
                 GatewayIntentBits.GuildMembers,
                 GatewayIntentBits.GuildMessages,
                 GatewayIntentBits.GuildMessageReactions
-            ]
+            ],
+            closeTimeout: 5_000
         })
 
-        client.once('ready', async () => {
+        client.once('clientReady', async () => {
             Logger.log('Discord', 'INFO', 'Initialisation terminée')
 
             // Test de la connexion à la base de données
             try {
-                Logger.log('Database', 'INFO', 'Connexion à la base de données...')
-                await database.test()
-                Logger.log('Database', 'INFO', 'Connexion à la base de données réussie')
-            } catch(error) {
-                if(error.name === 'DATABASE_ERROR') {
+                Logger.log(
+                    'Database',
+                    'INFO',
+                    'Connexion à la base de données...'
+                )
+                await db.test()
+                Logger.log(
+                    'Database',
+                    'INFO',
+                    'Connexion à la base de données réussie'
+                )
+            } catch (error) {
+                if (error.name === 'DATABASE_ERROR') {
                     Logger.log('Database', 'ERROR', error.message)
                     process.exit(1)
                 }
@@ -55,7 +73,7 @@ try {
 
             // Test de la configuration
             Config.test(guild)
-        
+
             // Chargement des commandes
             const commands = new Commands(client)
             await commands.load()
@@ -85,25 +103,30 @@ try {
             // Statut du bot
             client.user?.setPresence({
                 activities: [
-                    {
-                        name: 'Beat Saber',
-                        type: ActivityType.Playing
-                    }
+                    { name: 'Beat Saber', type: ActivityType.Playing }
                 ],
                 status: PresenceUpdateStatus.DoNotDisturb
             })
-        
+
             Logger.log('Application', 'INFO', 'Le bot est prêt !')
         })
-        
+
         client.login(config.token)
-    } catch(error) {
-        if(error.name === 'CONFIG_ERROR') {
+    } catch (error) {
+        if (error.name === 'CONFIG_ERROR') {
             process.exit(1)
         } else {
-            Logger.log('Discord', 'ERROR', `Une erreur est survenue : ${error.message}`)
+            Logger.log(
+                'Discord',
+                'ERROR',
+                `Une erreur est survenue : ${error.message}`
+            )
         }
     }
-} catch(error) {
-    Logger.log('Application', 'ERROR', `Démarrage du bot impossible : ${error.message}`)
+} catch (error) {
+    Logger.log(
+        'Application',
+        'ERROR',
+        `Démarrage du bot impossible : ${error.message}`
+    )
 }

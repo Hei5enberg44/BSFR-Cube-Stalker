@@ -16,9 +16,10 @@ import config from '../config.json' with { type: 'json' }
 export default {
     data: new SlashCommandBuilder()
         .setName('forcerefresh')
-        .setDescription('Actualise l\'ensemble du serveur')
-        .addStringOption(option =>
-            option.setName('leaderboard')
+        .setDescription("Actualise l'ensemble du serveur")
+        .addStringOption((option) =>
+            option
+                .setName('leaderboard')
                 .setDescription('Leaderboard a actualiser')
                 .addChoices([
                     { name: 'ScoreSaber', value: 'scoresaber' },
@@ -27,11 +28,8 @@ export default {
                 .setRequired(true)
         )
         .setContexts(InteractionContextType.Guild)
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
-    ,
-    allowedChannels: [
-        config.guild.channels['cube-stalker']
-    ],
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
+    allowedChannels: [config.guild.channels['cube-stalker']],
 
     /**
      * Exécution de la commande
@@ -39,41 +37,42 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const leaderboardChoice = interaction.options.getString('leaderboard') as Leaderboards
+            const leaderboardChoice = interaction.options.getString(
+                'leaderboard'
+            ) as Leaderboards
 
             const guild = <Guild>interaction.guild
 
             let containerBuilder = new ContainerBuilder()
-                .setAccentColor([ 241, 196, 15 ])
+                .setAccentColor([241, 196, 15])
                 .addTextDisplayComponents(
-                    new TextDisplayBuilder().setContent('### 🛠️ Actualisation du serveur en cours...')
+                    new TextDisplayBuilder().setContent(
+                        '### 🛠️ Actualisation du serveur en cours...'
+                    )
                 )
 
             await interaction.reply({
-                flags: [
-                    MessageFlags.IsComponentsV2,
-                    MessageFlags.Ephemeral
-                ],
-                components: [ containerBuilder ]
+                flags: [MessageFlags.IsComponentsV2, MessageFlags.Ephemeral],
+                components: [containerBuilder]
             })
 
             const members = guild.members.cache
             await leaderboard.refreshLeaderboard(leaderboardChoice, members)
 
             containerBuilder = new ContainerBuilder()
-                .setAccentColor([ 46, 204, 113 ])
+                .setAccentColor([46, 204, 113])
                 .addTextDisplayComponents(
-                    new TextDisplayBuilder().setContent('### ✅ Le serveur a bien été actualisé')
+                    new TextDisplayBuilder().setContent(
+                        '### ✅ Le serveur a bien été actualisé'
+                    )
                 )
 
             await interaction.editReply({
-                flags: [
-                    MessageFlags.IsComponentsV2
-                ],
-                components: [ containerBuilder ]
+                flags: [MessageFlags.IsComponentsV2],
+                components: [containerBuilder]
             })
-        } catch(error) {
-            if(error.name === 'COMMAND_INTERACTION_ERROR') {
+        } catch (error) {
+            if (error.name === 'COMMAND_INTERACTION_ERROR') {
                 throw new CommandError(error.message, interaction.commandName)
             } else {
                 throw Error(error.message)

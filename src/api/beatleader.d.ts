@@ -2,1165 +2,1215 @@ export interface components {
     schemas: {
         Achievement: {
             /** Format: int32 */
-            id: number;
-            playerId: string | null;
-            player: components["schemas"]["Player"];
+            id: number
+            playerId: string | null
+            player: components['schemas']['Player']
             /** Format: int32 */
-            achievementDescriptionId: number;
-            achievementDescription: components["schemas"]["AchievementDescription"];
-            level: components["schemas"]["AchievementLevel"];
+            achievementDescriptionId: number
+            achievementDescription: components['schemas']['AchievementDescription']
+            level: components['schemas']['AchievementLevel']
             /** Format: int32 */
-            timeset: number;
+            timeset: number
             /** Format: int32 */
-            count: number;
-        };
+            count: number
+        }
         AchievementDescription: {
             /** Format: int32 */
-            id: number;
-            name: string | null;
-            description: string | null;
-            link: string | null;
-            achievements: (components["schemas"]["Achievement"])[] | null;
-            levels: (components["schemas"]["AchievementLevel"])[] | null;
-        };
+            id: number
+            name: string | null
+            description: string | null
+            link: string | null
+            achievements: components['schemas']['Achievement'][] | null
+            levels: components['schemas']['AchievementLevel'][] | null
+        }
         AchievementLevel: {
             /** Format: int32 */
-            id: number;
-            image: string | null;
-            smallImage: string | null;
-            name: string | null;
-            description: string | null;
-            detailedDescription: string | null;
-            color: string | null;
+            id: number
+            image: string | null
+            smallImage: string | null
+            name: string | null
+            description: string | null
+            detailedDescription: string | null
+            color: string | null
             /** Format: float */
-            value: number | null;
+            value: number | null
             /** Format: int32 */
-            level: number;
+            level: number
             /** Format: int32 */
-            achievementDescriptionId: number;
-        };
+            achievementDescriptionId: number
+        }
         AveragePosition: {
             /** Format: float */
-            x: number;
+            x: number
             /** Format: float */
-            y: number;
+            y: number
             /** Format: float */
-            z: number;
-        };
+            z: number
+        }
         Badge: {
             /** Format: int32 */
-            id: number;
-            description: string | null;
-            image: string | null;
-            link: string | null;
-        };
+            id: number
+            description: string | null
+            image: string | null
+            link: string | null
+        }
         Ban: {
             /** Format: int32 */
-            id: number;
-            playerId: string;
-            bannedBy: string;
-            banReason: string;
+            id: number
+            playerId: string
+            bannedBy: string
+            banReason: string
             /** Format: int32 */
-            timeset: number;
+            timeset: number
             /** Format: int32 */
-            duration: number;
-        };
+            duration: number
+        }
         BanReturn: {
-            reason: string | null;
+            reason: string | null
             /** Format: int32 */
-            timeset: number;
+            timeset: number
             /** Format: int32 */
-            duration: number;
-        };
+            duration: number
+        }
         Clan: {
             /** Format: int32 */
-            id: number;
-            name: string | null;
-            color: string | null;
-            icon: string | null;
-            tag: string | null;
-            leaderID: string | null;
-            description: string | null;
-            bio: string | null;
+            id: number
+            name: string | null
+            color: string | null
+            icon: string | null
+            tag: string | null
+            leaderID: string | null
+            description: string | null
+            bio: string | null
             /** Format: int32 */
-            playersCount: number;
+            playersCount: number
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: float */
-            averageRank: number;
+            averageRank: number
             /** Format: float */
-            averageAccuracy: number;
-            players: (components["schemas"]["Player"])[] | null;
-        };
+            averageAccuracy: number
+            players: components['schemas']['Player'][] | null
+        }
         ClanResponse: {
             /** Format: int32 */
-            id: number;
-            tag: string;
-            color: string;
-        };
+            id: number
+            tag: string
+            color: string
+        }
         ClanResponseFull: {
             /** Format: int32 */
-            id: number;
-            name: string | null;
-            color: string | null;
-            icon: string | null;
-            tag: string | null;
-            leaderID: string | null;
-            description: string | null;
-            bio: string | null;
-            richBio: string | null;
-            discordInvite: string | null;
+            id: number
+            name: string | null
+            color: string | null
+            icon: string | null
+            tag: string | null
+            leaderID: string | null
+            description: string | null
+            bio: string | null
+            richBio: string | null
+            discordInvite: string | null
             /** Format: int32 */
-            playersCount: number;
+            playersCount: number
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: float */
-            averageRank: number;
+            averageRank: number
             /** Format: float */
-            averageAccuracy: number;
+            averageAccuracy: number
             /** Format: float */
-            rankedPoolPercentCaptured: number;
+            rankedPoolPercentCaptured: number
             /** Format: int32 */
-            captureLeaderboardCount: number;
-            playerChangesCallback: string | null;
-            clanRankingDiscordHook: string | null;
-            featuredPlaylists: (components["schemas"]["FeaturedPlaylistResponse"])[] | null;
-        };
+            captureLeaderboardCount: number
+            playerChangesCallback: string | null
+            clanRankingDiscordHook: string | null
+            featuredPlaylists:
+                | components['schemas']['FeaturedPlaylistResponse'][]
+                | null
+        }
         ClanRankingResponse: {
             /** Format: int32 */
-            id: number;
-            clan: components["schemas"]["Clan"];
+            id: number
+            clan: components['schemas']['Clan']
             /** Format: int32 */
-            lastUpdateTime: number;
+            lastUpdateTime: number
             /** Format: float */
-            averageRank: number;
+            averageRank: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: float */
-            averageAccuracy: number;
+            averageAccuracy: number
             /** Format: float */
-            totalScore: number;
-            leaderboardId: string | null;
-            leaderboard: components["schemas"]["Leaderboard"];
-            associatedScores: (components["schemas"]["ScoreResponse"])[] | null;
+            totalScore: number
+            leaderboardId: string | null
+            leaderboard: components['schemas']['Leaderboard']
+            associatedScores: components['schemas']['ScoreResponse'][] | null
             /** Format: int32 */
-            associatedScoresCount: number;
-            myScore: components["schemas"]["ScoreResponseWithAcc"] | null;
-        };
+            associatedScoresCount: number
+            myScore: components['schemas']['ScoreResponseWithAcc'] | null
+        }
         ClanRankingResponseClanResponseFullResponseWithMetadataAndContainer: {
-            metadata: components["schemas"]["Metadata"];
-            data: (components["schemas"]["ClanRankingResponse"])[] | null;
-            container: components["schemas"]["ClanResponseFull"];
-        };
+            metadata: components['schemas']['Metadata']
+            data: components['schemas']['ClanRankingResponse'][] | null
+            container: components['schemas']['ClanResponseFull']
+        }
         DifficultyDescription: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int32 */
-            value: number;
+            value: number
             /** Format: int32 */
-            mode: number;
-            difficultyName: string;
-            modeName: string;
-            status: components["schemas"]["DifficultyStatus"];
+            mode: number
+            difficultyName: string
+            modeName: string
+            status: components['schemas']['DifficultyStatus']
             /** Format: int32 */
-            nominatedTime: number;
+            nominatedTime: number
             /** Format: int32 */
-            qualifiedTime: number;
+            qualifiedTime: number
             /** Format: int32 */
-            rankedTime: number;
+            rankedTime: number
             /** Format: float */
-            stars: number | null;
+            stars: number | null
             /** Format: int32 */
-            type: number;
+            type: number
             /** Format: float */
-            njs: number;
+            njs: number
             /** Format: float */
-            nps: number;
+            nps: number
             /** Format: int32 */
-            notes: number;
+            notes: number
             /** Format: int32 */
-            bombs: number;
+            bombs: number
             /** Format: int32 */
-            walls: number;
+            walls: number
             /** Format: int32 */
-            maxScore: number;
+            maxScore: number
             /** Format: double */
-            duration: number;
-        };
+            duration: number
+        }
         /**
-        * Format: int32 
-        * @enum {integer}
-        */
-        DifficultyStatus: 0 | 1 | 2 | 3 | 4 | 5 | 6;
+         * Format: int32
+         * @enum {integer}
+         */
+        DifficultyStatus: 0 | 1 | 2 | 3 | 4 | 5 | 6
         /**
-        * Format: int32 
-        * @enum {integer}
-        */
-        EndType: 0 | 1 | 2 | 3 | 4;
+         * Format: int32
+         * @enum {integer}
+         */
+        EndType: 0 | 1 | 2 | 3 | 4
         EventPlayer: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int32 */
-            eventId: number;
-            name: string;
-            playerId: string;
-            country: string;
+            eventId: number
+            name: string
+            playerId: string
+            country: string
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
+            countryRank: number
             /** Format: float */
-            pp: number;
-        };
+            pp: number
+        }
         EventResponse: {
             /** Format: int32 */
-            id: number;
-            name: string | null;
+            id: number
+            name: string | null
             /** Format: int32 */
-            endDate: number;
+            endDate: number
             /** Format: int32 */
-            playlistId: number;
-            image: string | null;
+            playlistId: number
+            image: string | null
             /** Format: int32 */
-            playerCount: number;
-            leader: components["schemas"]["PlayerResponse"];
-        };
+            playerCount: number
+            leader: components['schemas']['PlayerResponse']
+        }
         EventResponseResponseWithMetadata: {
-            metadata: components["schemas"]["Metadata"];
-            data: (components["schemas"]["EventResponse"])[] | null;
-        };
+            metadata: components['schemas']['Metadata']
+            data: components['schemas']['EventResponse'][] | null
+        }
         FailedScore: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int32 */
-            baseScore: number;
+            baseScore: number
             /** Format: int32 */
-            modifiedScore: number;
+            modifiedScore: number
             /** Format: float */
-            accuracy: number;
-            playerId: string | null;
+            accuracy: number
+            playerId: string | null
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: float */
-            weight: number;
+            weight: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
-            replay: string | null;
-            modifiers: string | null;
+            countryRank: number
+            replay: string | null
+            modifiers: string | null
             /** Format: int32 */
-            badCuts: number;
+            badCuts: number
             /** Format: int32 */
-            missedNotes: number;
+            missedNotes: number
             /** Format: int32 */
-            bombCuts: number;
+            bombCuts: number
             /** Format: int32 */
-            wallsHit: number;
+            wallsHit: number
             /** Format: int32 */
-            pauses: number;
-            fullCombo: boolean;
-            hmd: components["schemas"]["HMD"];
-            timeset: string | null;
-            player: components["schemas"]["Player"];
-            leaderboard: components["schemas"]["Leaderboard"];
-            error: string | null;
-        };
+            pauses: number
+            fullCombo: boolean
+            hmd: components['schemas']['HMD']
+            timeset: string | null
+            player: components['schemas']['Player']
+            leaderboard: components['schemas']['Leaderboard']
+            error: string | null
+        }
         FailedScoreResponseWithMetadata: {
-            metadata: components["schemas"]["Metadata"];
-            data: (components["schemas"]["FailedScore"])[] | null;
-        };
+            metadata: components['schemas']['Metadata']
+            data: components['schemas']['FailedScore'][] | null
+        }
         FeaturedPlaylistResponse: {
             /** Format: int32 */
-            id: number;
-            playlistLink: string | null;
-            cover: string | null;
-            title: string | null;
-            description: string | null;
-            owner: string | null;
-            ownerCover: string | null;
-            ownerLink: string | null;
-        };
+            id: number
+            playlistLink: string | null
+            cover: string | null
+            title: string | null
+            description: string | null
+            owner: string | null
+            ownerCover: string | null
+            ownerLink: string | null
+        }
         FriendActivity: {
-            player: components["schemas"]["PlayerResponse"];
-            type: components["schemas"]["FriendActivityType"];
-            activityObject: Record<string, unknown> | null;
-        };
+            player: components['schemas']['PlayerResponse']
+            type: components['schemas']['FriendActivityType']
+            activityObject: Record<string, unknown> | null
+        }
         FriendActivityResponseWithMetadata: {
-            metadata: components["schemas"]["Metadata"];
-            data: (components["schemas"]["FriendActivity"])[] | null;
-        };
+            metadata: components['schemas']['Metadata']
+            data: components['schemas']['FriendActivity'][] | null
+        }
         /**
-        * Format: int32 
-        * @enum {integer}
-        */
-        FriendActivityType: 1 | 2 | 3 | 4;
+         * Format: int32
+         * @enum {integer}
+         */
+        FriendActivityType: 1 | 2 | 3 | 4
         GraphResponse: {
-            leaderboardId: string | null;
-            diff: string | null;
-            mode: string | null;
-            modifiers: string | null;
-            songName: string | null;
-            mapper: string | null;
+            leaderboardId: string | null
+            diff: string | null
+            mode: string | null
+            modifiers: string | null
+            songName: string | null
+            mapper: string | null
             /** Format: float */
-            acc: number;
-            timeset: string | null;
+            acc: number
+            timeset: string | null
             /** Format: float */
-            stars: number;
-        };
+            stars: number
+        }
         /**
-        * Format: int32 
-        * @enum {integer}
-        */
-        HMD: 0 | 1 | 2 | 4 | 8 | 16 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 | 64 | 65 | 128 | 256;
+         * Format: int32
+         * @enum {integer}
+         */
+        HMD:
+            | 0
+            | 1
+            | 2
+            | 4
+            | 8
+            | 16
+            | 32
+            | 33
+            | 34
+            | 35
+            | 36
+            | 37
+            | 38
+            | 39
+            | 40
+            | 41
+            | 42
+            | 43
+            | 44
+            | 45
+            | 46
+            | 47
+            | 48
+            | 49
+            | 50
+            | 51
+            | 52
+            | 53
+            | 54
+            | 55
+            | 56
+            | 57
+            | 58
+            | 59
+            | 60
+            | 61
+            | 62
+            | 63
+            | 64
+            | 65
+            | 128
+            | 256
         HitTracker: {
             /** Format: int32 */
-            maxCombo: number;
+            maxCombo: number
             /** Format: int32 */
-            maxStreak: number;
+            maxStreak: number
             /** Format: float */
-            leftTiming: number;
+            leftTiming: number
             /** Format: float */
-            rightTiming: number;
+            rightTiming: number
             /** Format: int32 */
-            leftMiss: number;
+            leftMiss: number
             /** Format: int32 */
-            rightMiss: number;
+            rightMiss: number
             /** Format: int32 */
-            leftBadCuts: number;
+            leftBadCuts: number
             /** Format: int32 */
-            rightBadCuts: number;
+            rightBadCuts: number
             /** Format: int32 */
-            leftBombs: number;
+            leftBombs: number
             /** Format: int32 */
-            rightBombs: number;
-        };
+            rightBombs: number
+        }
         Leaderboard: {
-            id: string | null;
-            songId: string | null;
-            song: components["schemas"]["Song"];
-            difficulty: components["schemas"]["DifficultyDescription"];
-            scores: (components["schemas"]["Score"])[] | null;
+            id: string | null
+            songId: string | null
+            song: components['schemas']['Song']
+            difficulty: components['schemas']['DifficultyDescription']
+            scores: components['schemas']['Score'][] | null
             /** Format: int64 */
-            timestamp: number;
-            playerStats: (components["schemas"]["PlayerLeaderboardStats"])[] | null;
+            timestamp: number
+            playerStats:
+                | components['schemas']['PlayerLeaderboardStats'][]
+                | null
             /** Format: int32 */
-            plays: number;
+            plays: number
             /** Format: int32 */
-            playCount: number;
+            playCount: number
             /** Format: int32 */
-            positiveVotes: number;
+            positiveVotes: number
             /** Format: int32 */
-            starVotes: number;
+            starVotes: number
             /** Format: int32 */
-            negativeVotes: number;
+            negativeVotes: number
             /** Format: float */
-            voteStars: number;
-        };
+            voteStars: number
+        }
         LeaderboardInfoResponse: {
-            id: string | null;
-            song: components["schemas"]["Song"];
-            difficulty: components["schemas"]["DifficultyDescription"];
+            id: string | null
+            song: components['schemas']['Song']
+            difficulty: components['schemas']['DifficultyDescription']
             /** Format: int32 */
-            plays: number;
+            plays: number
             /** Format: int32 */
-            positiveVotes: number;
+            positiveVotes: number
             /** Format: int32 */
-            starVotes: number;
+            starVotes: number
             /** Format: int32 */
-            negativeVotes: number;
+            negativeVotes: number
             /** Format: float */
-            voteStars: number;
-            myScore: components["schemas"]["ScoreResponseWithAcc"];
-        };
+            voteStars: number
+            myScore: components['schemas']['ScoreResponseWithAcc']
+        }
         LeaderboardInfoResponseResponseWithMetadata: {
-            metadata: components["schemas"]["Metadata"];
-            data: (components["schemas"]["LeaderboardInfoResponse"])[] | null;
-        };
+            metadata: components['schemas']['Metadata']
+            data: components['schemas']['LeaderboardInfoResponse'][] | null
+        }
         LeaderboardResponse: {
-            id: string;
-            song: components["schemas"]["Song"];
-            difficulty: components["schemas"]["DifficultyDescription"];
-            scores: (components["schemas"]["ScoreResponse"])[] | null;
+            id: string
+            song: components['schemas']['Song']
+            difficulty: components['schemas']['DifficultyDescription']
+            scores: components['schemas']['ScoreResponse'][] | null
             /** Format: int32 */
-            plays: number;
-        };
+            plays: number
+        }
         LeaderboardVoting: {
             /** Format: float */
-            rankability: number;
+            rankability: number
             /** Format: float */
-            stars: number;
-            type: (number)[] | null;
-        };
+            stars: number
+            type: number[] | null
+        }
         LeaderboardsInfoResponse: {
-            id: string | null;
-            difficulty: components["schemas"]["DifficultyDescription"];
-        };
+            id: string | null
+            difficulty: components['schemas']['DifficultyDescription']
+        }
         LeaderboardsResponse: {
-            song: components["schemas"]["Song"];
-            leaderboards: (components["schemas"]["LeaderboardsInfoResponse"])[] | null;
-        };
+            song: components['schemas']['Song']
+            leaderboards:
+                | components['schemas']['LeaderboardsInfoResponse'][]
+                | null
+        }
         Metadata: {
             /** Format: int32 */
-            itemsPerPage: number;
+            itemsPerPage: number
             /** Format: int32 */
-            page: number;
+            page: number
             /** Format: int32 */
-            total: number;
-        };
+            total: number
+        }
         PatreonFeatures: {
             /** Format: int32 */
-            id: number;
-            bio: string;
-            message: string;
-            leftSaberColor: string;
-            rightSaberColor: string;
-        };
+            id: number
+            bio: string
+            message: string
+            leftSaberColor: string
+            rightSaberColor: string
+        }
         Player: {
-            id: string;
-            name: string;
-            platform: string;
-            avatar: string;
-            country: string;
-            role: string;
+            id: string
+            name: string
+            platform: string
+            avatar: string
+            country: string
+            role: string
             /** Format: int32 */
-            mapperId: number;
+            mapperId: number
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: float */
-            accPp: number;
+            accPp: number
             /** Format: float */
-            techPp: number;
+            techPp: number
             /** Format: float */
-            passPp: number;
+            passPp: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
+            countryRank: number
             /** Format: float */
-            lastWeekPp: number;
+            lastWeekPp: number
             /** Format: int32 */
-            lastWeekRank: number;
+            lastWeekRank: number
             /** Format: int32 */
-            lastWeekCountryRank: number;
-            banned: boolean;
-            inactive: boolean;
-            externalProfileUrl: string;
-            scoreStats: components["schemas"]["PlayerScoreStats"];
-            clans: (components["schemas"]["Clan"])[];
-            friends: (components["schemas"]["PlayerFriends"])[] | null;
-            badges: (components["schemas"]["Badge"])[] | null;
-            patreonFeatures: components["schemas"]["PatreonFeatures"] | null;
-            profileSettings: components["schemas"]["ProfileSettings"];
-            changes: (components["schemas"]["PlayerChange"])[] | null;
-            history: (components["schemas"]["PlayerScoreStatsHistory"])[] | null;
-            eventsParticipating: (components["schemas"]["EventPlayer"])[] | null;
-            socials: (components["schemas"]["PlayerSocial"])[] | null;
-            achievements: (components["schemas"]["Achievement"])[] | null;
-        };
+            lastWeekCountryRank: number
+            banned: boolean
+            inactive: boolean
+            externalProfileUrl: string
+            scoreStats: components['schemas']['PlayerScoreStats']
+            clans: components['schemas']['Clan'][]
+            friends: components['schemas']['PlayerFriends'][] | null
+            badges: components['schemas']['Badge'][] | null
+            patreonFeatures: components['schemas']['PatreonFeatures'] | null
+            profileSettings: components['schemas']['ProfileSettings']
+            changes: components['schemas']['PlayerChange'][] | null
+            history: components['schemas']['PlayerScoreStatsHistory'][] | null
+            eventsParticipating: components['schemas']['EventPlayer'][] | null
+            socials: components['schemas']['PlayerSocial'][] | null
+            achievements: components['schemas']['Achievement'][] | null
+        }
         PlayerChange: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int32 */
-            timestamp: number;
-            playerId: string;
-            oldName: string;
-            newName: string;
-            oldCountry: string;
-            newCountry: string | null;
-            changer: string | null;
-        };
+            timestamp: number
+            playerId: string
+            oldName: string
+            newName: string
+            oldCountry: string
+            newCountry: string | null
+            changer: string | null
+        }
         PlayerFriends: {
-            id: string | null;
-            friends: (components["schemas"]["Player"])[] | null;
-        };
+            id: string | null
+            friends: components['schemas']['Player'][] | null
+        }
         PlayerLeaderboardStats: {
             /** Format: int32 */
-            id: number;
-            playerId: string | null;
-            type: components["schemas"]["EndType"];
+            id: number
+            playerId: string | null
+            type: components['schemas']['EndType']
             /** Format: int32 */
-            timeset: number;
+            timeset: number
             /** Format: float */
-            time: number;
+            time: number
             /** Format: int32 */
-            score: number;
-            leaderboardId: string | null;
-            leaderboard: components["schemas"]["Leaderboard"];
-        };
+            score: number
+            leaderboardId: string | null
+            leaderboard: components['schemas']['Leaderboard']
+        }
         PlayerLeaderboardStatsResponseWithMetadata: {
-            metadata: components["schemas"]["Metadata"];
-            data: (components["schemas"]["PlayerLeaderboardStats"])[] | null;
-        };
+            metadata: components['schemas']['Metadata']
+            data: components['schemas']['PlayerLeaderboardStats'][] | null
+        }
         PlayerResponse: {
-            id: string;
-            name: string;
-            platform: string;
-            avatar: string;
-            country: string;
+            id: string
+            name: string
+            platform: string
+            avatar: string
+            country: string
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
-            role: string;
-            socials: (components["schemas"]["PlayerSocial"])[];
-            patreonFeatures: components["schemas"]["PatreonFeatures"] | null;
-            profileSettings: components["schemas"]["ProfileSettings"];
-            clans: (components["schemas"]["ClanResponse"])[];
-        };
+            countryRank: number
+            role: string
+            socials: components['schemas']['PlayerSocial'][]
+            patreonFeatures: components['schemas']['PatreonFeatures'] | null
+            profileSettings: components['schemas']['ProfileSettings']
+            clans: components['schemas']['ClanResponse'][]
+        }
         PlayerResponseFull: {
-            id: string;
-            name: string;
-            platform: string;
-            avatar: string;
-            country: string;
+            id: string
+            name: string
+            platform: string
+            avatar: string
+            country: string
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
-            role: string;
-            socials: (components["schemas"]["PlayerSocial"])[];
-            patreonFeatures: components["schemas"]["PatreonFeatures"] | null;
-            profileSettings: components["schemas"]["ProfileSettings"];
-            clans: (components["schemas"]["ClanResponse"])[];
+            countryRank: number
+            role: string
+            socials: components['schemas']['PlayerSocial'][]
+            patreonFeatures: components['schemas']['PatreonFeatures'] | null
+            profileSettings: components['schemas']['ProfileSettings']
+            clans: components['schemas']['ClanResponse'][]
             /** Format: float */
-            accPp: number;
+            accPp: number
             /** Format: float */
-            passPp: number;
+            passPp: number
             /** Format: float */
-            techPp: number;
-            scoreStats: components["schemas"]["PlayerScoreStats"];
+            techPp: number
+            scoreStats: components['schemas']['PlayerScoreStats']
             /** Format: float */
-            lastWeekPp: number;
+            lastWeekPp: number
             /** Format: int32 */
-            lastWeekRank: number;
+            lastWeekRank: number
             /** Format: int32 */
-            lastWeekCountryRank: number;
-            eventsParticipating: (components["schemas"]["EventPlayer"])[];
+            lastWeekCountryRank: number
+            eventsParticipating: components['schemas']['EventPlayer'][]
             /** Format: int32 */
-            mapperId: number;
-            banned: boolean;
-            inactive: boolean;
-            externalProfileUrl: string;
-            history: (components["schemas"]["PlayerScoreStatsHistory"])[] | null;
-            badges: (components["schemas"]["Badge"])[];
-            changes: (components["schemas"]["PlayerChange"])[];
-        };
+            mapperId: number
+            banned: boolean
+            inactive: boolean
+            externalProfileUrl: string
+            history: components['schemas']['PlayerScoreStatsHistory'][] | null
+            badges: components['schemas']['Badge'][]
+            changes: components['schemas']['PlayerChange'][]
+        }
         PlayerResponseWithFriends: {
-            id: string | null;
-            name: string | null;
-            platform: string | null;
-            avatar: string | null;
-            country: string | null;
+            id: string | null
+            name: string | null
+            platform: string | null
+            avatar: string | null
+            country: string | null
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
-            role: string | null;
-            socials: (components["schemas"]["PlayerSocial"])[] | null;
-            patreonFeatures: components["schemas"]["PatreonFeatures"];
-            profileSettings: components["schemas"]["ProfileSettings"];
-            clans: (components["schemas"]["ClanResponse"])[] | null;
-            friends: (string)[] | null;
-        };
+            countryRank: number
+            role: string | null
+            socials: components['schemas']['PlayerSocial'][] | null
+            patreonFeatures: components['schemas']['PatreonFeatures']
+            profileSettings: components['schemas']['ProfileSettings']
+            clans: components['schemas']['ClanResponse'][] | null
+            friends: string[] | null
+        }
         PlayerResponseWithStats: {
-            id: string | null;
-            name: string | null;
-            platform: string | null;
-            avatar: string | null;
-            country: string | null;
+            id: string | null
+            name: string | null
+            platform: string | null
+            avatar: string | null
+            country: string | null
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
-            role: string | null;
-            socials: (components["schemas"]["PlayerSocial"])[] | null;
-            patreonFeatures: components["schemas"]["PatreonFeatures"];
-            profileSettings: components["schemas"]["ProfileSettings"];
-            clans: (components["schemas"]["ClanResponse"])[] | null;
+            countryRank: number
+            role: string | null
+            socials: components['schemas']['PlayerSocial'][] | null
+            patreonFeatures: components['schemas']['PatreonFeatures']
+            profileSettings: components['schemas']['ProfileSettings']
+            clans: components['schemas']['ClanResponse'][] | null
             /** Format: float */
-            accPp: number;
+            accPp: number
             /** Format: float */
-            passPp: number;
+            passPp: number
             /** Format: float */
-            techPp: number;
-            scoreStats: components["schemas"]["PlayerScoreStats"];
+            techPp: number
+            scoreStats: components['schemas']['PlayerScoreStats']
             /** Format: float */
-            lastWeekPp: number;
+            lastWeekPp: number
             /** Format: int32 */
-            lastWeekRank: number;
+            lastWeekRank: number
             /** Format: int32 */
-            lastWeekCountryRank: number;
-            eventsParticipating: (components["schemas"]["EventPlayer"])[] | null;
-        };
+            lastWeekCountryRank: number
+            eventsParticipating: components['schemas']['EventPlayer'][] | null
+        }
         PlayerResponseWithStatsResponseWithMetadata: {
-            metadata: components["schemas"]["Metadata"];
-            data: (components["schemas"]["PlayerResponseWithStats"])[] | null;
-        };
+            metadata: components['schemas']['Metadata']
+            data: components['schemas']['PlayerResponseWithStats'][] | null
+        }
         PlayerResponseClanResponseFullResponseWithMetadataAndContainer: {
-            metadata: components["schemas"]["Metadata"];
-            data: (components["schemas"]["PlayerResponse"])[] | null;
-            container: components["schemas"]["ClanResponseFull"];
-        };
+            metadata: components['schemas']['Metadata']
+            data: components['schemas']['PlayerResponse'][] | null
+            container: components['schemas']['ClanResponseFull']
+        }
         PlayerScoreStats: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int64 */
-            totalScore: number;
+            totalScore: number
             /** Format: int64 */
-            totalUnrankedScore: number;
+            totalUnrankedScore: number
             /** Format: int64 */
-            totalRankedScore: number;
+            totalRankedScore: number
             /** Format: int32 */
-            lastScoreTime: number;
+            lastScoreTime: number
             /** Format: int32 */
-            lastUnrankedScoreTime: number;
+            lastUnrankedScoreTime: number
             /** Format: int32 */
-            lastRankedScoreTime: number;
+            lastRankedScoreTime: number
             /** Format: float */
-            averageRankedAccuracy: number;
+            averageRankedAccuracy: number
             /** Format: float */
-            averageWeightedRankedAccuracy: number;
+            averageWeightedRankedAccuracy: number
             /** Format: float */
-            averageUnrankedAccuracy: number;
+            averageUnrankedAccuracy: number
             /** Format: float */
-            averageAccuracy: number;
+            averageAccuracy: number
             /** Format: float */
-            medianRankedAccuracy: number;
+            medianRankedAccuracy: number
             /** Format: float */
-            medianAccuracy: number;
+            medianAccuracy: number
             /** Format: float */
-            topRankedAccuracy: number;
+            topRankedAccuracy: number
             /** Format: float */
-            topUnrankedAccuracy: number;
+            topUnrankedAccuracy: number
             /** Format: float */
-            topAccuracy: number;
+            topAccuracy: number
             /** Format: float */
-            topPp: number;
+            topPp: number
             /** Format: float */
-            topBonusPP: number;
+            topBonusPP: number
             /** Format: float */
-            topPassPP: number;
+            topPassPP: number
             /** Format: float */
-            topAccPP: number;
+            topAccPP: number
             /** Format: float */
-            topTechPP: number;
+            topTechPP: number
             /** Format: float */
-            peakRank: number;
+            peakRank: number
             /** Format: int32 */
-            rankedMaxStreak: number;
+            rankedMaxStreak: number
             /** Format: int32 */
-            unrankedMaxStreak: number;
+            unrankedMaxStreak: number
             /** Format: int32 */
-            maxStreak: number;
+            maxStreak: number
             /** Format: float */
-            averageLeftTiming: number;
+            averageLeftTiming: number
             /** Format: float */
-            averageRightTiming: number;
+            averageRightTiming: number
             /** Format: int32 */
-            rankedPlayCount: number;
+            rankedPlayCount: number
             /** Format: int32 */
-            unrankedPlayCount: number;
+            unrankedPlayCount: number
             /** Format: int32 */
-            totalPlayCount: number;
+            totalPlayCount: number
             /** Format: float */
-            averageRankedRank: number;
+            averageRankedRank: number
             /** Format: float */
-            averageWeightedRankedRank: number;
+            averageWeightedRankedRank: number
             /** Format: float */
-            averageUnrankedRank: number;
+            averageUnrankedRank: number
             /** Format: float */
-            averageRank: number;
+            averageRank: number
             /** Format: int32 */
-            sspPlays: number;
+            sspPlays: number
             /** Format: int32 */
-            ssPlays: number;
+            ssPlays: number
             /** Format: int32 */
-            spPlays: number;
+            spPlays: number
             /** Format: int32 */
-            sPlays: number;
+            sPlays: number
             /** Format: int32 */
-            aPlays: number;
+            aPlays: number
             /** Format: int32 */
-            dailyImprovements: number;
+            dailyImprovements: number
             /** Format: int32 */
-            authorizedReplayWatched: number;
+            authorizedReplayWatched: number
             /** Format: int32 */
-            anonimusReplayWatched: number;
+            anonimusReplayWatched: number
             /** Format: int32 */
-            watchedReplays: number;
-        };
+            watchedReplays: number
+        }
         PlayerScoreStatsHistory: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int32 */
-            timestamp: number;
-            playerId: string;
+            timestamp: number
+            playerId: string
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
+            countryRank: number
             /** Format: int64 */
-            totalScore: number;
+            totalScore: number
             /** Format: int64 */
-            totalUnrankedScore: number;
+            totalUnrankedScore: number
             /** Format: int64 */
-            totalRankedScore: number;
+            totalRankedScore: number
             /** Format: int32 */
-            lastScoreTime: number;
+            lastScoreTime: number
             /** Format: int32 */
-            lastUnrankedScoreTime: number;
+            lastUnrankedScoreTime: number
             /** Format: int32 */
-            lastRankedScoreTime: number;
+            lastRankedScoreTime: number
             /** Format: float */
-            averageRankedAccuracy: number;
+            averageRankedAccuracy: number
             /** Format: float */
-            averageWeightedRankedAccuracy: number;
+            averageWeightedRankedAccuracy: number
             /** Format: float */
-            averageUnrankedAccuracy: number;
+            averageUnrankedAccuracy: number
             /** Format: float */
-            averageAccuracy: number;
+            averageAccuracy: number
             /** Format: float */
-            medianRankedAccuracy: number;
+            medianRankedAccuracy: number
             /** Format: float */
-            medianAccuracy: number;
+            medianAccuracy: number
             /** Format: float */
-            topRankedAccuracy: number;
+            topRankedAccuracy: number
             /** Format: float */
-            topUnrankedAccuracy: number;
+            topUnrankedAccuracy: number
             /** Format: float */
-            topAccuracy: number;
+            topAccuracy: number
             /** Format: float */
-            topPp: number;
+            topPp: number
             /** Format: float */
-            topBonusPP: number;
+            topBonusPP: number
             /** Format: float */
-            peakRank: number;
+            peakRank: number
             /** Format: int32 */
-            maxStreak: number;
+            maxStreak: number
             /** Format: float */
-            averageLeftTiming: number;
+            averageLeftTiming: number
             /** Format: float */
-            averageRightTiming: number;
+            averageRightTiming: number
             /** Format: int32 */
-            rankedPlayCount: number;
+            rankedPlayCount: number
             /** Format: int32 */
-            unrankedPlayCount: number;
+            unrankedPlayCount: number
             /** Format: int32 */
-            totalPlayCount: number;
+            totalPlayCount: number
             /** Format: float */
-            averageRankedRank: number;
+            averageRankedRank: number
             /** Format: float */
-            averageWeightedRankedRank: number;
+            averageWeightedRankedRank: number
             /** Format: float */
-            averageUnrankedRank: number;
+            averageUnrankedRank: number
             /** Format: float */
-            averageRank: number;
+            averageRank: number
             /** Format: int32 */
-            sspPlays: number;
+            sspPlays: number
             /** Format: int32 */
-            ssPlays: number;
+            ssPlays: number
             /** Format: int32 */
-            spPlays: number;
+            spPlays: number
             /** Format: int32 */
-            sPlays: number;
+            sPlays: number
             /** Format: int32 */
-            aPlays: number;
+            aPlays: number
             /** Format: int32 */
-            dailyImprovements: number;
+            dailyImprovements: number
             /** Format: int32 */
-            replaysWatched: number;
+            replaysWatched: number
             /** Format: int32 */
-            watchedReplays: number;
-        };
+            watchedReplays: number
+        }
         PlayerSocial: {
             /** Format: int32 */
-            id: number;
-            service: string;
-            link: string;
-            user: string;
-            userId: string;
-            playerId: string;
-        };
+            id: number
+            service: string
+            link: string
+            user: string
+            userId: string
+            playerId: string
+        }
         Playlist: {
             /** Format: int32 */
-            id: number;
-            isShared: boolean;
-            link: string | null;
-            ownerId: string | null;
-        };
+            id: number
+            isShared: boolean
+            link: string | null
+            ownerId: string | null
+        }
         PrevQualification: {
             /** Format: int32 */
-            time: number;
-        };
+            time: number
+        }
         ProfanityCheckResult: {
-            type: string | null;
-            intensity: string | null;
-            value: string | null;
-            line: string | null;
-        };
+            type: string | null
+            intensity: string | null
+            value: string | null
+            line: string | null
+        }
         ProfileSettings: {
             /** Format: int32 */
-            id: number;
-            bio: string | null;
-            message: string | null;
-            effectName: string;
-            profileAppearance: string;
+            id: number
+            bio: string | null
+            message: string | null
+            effectName: string
+            profileAppearance: string
             /** Format: float */
-            hue: number | null;
+            hue: number | null
             /** Format: float */
-            saturation: number | null;
-            leftSaberColor: string | null;
-            rightSaberColor: string | null;
-            profileCover: string | null;
-            starredFriends: string;
-            showBots: boolean;
-            showAllRatings: boolean;
-        };
+            saturation: number | null
+            leftSaberColor: string | null
+            rightSaberColor: string | null
+            profileCover: string | null
+            starredFriends: string
+            showBots: boolean
+            showAllRatings: boolean
+        }
         ReplayOffsets: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int32 */
-            frames: number;
+            frames: number
             /** Format: int32 */
-            notes: number;
+            notes: number
             /** Format: int32 */
-            walls: number;
+            walls: number
             /** Format: int32 */
-            heights: number;
+            heights: number
             /** Format: int32 */
-            pauses: number;
-        };
+            pauses: number
+        }
         SaverScoreResponse: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int32 */
-            baseScore: number;
+            baseScore: number
             /** Format: int32 */
-            modifiedScore: number;
+            modifiedScore: number
             /** Format: float */
-            accuracy: number;
+            accuracy: number
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: int32 */
-            rank: number;
-            modifiers: string | null;
-            leaderboardId: string | null;
-            timeset: string | null;
+            rank: number
+            modifiers: string | null
+            leaderboardId: string | null
+            timeset: string | null
             /** Format: int32 */
-            timepost: number;
-            player: string | null;
-        };
+            timepost: number
+            player: string | null
+        }
         SaverScoreResponseResponseWithMetadata: {
-            metadata: components["schemas"]["Metadata"];
-            data: (components["schemas"]["SaverScoreResponse"])[] | null;
-        };
+            metadata: components['schemas']['Metadata']
+            data: components['schemas']['SaverScoreResponse'][] | null
+        }
         Score: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int32 */
-            baseScore: number;
+            baseScore: number
             /** Format: int32 */
-            modifiedScore: number;
+            modifiedScore: number
             /** Format: float */
-            accuracy: number;
-            playerId: string | null;
+            accuracy: number
+            playerId: string | null
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: float */
-            bonusPp: number;
+            bonusPp: number
             /** Format: float */
-            passPP: number;
+            passPP: number
             /** Format: float */
-            accPP: number;
+            accPP: number
             /** Format: float */
-            techPP: number;
-            qualification: boolean;
+            techPP: number
+            qualification: boolean
             /** Format: float */
-            weight: number;
+            weight: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
-            replay: string | null;
-            modifiers: string | null;
+            countryRank: number
+            replay: string | null
+            modifiers: string | null
             /** Format: int32 */
-            badCuts: number;
+            badCuts: number
             /** Format: int32 */
-            missedNotes: number;
+            missedNotes: number
             /** Format: int32 */
-            bombCuts: number;
+            bombCuts: number
             /** Format: int32 */
-            wallsHit: number;
+            wallsHit: number
             /** Format: int32 */
-            pauses: number;
-            fullCombo: boolean;
+            pauses: number
+            fullCombo: boolean
             /** Format: int32 */
-            maxCombo: number;
+            maxCombo: number
             /** Format: float */
-            fcAccuracy: number;
+            fcAccuracy: number
             /** Format: float */
-            fcPp: number;
+            fcPp: number
             /** Format: float */
-            accRight: number;
+            accRight: number
             /** Format: float */
-            accLeft: number;
-            timeset: string | null;
+            accLeft: number
+            timeset: string | null
             /** Format: int32 */
-            timepost: number;
-            platform: string | null;
-            player: components["schemas"]["Player"];
-            leaderboardId: string | null;
-            leaderboard: components["schemas"]["Leaderboard"];
+            timepost: number
+            platform: string | null
+            player: components['schemas']['Player']
+            leaderboardId: string | null
+            leaderboard: components['schemas']['Leaderboard']
             /** Format: int32 */
-            authorizedReplayWatched: number;
+            authorizedReplayWatched: number
             /** Format: int32 */
-            anonimusReplayWatched: number;
-            replayOffsets: components["schemas"]["ReplayOffsets"];
-            country: string | null;
+            anonimusReplayWatched: number
+            replayOffsets: components['schemas']['ReplayOffsets']
+            country: string | null
             /** Format: int32 */
-            maxStreak: number;
+            maxStreak: number
             /** Format: int32 */
-            playCount: number;
+            playCount: number
             /** Format: float */
-            leftTiming: number;
+            leftTiming: number
             /** Format: float */
-            rightTiming: number;
-            banned: boolean;
-            suspicious: boolean;
-            ignoreForStats: boolean;
-            migrated: boolean;
-        };
+            rightTiming: number
+            banned: boolean
+            suspicious: boolean
+            ignoreForStats: boolean
+            migrated: boolean
+        }
         ScoreResponse: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int32 */
-            baseScore: number;
+            baseScore: number
             /** Format: int32 */
-            modifiedScore: number;
+            modifiedScore: number
             /** Format: float */
-            accuracy: number;
-            playerId: string;
+            accuracy: number
+            playerId: string
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: float */
-            bonusPp: number;
+            bonusPp: number
             /** Format: float */
-            passPP: number;
+            passPP: number
             /** Format: float */
-            accPP: number;
+            accPP: number
             /** Format: float */
-            techPP: number;
+            techPP: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
-            country: string;
+            countryRank: number
+            country: string
             /** Format: float */
-            fcAccuracy: number;
+            fcAccuracy: number
             /** Format: float */
-            fcPp: number;
+            fcPp: number
             /** Format: float */
-            weight: number;
-            replay: string | null;
-            modifiers: string;
+            weight: number
+            replay: string | null
+            modifiers: string
             /** Format: int32 */
-            badCuts: number;
+            badCuts: number
             /** Format: int32 */
-            missedNotes: number;
+            missedNotes: number
             /** Format: int32 */
-            bombCuts: number;
+            bombCuts: number
             /** Format: int32 */
-            wallsHit: number;
+            wallsHit: number
             /** Format: int32 */
-            pauses: number;
-            fullCombo: boolean;
-            platform: string;
+            pauses: number
+            fullCombo: boolean
+            platform: string
             /** Format: int32 */
-            maxCombo: number;
+            maxCombo: number
             /** Format: int32 */
-            maxStreak: number;
-            leaderboardId: string;
-            timeset: string;
+            maxStreak: number
+            leaderboardId: string
+            timeset: string
             /** Format: int32 */
-            timepost: number;
+            timepost: number
             /** Format: int32 */
-            replaysWatched: number;
+            replaysWatched: number
             /** Format: int32 */
-            playCount: number;
-            player: components["schemas"]["PlayerResponse"];
-        };
+            playCount: number
+            player: components['schemas']['PlayerResponse']
+        }
         ScoreResponseResponseWithMetadataAndSelection: {
-            metadata: components["schemas"]["Metadata"];
-            data: (components["schemas"]["ScoreResponse"])[] | null;
-            selection: components["schemas"]["ScoreResponse"];
-        };
+            metadata: components['schemas']['Metadata']
+            data: components['schemas']['ScoreResponse'][] | null
+            selection: components['schemas']['ScoreResponse']
+        }
         ScoreResponseWithAcc: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int32 */
-            baseScore: number;
+            baseScore: number
             /** Format: int32 */
-            modifiedScore: number;
+            modifiedScore: number
             /** Format: float */
-            accuracy: number;
-            playerId: string;
+            accuracy: number
+            playerId: string
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: float */
-            bonusPp: number;
+            bonusPp: number
             /** Format: float */
-            passPP: number;
+            passPP: number
             /** Format: float */
-            accPP: number;
+            accPP: number
             /** Format: float */
-            techPP: number;
+            techPP: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
-            country: string;
+            countryRank: number
+            country: string
             /** Format: float */
-            fcAccuracy: number;
+            fcAccuracy: number
             /** Format: float */
-            fcPp: number;
-            replay: string | null;
-            modifiers: string;
+            fcPp: number
+            replay: string | null
+            modifiers: string
             /** Format: int32 */
-            badCuts: number;
+            badCuts: number
             /** Format: int32 */
-            missedNotes: number;
+            missedNotes: number
             /** Format: int32 */
-            bombCuts: number;
+            bombCuts: number
             /** Format: int32 */
-            wallsHit: number;
+            wallsHit: number
             /** Format: int32 */
-            pauses: number;
-            fullCombo: boolean;
-            platform: string;
+            pauses: number
+            fullCombo: boolean
+            platform: string
             /** Format: int32 */
-            maxCombo: number;
+            maxCombo: number
             /** Format: int32 */
-            maxStreak: number;
-            leaderboardId: string;
-            timeset: string;
+            maxStreak: number
+            leaderboardId: string
+            timeset: string
             /** Format: int32 */
-            timepost: number;
+            timepost: number
             /** Format: int32 */
-            replaysWatched: number;
+            replaysWatched: number
             /** Format: int32 */
-            playCount: number;
-            player: components["schemas"]["PlayerResponse"];
+            playCount: number
+            player: components['schemas']['PlayerResponse']
             /** Format: float */
-            weight: number;
+            weight: number
             /** Format: float */
-            accLeft: number;
+            accLeft: number
             /** Format: float */
-            accRight: number;
-        };
+            accRight: number
+        }
         ScoreResponseWithMyScore: {
             /** Format: int32 */
-            id: number;
+            id: number
             /** Format: int32 */
-            baseScore: number;
+            baseScore: number
             /** Format: int32 */
-            modifiedScore: number;
+            modifiedScore: number
             /** Format: float */
-            accuracy: number;
-            playerId: string;
+            accuracy: number
+            playerId: string
             /** Format: float */
-            pp: number;
+            pp: number
             /** Format: float */
-            bonusPp: number;
+            bonusPp: number
             /** Format: float */
-            passPP: number;
+            passPP: number
             /** Format: float */
-            accPP: number;
+            accPP: number
             /** Format: float */
-            techPP: number;
+            techPP: number
             /** Format: int32 */
-            rank: number;
+            rank: number
             /** Format: int32 */
-            countryRank: number;
-            country: string;
+            countryRank: number
+            country: string
             /** Format: float */
-            fcAccuracy: number;
+            fcAccuracy: number
             /** Format: float */
-            fcPp: number;
-            replay: string | null;
-            modifiers: string;
+            fcPp: number
+            replay: string | null
+            modifiers: string
             /** Format: int32 */
-            badCuts: number;
+            badCuts: number
             /** Format: int32 */
-            missedNotes: number;
+            missedNotes: number
             /** Format: int32 */
-            bombCuts: number;
+            bombCuts: number
             /** Format: int32 */
-            wallsHit: number;
+            wallsHit: number
             /** Format: int32 */
-            pauses: number;
-            fullCombo: boolean;
-            platform: string;
+            pauses: number
+            fullCombo: boolean
+            platform: string
             /** Format: int32 */
-            maxCombo: number;
+            maxCombo: number
             /** Format: int32 */
-            maxStreak: number;
-            leaderboardId: string;
-            timeset: string;
+            maxStreak: number
+            leaderboardId: string
+            timeset: string
             /** Format: int32 */
-            timepost: number;
+            timepost: number
             /** Format: int32 */
-            replaysWatched: number;
+            replaysWatched: number
             /** Format: int32 */
-            playCount: number;
-            player: components["schemas"]["PlayerResponse"];
+            playCount: number
+            player: components['schemas']['PlayerResponse']
             /** Format: float */
-            weight: number;
+            weight: number
             /** Format: float */
-            accLeft: number;
+            accLeft: number
             /** Format: float */
-            accRight: number;
-            myScore: components["schemas"]["ScoreResponseWithAcc"] | null;
-            leaderboard: components["schemas"]["LeaderboardResponse"];
-        };
+            accRight: number
+            myScore: components['schemas']['ScoreResponseWithAcc'] | null
+            leaderboard: components['schemas']['LeaderboardResponse']
+        }
         ScoreResponseWithMyScoreResponseWithMetadata: {
-            metadata: components["schemas"]["Metadata"];
-            data: (components["schemas"]["ScoreResponseWithMyScore"])[] | null;
-        };
+            metadata: components['schemas']['Metadata']
+            data: components['schemas']['ScoreResponseWithMyScore'][] | null
+        }
         Song: {
-            id: string;
-            hash: string;
-            name: string;
-            subName: string;
-            author: string;
-            mapper: string;
+            id: string
+            hash: string
+            name: string
+            subName: string
+            author: string
+            mapper: string
             /** Format: int32 */
-            mapperId: number;
-            coverImage: string;
-            fullCoverImage: string;
-            downloadUrl: string;
+            mapperId: number
+            coverImage: string
+            fullCoverImage: string
+            downloadUrl: string
             /** Format: double */
-            bpm: number;
+            bpm: number
             /** Format: double */
-            duration: number;
-            tags: string | null;
+            duration: number
+            tags: string | null
             /** Format: int32 */
-            uploadTime: number;
-            difficulties: (components["schemas"]["DifficultyDescription"])[] | null;
-        };
-    };
+            uploadTime: number
+            difficulties:
+                | components['schemas']['DifficultyDescription'][]
+                | null
+        }
+    }
 }

@@ -1,31 +1,35 @@
 import { components as BeatLeaderAPI } from '../api/beatleader.js'
 import { PlayerData, PlayerScore } from '../interfaces/player.interface.js'
-import { BeatLeaderPlayerScoresModel } from '../controllers/database.js'
+import { BeatLeaderPlayerScoresModel } from '../models/playerScores.model.js'
 import Logger from '../utils/logger.js'
 import { BeatLeaderError } from '../utils/error.js'
 
 type PlayerResponseFull = BeatLeaderAPI['schemas']['PlayerResponseFull']
-type ScoreResponseWithMyScoreResponseWithMetadata = BeatLeaderAPI['schemas']['ScoreResponseWithMyScoreResponseWithMetadata']
-type PlayerResponseWithStatsResponseWithMetadata = BeatLeaderAPI['schemas']['PlayerResponseWithStatsResponseWithMetadata']
+type ScoreResponseWithMyScoreResponseWithMetadata =
+    BeatLeaderAPI['schemas']['ScoreResponseWithMyScoreResponseWithMetadata']
+type PlayerResponseWithStatsResponseWithMetadata =
+    BeatLeaderAPI['schemas']['PlayerResponseWithStatsResponseWithMetadata']
 type LeaderboardResponse = BeatLeaderAPI['schemas']['LeaderboardResponse']
-type PlayerResponseClanResponseFullResponseWithMetadataAndContainer = BeatLeaderAPI['schemas']['PlayerResponseClanResponseFullResponseWithMetadataAndContainer']
-type ClanRankingResponseClanResponseFullResponseWithMetadataAndContainer = BeatLeaderAPI['schemas']['ClanRankingResponseClanResponseFullResponseWithMetadataAndContainer']
+type PlayerResponseClanResponseFullResponseWithMetadataAndContainer =
+    BeatLeaderAPI['schemas']['PlayerResponseClanResponseFullResponseWithMetadataAndContainer']
+type ClanRankingResponseClanResponseFullResponseWithMetadataAndContainer =
+    BeatLeaderAPI['schemas']['ClanRankingResponseClanResponseFullResponseWithMetadataAndContainer']
 
 interface PlaylistResponse {
-    playlistTitle: string,
-    playlistAuthor: string,
+    playlistTitle: string
+    playlistAuthor: string
     songs: PlaylistSong[]
 }
 
 interface PlaylistSong {
-    hash: string,
-    songName: string,
-    levelAuthorName: string,
+    hash: string
+    songName: string
+    levelAuthorName: string
     difficulties: PlaylistSongDifficulty[]
 }
 
 interface PlaylistSongDifficulty {
-    name: string,
+    name: string
     characteristic: string
 }
 
@@ -44,41 +48,63 @@ export default class BeatLeader {
      * @param log true|false pour logger la requête
      * @returns résultat de la requête
      */
-    private static async send<T>(url: string, log: boolean = false): Promise<T> {
+    private static async send<T>(
+        url: string,
+        log: boolean = false
+    ): Promise<T> {
         let data
         let error = false
         let retries = 0
 
         do {
-            if(log) Logger.log('BeatLeader', 'INFO', `Envoi de la requête "${url}"`)
+            if (log)
+                Logger.log('BeatLeader', 'INFO', `Envoi de la requête "${url}"`)
             const res = await fetch(url)
-            
-            if(res.ok) {
-                if(log) Logger.log('BeatLeader', 'INFO', 'Requête envoyée avec succès')
+
+            if (res.ok) {
+                if (log)
+                    Logger.log(
+                        'BeatLeader',
+                        'INFO',
+                        'Requête envoyée avec succès'
+                    )
                 data = await res.json()
 
                 error = false
             } else {
-                if(res.status === 401) throw Error(`Erreur 401 : ${await res.text()}`)
-                if(res.status === 404) throw Error('Erreur 404 : Page introuvable')
-                if(res.status === 422) throw Error('Erreur 422 : La ressource demandée est introuvable')
-                if(res.status === 500) {
-                    Logger.log('BeatLeader', 'ERROR', 'Erreur 500, nouvel essai dans 3 secondes')
-                    if(retries < 5) {
+                if (res.status === 401)
+                    throw Error(`Erreur 401 : ${await res.text()}`)
+                if (res.status === 404)
+                    throw Error('Erreur 404 : Page introuvable')
+                if (res.status === 422)
+                    throw Error(
+                        'Erreur 422 : La ressource demandée est introuvable'
+                    )
+                if (res.status === 500) {
+                    Logger.log(
+                        'BeatLeader',
+                        'ERROR',
+                        'Erreur 500, nouvel essai dans 3 secondes'
+                    )
+                    if (retries < 5) {
                         await wait(3)
                         retries++
                     } else {
                         throw Error('Erreur 500 : Erreur interne du serveur')
                     }
                 }
-                if(res.status === 429) {
-                    Logger.log('BeatLeader', 'ERROR', 'Erreur 429, nouvel essai dans 60 secondes')
+                if (res.status === 429) {
+                    Logger.log(
+                        'BeatLeader',
+                        'ERROR',
+                        'Erreur 429, nouvel essai dans 60 secondes'
+                    )
                     await wait(60)
                 }
 
                 error = true
             }
-        } while(error)
+        } while (error)
 
         return data
     }
@@ -90,9 +116,14 @@ export default class BeatLeader {
      */
     static async getProfile(url: string) {
         try {
-            const playerId = url.replace(/^https?:\/\/(?:www\.)?beatleader\.(?:xyz|com)\/u\/(.+)\/?.*$/, '$1')
+            const playerId = url.replace(
+                /^https?:\/\/(?:www\.)?beatleader\.(?:xyz|com)\/u\/(.+)\/?.*$/,
+                '$1'
+            )
 
-            const playerInfos = await this.send<PlayerResponseFull>(`${PLAYER_URL}${playerId}`)
+            const playerInfos = await this.send<PlayerResponseFull>(
+                `${PLAYER_URL}${playerId}`
+            )
 
             const player = {
                 id: playerInfos.id,
@@ -107,8 +138,10 @@ export default class BeatLeader {
             }
 
             return player
-        } catch(error) {
-            throw new BeatLeaderError(`Profil BeatLeader introuvable. Veuillez vérifier que le lien soit valide.\nℹ️ Exemple : \`${BEATLEADER_URL}/u/[Identifiant BeatLeader]\``)
+        } catch (error) {
+            throw new BeatLeaderError(
+                `Profil BeatLeader introuvable. Veuillez vérifier que le lien soit valide.\nℹ️ Exemple : \`${BEATLEADER_URL}/u/[Identifiant BeatLeader]\``
+            )
         }
     }
 
@@ -119,14 +152,20 @@ export default class BeatLeader {
      */
     static async getPlayerData(playerId: string): Promise<PlayerData> {
         try {
-            const playerInfos = await this.send<PlayerResponseFull>(PLAYER_URL + playerId)
-            const playerTopScore = await this.send<ScoreResponseWithMyScoreResponseWithMetadata>(`${PLAYER_URL}${playerId}/scores?sortBy=pp&page=1`)
+            const playerInfos = await this.send<PlayerResponseFull>(
+                PLAYER_URL + playerId
+            )
+            const playerTopScore =
+                await this.send<ScoreResponseWithMyScoreResponseWithMetadata>(
+                    `${PLAYER_URL}${playerId}/scores?sortBy=pp&page=1`
+                )
 
             let topPP = null
-            if(playerTopScore.data && playerTopScore.data[0]) {
+            if (playerTopScore.data && playerTopScore.data[0]) {
                 const topScore = playerTopScore.data[0]
 
-                const difficulty = topScore.leaderboard.difficulty.difficultyName
+                const difficulty =
+                    topScore.leaderboard.difficulty.difficultyName
 
                 topPP = {
                     rank: topScore.rank,
@@ -135,7 +174,13 @@ export default class BeatLeader {
                     acc: topScore.accuracy ? topScore.accuracy * 100 : 0,
                     fc: topScore.fullCombo,
                     stars: topScore.leaderboard.difficulty.stars ?? 0,
-                    name: topScore.leaderboard.song.author + ' - ' + topScore.leaderboard.song.name + (topScore.leaderboard.song.subName !== '' ? ' ' + topScore.leaderboard.song.subName : ''),
+                    name:
+                        topScore.leaderboard.song.author +
+                        ' - ' +
+                        topScore.leaderboard.song.name +
+                        (topScore.leaderboard.song.subName !== ''
+                            ? ' ' + topScore.leaderboard.song.subName
+                            : ''),
                     difficulty: difficulty,
                     author: topScore.leaderboard.song.mapper,
                     cover: topScore.leaderboard.song.coverImage,
@@ -155,15 +200,19 @@ export default class BeatLeader {
                 countryRank: playerInfos.countryRank,
                 pp: playerInfos.pp,
                 country: playerInfos.country,
-                history: playerInfos.history ? playerInfos.history.map(h => h.rank).join(',') : '',
+                history: playerInfos.history
+                    ? playerInfos.history.map((h) => h.rank).join(',')
+                    : '',
                 banned: playerInfos.banned,
                 averageRankedAccuracy: scoreStats.averageRankedAccuracy * 100,
                 topPP
             }
 
             return player
-        } catch(error) {
-            throw new BeatLeaderError('Une erreur est survenue lors de la récupération du profil BeatLeader')
+        } catch (error) {
+            throw new BeatLeaderError(
+                'Une erreur est survenue lors de la récupération du profil BeatLeader'
+            )
         }
     }
 
@@ -176,10 +225,13 @@ export default class BeatLeader {
         try {
             const players = []
 
-            const playersInfos = await this.send<PlayerResponseWithStatsResponseWithMetadata>(`${BEATLEADER_API_URL}players?page=${page}`)
+            const playersInfos =
+                await this.send<PlayerResponseWithStatsResponseWithMetadata>(
+                    `${BEATLEADER_API_URL}players?page=${page}`
+                )
 
-            if(playersInfos.data) {
-                for(const playerInfos of playersInfos.data) {
+            if (playersInfos.data) {
+                for (const playerInfos of playersInfos.data) {
                     const player = {
                         id: playerInfos.id,
                         name: playerInfos.name,
@@ -194,8 +246,10 @@ export default class BeatLeader {
             }
 
             return players
-        } catch(error) {
-            throw new BeatLeaderError('Une erreur est survenue lors de la récupération du classement global')
+        } catch (error) {
+            throw new BeatLeaderError(
+                'Une erreur est survenue lors de la récupération du classement global'
+            )
         }
     }
 
@@ -216,13 +270,21 @@ export default class BeatLeader {
      * @param page page du classement
      * @returns liste des scores du classement
      */
-    static async getMapCountryLeaderboard(leaderboardId: string, country: string, page: number = 1) {
+    static async getMapCountryLeaderboard(
+        leaderboardId: string,
+        country: string,
+        page: number = 1
+    ) {
         try {
-            const data = await this.send<LeaderboardResponse>(`${LEADERBOARD_URL}${leaderboardId}?countries=${country}&page=${page}`)
+            const data = await this.send<LeaderboardResponse>(
+                `${LEADERBOARD_URL}${leaderboardId}?countries=${country}&page=${page}`
+            )
 
             return data.scores
-        } catch(error) {
-            throw new BeatLeaderError('Une erreur est survenue lors de la récupération du top 1 du pays sur la map')
+        } catch (error) {
+            throw new BeatLeaderError(
+                'Une erreur est survenue lors de la récupération du top 1 du pays sur la map'
+            )
         }
     }
 
@@ -232,13 +294,20 @@ export default class BeatLeader {
      * @param count nombre de scores à retourner (défaut: 10)
      * @returns classement de la map
      */
-    static async getMapLeaderboardById(leaderboardId: string, count: number = 10) {
+    static async getMapLeaderboardById(
+        leaderboardId: string,
+        count: number = 10
+    ) {
         try {
-            const data = await this.send<LeaderboardResponse>(`${LEADERBOARD_URL}${leaderboardId}?count=${count}`)
+            const data = await this.send<LeaderboardResponse>(
+                `${LEADERBOARD_URL}${leaderboardId}?count=${count}`
+            )
 
             return data
-        } catch(error) {
-            throw new BeatLeaderError('Une erreur est survenue lors de la récupération du classement de la map')
+        } catch (error) {
+            throw new BeatLeaderError(
+                'Une erreur est survenue lors de la récupération du classement de la map'
+            )
         }
     }
 
@@ -249,27 +318,38 @@ export default class BeatLeader {
      */
     static async getPlayerScores(beatLeaderId: string): Promise<PlayerScore[]> {
         const cachedPlayerScores = await BeatLeaderPlayerScoresModel.findAll({
-            where: {
-                leaderboard: 'beatleader',
-                playerId: beatLeaderId
-            }
+            where: { leaderboard: 'beatleader', playerId: beatLeaderId }
         })
 
         try {
             let nextPage: number | null = null
 
             do {
-                const data: ScoreResponseWithMyScoreResponseWithMetadata = await this.send<ScoreResponseWithMyScoreResponseWithMetadata>(`${PLAYER_URL}${beatLeaderId}/scores?sortBy=date&order=desc&count=100&page=${nextPage ?? 1}`)
+                const data: ScoreResponseWithMyScoreResponseWithMetadata =
+                    await this.send<ScoreResponseWithMyScoreResponseWithMetadata>(
+                        `${PLAYER_URL}${beatLeaderId}/scores?sortBy=date&order=desc&count=100&page=${nextPage ?? 1}`
+                    )
                 const playerScores = data.data
                 const metadata = data.metadata
 
-                nextPage = metadata.page + 1 <= Math.ceil(metadata.total / metadata.itemsPerPage) ? metadata.page + 1 : null
+                nextPage =
+                    metadata.page + 1 <=
+                    Math.ceil(metadata.total / metadata.itemsPerPage)
+                        ? metadata.page + 1
+                        : null
 
-                if(playerScores) {
-                    for(const playerScore of playerScores) {
-                        const cachedScore = cachedPlayerScores.find(cs => cs.playerScore.leaderboard.id === playerScore.leaderboardId)
-                        if(cachedScore) {
-                            if(playerScore.baseScore !== cachedScore.playerScore.baseScore) {
+                if (playerScores) {
+                    for (const playerScore of playerScores) {
+                        const cachedScore = cachedPlayerScores.find(
+                            (cs) =>
+                                cs.playerScore.leaderboard.id ===
+                                playerScore.leaderboardId
+                        )
+                        if (cachedScore) {
+                            if (
+                                playerScore.baseScore !==
+                                cachedScore.playerScore.baseScore
+                            ) {
                                 cachedScore.playerScore = playerScore
                                 await cachedScore.save()
                             } else {
@@ -285,49 +365,59 @@ export default class BeatLeader {
                         }
                     }
                 }
-            } while(nextPage)
+            } while (nextPage)
 
             const playerScores = await BeatLeaderPlayerScoresModel.findAll({
-                where: {
-                    leaderboard: 'beatleader',
-                    playerId: beatLeaderId
-                }
+                where: { leaderboard: 'beatleader', playerId: beatLeaderId }
             })
 
-            const scores = playerScores.map(ps => {
-                return {
-                    rank: ps.playerScore.rank,
-                    scoreId: ps.playerScore.id,
-                    score: ps.playerScore.modifiedScore,
-                    unmodififiedScore: ps.playerScore.baseScore,
-                    modifiers: ps.playerScore.modifiers,
-                    pp: ps.playerScore.pp,
-                    weight: ps.playerScore.weight,
-                    timeSet: ps.playerScore.timeset,
-                    badCuts: ps.playerScore.badCuts,
-                    missedNotes: ps.playerScore.missedNotes,
-                    maxCombo: ps.playerScore.maxCombo,
-                    fullCombo: ps.playerScore.fullCombo,
-                    leaderboardId: ps.playerScore.leaderboard.id,
-                    songHash: ps.playerScore.leaderboard.song.hash,
-                    songName: ps.playerScore.leaderboard.song.name,
-                    songSubName: ps.playerScore.leaderboard.song.subName,
-                    songAuthorName: ps.playerScore.leaderboard.song.author,
-                    levelAuthorName: ps.playerScore.leaderboard.song.mapper,
-                    difficulty: ps.playerScore.leaderboard.difficulty.value,
-                    difficultyRaw: ps.playerScore.leaderboard.difficulty.difficultyName,
-                    gameMode: ps.playerScore.leaderboard.difficulty.modeName,
-                    maxScore: ps.playerScore.leaderboard.difficulty.maxScore,
-                    ranked: ps.playerScore.leaderboard.difficulty.stars ? true : false,
-                    stars: ps.playerScore.leaderboard.difficulty.stars ?? 0
-                }
-            }).sort((a: PlayerScore, b: PlayerScore) => {
-                return (new Date(b.timeSet)).getTime() - (new Date(a.timeSet)).getTime()
-            })
+            const scores = playerScores
+                .map((ps) => {
+                    return {
+                        rank: ps.playerScore.rank,
+                        scoreId: ps.playerScore.id,
+                        score: ps.playerScore.modifiedScore,
+                        unmodififiedScore: ps.playerScore.baseScore,
+                        modifiers: ps.playerScore.modifiers,
+                        pp: ps.playerScore.pp,
+                        weight: ps.playerScore.weight,
+                        timeSet: ps.playerScore.timeset,
+                        badCuts: ps.playerScore.badCuts,
+                        missedNotes: ps.playerScore.missedNotes,
+                        maxCombo: ps.playerScore.maxCombo,
+                        fullCombo: ps.playerScore.fullCombo,
+                        leaderboardId: ps.playerScore.leaderboard.id,
+                        songHash: ps.playerScore.leaderboard.song.hash,
+                        songName: ps.playerScore.leaderboard.song.name,
+                        songSubName: ps.playerScore.leaderboard.song.subName,
+                        songAuthorName: ps.playerScore.leaderboard.song.author,
+                        levelAuthorName: ps.playerScore.leaderboard.song.mapper,
+                        difficulty: ps.playerScore.leaderboard.difficulty.value,
+                        difficultyRaw:
+                            ps.playerScore.leaderboard.difficulty
+                                .difficultyName,
+                        gameMode:
+                            ps.playerScore.leaderboard.difficulty.modeName,
+                        maxScore:
+                            ps.playerScore.leaderboard.difficulty.maxScore,
+                        ranked: ps.playerScore.leaderboard.difficulty.stars
+                            ? true
+                            : false,
+                        stars: ps.playerScore.leaderboard.difficulty.stars ?? 0
+                    }
+                })
+                .sort((a: PlayerScore, b: PlayerScore) => {
+                    return (
+                        new Date(b.timeSet).getTime() -
+                        new Date(a.timeSet).getTime()
+                    )
+                })
 
             return scores
-        } catch(error) {
-            throw new BeatLeaderError('Une erreur est survenue lors de la récupération des scores du joueur')
+        } catch (error) {
+            throw new BeatLeaderError(
+                'Une erreur est survenue lors de la récupération des scores du joueur'
+            )
         }
     }
 
@@ -338,8 +428,10 @@ export default class BeatLeader {
      * @returns liste des maps ranked
      */
     static async searchRanked(starsMin: number = 0, starsMax: number = 16) {
-        const playlist = await this.send<PlaylistResponse>(`${BEATLEADER_API_URL}playlist/generate?count=2000&stars_from=${starsMin}&stars_to=${starsMax}`)
-        if(playlist) return playlist.songs
+        const playlist = await this.send<PlaylistResponse>(
+            `${BEATLEADER_API_URL}playlist/generate?count=2000&stars_from=${starsMin}&stars_to=${starsMax}`
+        )
+        if (playlist) return playlist.songs
         return []
     }
 
@@ -350,11 +442,16 @@ export default class BeatLeader {
      */
     static async getClanById(clanId: number) {
         try {
-            const data = await this.send<PlayerResponseClanResponseFullResponseWithMetadataAndContainer>(`${CLAN_URL}id/${clanId}?count=1`)
+            const data =
+                await this.send<PlayerResponseClanResponseFullResponseWithMetadataAndContainer>(
+                    `${CLAN_URL}id/${clanId}?count=1`
+                )
 
             return data
-        } catch(error) {
-            throw new BeatLeaderError('Une erreur est survenue lors de la récupération des informations du clan')
+        } catch (error) {
+            throw new BeatLeaderError(
+                'Une erreur est survenue lors de la récupération des informations du clan'
+            )
         }
     }
 
@@ -364,11 +461,16 @@ export default class BeatLeader {
      */
     static async getClanMaps(clanId: number, count: number = 100) {
         try {
-            const data = await this.send<ClanRankingResponseClanResponseFullResponseWithMetadataAndContainer>(`${CLAN_URL}id/${clanId}/maps?page=1&count=${count}&sortBy=toconquer`)
+            const data =
+                await this.send<ClanRankingResponseClanResponseFullResponseWithMetadataAndContainer>(
+                    `${CLAN_URL}id/${clanId}/maps?page=1&count=${count}&sortBy=toconquer`
+                )
 
             return data.data
-        } catch(error) {
-            throw new BeatLeaderError('Une erreur est survenue lors de la récupération des maps du clan')
+        } catch (error) {
+            throw new BeatLeaderError(
+                'Une erreur est survenue lors de la récupération des maps du clan'
+            )
         }
     }
 }
