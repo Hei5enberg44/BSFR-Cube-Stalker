@@ -1,6 +1,6 @@
 import { Guild } from 'discord.js'
 import { ConfigError } from '../utils/error.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 type NestedRecord = { [k: string]: string | NestedRecord }
 

@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "strict": true,
-        "baseUrl": "./",
+        "baseUrl": "src",
+        "rootDir": "src",
         "outDir": "dist",
         "target": "ESNext",
         "module": "NodeNext",
@@ -18,6 +19,6 @@
         "typeRoots": ["node_modules/@types"],
         "sourceMap": false
     },
-    "include": ["src/**/*", "src/**/*.json"],
+    "include": ["src/**/*"],
     "exclude": ["dist", "node_modules", "tests"]
 }

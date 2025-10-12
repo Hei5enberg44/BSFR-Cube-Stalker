@@ -7,7 +7,7 @@ import { BeatLeaderOAuth } from './beatleader-oauth.js'
 import { OAuthModel } from '../models/oauth.model.js'
 import { RankedModel } from '../models/ranked.model.js'
 import Logger from '../utils/logger.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default class Crons {
     private client: Client

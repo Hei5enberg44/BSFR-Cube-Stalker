@@ -19,7 +19,7 @@ import { Top1Data } from '../interfaces/player.interface.js'
 import { Top1Error, ScoreSaberError, BeatSaverError } from '../utils/error.js'
 import { countryCodeEmoji } from '../utils/country-code-emoji.js'
 import Logger from '../utils/logger.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 const calcAcc = (
     mapDetail: MapDetail,

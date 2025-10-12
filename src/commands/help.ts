@@ -24,7 +24,7 @@ import {
     CommandInteractionError,
     PageNotFoundError
 } from '../utils/error.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()

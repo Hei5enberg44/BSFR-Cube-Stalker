@@ -33,7 +33,7 @@ import {
     PlayerProgress
 } from '../interfaces/player.interface.js'
 import { countryCodeEmoji } from '../utils/country-code-emoji.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()

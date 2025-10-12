@@ -18,7 +18,7 @@ import {
     GameLeaderboard,
     Leaderboards
 } from '../controllers/gameLeaderboard.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()

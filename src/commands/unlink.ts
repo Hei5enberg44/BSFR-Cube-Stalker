@@ -24,7 +24,7 @@ import cooldown from '../controllers/cooldown.js'
 import players from '../controllers/players.js'
 import roles from '../controllers/roles.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()

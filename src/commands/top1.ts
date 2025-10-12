@@ -19,7 +19,7 @@ import players from '../controllers/players.js'
 import top1 from '../controllers/top1.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
 import Logger from '../utils/logger.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()

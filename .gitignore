@@ -3,4 +3,6 @@
 node_modules/
 package-lock.json
 dist/
-src/config.json
+config.json
+config-dev.json
+config-prod.json

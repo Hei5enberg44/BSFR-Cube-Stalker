@@ -7,7 +7,7 @@ import {
 } from '../controllers/gameLeaderboard.js'
 import { PlayerData } from '../interfaces/player.interface.js'
 import { createCanvas, loadImage } from 'canvas'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 type PlaylistFull = {
     fileName: string

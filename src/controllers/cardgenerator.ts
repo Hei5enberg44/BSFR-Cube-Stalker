@@ -17,7 +17,7 @@ import {
     PlayerRanking,
     PlayerProgress
 } from '../interfaces/player.interface.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 registerFont('./assets/fonts/Poppins-Regular.ttf', {
     family: 'Poppins-Regular'
