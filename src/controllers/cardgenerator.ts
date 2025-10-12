@@ -423,7 +423,7 @@ export default {
             ctx.arcTo(left, top, left + width, top, radius)
             ctx.closePath()
             ctx.fillStyle = getDiffColor(
-                <difficulties>playerData.topPP.difficulty
+                playerData.topPP.difficulty as difficulties
             )
             ctx.fill()
             ctx.font = '40px "Poppins-Medium"'

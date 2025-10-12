@@ -41,7 +41,7 @@ export default {
                 'leaderboard'
             ) as Leaderboards
 
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             let containerBuilder = new ContainerBuilder()
                 .setAccentColor([241, 196, 15])

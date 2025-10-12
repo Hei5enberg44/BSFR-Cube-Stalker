@@ -97,7 +97,7 @@ export default class Commands {
             'INFO',
             `Actualisation des commandes (/) de l'application`
         )
-        const guild = <Guild>this.client.guilds.cache.get(config.guild.id)
+        const guild = this.client.guilds.cache.get(config.guild.id) as Guild
         await guild.commands.set(commands)
         Logger.log(
             'CommandManager',
@@ -118,9 +118,9 @@ export default class Commands {
             async (interaction: BaseInteraction) => {
                 if (!interaction.isChatInputCommand()) return
 
-                const command = <Command>(
-                    this.commands.get(interaction.commandName)
-                )
+                const command = this.commands.get(
+                    interaction.commandName
+                ) as Command
 
                 if (!command) return
 

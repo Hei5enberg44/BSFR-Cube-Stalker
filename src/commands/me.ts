@@ -70,7 +70,7 @@ export default {
             ) as Leaderboards | null
             const targetMember = interaction.options.getUser('joueur')
 
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             await interaction.deferReply()
 
@@ -119,17 +119,14 @@ export default {
                         oldPlayerData.leaderboard as Leaderboards
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
+                const linkCommand = guild.commands.cache.find(
+                    (c) => c.name === 'link'
+                ) as ApplicationCommand
                 if (!leaderboardChoice) {
-                    const linkCommand = <ApplicationCommand>(
-                        guild.commands.cache.find((c) => c.name === 'link')
-                    )
                     throw new CommandInteractionError(
                         `Aucun profil ScoreSaber ou BeatLeader n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                     )
                 } else if (!oldPlayerData) {
-                    const linkCommand = <ApplicationCommand>(
-                        guild.commands.cache.find((c) => c.name === 'link')
-                    )
                     throw new CommandInteractionError(
                         `Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                     )
@@ -249,9 +246,9 @@ export default {
                     )
             }
 
-            const meCommand = <ApplicationCommand>(
-                guild.commands.cache.find((c) => c.name === 'me')
-            )
+            const meCommand = guild.commands.cache.find(
+                (c) => c.name === 'me'
+            ) as ApplicationCommand
             if (progressStatus.length === 0)
                 progressStatus.push(
                     `Pas de progression depuis le dernier ${chatInputApplicationCommandMention(meCommand.name, meCommand.id)}`

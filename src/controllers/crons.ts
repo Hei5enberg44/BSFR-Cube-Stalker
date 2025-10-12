@@ -26,9 +26,9 @@ export default class Crons {
         new CronJob(
             '0 0 * * *',
             async function () {
-                const guild = <Guild>(
-                    client.guilds.cache.find((g) => g.id === config.guild.id)
-                )
+                const guild = client.guilds.cache.find(
+                    (g) => g.id === config.guild.id
+                ) as Guild
 
                 const members = guild.members.cache
 

@@ -67,7 +67,7 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             const getLeaderboard = async (
                 page: number,
@@ -184,8 +184,7 @@ export default {
             const collectorFilter = (i: ButtonInteraction) =>
                 i.user.id === interaction.user.id
 
-            const messageResource = response.resource
-                ?.message as Message<boolean>
+            const messageResource = response.resource?.message as Message
             const collector = messageResource.createMessageComponentCollector({
                 componentType: ComponentType.Button,
                 filter: collectorFilter,

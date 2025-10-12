@@ -45,7 +45,7 @@ export default {
         try {
             const subscribe = interaction.options.getBoolean('subscribe', true)
 
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             // Identifiant du membre exécutant la commande
             const memberId = interaction.user.id
@@ -55,9 +55,9 @@ export default {
 
             // On vérifie ici si le membre a lié son compte ScoreSaber ou non
             if (!member) {
-                const linkCommand = <ApplicationCommand>(
-                    guild.commands.cache.find((c) => c.name === 'link')
-                )
+                const linkCommand = guild.commands.cache.find(
+                    (c) => c.name === 'link'
+                ) as ApplicationCommand
                 throw new CommandInteractionError(
                     `Aucun profil ScoreSaber n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                 )

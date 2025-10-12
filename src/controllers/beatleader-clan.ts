@@ -209,14 +209,12 @@ export default class BeatLeaderClan {
                 message += '\n'
             }
 
-            const guild = <Guild>(
-                this.client.guilds.cache.find((g) => g.id === config.guild.id)
-            )
-            const clanUpdatesChannel = <TextChannel>(
-                guild.channels.cache.find(
-                    (c) => c.id === config.guild.channels['clan-updates']
-                )
-            )
+            const guild = this.client.guilds.cache.find(
+                (g) => g.id === config.guild.id
+            ) as Guild
+            const clanUpdatesChannel = guild.channels.cache.find(
+                (c) => c.id === config.guild.channels['clan-updates']
+            ) as TextChannel
 
             const embed = new Embed()
                 .setTitle('Voir les changements sur une carte 🌐')
@@ -271,14 +269,12 @@ export default class BeatLeaderClan {
                 ? await this.getAnimatedScreenshot(change.leaderboardId)
                 : null
 
-            const guild = <Guild>(
-                this.client.guilds.cache.find((g) => g.id === config.guild.id)
-            )
-            const clanUpdatesChannel = <TextChannel>(
-                guild.channels.cache.find(
-                    (c) => c.id === config.guild.channels['clan-updates']
-                )
-            )
+            const guild = this.client.guilds.cache.find(
+                (g) => g.id === config.guild.id
+            ) as Guild
+            const clanUpdatesChannel = guild.channels.cache.find(
+                (c) => c.id === config.guild.channels['clan-updates']
+            ) as TextChannel
 
             let messageOptions: BaseMessageOptions = { content: message }
 

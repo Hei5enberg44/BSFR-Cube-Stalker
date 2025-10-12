@@ -66,7 +66,7 @@ try {
                 }
             }
 
-            const guild = <Guild>client.guilds.cache.get(config.guild.id)
+            const guild = client.guilds.cache.get(config.guild.id) as Guild
             await guild.members.fetch()
             await guild.channels.fetch()
             await guild.roles.fetch()
