@@ -16,7 +16,7 @@ export const countryCodeEmoji = (cc: string) => {
     }
 
     const codePoints = [...cc.toUpperCase()].map(
-        (c) => <number>c.codePointAt(0) + OFFSET
+        (c) => (c.codePointAt(0) as number) + OFFSET
     )
     return String.fromCodePoint(...codePoints)
 }
@@ -29,6 +29,8 @@ export const emojiCountryCode = (flag: string) => {
         )
     }
 
-    const codePoints = [...flag].map((c) => <number>c.codePointAt(0) - OFFSET)
+    const codePoints = [...flag].map(
+        (c) => (c.codePointAt(0) as number) - OFFSET
+    )
     return String.fromCodePoint(...codePoints)
 }

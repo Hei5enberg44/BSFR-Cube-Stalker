@@ -19,7 +19,7 @@ import { CommandError, CommandInteractionError } from '../utils/error.js'
 import players from '../controllers/players.js'
 import leaderboard from '../controllers/leaderboard.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()
@@ -67,7 +67,7 @@ export default {
             const targetMember = interaction.options.getUser('joueur')
             const rank = interaction.options.getInteger('rang')
 
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             // On vérifie que les 2 arguments n'ont pas été passés en même temps
             if (targetMember && rank)
@@ -99,9 +99,9 @@ export default {
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
                 if (!player) {
-                    const linkCommand = <ApplicationCommand>(
-                        guild.commands.cache.find((c) => c.name === 'link')
-                    )
+                    const linkCommand = guild.commands.cache.find(
+                        (c) => c.name === 'link'
+                    ) as ApplicationCommand
                     throw new CommandInteractionError(
                         `Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                     )

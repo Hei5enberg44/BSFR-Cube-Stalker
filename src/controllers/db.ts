@@ -1,6 +1,6 @@
 import { Sequelize } from '@sequelize/core'
 import { MariaDbDialect } from '@sequelize/mariadb'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 import { DatabaseError } from '../utils/error.js'
 

@@ -24,7 +24,7 @@ import {
     CommandInteractionError,
     PageNotFoundError
 } from '../utils/error.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()
@@ -46,7 +46,7 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             const commandsList = [
                 'link',
@@ -175,7 +175,7 @@ export default {
             const collectorFilter = (i: ButtonInteraction) =>
                 i.user.id === interaction.user.id
 
-            const message = response.resource?.message as Message<boolean>
+            const message = response.resource?.message as Message
             const collector = message.createMessageComponentCollector({
                 componentType: ComponentType.Button,
                 filter: collectorFilter,

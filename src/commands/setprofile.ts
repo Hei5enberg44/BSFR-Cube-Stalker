@@ -18,7 +18,7 @@ import {
     GameLeaderboard,
     Leaderboards
 } from '../controllers/gameLeaderboard.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()
@@ -65,7 +65,7 @@ export default {
             const url = interaction.options.getString('url', true)
             const member = interaction.options.getUser('joueur', true)
 
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             await interaction.deferReply()
 

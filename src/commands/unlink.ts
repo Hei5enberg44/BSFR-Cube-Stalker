@@ -24,7 +24,7 @@ import cooldown from '../controllers/cooldown.js'
 import players from '../controllers/players.js'
 import roles from '../controllers/roles.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()
@@ -58,9 +58,9 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const memberRoles = (<GuildMemberRoleManager>(
-                interaction.member?.roles
-            )).cache
+            const memberRoles = (
+                interaction.member?.roles as GuildMemberRoleManager
+            ).cache
             const isAdmin =
                 memberRoles.find(
                     (role) => ['Admin', 'Modérateur'].indexOf(role.name) !== -1
@@ -72,7 +72,7 @@ export default {
             const member =
                 interaction.options.getUser('joueur') ?? interaction.user
 
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             // Si le membre n'a pas le rôle Admin ou Modérateur et essaye d'exécuter la commande sur un autre membre
             if (!isAdmin && member.id !== interaction.user.id)
@@ -158,7 +158,7 @@ export default {
                 withResponse: true
             })
             const confirmMessageResource = confirmMessage.resource
-                ?.message as Message<boolean>
+                ?.message as Message
 
             const collectorFilter = (i: any) =>
                 i.user.id === interaction.user.id
@@ -182,9 +182,9 @@ export default {
                     await players.remove(member.id, leaderboardChoice)
 
                     // On supprime les rôles pp du membre
-                    const memberToUpdate = <GuildMember>(
-                        guild.members.cache.find((m) => m.id === member.id)
-                    )
+                    const memberToUpdate = guild.members.cache.find(
+                        (m) => m.id === member.id
+                    ) as GuildMember
                     await roles.updateMemberPpRoles(
                         leaderboardChoice,
                         memberToUpdate,

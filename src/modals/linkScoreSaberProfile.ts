@@ -26,7 +26,7 @@ export default {
         try {
             const url = interaction.fields.getTextInputValue('url')
 
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             if (!url.includes('scoresaber'))
                 throw new ModalSubmissionError(
@@ -53,9 +53,9 @@ export default {
                 Leaderboards.ScoreSaber
             )
 
-            const meCommand = <ApplicationCommand>(
-                guild.commands.cache.find((c) => c.name === 'me')
-            )
+            const meCommand = guild.commands.cache.find(
+                (c) => c.name === 'me'
+            ) as ApplicationCommand
 
             const containerBuilder = new ContainerBuilder()
                 .setAccentColor([46, 204, 113])

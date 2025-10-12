@@ -6,7 +6,7 @@ type StringKey = keyof (typeof locales)[keyof typeof locales]
 const _locales: Collection<Locale, Record<StringKey, string>> = new Collection()
 
 for (const [key, strings] of Object.entries(locales)) {
-    _locales.set(<Locale>key, strings)
+    _locales.set(key as Locale, strings)
 }
 
 export default class Locales {

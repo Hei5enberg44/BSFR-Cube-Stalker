@@ -25,7 +25,7 @@ export default {
      */
     async execute(interaction: ModalSubmitInteraction) {
         try {
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             const leaderboardChoiceSelectValues =
                 interaction.fields.getStringSelectValues('leaderboard')
@@ -52,9 +52,9 @@ export default {
             )
 
             // On vérifie ici si les membres (celui exécutant la commande et celui à sniper) ont lié leur compte ScoreSaber ou BeatLeader
-            const linkCommand = <ApplicationCommand>(
-                guild.commands.cache.find((c) => c.name === 'link')
-            )
+            const linkCommand = guild.commands.cache.find(
+                (c) => c.name === 'link'
+            ) as ApplicationCommand
             if (!member)
                 throw new ModalSubmissionError(
                     `Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
@@ -104,24 +104,24 @@ export default {
                         '### Ta playlist est prête !'
                     )
                 )
-            .addSeparatorComponents(
-                new SeparatorBuilder()
-                    .setDivider(true)
-                    .setSpacing(SeparatorSpacingSize.Large)
-            )
-            .addFileComponents(
-                new FileBuilder().setURL(`attachment://${attachment.name}`)
-            )
-            .addSeparatorComponents(
-                new SeparatorBuilder()
-                    .setDivider(false)
-                    .setSpacing(SeparatorSpacingSize.Small)
-            )
-            .addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(
-                    `-# ${playlistData.songs.length} maps`
+                .addSeparatorComponents(
+                    new SeparatorBuilder()
+                        .setDivider(true)
+                        .setSpacing(SeparatorSpacingSize.Large)
                 )
-            )
+                .addFileComponents(
+                    new FileBuilder().setURL(`attachment://${attachment.name}`)
+                )
+                .addSeparatorComponents(
+                    new SeparatorBuilder()
+                        .setDivider(false)
+                        .setSpacing(SeparatorSpacingSize.Small)
+                )
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(
+                        `-# ${playlistData.songs.length} maps`
+                    )
+                )
 
             await interaction.editReply({
                 flags: [MessageFlags.IsComponentsV2],

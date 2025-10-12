@@ -23,7 +23,7 @@ export default {
      */
     async execute(interaction: ModalSubmitInteraction) {
         try {
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             const leaderboardChoiceSelectValues =
                 interaction.fields.getStringSelectValues('leaderboard')
@@ -46,8 +46,14 @@ export default {
                 maxStarsSelectValues.length === 0
                     ? 99
                     : parseInt(maxStarsSelectValues[0])
-            const minAcc = minAccTextInputValue.length === 0 ? 0 : Number(minAccTextInputValue)
-            const maxAcc = minAccTextInputValue.length === 0 ? 100 : Number(maxAccTextInputValue)
+            const minAcc =
+                minAccTextInputValue.length === 0
+                    ? 0
+                    : Number(minAccTextInputValue)
+            const maxAcc =
+                minAccTextInputValue.length === 0
+                    ? 100
+                    : Number(maxAccTextInputValue)
 
             // On vérifie la cohérence des données renseignées par l'utilisateur
             if (minStars > maxStars)
@@ -74,9 +80,9 @@ export default {
             )
 
             // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
-            const linkCommand = <ApplicationCommand>(
-                guild.commands.cache.find((c) => c.name === 'link')
-            )
+            const linkCommand = guild.commands.cache.find(
+                (c) => c.name === 'link'
+            ) as ApplicationCommand
             if (!member)
                 throw new ModalSubmissionError(
                     `Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`

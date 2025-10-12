@@ -24,9 +24,9 @@ try {
     Logger.log('Application', 'INFO', 'Démarrage du bot')
 
     // Chargement de la configuration du bot
-    if (!existsSync(resolve(__dirname, './config.json')))
+    if (!existsSync(resolve(__dirname, '../config.json')))
         throw Error('Le fichier de configuration "config.json" est manquant')
-    const { default: config } = await import('./config.json', {
+    const { default: config } = await import('../config.json', {
         with: { type: 'json' }
     })
 
@@ -66,7 +66,7 @@ try {
                 }
             }
 
-            const guild = <Guild>client.guilds.cache.get(config.guild.id)
+            const guild = client.guilds.cache.get(config.guild.id) as Guild
             await guild.members.fetch()
             await guild.channels.fetch()
             await guild.roles.fetch()

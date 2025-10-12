@@ -24,7 +24,7 @@ import {
 import leaderboard from '../controllers/leaderboard.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
 import Locales from '../utils/locales.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()
@@ -67,7 +67,7 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             const getLeaderboard = async (
                 page: number,
@@ -184,8 +184,7 @@ export default {
             const collectorFilter = (i: ButtonInteraction) =>
                 i.user.id === interaction.user.id
 
-            const messageResource = response.resource
-                ?.message as Message<boolean>
+            const messageResource = response.resource?.message as Message
             const collector = messageResource.createMessageComponentCollector({
                 componentType: ComponentType.Button,
                 filter: collectorFilter,

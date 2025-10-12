@@ -11,7 +11,7 @@ import {
 import { CommandError } from '../utils/error.js'
 import leaderboard from '../controllers/leaderboard.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()
@@ -41,7 +41,7 @@ export default {
                 'leaderboard'
             ) as Leaderboards
 
-            const guild = <Guild>interaction.guild
+            const guild = interaction.guild as Guild
 
             let containerBuilder = new ContainerBuilder()
                 .setAccentColor([241, 196, 15])

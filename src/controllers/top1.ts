@@ -19,7 +19,7 @@ import { Top1Data } from '../interfaces/player.interface.js'
 import { Top1Error, ScoreSaberError, BeatSaverError } from '../utils/error.js'
 import { countryCodeEmoji } from '../utils/country-code-emoji.js'
 import Logger from '../utils/logger.js'
-import config from '../config.json' with { type: 'json' }
+import config from '../../config.json' with { type: 'json' }
 
 const calcAcc = (
     mapDetail: MapDetail,
@@ -193,9 +193,9 @@ export default class Top1 {
      * @param top1 données du top 1 pays
      */
     static async publish(client: Client, top1: Top1Data) {
-        const guild = <Guild>(
-            client.guilds.cache.find((g) => g.id === config.guild.id)
-        )
+        const guild = client.guilds.cache.find(
+            (g) => g.id === config.guild.id
+        ) as Guild
         await guild.members.fetch()
 
         const member = guild.members.cache.find((m) => m.id === top1.memberId)
@@ -271,11 +271,9 @@ export default class Top1 {
                 value: `Tu es passé(e) devant ${hyperlink(top1.beatenScoreSaberName, `https://scoresaber.com/u/${top1.beatenScoreSaberId}`)}`
             })
 
-        const top1paysChannel = <TextChannel>(
-            guild.channels.cache.find(
-                (c) => c.id === config.guild.channels['top-1-pays']
-            )
-        )
+        const top1paysChannel = guild.channels.cache.find(
+            (c) => c.id === config.guild.channels['top-1-pays']
+        ) as TextChannel
         await top1paysChannel.send({ embeds: [embed] })
     }
 
