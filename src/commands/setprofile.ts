@@ -65,7 +65,9 @@ export default {
             const url = interaction.options.getString('url', true)
             const member = interaction.options.getUser('joueur', true)
 
-            const guild = interaction.guild as Guild
+            const guild = interaction.client.guilds.cache.get(
+                config.guild.id
+            ) as Guild
 
             await interaction.deferReply()
 
@@ -75,20 +77,16 @@ export default {
                 )
 
             const gameLeaderboard = new GameLeaderboard(leaderboardChoice)
-            const playerProfil = await gameLeaderboard.requests.getProfile(url)
+            const playerData =
+                await gameLeaderboard.requests.getPlayerDataByUrl(url)
 
             // On ne lie pas le profil du joueur si celui-ci est banni du leaderboard
-            if (playerProfil.banned)
+            if (playerData.banned)
                 throw new CommandInteractionError(
                     'Impossible de lier le profil de ce joueur car celui-ci est banni'
                 )
 
-            await players.add(
-                member.id,
-                playerProfil.id,
-                leaderboardChoice,
-                true
-            )
+            await players.add(member.id, playerData, leaderboardChoice, true)
 
             // Icône Leaderboard
             const ldIconName =
@@ -111,11 +109,11 @@ export default {
                 .addSectionComponents(
                     new SectionBuilder()
                         .setThumbnailAccessory(
-                            new ThumbnailBuilder().setURL(playerProfil.avatar)
+                            new ThumbnailBuilder().setURL(playerData.avatar)
                         )
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
-                                `### ${ldIcon ? `<:${ldIconName}:${ldIconId}>` : ''} ${hyperlink(playerProfil.name, playerProfil.url)}`
+                                `### ${ldIcon ? `<:${ldIconName}:${ldIconId}>` : ''} ${hyperlink(playerData.name, playerData.url)}`
                             )
                         )
                         .addTextDisplayComponents(

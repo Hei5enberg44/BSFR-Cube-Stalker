@@ -32,13 +32,14 @@ export default {
             await interaction.deferReply({ ephemeral: true })
 
             const gameLeaderboard = new GameLeaderboard(Leaderboards.BeatLeader)
-            const playerProfil = await gameLeaderboard.requests.getProfile(url)
+            const playerData =
+                await gameLeaderboard.requests.getPlayerDataByUrl(url)
 
-            await BeatLeaderOAuth.sendClanInvitation(playerProfil.id)
+            await BeatLeaderOAuth.sendClanInvitation(playerData.id)
             Logger.log(
                 'BeatLeaderOAuth',
                 'INFO',
-                `Une invitation à rejoindre le clan BSFR a été envoyée au joueur « ${playerProfil.name} »`
+                `Une invitation à rejoindre le clan BSFR a été envoyée au joueur « ${playerData.name} »`
             )
 
             const containerComponent = new ContainerBuilder()

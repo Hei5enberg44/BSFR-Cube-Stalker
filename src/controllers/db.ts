@@ -6,7 +6,6 @@ import { DatabaseError } from '../utils/error.js'
 
 import { CardModel } from '../models/card.model.js'
 import { CooldownModel } from '../models/cooldown.model.js'
-import { LeaderboardModel } from '../models/leaderboard.model.js'
 import { OAuthModel } from '../models/oauth.model.js'
 import { PlayerModel } from '../models/player.model.js'
 import {
@@ -28,7 +27,6 @@ const sequelize = new Sequelize({
     models: [
         CardModel,
         CooldownModel,
-        LeaderboardModel,
         OAuthModel,
         PlayerModel,
         ScoreSaberPlayerScoresModel,

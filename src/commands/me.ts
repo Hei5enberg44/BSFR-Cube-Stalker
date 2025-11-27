@@ -22,16 +22,12 @@ import {
 import { CommandError, CommandInteractionError } from '../utils/error.js'
 import roles from '../controllers/roles.js'
 import players from '../controllers/players.js'
-import leaderboard from '../controllers/leaderboard.js'
 import cardgenerator from '../controllers/cardgenerator.js'
 import {
     GameLeaderboard,
     Leaderboards
 } from '../controllers/gameLeaderboard.js'
-import {
-    PlayerRanking,
-    PlayerProgress
-} from '../interfaces/player.interface.js'
+import { PlayerProgress } from '../interfaces/player.interface.js'
 import { countryCodeEmoji } from '../utils/country-code-emoji.js'
 import config from '../../config.json' with { type: 'json' }
 
@@ -70,7 +66,11 @@ export default {
             ) as Leaderboards | null
             const targetMember = interaction.options.getUser('joueur')
 
-            const guild = interaction.guild as Guild
+            const guild = interaction.client.guilds.cache.get(
+                config.guild.id
+            ) as Guild
+            const applicationCommands =
+                interaction.client.application.commands.cache
 
             await interaction.deferReply()
 
@@ -86,7 +86,7 @@ export default {
                         "Moi ? Je ne joue pas à ce vulgaire jeu. Je me contente d'afficher vos piètres scores, c'est déjà pas mal."
                     )
 
-                // Informations sur le joueur
+                // Anciennes données de classement du joueur
                 oldPlayerData = leaderboardChoice
                     ? await players.get(memberId, leaderboardChoice)
                     : (await players.get(memberId, Leaderboards.ScoreSaber)) ||
@@ -109,7 +109,7 @@ export default {
                 // Identifiant du membre exécutant la commande
                 memberId = interaction.user.id
 
-                // Informations sur le joueur
+                // Anciennes données de classement du joueur
                 oldPlayerData = leaderboardChoice
                     ? await players.get(memberId, leaderboardChoice)
                     : (await players.get(memberId, Leaderboards.ScoreSaber)) ||
@@ -119,7 +119,7 @@ export default {
                         oldPlayerData.leaderboard as Leaderboards
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
-                const linkCommand = guild.commands.cache.find(
+                const linkCommand = applicationCommands.find(
                     (c) => c.name === 'link'
                 ) as ApplicationCommand
                 if (!leaderboardChoice) {
@@ -133,120 +133,102 @@ export default {
                 }
             }
 
-            // Données de classement du joueur
+            // Nouvelles données de classement du joueur
             const gameLeaderboard = new GameLeaderboard(leaderboardChoice)
             const playerData = await gameLeaderboard.requests.getPlayerData(
                 oldPlayerData.playerId
             )
 
-            // Données de classement du joueur
-            const oldPlayerLd = await leaderboard.getPlayer(
-                leaderboardChoice,
-                memberId
-            )
-
             // Mise à jour des données de classement du joueur
-            if (!oldPlayerLd)
-                await leaderboard.addPlayerLeaderboard(
-                    leaderboardChoice,
-                    memberId,
-                    playerData
-                )
-            // Sinon, on le met à jour
-            else
-                await leaderboard.updatePlayerLeaderboard(
-                    leaderboardChoice,
-                    memberId,
-                    playerData
-                )
-
-            const playerLd = (await leaderboard.getPlayer(
-                leaderboardChoice,
-                memberId
-            )) as PlayerRanking
-
-            // Mise à jour du joueur
-            await players.update(
+            const newPlayerData = await players.update(
                 memberId,
                 leaderboardChoice,
-                playerData,
-                playerLd
+                playerData
             )
 
             // Progressions du joueur
-            let playerProgress: PlayerProgress | null = null
             const progressStatus = []
-            if (oldPlayerLd) {
-                playerProgress = {
-                    rankDiff: playerLd.rank - oldPlayerLd.rank,
-                    countryRankDiff:
-                        playerLd.countryRank - oldPlayerLd.countryRank,
-                    ppDiff: playerLd.pp - oldPlayerLd.pp,
-                    accDiff: parseFloat(
-                        (
-                            parseFloat(
-                                playerLd.averageRankedAccuracy.toFixed(2)
-                            ) -
-                            parseFloat(
-                                oldPlayerLd.averageRankedAccuracy.toFixed(2)
-                            )
-                        ).toFixed(2)
-                    ),
-                    serverPPDiff:
-                        playerLd.serverRankPP - oldPlayerLd.serverRankPP,
-                    serverAccDiff:
-                        playerLd.serverRankAcc - oldPlayerLd.serverRankAcc
-                }
-
-                // Rang global
-                const rankDiff = Math.abs(playerProgress.rankDiff)
-                if (playerLd.rank !== oldPlayerLd.rank)
-                    progressStatus.push(
-                        `Tu as ${bold(`${playerLd.rank < oldPlayerLd.rank ? 'gagné' : 'perdu'} ${rankDiff} place${rankDiff > 1 ? 's' : ''}`)} dans le classement mondial`
-                    )
-
-                // Rank pays
-                const countryRankDiff = Math.abs(playerProgress.countryRankDiff)
-                if (playerLd.countryRank !== oldPlayerLd.countryRank)
-                    progressStatus.push(
-                        `Tu as ${bold(`${playerLd.countryRank < oldPlayerLd.countryRank ? 'gagné' : 'perdu'} ${countryRankDiff} place${countryRankDiff > 1 ? 's' : ''}`)} dans le classement ${countryCodeEmoji(playerData.country)}`
-                    )
-
-                // PP
-                const ppDiff = new Intl.NumberFormat('en-US').format(
-                    Math.abs(playerProgress.ppDiff)
-                )
-                if (playerLd.pp !== oldPlayerLd.pp)
-                    progressStatus.push(
-                        `Tu as ${bold(`${playerLd.pp > oldPlayerLd.pp ? 'gagné' : 'perdu'} ${ppDiff}pp`)}`
-                    )
-
-                // Acc
-                const accDiff = Math.abs(playerProgress.accDiff)
-                if (
-                    parseFloat(playerLd.averageRankedAccuracy.toFixed(2)) !==
-                    parseFloat(oldPlayerLd.averageRankedAccuracy.toFixed(2))
-                )
-                    progressStatus.push(
-                        `Tu as ${bold(`${playerLd.averageRankedAccuracy > oldPlayerLd.averageRankedAccuracy ? 'gagné' : 'perdu'} ${accDiff}%`)} de précision moyenne en classé`
-                    )
-
-                // Rank Server PP
-                const serverPPDiff = Math.abs(playerProgress.serverPPDiff)
-                if (playerLd.serverRankPP !== oldPlayerLd.serverRankPP)
-                    progressStatus.push(
-                        `Tu as ${bold(`${playerLd.serverRankPP < oldPlayerLd.serverRankPP ? 'gagné' : 'perdu'} ${serverPPDiff} place${serverPPDiff > 1 ? 's' : ''}`)} dans le classement des points de performance du serveur`
-                    )
-
-                // Rank Server Acc
-                const serverAccDiff = Math.abs(playerProgress.serverAccDiff)
-                if (playerLd.serverRankAcc !== oldPlayerLd.serverRankAcc)
-                    progressStatus.push(
-                        `Tu as ${bold(`${playerLd.serverRankAcc < oldPlayerLd.serverRankAcc ? 'gagné' : 'perdu'} ${serverAccDiff} place${serverAccDiff > 1 ? 's' : ''}`)} dans le classement de précision moyenne en classé du serveur`
-                    )
+            let playerProgress: PlayerProgress = {
+                rankDiff: newPlayerData.rank - oldPlayerData.rank,
+                countryRankDiff:
+                    newPlayerData.countryRank - oldPlayerData.countryRank,
+                ppDiff: newPlayerData.pp - oldPlayerData.pp,
+                accDiff: parseFloat(
+                    (
+                        parseFloat(
+                            newPlayerData.averageRankedAccuracy.toFixed(2)
+                        ) -
+                        parseFloat(
+                            oldPlayerData.averageRankedAccuracy.toFixed(2)
+                        )
+                    ).toFixed(2)
+                ),
+                serverPPDiff:
+                    newPlayerData.serverRankPP - oldPlayerData.serverRankPP,
+                serverAccDiff:
+                    newPlayerData.serverRankAcc - oldPlayerData.serverRankAcc
             }
 
-            const meCommand = guild.commands.cache.find(
+            // Rang global
+            const rankDiff = Math.abs(playerProgress.rankDiff)
+            if (newPlayerData.rank !== oldPlayerData.rank)
+                progressStatus.push(
+                    `${bold(`${newPlayerData.rank < oldPlayerData.rank ? '+' : '-'}${rankDiff} place${rankDiff > 1 ? 's' : ''}`)} dans le classement mondial`
+                )
+
+            // Rank pays
+            const countryRankDiff = Math.abs(playerProgress.countryRankDiff)
+            if (newPlayerData.countryRank !== oldPlayerData.countryRank)
+                progressStatus.push(
+                    `${bold(`${newPlayerData.countryRank < oldPlayerData.countryRank ? '+' : '-'}${countryRankDiff} place${countryRankDiff > 1 ? 's' : ''}`)} dans le classement ${countryCodeEmoji(playerData.country)}`
+                )
+
+            // PP
+            const ppDiff = new Intl.NumberFormat('en-US').format(
+                Math.abs(playerProgress.ppDiff)
+            )
+            if (newPlayerData.pp !== oldPlayerData.pp)
+                progressStatus.push(
+                    `${bold(`${newPlayerData.pp > oldPlayerData.pp ? '+' : '-'}${ppDiff}pp`)}`
+                )
+
+            // Acc
+            const accDiff = Math.abs(playerProgress.accDiff)
+            if (
+                parseFloat(newPlayerData.averageRankedAccuracy.toFixed(2)) !==
+                parseFloat(oldPlayerData.averageRankedAccuracy.toFixed(2))
+            )
+                progressStatus.push(
+                    `${bold(`${newPlayerData.averageRankedAccuracy > oldPlayerData.averageRankedAccuracy ? '+' : '-'}${accDiff}%`)} de précision moyenne en classé`
+                )
+
+            // Rank Server PP
+            const serverPPDiff = Math.abs(playerProgress.serverPPDiff)
+            if (newPlayerData.serverRankPP !== oldPlayerData.serverRankPP)
+                progressStatus.push(
+                    `${bold(`${newPlayerData.serverRankPP < oldPlayerData.serverRankPP ? '+' : '-'}${serverPPDiff} place${serverPPDiff > 1 ? 's' : ''}`)} dans le classement des points de performance du serveur`
+                )
+
+            // Rank Server Acc
+            const serverAccDiff = Math.abs(playerProgress.serverAccDiff)
+            if (newPlayerData.serverRankAcc !== oldPlayerData.serverRankAcc)
+                progressStatus.push(
+                    `${bold(`${newPlayerData.serverRankAcc < oldPlayerData.serverRankAcc ? '+' : '-'}${serverAccDiff} place${serverAccDiff > 1 ? 's' : ''}`)} dans le classement de précision moyenne en classé du serveur`
+                )
+
+            // Nouvelle top PP ?
+            let newTopPP = false
+            if (oldPlayerData.topPP === null && newPlayerData.topPP !== null) {
+                newTopPP = true
+            } else if (
+                oldPlayerData.topPP !== null &&
+                newPlayerData.topPP !== null
+            ) {
+                if (oldPlayerData.topPP.pp !== newPlayerData.topPP.pp)
+                    newTopPP = true
+            }
+
+            const meCommand = applicationCommands.find(
                 (c) => c.name === 'me'
             ) as ApplicationCommand
             if (progressStatus.length === 0)
@@ -258,7 +240,9 @@ export default {
             const memberToUpdate = (
                 targetMember
                     ? guild.members.cache.find((m) => m.id === targetMember.id)
-                    : interaction.member
+                    : guild.members.cache.find(
+                          (m) => m.id === interaction.user.id
+                      )
             ) as GuildMember
             await roles.updateMemberPpRoles(
                 leaderboardChoice,
@@ -290,14 +274,8 @@ export default {
             })
 
             const date = new Date()
-            if (date.getDate() === 1 && date.getMonth() === 3) {
-                const card = await cardgenerator.getStonkerCard(
-                    leaderboardChoice,
-                    memberToUpdate,
-                    playerData,
-                    playerLd,
-                    playerProgress
-                )
+            if (date.getDate() === 1 && date.getMonth() + 1 === 4) {
+                const card = await cardgenerator.getStonkerCard(playerData)
 
                 await interaction.editReply({
                     files: [
@@ -312,43 +290,23 @@ export default {
                     leaderboardChoice,
                     memberToUpdate,
                     playerData,
-                    playerLd,
                     playerProgress
                 )
                 const attachment = new AttachmentBuilder(card.name, {
                     name: `${playerData.id}.webp`
                 })
+                let textContent = `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Profil de ${playerData.name}`, playerData.url)}\n`
+                textContent += progressStatus.map((p) => `- ${p}`).join('\n')
 
-                const containerComponent =
-                    new ContainerBuilder().setAccentColor(
+                const containerComponent = new ContainerBuilder()
+                    .setAccentColor(
                         roles.getMemberPpRoleColor(
                             leaderboardChoice,
                             memberToUpdate
                         ) ?? memberToUpdate.displayColor
                     )
-
-                if (!oldPlayerLd) {
-                    containerComponent
-                        .addTextDisplayComponents(
-                            new TextDisplayBuilder().setContent(
-                                `### 👏 ${userMention(memberId)} a été ajouté au classement du serveur !`
-                            )
-                        )
-                        .addSeparatorComponents(
-                            new SeparatorBuilder()
-                                .setDivider(true)
-                                .setSpacing(SeparatorSpacingSize.Small)
-                        )
-                }
-
-                containerComponent
                     .addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent(
-                            `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Profil de ${playerData.name}`, playerData.url)}`
-                        ),
-                        new TextDisplayBuilder().setContent(
-                            progressStatus.map((p) => `- ${p}`).join('\n')
-                        )
+                        new TextDisplayBuilder().setContent(textContent)
                     )
                     .addMediaGalleryComponents(
                         new MediaGalleryBuilder().addItems([
@@ -357,6 +315,19 @@ export default {
                             )
                         ])
                     )
+
+                if (newTopPP)
+                    containerComponent
+                        .addSeparatorComponents(
+                            new SeparatorBuilder()
+                                .setDivider(true)
+                                .setSpacing(SeparatorSpacingSize.Large)
+                        )
+                        .addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent(
+                                bold('🏆 Nouvelle Top PP LEZGONGUE !!')
+                            )
+                        )
 
                 await interaction.editReply({
                     flags: [

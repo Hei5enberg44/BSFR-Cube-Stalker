@@ -10,13 +10,10 @@ import sharp from 'sharp'
 import tmp from 'tmp'
 import * as fs from 'node:fs'
 import { Leaderboards } from './gameLeaderboard.js'
+import players from './players.js'
 import roles from './roles.js'
 import { CardModel, CardStatus } from '../models/card.model.js'
-import {
-    PlayerData,
-    PlayerRanking,
-    PlayerProgress
-} from '../interfaces/player.interface.js'
+import { PlayerData, PlayerProgress } from '../interfaces/player.interface.js'
 import config from '../../config.json' with { type: 'json' }
 
 registerFont('./assets/fonts/Poppins-Regular.ttf', {
@@ -140,10 +137,9 @@ const fittingString = (
 
 export default {
     async getCard(
-        leaderboardChoice: Leaderboards,
+        leaderboardName: Leaderboards,
         member: GuildMember | null,
         playerData: PlayerData,
-        playerLd: PlayerRanking,
         playerProgress: PlayerProgress | null,
         debug = false
     ) {
@@ -176,7 +172,7 @@ export default {
 
             if (member) {
                 const memberPpRoleColor = roles.getMemberPpRoleColor(
-                    leaderboardChoice,
+                    leaderboardName,
                     member
                 )
                 if (memberPpRoleColor) {
@@ -224,7 +220,7 @@ export default {
          */
         // Icon Leaderboard
         const ldIcon = await loadImage(
-            `./assets/images/card/${leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : leaderboardChoice === 'beatleader' ? 'bl' : ''}.png`
+            `./assets/images/card/${leaderboardName === Leaderboards.ScoreSaber ? 'ss' : leaderboardName === 'beatleader' ? 'bl' : ''}.png`
         )
         ctx.drawImage(ldIcon, 365, 135, 60, 60)
 
@@ -232,9 +228,9 @@ export default {
         ctx.font = '50px "Poppins-Medium"'
         ctx.fillStyle = '#FFFFFF'
         ctx.fillText(
-            leaderboardChoice === Leaderboards.ScoreSaber
+            leaderboardName === Leaderboards.ScoreSaber
                 ? 'ScoreSaber'
-                : leaderboardChoice === 'beatleader'
+                : leaderboardName === 'beatleader'
                   ? 'BeatLeader'
                   : '',
             435,
@@ -302,10 +298,14 @@ export default {
         ctx.fillText('BSFR', separatorLeft + 100, 165)
 
         // Classement pp serveur
+        const playerServerRanking = await players.getPlayerServerRanking(
+            leaderboardName,
+            playerData.id
+        )
         ctx.font = '45px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
         ctx.fillText(
-            `PP: ${playerLd.serverRankPP}/${playerLd.serverLdTotal}`,
+            `PP: ${playerServerRanking.serverRankPP}/${playerServerRanking.serverLdTotal}`,
             separatorLeft + 30,
             235
         )
@@ -314,7 +314,7 @@ export default {
         ctx.font = '45px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
         ctx.fillText(
-            `Précision: ${playerLd.serverRankAcc}/${playerLd.serverLdTotal}`,
+            `Précision: ${playerServerRanking.serverRankAcc}/${playerServerRanking.serverLdTotal}`,
             separatorLeft + 30,
             305
         )
@@ -542,14 +542,7 @@ export default {
         return tmpCard
     },
 
-    async getStonkerCard(
-        leaderboardChoice: Leaderboards,
-        member: GuildMember | null,
-        playerData: PlayerData,
-        playerLd: PlayerRanking,
-        playerProgress: PlayerProgress | null,
-        debug = false
-    ) {
+    async getStonkerCard(playerData: PlayerData) {
         const playerHistory = playerData.history.split(',')
         const playerWeekHistory =
             playerHistory.length >= 7

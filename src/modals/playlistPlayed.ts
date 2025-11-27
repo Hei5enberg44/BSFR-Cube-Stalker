@@ -4,7 +4,6 @@ import {
     chatInputApplicationCommandMention,
     ContainerBuilder,
     FileBuilder,
-    Guild,
     MessageFlags,
     ModalSubmitInteraction,
     SeparatorBuilder,
@@ -23,7 +22,8 @@ export default {
      */
     async execute(interaction: ModalSubmitInteraction) {
         try {
-            const guild = interaction.guild as Guild
+            const applicationCommands =
+                interaction.client.application.commands.cache
 
             const leaderboardChoiceSelectValues =
                 interaction.fields.getStringSelectValues('leaderboard')
@@ -80,7 +80,7 @@ export default {
             )
 
             // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
-            const linkCommand = guild.commands.cache.find(
+            const linkCommand = applicationCommands.find(
                 (c) => c.name === 'link'
             ) as ApplicationCommand
             if (!member)

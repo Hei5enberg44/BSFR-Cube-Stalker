@@ -1,5 +1,4 @@
 import {
-    Guild,
     SlashCommandBuilder,
     InteractionContextType,
     PermissionFlagsBits,
@@ -46,7 +45,8 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const guild = interaction.guild as Guild
+            const applicationCommands =
+                interaction.client.application.commands.cache
 
             const commandsList = [
                 'link',
@@ -70,7 +70,7 @@ export default {
 
                     const help = commandsList
                         .flatMap((cn) => {
-                            const command = guild.commands.cache.find(
+                            const command = applicationCommands.find(
                                 (c) => c.name === cn
                             )
                             if (command) {
