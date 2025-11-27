@@ -16,6 +16,7 @@ import {
     GameLeaderboard,
     Leaderboards
 } from '../controllers/gameLeaderboard.js'
+import config from '../../config.json' with { type: 'json' }
 
 export default {
     /**
@@ -26,7 +27,11 @@ export default {
         try {
             const url = interaction.fields.getTextInputValue('url')
 
-            const guild = interaction.guild as Guild
+            const guild = interaction.client.guilds.cache.get(
+                config.guild.id
+            ) as Guild
+            const applicationCommands =
+                interaction.client.application.commands.cache
 
             if (!url.includes('beatleader'))
                 throw new ModalSubmissionError(
@@ -34,7 +39,8 @@ export default {
                 )
 
             const gameLeaderboard = new GameLeaderboard(Leaderboards.BeatLeader)
-            const playerProfil = await gameLeaderboard.requests.getProfile(url)
+            const playerData =
+                await gameLeaderboard.requests.getPlayerDataByUrl(url)
 
             // Icône Leaderboard
             const ldIconName = 'bl'
@@ -42,18 +48,18 @@ export default {
             const ldIconId = ldIcon?.id
 
             // On ne lie pas le profil du joueur si celui-ci est banni du leaderboard
-            if (playerProfil.banned)
+            if (playerData.banned)
                 throw new ModalSubmissionError(
                     'Impossible de lier le profil de ce joueur car celui-ci est banni'
                 )
 
             await players.add(
                 interaction.user.id,
-                playerProfil.id,
+                playerData,
                 Leaderboards.BeatLeader
             )
 
-            const meCommand = guild.commands.cache.find(
+            const meCommand = applicationCommands.find(
                 (c) => c.name === 'me'
             ) as ApplicationCommand
 
@@ -62,19 +68,14 @@ export default {
                 .addSectionComponents(
                     new SectionBuilder()
                         .setThumbnailAccessory(
-                            new ThumbnailBuilder().setURL(playerProfil.avatar)
+                            new ThumbnailBuilder().setURL(playerData.avatar)
                         )
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
-                                `### ${ldIcon ? `<:${ldIconName}:${ldIconId}>` : ''} ${hyperlink(playerProfil.name, playerProfil.url)}`
-                            )
-                        )
-                        .addTextDisplayComponents(
-                            new TextDisplayBuilder().setContent(
-                                '✅ Votre profil BeatLeader a bien été lié avec votre compte Discord'
-                            ),
-                            new TextDisplayBuilder().setContent(
-                                `ℹ️ Utilisez la commande ${chatInputApplicationCommandMention(meCommand.name, meCommand.id)} pour pouvoir être ajouté au classement du serveur`
+                                `### ${ldIcon ? `<:${ldIconName}:${ldIconId}>` : ''} ${hyperlink(playerData.name, playerData.url)}\n` +
+                                    '✅ Votre profil BeatLeader a bien été lié avec votre compte Discord\n' +
+                                    '👏 Vous avez été ajouté au classement du serveur !\n' +
+                                    `ℹ️ Vous pouvez maintenant tiliser la commande ${chatInputApplicationCommandMention(meCommand.name, meCommand.id)} pour voir votre profil`
                             )
                         )
                 )

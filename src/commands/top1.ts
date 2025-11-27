@@ -1,5 +1,4 @@
 import {
-    Guild,
     SlashCommandBuilder,
     InteractionContextType,
     PermissionFlagsBits,
@@ -45,7 +44,8 @@ export default {
         try {
             const subscribe = interaction.options.getBoolean('subscribe', true)
 
-            const guild = interaction.guild as Guild
+            const applicationCommands =
+                interaction.client.application.commands.cache
 
             // Identifiant du membre exécutant la commande
             const memberId = interaction.user.id
@@ -55,7 +55,7 @@ export default {
 
             // On vérifie ici si le membre a lié son compte ScoreSaber ou non
             if (!member) {
-                const linkCommand = guild.commands.cache.find(
+                const linkCommand = applicationCommands.find(
                     (c) => c.name === 'link'
                 ) as ApplicationCommand
                 throw new CommandInteractionError(

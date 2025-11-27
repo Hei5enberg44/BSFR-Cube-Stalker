@@ -38,7 +38,7 @@ export default class Logger {
      */
     static log(
         scope: string,
-        level: 'INFO' | 'WARNING' | 'ERROR',
+        level: 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR',
         content: string
     ) {
         const date = this.date()
@@ -48,6 +48,9 @@ export default class Logger {
 
         let _level: string
         switch (level) {
+            case 'DEBUG':
+                _level = chalk.magentaBright(level)
+                break
             case 'INFO':
                 _level = chalk.blueBright(level)
                 break

@@ -1,9 +1,7 @@
-import leaderboard from './leaderboard.js'
 import { Leaderboards } from './gameLeaderboard.js'
-import { PlayerData, PlayerRanking } from '../interfaces/player.interface.js'
+import { PlayerData } from '../interfaces/player.interface.js'
 import { PlayerError } from '../utils/error.js'
 import { PlayerModel } from '../models/player.model.js'
-import { LeaderboardModel } from '../models/leaderboard.model.js'
 
 export default class Players {
     /**
@@ -21,13 +19,13 @@ export default class Players {
     /**
      * Ajoute un joueur dans la table « players »
      * @param memberId identifiant Discord du membre
-     * @param playerId identifiant du profil leaderboard du membre
+     * @param playerData données du profil leaderboard du membre
      * @param leaderboardName nom du leaderboard
      * @param isAdmin indique si il s'agit d'un admin/modérateur qui a exécuté la commande
      */
     static async add(
         memberId: string,
-        playerId: string,
+        playerData: PlayerData,
         leaderboardName: Leaderboards,
         isAdmin: boolean = false
     ) {
@@ -43,37 +41,52 @@ export default class Players {
         }
 
         // On vérifie si le profil ScoreSaber ou BeatLeader est déjà lié à un membre Discord
-        const playerIsAlreadyLinked = await PlayerModel.count({
-            where: { playerId: playerId, leaderboard: leaderboardName }
-        })
-        if (playerIsAlreadyLinked > 0)
-            throw new PlayerError(
-                `Ce profil ${leaderboardName === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} est déjà relié à un compte Discord`
-            )
-
-        await leaderboard.removePlayerLeaderboard(leaderboardName, playerId)
-
         const player = await PlayerModel.findOne({
-            where: { playerId: playerId, leaderboard: leaderboardName }
+            where: { playerId: playerData.id, leaderboard: leaderboardName }
         })
 
         if (!player) {
-            PlayerModel.create({
+            const p = await PlayerModel.create({
                 leaderboard: leaderboardName,
                 memberId: memberId,
-                playerId: playerId,
+                playerId: playerData.id,
+                playerName: playerData.name,
+                playerCountry: playerData.country,
+                pp: playerData.pp,
+                rank: playerData.rank,
+                countryRank: playerData.countryRank,
+                averageRankedAccuracy: playerData.averageRankedAccuracy,
+                serverRankAcc: 0,
+                serverRankPP: 0,
+                topPP: playerData.topPP,
                 top1: leaderboardName === Leaderboards.ScoreSaber
             })
+
+            const playerServerRanking = await this.getPlayerServerRanking(
+                leaderboardName,
+                playerData.id
+            )
+            p.serverRankAcc = playerServerRanking.serverRankAcc
+            p.serverRankPP = playerServerRanking.serverRankPP
+            await p.save()
         } else {
-            player.playerId = playerId
-            player.playerName = null
-            player.playerCountry = null
-            player.pp = null
-            player.rank = null
-            player.countryRank = null
-            player.averageRankedAccuracy = null
-            player.serverRankAcc = null
-            player.serverRankPP = null
+            player.playerId = playerData.id
+            player.playerName = playerData.name
+            player.playerCountry = playerData.country
+            player.pp = playerData.pp
+            player.rank = playerData.rank
+            player.countryRank = playerData.countryRank
+            player.averageRankedAccuracy = playerData.averageRankedAccuracy
+            ;((player.serverRankAcc = 0), (player.serverRankPP = 0))
+            player.topPP = playerData.topPP
+            await player.save()
+
+            const playerServerRanking = await this.getPlayerServerRanking(
+                leaderboardName,
+                playerData.id
+            )
+            player.serverRankAcc = playerServerRanking.serverRankAcc
+            player.serverRankPP = playerServerRanking.serverRankPP
             await player.save()
         }
     }
@@ -89,31 +102,32 @@ export default class Players {
     static async update(
         memberId: string,
         leaderboardName: Leaderboards,
-        playerData: PlayerData,
-        playerRanking: PlayerRanking
+        playerData: PlayerData
     ) {
-        const player = await PlayerModel.findOne({
+        const player = (await PlayerModel.findOne({
             where: { memberId: memberId, leaderboard: leaderboardName }
-        })
+        })) as PlayerModel
 
-        if (player) {
-            await PlayerModel.update(
-                {
-                    playerId: playerData.id,
-                    playerName: playerData.name,
-                    playerCountry: playerData.country,
-                    pp: playerData.pp,
-                    rank: playerData.rank,
-                    countryRank: playerData.countryRank,
-                    averageRankedAccuracy: playerData.averageRankedAccuracy,
-                    serverRankPP: playerRanking.serverRankPP,
-                    serverRankAcc: playerRanking.serverRankAcc
-                },
-                { where: { memberId: memberId, leaderboard: leaderboardName } }
-            )
-        }
+        player.playerId = playerData.id
+        player.playerName = playerData.name
+        player.playerCountry = playerData.country
+        player.pp = playerData.pp
+        player.rank = playerData.rank
+        player.countryRank = playerData.countryRank
+        player.averageRankedAccuracy = playerData.averageRankedAccuracy
+        ;((player.serverRankAcc = 0), (player.serverRankPP = 0))
+        player.topPP = playerData.topPP
+        await player.save()
 
-        return this.get(memberId, leaderboardName)
+        const playerServerRanking = await this.getPlayerServerRanking(
+            leaderboardName,
+            playerData.id
+        )
+        player.serverRankAcc = playerServerRanking.serverRankAcc
+        player.serverRankPP = playerServerRanking.serverRankPP
+        await player.save()
+
+        return player
     }
 
     /**
@@ -121,9 +135,47 @@ export default class Players {
      * @param memberId identifiant Discord du membre
      */
     static async remove(memberId: string, leaderboardChoice: Leaderboards) {
-        const where = { memberId: memberId, leaderboard: leaderboardChoice }
+        await PlayerModel.destroy({
+            where: { memberId: memberId, leaderboard: leaderboardChoice }
+        })
+    }
 
-        await PlayerModel.destroy({ where })
-        await LeaderboardModel.destroy({ where })
+    /**
+     * Récupération du classement serveur d'un joueur
+     * @param leaderboardName choix du leaderboard
+     * @param playerId identifiant joueur
+     * @returns classement serveur du joueur
+     */
+    static async getPlayerServerRanking(
+        leaderboardName: Leaderboards,
+        playerId: string
+    ) {
+        // Récupération du classement
+        const p = await PlayerModel.findAll({
+            where: { leaderboard: leaderboardName },
+            order: [['pp', 'ASC']]
+        })
+
+        // Récupération des rangs Discord du membre
+        const serverRankPP = p
+            .sort((a, b) => b.pp - a.pp)
+            .findIndex(
+                (ld) =>
+                    ld.playerId === playerId &&
+                    ld.leaderboard === leaderboardName
+            )
+        const serverRankAcc = p
+            .sort((a, b) => b.averageRankedAccuracy - a.averageRankedAccuracy)
+            .findIndex(
+                (ld) =>
+                    ld.playerId === playerId &&
+                    ld.leaderboard === leaderboardName
+            )
+
+        return {
+            serverRankPP: serverRankPP + 1,
+            serverRankAcc: serverRankAcc + 1,
+            serverLdTotal: p.length
+        }
     }
 }

@@ -3,23 +3,27 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
     Client,
-    Guild,
     Collection,
-    ApplicationCommand,
     CommandInteractionOption,
     BaseInteraction,
     ApplicationCommandOptionType,
     channelMention,
     ContainerBuilder,
     TextDisplayBuilder,
-    MessageFlags
+    MessageFlags,
+    InteractionContextType,
+    REST,
+    RESTPostAPIChatInputApplicationCommandsJSONBody,
+    Routes,
+    SharedSlashCommand
 } from 'discord.js'
 import { CommandError } from '../utils/error.js'
 import Locales from '../utils/locales.js'
 import Logger from '../utils/logger.js'
 import config from '../../config.json' with { type: 'json' }
 
-interface Command extends ApplicationCommand {
+interface Command {
+    data: SharedSlashCommand
     allowedChannels?: string[]
     execute: Function
 }
@@ -28,7 +32,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default class Commands {
     client: Client
-    commands: Collection<string, ApplicationCommand> = new Collection()
+    commands: Collection<string, Command> = new Collection()
 
     constructor(client: Client) {
         this.client = client
@@ -74,7 +78,7 @@ export default class Commands {
      * Chargement des commandes au démarrage du Bot
      */
     async load() {
-        const commands = [] // Liste des commandes
+        const commands: RESTPostAPIChatInputApplicationCommandsJSONBody[] = [] // Liste des commandes
         const commandFiles = fs
             .readdirSync(resolve(__dirname, '../commands'))
             .filter((file) => file.endsWith('.js'))
@@ -82,23 +86,29 @@ export default class Commands {
         // On récupère les commandes
         for (const file of commandFiles) {
             const { default: command } = await import(`../commands/${file}`)
-            commands.push(command.data)
+            commands.push((command as Command).data.toJSON())
+            this.commands.set(command.data.name, command as Command)
             Logger.log(
                 'CommandManager',
                 'INFO',
                 `Commande "/${command.data.name}" trouvée`
             )
-            this.commands.set(command.data.name, command)
         }
 
+        await this.client.application?.commands.fetch()
+
+        if (!config.updateCommands) return
         // On ajoute chaque commande au serveur
+        const rest = new REST().setToken(config.token)
+
         Logger.log(
             'CommandManager',
             'INFO',
             `Actualisation des commandes (/) de l'application`
         )
-        const guild = this.client.guilds.cache.get(config.guild.id) as Guild
-        await guild.commands.set(commands)
+        await rest.put(Routes.applicationCommands(config.clientId), {
+            body: commands
+        })
         Logger.log(
             'CommandManager',
             'INFO',
@@ -135,7 +145,10 @@ export default class Commands {
                     )
 
                     // On test si la commande est exécutée depuis le bon channel
-                    if (command.allowedChannels) {
+                    if (
+                        interaction.context === InteractionContextType.Guild &&
+                        command.allowedChannels
+                    ) {
                         for (const channel of command.allowedChannels) {
                             if (channel !== interaction.channelId) {
                                 throw new CommandError(

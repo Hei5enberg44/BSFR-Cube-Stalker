@@ -67,7 +67,9 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const guild = interaction.guild as Guild
+            const guild = interaction.client.guilds.cache.get(
+                config.guild.id
+            ) as Guild
 
             const getLeaderboard = async (
                 page: number,

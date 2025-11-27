@@ -58,8 +58,15 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
+            const guild = interaction.client.guilds.cache.get(
+                config.guild.id
+            ) as Guild
+            const interactionMember = guild.members.cache.find(
+                (m) => m.id === interaction.user.id
+            )
+
             const memberRoles = (
-                interaction.member?.roles as GuildMemberRoleManager
+                interactionMember?.roles as GuildMemberRoleManager
             ).cache
             const isAdmin =
                 memberRoles.find(
@@ -71,8 +78,6 @@ export default {
             ) as Leaderboards
             const member =
                 interaction.options.getUser('joueur') ?? interaction.user
-
-            const guild = interaction.guild as Guild
 
             // Si le membre n'a pas le rôle Admin ou Modérateur et essaye d'exécuter la commande sur un autre membre
             if (!isAdmin && member.id !== interaction.user.id)

@@ -28,16 +28,6 @@ export interface TopPP {
     replay: string | null
 }
 
-export interface PlayerRanking {
-    pp: number
-    rank: number
-    countryRank: number
-    averageRankedAccuracy: number
-    serverRankPP: number
-    serverRankAcc: number
-    serverLdTotal: number
-}
-
 export interface Top1Data {
     rank: number
     score: number

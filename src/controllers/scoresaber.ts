@@ -87,30 +87,14 @@ export default class ScoreSaber {
      * @param url lien du profil ScoreSaber du joueur
      * @returns données de profil ScoreSaber du joueur
      */
-    static async getProfile(url: string) {
+    static async getPlayerDataByUrl(url: string) {
         try {
             const playerId = url.replace(
                 /^https?:\/\/(?:new\.|www\.)?scoresaber\.com\/u\/([0-9]+).*$/,
                 '$1'
             )
-
-            const playerInfos = await this.send<Player>(
-                PLAYER_URL + playerId + '/basic'
-            )
-
-            const player = {
-                id: playerInfos.id,
-                name: playerInfos.name,
-                avatar: playerInfos.profilePicture,
-                url: `${SCORESABER_URL}/u/${playerInfos.id}`,
-                country: playerInfos.country,
-                rank: playerInfos.rank,
-                pp: playerInfos.pp,
-                banned: playerInfos.banned,
-                inactive: playerInfos.inactive
-            }
-
-            return player
+            const playerData = await this.getPlayerData(playerId)
+            return playerData
         } catch (error) {
             throw new ScoreSaberError(
                 `Profil ScoreSaber introuvable. Veuillez vérifier que le lien soit valide.\nℹ️ Exemple : \`${SCORESABER_URL}/u/[Identifiant ScoreSaber]\``

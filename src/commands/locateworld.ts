@@ -67,7 +67,11 @@ export default {
             const targetMember = interaction.options.getUser('joueur')
             const rank = interaction.options.getInteger('rang')
 
-            const guild = interaction.guild as Guild
+            const guild = interaction.client.guilds.cache.get(
+                config.guild.id
+            ) as Guild
+            const applicationCommands =
+                interaction.client.application.commands.cache
 
             // On vérifie que les 2 arguments n'ont pas été passés en même temps
             if (targetMember && rank)
@@ -99,7 +103,7 @@ export default {
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
                 if (!player) {
-                    const linkCommand = guild.commands.cache.find(
+                    const linkCommand = applicationCommands.find(
                         (c) => c.name === 'link'
                     ) as ApplicationCommand
                     throw new CommandInteractionError(

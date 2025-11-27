@@ -114,30 +114,14 @@ export default class BeatLeader {
      * @param url lien du profil BeatLeader du joueur
      * @returns données de profil BeatLeader du joueur
      */
-    static async getProfile(url: string) {
+    static async getPlayerDataByUrl(url: string) {
         try {
             const playerId = url.replace(
                 /^https?:\/\/(?:www\.)?beatleader\.(?:xyz|com)\/u\/(.+)\/?.*$/,
                 '$1'
             )
-
-            const playerInfos = await this.send<PlayerResponseFull>(
-                `${PLAYER_URL}${playerId}`
-            )
-
-            const player = {
-                id: playerInfos.id,
-                name: playerInfos.name,
-                avatar: playerInfos.avatar,
-                url: `${BEATLEADER_URL}/u/${playerInfos.id}`,
-                country: playerInfos.country,
-                rank: playerInfos.rank,
-                pp: playerInfos.pp,
-                banned: playerInfos.banned,
-                inactive: playerInfos.inactive
-            }
-
-            return player
+            const playerData = await this.getPlayerData(playerId)
+            return playerData
         } catch (error) {
             throw new BeatLeaderError(
                 `Profil BeatLeader introuvable. Veuillez vérifier que le lien soit valide.\nℹ️ Exemple : \`${BEATLEADER_URL}/u/[Identifiant BeatLeader]\``

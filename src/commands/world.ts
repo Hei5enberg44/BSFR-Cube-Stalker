@@ -56,7 +56,9 @@ export default {
                 ) as Leaderboards) ?? Leaderboards.ScoreSaber
             const count = interaction.options.getInteger('nombre') ?? 10
 
-            const guild = interaction.guild as Guild
+            const guild = interaction.client.guilds.cache.get(
+                config.guild.id
+            ) as Guild
 
             // Icône Leaderboard
             const ldIconName =
