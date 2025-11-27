@@ -73,6 +73,7 @@
             }
         }
     },
+    "updateCommands": false,
     "beatleader": {
         "clan": {
             "id": 0
