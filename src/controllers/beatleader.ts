@@ -188,6 +188,7 @@ export default class BeatLeader {
                     ? playerInfos.history.map((h) => h.rank).join(',')
                     : '',
                 banned: playerInfos.banned,
+                inactive: playerInfos.inactive,
                 averageRankedAccuracy: scoreStats.averageRankedAccuracy * 100,
                 topPP
             }
