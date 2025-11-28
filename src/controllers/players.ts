@@ -74,8 +74,10 @@ export default class Players {
             player.playerName = playerData.name
             player.playerCountry = playerData.country
             player.pp = playerData.pp
-            player.rank = playerData.rank
-            player.countryRank = playerData.countryRank
+            if(!playerData.inactive) {
+                player.rank = playerData.rank
+                player.countryRank = playerData.countryRank
+            }
             player.averageRankedAccuracy = playerData.averageRankedAccuracy
             ;((player.serverRankAcc = 0), (player.serverRankPP = 0))
             player.topPP = playerData.topPP
@@ -112,8 +114,10 @@ export default class Players {
         player.playerName = playerData.name
         player.playerCountry = playerData.country
         player.pp = playerData.pp
-        player.rank = playerData.rank
-        player.countryRank = playerData.countryRank
+        if(!playerData.inactive) {
+            player.rank = playerData.rank
+            player.countryRank = playerData.countryRank
+        }
         player.averageRankedAccuracy = playerData.averageRankedAccuracy
         ;((player.serverRankAcc = 0), (player.serverRankPP = 0))
         player.topPP = playerData.topPP

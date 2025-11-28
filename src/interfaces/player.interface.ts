@@ -10,6 +10,7 @@ export interface PlayerData {
     country: string
     history: string
     banned: boolean
+    inactive: boolean
     averageRankedAccuracy: number
     topPP: TopPP | null
 }

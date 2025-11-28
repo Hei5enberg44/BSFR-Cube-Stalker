@@ -95,12 +95,12 @@ export default class Commands {
             )
         }
 
-        await this.client.application?.commands.fetch()
-
-        if (!config.updateCommands) return
         // On ajoute chaque commande au serveur
+        if (!config.updateCommands) {
+            await this.client.application?.commands.fetch()
+            return
+        }
         const rest = new REST().setToken(config.token)
-
         Logger.log(
             'CommandManager',
             'INFO',
@@ -109,6 +109,7 @@ export default class Commands {
         await rest.put(Routes.applicationCommands(config.clientId), {
             body: commands
         })
+        await this.client.application?.commands.fetch()
         Logger.log(
             'CommandManager',
             'INFO',

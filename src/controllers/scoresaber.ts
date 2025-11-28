@@ -112,12 +112,16 @@ export default class ScoreSaber {
             const playerInfos = await this.send<Player>(
                 PLAYER_URL + playerId + '/full'
             )
-            const playerTopScore = await this.send<PlayerScoreCollection>(
-                PLAYER_URL + playerId + '/scores?sort=top&page=1&limit=1'
-            )
+
+            let playerTopScore = null
+            try {
+                playerTopScore = await this.send<PlayerScoreCollection>(
+                    PLAYER_URL + playerId + '/scores?sort=top&page=1&limit=1'
+                )
+            } catch(err) {}
 
             const scoreStats = playerInfos.scoreStats
-            const topScore = playerTopScore.playerScores.find(
+            const topScore = playerTopScore?.playerScores.find(
                 (ps) => ps.score.pp !== 0
             )
 
@@ -161,6 +165,7 @@ export default class ScoreSaber {
                 country: playerInfos.country,
                 history: playerInfos.histories,
                 banned: playerInfos.banned,
+                inactive: playerInfos.inactive,
                 averageRankedAccuracy: scoreStats
                     ? scoreStats.averageRankedAccuracy
                     : 0,
