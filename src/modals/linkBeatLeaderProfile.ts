@@ -75,7 +75,7 @@ export default {
                                 `### ${ldIcon ? `<:${ldIconName}:${ldIconId}>` : ''} ${hyperlink(playerData.name, playerData.url)}\n` +
                                     '✅ Votre profil BeatLeader a bien été lié avec votre compte Discord\n' +
                                     '👏 Vous avez été ajouté au classement du serveur !\n' +
-                                    `ℹ️ Vous pouvez maintenant tiliser la commande ${chatInputApplicationCommandMention(meCommand.name, meCommand.id)} pour voir votre profil`
+                                    `ℹ️ Vous pouvez maintenant utiliser la commande ${chatInputApplicationCommandMention(meCommand.name, meCommand.id)} pour voir votre profil`
                             )
                         )
                 )
