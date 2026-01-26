@@ -118,7 +118,7 @@ export default class ScoreSaber {
                 playerTopScore = await this.send<PlayerScoreCollection>(
                     PLAYER_URL + playerId + '/scores?sort=top&page=1&limit=1'
                 )
-            } catch(err) {}
+            } catch (err) {}
 
             const scoreStats = playerInfos.scoreStats
             const topScore = playerTopScore?.playerScores.find(
@@ -131,14 +131,14 @@ export default class ScoreSaber {
                     topScore.leaderboard.difficulty.difficultyRaw.split('_')[1]
                 topPP = {
                     rank: topScore.score.rank,
-                    pp: topScore.score.pp,
+                    points: topScore.score.pp,
                     score: topScore.score.modifiedScore,
                     acc:
                         (topScore.score.modifiedScore /
                             topScore.leaderboard.maxScore) *
                         100,
                     fc: topScore.score.fullCombo,
-                    stars: topScore.leaderboard.stars,
+                    rating: topScore.leaderboard.stars,
                     name:
                         topScore.leaderboard.songAuthorName +
                         ' - ' +
@@ -148,8 +148,7 @@ export default class ScoreSaber {
                             : ''),
                     difficulty: difficulty,
                     author: topScore.leaderboard.levelAuthorName,
-                    cover: topScore.leaderboard.coverImage,
-                    replay: null
+                    cover: topScore.leaderboard.coverImage
                 }
             }
 
@@ -161,7 +160,7 @@ export default class ScoreSaber {
                 url: `${SCORESABER_URL}/u/${playerInfos.id}`,
                 rank: playerInfos.rank,
                 countryRank: playerInfos.countryRank,
-                pp: playerInfos.pp,
+                points: playerInfos.pp,
                 country: playerInfos.country,
                 history: playerInfos.histories,
                 banned: playerInfos.banned,
@@ -169,7 +168,7 @@ export default class ScoreSaber {
                 averageRankedAccuracy: scoreStats
                     ? scoreStats.averageRankedAccuracy
                     : 0,
-                topPP
+                topScore: topPP
             }
 
             return player
@@ -201,7 +200,7 @@ export default class ScoreSaber {
                     url: `${SCORESABER_URL}/u/${playerInfos.id}`,
                     country: playerInfos.country,
                     rank: playerInfos.rank,
-                    pp: playerInfos.pp
+                    points: playerInfos.pp
                 }
                 players.push(player)
             }
@@ -323,14 +322,9 @@ export default class ScoreSaber {
                         scoreId: ps.playerScore.score.id,
                         score: ps.playerScore.score.modifiedScore,
                         unmodififiedScore: ps.playerScore.score.baseScore,
-                        modifiers: ps.playerScore.score.modifiers,
-                        pp: ps.playerScore.score.pp,
-                        weight: ps.playerScore.score.weight,
+                        points: ps.playerScore.score.pp,
+                        acc: ps.playerScore.score.baseScore / ps.playerScore.leaderboard.maxScore,
                         timeSet: ps.playerScore.score.timeSet,
-                        badCuts: ps.playerScore.score.badCuts,
-                        missedNotes: ps.playerScore.score.missedNotes,
-                        maxCombo: ps.playerScore.score.maxCombo,
-                        fullCombo: ps.playerScore.score.fullCombo,
                         leaderboardId: ps.playerScore.leaderboard.id,
                         songHash: ps.playerScore.leaderboard.songHash,
                         songName: ps.playerScore.leaderboard.songName,
@@ -340,14 +334,11 @@ export default class ScoreSaber {
                         levelAuthorName:
                             ps.playerScore.leaderboard.levelAuthorName,
                         difficulty:
-                            ps.playerScore.leaderboard.difficulty.difficulty,
-                        difficultyRaw:
                             ps.playerScore.leaderboard.difficulty.difficultyRaw,
                         gameMode:
                             ps.playerScore.leaderboard.difficulty.gameMode,
-                        maxScore: ps.playerScore.leaderboard.maxScore,
                         ranked: ps.playerScore.leaderboard.ranked,
-                        stars: ps.playerScore.leaderboard.stars
+                        rating: ps.playerScore.leaderboard.stars
                     }
                 })
                 .sort((a: PlayerScore, b: PlayerScore) => {

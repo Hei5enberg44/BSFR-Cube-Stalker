@@ -59,7 +59,7 @@ export default class Playlist {
                 ctx.drawImage(avatar, 0, 0, 300, 300)
 
                 const ldIcon = await loadImage(
-                    `./assets/images/card/${leaderboard === Leaderboards.ScoreSaber ? 'ss' : leaderboard === 'beatleader' ? 'bl' : ''}.png`
+                    `./assets/images/card/${GameLeaderboard.getLdIconName(leaderboard)}.png`
                 )
                 ctx.drawImage(ldIcon, canvas.width - 70, 10, 60, 60)
 
@@ -67,7 +67,7 @@ export default class Playlist {
             }
             case PlaylistType.Ranked: {
                 const ldIcon = await loadImage(
-                    `./assets/images/card/${leaderboard === Leaderboards.ScoreSaber ? 'ss' : leaderboard === 'beatleader' ? 'bl' : ''}.png`
+                    `./assets/images/card/${GameLeaderboard.getLdIconName(leaderboard)}.png`
                 )
                 ctx.drawImage(ldIcon, 0, 0, 300, 300)
 
@@ -80,7 +80,7 @@ export default class Playlist {
                 ctx.drawImage(avatar, 0, 0, 300, 300)
 
                 const ldIcon = await loadImage(
-                    `./assets/images/card/${leaderboard === Leaderboards.ScoreSaber ? 'ss' : leaderboard === 'beatleader' ? 'bl' : ''}.png`
+                    `./assets/images/card/${GameLeaderboard.getLdIconName(leaderboard)}.png`
                 )
                 ctx.drawImage(ldIcon, canvas.width - 70, 10, 60, 60)
 
@@ -97,7 +97,7 @@ export default class Playlist {
             }
             case PlaylistType.ClanWars: {
                 const ldIcon = await loadImage(
-                    `./assets/images/card/${leaderboard === Leaderboards.ScoreSaber ? 'ss' : leaderboard === 'beatleader' ? 'bl' : ''}.png`
+                    `./assets/images/card/${GameLeaderboard.getLdIconName(leaderboard)}.png`
                 )
                 ctx.drawImage(ldIcon, 0, 0, 300, 300)
 
@@ -131,11 +131,11 @@ export default class Playlist {
         const playerScores =
             await gameLeaderboard.requests.getPlayerScores(playerId)
         const playerScoresFiltered = playerScores.filter((ps) => {
-            if (!ps.ranked || ps.maxScore === 0) return false
-            const acc = (ps.score / ps.maxScore) * 100
+            if (!ps.ranked) return false
+            const acc = ps.acc * 100
             return (
-                ps.stars >= starsMin &&
-                ps.stars <= starsMax &&
+                ps.rating >= starsMin &&
+                ps.rating <= starsMax &&
                 acc >= accMin &&
                 acc <= accMax
             )
@@ -151,8 +151,8 @@ export default class Playlist {
             await gameLeaderboard.requests.getPlayerData(playerId)
 
         // Génération du fichier playlist
-        const fileName = `${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}_Maps_jouees_${starsMin}s_a_${starsMax}s_-_${accMin}p_a_${accMax}p`
-        const playlistName = `[${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}] Maps jouées ${starsMin}⭐ à ${starsMax}⭐ - ${accMin}% à ${accMax}%`
+        const fileName = `${leaderboard}_Maps_jouees_${starsMin}s_a_${starsMax}s_-_${accMin}p_a_${accMax}p`
+        const playlistName = `[${leaderboard}] Maps jouées ${starsMin}⭐ à ${starsMax}⭐ - ${accMin}% à ${accMax}%`
 
         const playlist: PlaylistFull = {
             fileName,
@@ -172,11 +172,11 @@ export default class Playlist {
             const songName = `${score.songName}${score.songSubName !== '' ? ` ${score.songSubName}` : ''} - ${score.songAuthorName}`
             const diff =
                 leaderboard === Leaderboards.ScoreSaber
-                    ? score.difficultyRaw
+                    ? score.difficulty
                           .split('_')[1]
                           .toLowerCase()
                           .replace('expertplus', 'expertPlus')
-                    : score.difficultyRaw
+                    : score.difficulty
                           .toLowerCase()
                           .replace('expertplus', 'expertPlus')
 
@@ -205,8 +205,8 @@ export default class Playlist {
         starsMax: number
     ) {
         // Génération du fichier playlist
-        const fileName = `${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}_Maps_ranked_${starsMin}s_a_${starsMax}s`
-        const playlistName = `[${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}] Maps ranked ${starsMin}⭐ à ${starsMax}⭐`
+        const fileName = `${leaderboard}_Maps_ranked_${starsMin}s_a_${starsMax}s`
+        const playlistName = `[${leaderboard}] Maps ranked ${starsMin}⭐ à ${starsMax}⭐`
 
         const playlist: PlaylistFull = {
             fileName,
@@ -285,8 +285,8 @@ export default class Playlist {
             throw new PlaylistError("Aucune map à sniper n'a été trouvée")
 
         // Génération du fichier playlist
-        const fileName = `${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}_Snipe_${playerToSnipe.name}`
-        const playlistName = `[${leaderboard === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}] Snipe ${playerToSnipe.name}`
+        const fileName = `${leaderboard}_Snipe_${playerToSnipe.name}`
+        const playlistName = `[${leaderboard}] Snipe ${playerToSnipe.name}`
 
         const playlist: PlaylistFull = {
             fileName,
@@ -306,11 +306,11 @@ export default class Playlist {
             const songName = `${score.songName}${score.songSubName !== '' ? ` ${score.songSubName}` : ''} - ${score.songAuthorName}`
             const diff =
                 leaderboard === Leaderboards.ScoreSaber
-                    ? score.difficultyRaw
+                    ? score.difficulty
                           .split('_')[1]
                           .toLowerCase()
                           .replace('expertplus', 'expertPlus')
-                    : score.difficultyRaw
+                    : score.difficulty
                           .toLowerCase()
                           .replace('expertplus', 'expertPlus')
 

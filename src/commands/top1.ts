@@ -9,14 +9,14 @@ import {
     TextDisplayBuilder,
     MessageFlags
 } from 'discord.js'
+import players from '../controllers/players.js'
+import top1 from '../controllers/top1.js'
+import { Leaderboards } from '../controllers/gameLeaderboard.js'
 import {
     CommandError,
     CommandInteractionError,
     Top1Error
 } from '../utils/error.js'
-import players from '../controllers/players.js'
-import top1 from '../controllers/top1.js'
-import { Leaderboards } from '../controllers/gameLeaderboard.js'
 import Logger from '../utils/logger.js'
 import config from '../../config.json' with { type: 'json' }
 

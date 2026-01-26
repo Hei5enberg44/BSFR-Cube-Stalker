@@ -13,7 +13,7 @@ import {
     userMention
 } from 'discord.js'
 import { ModalError, ModalSubmissionError } from '../utils/error.js'
-import { Leaderboards } from '../controllers/gameLeaderboard.js'
+import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
 import players from '../controllers/players.js'
 import playlist from '../controllers/playlist.js'
 
@@ -92,13 +92,7 @@ export default {
             )
 
             containerBuilder = new ContainerBuilder()
-                .setAccentColor(
-                    leaderboardChoice === Leaderboards.ScoreSaber
-                        ? [255, 222, 24]
-                        : leaderboardChoice === Leaderboards.BeatLeader
-                          ? [217, 16, 65]
-                          : undefined
-                )
+                .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
                         '### Ta playlist est prête !'

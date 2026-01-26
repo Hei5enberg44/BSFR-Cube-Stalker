@@ -5,28 +5,27 @@ export interface PlayerData {
     profileCover: string | null
     url: string
     rank: number
-    countryRank: number
-    pp: number
-    country: string
+    countryRank?: number
+    points: number
+    country?: string
     history: string
     banned: boolean
     inactive: boolean
     averageRankedAccuracy: number
-    topPP: TopPP | null
+    topScore: TopScore | null
 }
 
-export interface TopPP {
+export interface TopScore {
     rank: number
-    pp: number
+    points: number
     score: number
     acc: number
     fc: boolean
-    stars: number
+    rating: number
     name: string
     difficulty: string
     author: string
     cover: string
-    replay: string | null
 }
 
 export interface Top1Data {
@@ -57,33 +56,26 @@ export interface PlayerScore {
     scoreId: number
     score: number
     unmodififiedScore: number
-    modifiers: string
-    pp: number
-    weight: number
+    points: number
+    acc: number
     timeSet: string
-    badCuts: number
-    missedNotes: number
-    maxCombo: number
-    fullCombo: boolean
     leaderboardId: number | string
     songHash: string
     songName: string
     songSubName: string
     songAuthorName: string
     levelAuthorName: string
-    difficulty: number
-    difficultyRaw: string
+    difficulty: string
     gameMode: string
-    maxScore: number
     ranked: boolean
-    stars: number
+    rating: number
 }
 
 export interface PlayerProgress {
     rankDiff: number
     countryRankDiff: number
-    ppDiff: number
+    pointsDiff: number
     accDiff: number
-    serverPPDiff: number
+    serverPointsDiff: number
     serverAccDiff: number
 }

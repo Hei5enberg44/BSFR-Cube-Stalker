@@ -9,7 +9,7 @@ import {
 import sharp from 'sharp'
 import tmp from 'tmp'
 import * as fs from 'node:fs'
-import { Leaderboards } from './gameLeaderboard.js'
+import { GameLeaderboard, Leaderboards } from './gameLeaderboard.js'
 import players from './players.js'
 import roles from './roles.js'
 import { CardModel, CardStatus } from '../models/card.model.js'
@@ -24,19 +24,19 @@ registerFont('./assets/fonts/Poppins-SemiBold.ttf', {
     family: 'Poppins-SemiBold'
 })
 
-type difficulties = 'Easy' | 'Normal' | 'Hard' | 'Expert' | 'ExpertPlus'
+type difficulties = 'easy' | 'normal' | 'hard' | 'expert' | 'expertplus'
 
 const getDiffColor = (diff: difficulties) => {
     switch (diff) {
-        case 'Easy':
+        case 'easy':
             return '#3CB371'
-        case 'Normal':
+        case 'normal':
             return '#59B0F4'
-        case 'Hard':
+        case 'hard':
             return '#FF6347'
-        case 'Expert':
+        case 'expert':
             return '#BF2A42'
-        case 'ExpertPlus':
+        case 'expertplus':
             return '#8F48DB'
     }
 }
@@ -171,13 +171,18 @@ export default {
             let colorStop = '#d50078'
 
             if (member) {
-                const memberPpRoleColor = roles.getMemberPpRoleColor(
-                    leaderboardName,
-                    member
-                )
-                if (memberPpRoleColor) {
-                    colorStart = lightenDarkenColor(memberPpRoleColor, -80)
-                    colorStop = lightenDarkenColor(memberPpRoleColor, 0)
+                if (leaderboardName !== Leaderboards.AccSaber) {
+                    const memberPpRoleColor = roles.getMemberPpRoleColor(
+                        leaderboardName,
+                        member
+                    )
+                    if (memberPpRoleColor) {
+                        colorStart = lightenDarkenColor(memberPpRoleColor, -80)
+                        colorStop = lightenDarkenColor(memberPpRoleColor, 0)
+                    }
+                } else {
+                    colorStart = '#0a8fed'
+                    colorStop = '#0a8fed'
                 }
             }
 
@@ -209,8 +214,8 @@ export default {
         ctx.fillStyle = '#FFFFFF'
         ctx.fillText(playerData.name, 365, 78, 930)
 
-        // Nombre de PP
-        const pp = `${Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(playerData.pp)}pp`
+        // Nombre de Points
+        const pp = `${Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(playerData.points)}${leaderboardName !== Leaderboards.AccSaber ? 'pp' : 'ap'}`
         ctx.font = '76px "Poppins-SemiBold"'
         ctx.fillStyle = '#FFFFFF'
         ctx.fillText(pp, canvas.width - ctx.measureText(pp).width - 40, 78)
@@ -220,22 +225,14 @@ export default {
          */
         // Icon Leaderboard
         const ldIcon = await loadImage(
-            `./assets/images/card/${leaderboardName === Leaderboards.ScoreSaber ? 'ss' : leaderboardName === 'beatleader' ? 'bl' : ''}.png`
+            `./assets/images/card/${GameLeaderboard.getLdIconName(leaderboardName)}.png`
         )
         ctx.drawImage(ldIcon, 365, 135, 60, 60)
 
         // Nom Leaderboard
         ctx.font = '50px "Poppins-Medium"'
         ctx.fillStyle = '#FFFFFF'
-        ctx.fillText(
-            leaderboardName === Leaderboards.ScoreSaber
-                ? 'ScoreSaber'
-                : leaderboardName === 'beatleader'
-                  ? 'BeatLeader'
-                  : '',
-            435,
-            165
-        )
+        ctx.fillText(leaderboardName, 435, 165)
 
         // Globe
         const earth = await loadImage('./assets/images/card/earth.png')
@@ -247,20 +244,23 @@ export default {
         ctx.fillStyle = '#FFFFFF'
         ctx.fillText(globalRank, 435, 235)
 
-        // Drapeau Pays Joueur
-        const playerCountryFlagLeft =
-            435 + ctx.measureText(globalRank).width + 30
-        const flagPath = `./assets/images/card/flags/${playerData.country.toUpperCase()}.png`
-        if (fs.existsSync(flagPath)) {
-            const flag = await loadImage(flagPath)
-            ctx.drawImage(flag, playerCountryFlagLeft, 205, 60, 60)
-        }
+        let countryRank = ''
+        if(playerData.country && playerData.countryRank) {
+            // Drapeau Pays Joueur
+            const playerCountryFlagLeft =
+                435 + ctx.measureText(globalRank).width + 30
+            const flagPath = `./assets/images/card/flags/${playerData.country.toUpperCase()}.png`
+            if (fs.existsSync(flagPath)) {
+                const flag = await loadImage(flagPath)
+                ctx.drawImage(flag, playerCountryFlagLeft, 205, 60, 60)
+            }
 
-        // Classement du joueur dans son pays
-        const countryRank = `#${playerData.countryRank}`
-        ctx.font = '50px "Poppins-Regular"'
-        ctx.fillStyle = '#FFFFFF'
-        ctx.fillText(countryRank, playerCountryFlagLeft + 70, 235)
+            // Classement du joueur dans son pays
+            countryRank = `#${playerData.countryRank}`
+            ctx.font = '50px "Poppins-Regular"'
+            ctx.fillStyle = '#FFFFFF'
+            ctx.fillText(countryRank, playerCountryFlagLeft + 70, 235)
+        }
 
         // Icon Précision
         const dart = await loadImage('./assets/images/card/dart.png')
@@ -305,7 +305,7 @@ export default {
         ctx.font = '45px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
         ctx.fillText(
-            `PP: ${playerServerRanking.serverRankPP}/${playerServerRanking.serverLdTotal}`,
+            `PP: ${playerServerRanking.serverRankPoints}/${playerServerRanking.serverLdTotal}`,
             separatorLeft + 30,
             235
         )
@@ -322,11 +322,11 @@ export default {
         /**
          * Bar de progression
          */
-        const fromPp = Math.floor(playerData.pp / 1000) * 1000
-        const toPp = fromPp + 1000
-        const fromPpText = `${Intl.NumberFormat('en-US').format(fromPp)}pp`
-        const toPpText = `${Intl.NumberFormat('en-US').format(toPp)}pp`
-        const progress = Math.ceil(((playerData.pp - fromPp) * 100) / 1000)
+        const fromPoints = Math.floor(playerData.points / 1000) * 1000
+        const toPoints = fromPoints + 1000
+        const fromPointsText = `${Intl.NumberFormat('en-US').format(fromPoints)}${leaderboardName !== Leaderboards.AccSaber ? 'pp' : 'ap'}`
+        const toPointsText = `${Intl.NumberFormat('en-US').format(toPoints)}${leaderboardName !== Leaderboards.AccSaber ? 'pp' : 'ap'}`
+        const progress = Math.ceil(((playerData.points - fromPoints) * 100) / 1000)
 
         ctx.lineWidth = 4
         ctx.strokeStyle = 'white'
@@ -353,10 +353,10 @@ export default {
         ctx.restore()
 
         if (playerProgress) {
-            const ppDiff = playerProgress.ppDiff
+            const pointsDiff = playerProgress.pointsDiff
 
-            if (ppDiff !== 0) {
-                const progress = Math.ceil((ppDiff * 100) / 1000)
+            if (pointsDiff !== 0) {
+                const progress = Math.ceil((pointsDiff * 100) / 1000)
                 const progressDiffWidth = Math.ceil((1796 * progress) / 100)
 
                 ctx.save()
@@ -375,13 +375,13 @@ export default {
 
         ctx.font = '50px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
-        ctx.fillText(fromPpText, 65, 405)
+        ctx.fillText(fromPointsText, 65, 405)
 
         ctx.font = '50px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
         ctx.fillText(
-            toPpText,
-            canvas.width - ctx.measureText(toPpText).width - 65,
+            toPointsText,
+            canvas.width - ctx.measureText(toPointsText).width - 65,
             405
         )
 
@@ -392,14 +392,14 @@ export default {
         ctx.fillText('T', 52, 495)
         ctx.fillText('O', 48, 540)
         ctx.fillText('P', 52, 585)
-        ctx.fillText('P', 52, 650)
+        ctx.fillText(leaderboardName !== Leaderboards.AccSaber ? 'P' : 'A', 52, 650)
         ctx.fillText('P', 52, 695)
 
         // Image Top PP
         ctx.save()
         const songCover = await loadImage(
-            playerData.topPP
-                ? playerData.topPP.cover
+            playerData.topScore
+                ? playerData.topScore.cover
                 : './assets/images/card/cover-default.png'
         )
         roundedImage(ctx, 100, 480, 230, 230, 10)
@@ -408,8 +408,8 @@ export default {
         ctx.restore()
 
         // Difficulté Top PP
-        if (playerData.topPP) {
-            const mapStars = playerData.topPP.stars.toFixed(2)
+        if (playerData.topScore) {
+            const mapStars = playerData.topScore.rating.toFixed(2)
             const top = 470
             const left = 190
             const radius = 5
@@ -423,7 +423,7 @@ export default {
             ctx.arcTo(left, top, left + width, top, radius)
             ctx.closePath()
             ctx.fillStyle = getDiffColor(
-                playerData.topPP.difficulty as difficulties
+                playerData.topScore.difficulty.toLowerCase() as difficulties
             )
             ctx.fill()
             ctx.font = '40px "Poppins-Medium"'
@@ -445,22 +445,22 @@ export default {
         // Détails Top PP
         ctx.font = '50px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
-        if (playerData.topPP) {
+        if (playerData.topScore) {
             ctx.fillText(
-                fittingString(ctx, playerData.topPP.name, 1850),
+                fittingString(ctx, playerData.topScore.name, 1850),
                 365,
                 530,
                 1485
             )
-            ctx.fillText(`Mapped by ${playerData.topPP.author}`, 365, 595, 1485)
+            ctx.fillText(`Mapped by ${playerData.topScore.author}`, 365, 595, 1485)
             ctx.fillText(
-                `#${playerData.topPP.rank} | ${playerData.topPP.pp.toFixed(2)}pp | ${playerData.topPP.acc.toFixed(2)}% | ${playerData.topPP.fc ? 'FC ✅' : 'FC ❎'}`,
+                `#${playerData.topScore.rank} | ${playerData.topScore.points.toFixed(2)}${leaderboardName !== Leaderboards.AccSaber ? 'pp' : 'ap'} | ${playerData.topScore.acc.toFixed(2)}%${leaderboardName !== Leaderboards.AccSaber ? ` | ${playerData.topScore.fc ? 'FC ✅' : 'FC ❎'}` : ''}`,
                 365,
                 665,
                 1485
             )
         } else {
-            ctx.fillText(`Tu n'as pas de top PP pour le moment`, 365, 595, 1485)
+            ctx.fillText(`Tu n'as pas de top ${leaderboardName !== Leaderboards.AccSaber ? 'PP' : 'AP'} pour le moment`, 365, 595, 1485)
         }
 
         // Grille (pour tests)
@@ -542,7 +542,7 @@ export default {
         return tmpCard
     },
 
-    async getStonkerCard(playerData: PlayerData) {
+    async getStonkerCard(leaderboardName: Leaderboards, playerData: PlayerData) {
         const playerHistory = playerData.history.split(',')
         const playerWeekHistory =
             playerHistory.length >= 7
@@ -577,7 +577,7 @@ export default {
         ctx.fillText(playerData.name, 400, canvas.height - 150)
 
         // Drapeau Pays Joueur
-        const flagPath = `./assets/images/card/flags/${playerData.country.toUpperCase()}.png`
+        const flagPath = playerData.country ? `./assets/images/card/flags/${playerData.country.toUpperCase()}.png` : './assets/images/card/cover-default.png'
         if (fs.existsSync(flagPath)) {
             const flag = await loadImage(flagPath)
             ctx.drawImage(flag, 70, canvas.height - 215, 150, 150)
@@ -590,15 +590,17 @@ export default {
         ctx.globalAlpha = 1
 
         // Classement du joueur dans son pays
-        ctx.font = '58px "Neon Tubes"'
-        ctx.fillStyle = '#ffffff'
-        ctx.textAlign = 'center'
-        ctx.fillText(
-            '#' + playerData.countryRank,
-            142,
-            canvas.height - 117,
-            140
-        )
+        if(playerData.countryRank) {
+            ctx.font = '58px "Neon Tubes"'
+            ctx.fillStyle = '#ffffff'
+            ctx.textAlign = 'center'
+            ctx.fillText(
+                '#' + playerData.countryRank,
+                142,
+                canvas.height - 117,
+                140
+            )
+        }
 
         // Avatar
         ctx.save()
@@ -653,8 +655,8 @@ export default {
             '#' +
                 playerData.rank +
                 ' (' +
-                playerData.pp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') +
-                'pp)',
+                playerData.points.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') +
+                `${leaderboardName !== Leaderboards.AccSaber ? 'pp' : 'ap'})`,
             400,
             canvas.height - 70
         )

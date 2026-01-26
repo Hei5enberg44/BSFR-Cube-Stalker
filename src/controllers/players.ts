@@ -1,7 +1,7 @@
+import { PlayerModel } from '../models/player.model.js'
 import { Leaderboards } from './gameLeaderboard.js'
 import { PlayerData } from '../interfaces/player.interface.js'
 import { PlayerError } from '../utils/error.js'
-import { PlayerModel } from '../models/player.model.js'
 
 export default class Players {
     /**
@@ -30,17 +30,17 @@ export default class Players {
         isAdmin: boolean = false
     ) {
         if (!isAdmin) {
-            // On vérifie si le membre Discord à déjà un profil ScoreSaber ou BeatLeader lié
+            // On vérifie si le membre Discord à déjà un profil de lié pour le leaderboard choisi
             const profileIsAlreadyLinked = await PlayerModel.count({
                 where: { memberId: memberId, leaderboard: leaderboardName }
             })
             if (profileIsAlreadyLinked > 0)
                 throw new PlayerError(
-                    `Ce compte Discord est déjà lié à un profil ${leaderboardName === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}\nVeuillez utiliser la commande \`/unlink\` avant de lier un autre profil\n(Cette commande peut être utilisée dans la limite de 1 par mois)`
+                    `Ce compte Discord est déjà lié à un profil ${leaderboardName}\nVeuillez utiliser la commande \`/unlink\` avant de lier un autre profil\n(Cette commande peut être utilisée dans la limite de 1 par mois)`
                 )
         }
 
-        // On vérifie si le profil ScoreSaber ou BeatLeader est déjà lié à un membre Discord
+        // On vérifie si le profil pour le leaderboard choisi est déjà lié à un membre Discord
         const player = await PlayerModel.findOne({
             where: { playerId: playerData.id, leaderboard: leaderboardName }
         })
@@ -52,13 +52,13 @@ export default class Players {
                 playerId: playerData.id,
                 playerName: playerData.name,
                 playerCountry: playerData.country,
-                pp: playerData.pp,
+                points: playerData.points,
                 rank: playerData.rank,
                 countryRank: playerData.countryRank,
                 averageRankedAccuracy: playerData.averageRankedAccuracy,
                 serverRankAcc: 0,
-                serverRankPP: 0,
-                topPP: playerData.topPP,
+                serverRankPoints: 0,
+                topScore: playerData.topScore,
                 top1: leaderboardName === Leaderboards.ScoreSaber
             })
 
@@ -67,29 +67,10 @@ export default class Players {
                 playerData.id
             )
             p.serverRankAcc = playerServerRanking.serverRankAcc
-            p.serverRankPP = playerServerRanking.serverRankPP
+            p.serverRankPoints = playerServerRanking.serverRankPoints
             await p.save()
         } else {
-            player.playerId = playerData.id
-            player.playerName = playerData.name
-            player.playerCountry = playerData.country
-            player.pp = playerData.pp
-            if(!playerData.inactive) {
-                player.rank = playerData.rank
-                player.countryRank = playerData.countryRank
-            }
-            player.averageRankedAccuracy = playerData.averageRankedAccuracy
-            ;((player.serverRankAcc = 0), (player.serverRankPP = 0))
-            player.topPP = playerData.topPP
-            await player.save()
-
-            const playerServerRanking = await this.getPlayerServerRanking(
-                leaderboardName,
-                playerData.id
-            )
-            player.serverRankAcc = playerServerRanking.serverRankAcc
-            player.serverRankPP = playerServerRanking.serverRankPP
-            await player.save()
+            await this.update(memberId, leaderboardName, playerData)
         }
     }
 
@@ -112,15 +93,15 @@ export default class Players {
 
         player.playerId = playerData.id
         player.playerName = playerData.name
-        player.playerCountry = playerData.country
-        player.pp = playerData.pp
-        if(!playerData.inactive) {
+        player.playerCountry = playerData.country ?? null
+        player.points = playerData.points
+        if (!playerData.inactive) {
             player.rank = playerData.rank
-            player.countryRank = playerData.countryRank
+            player.countryRank = playerData.countryRank ?? null
         }
         player.averageRankedAccuracy = playerData.averageRankedAccuracy
-        ;((player.serverRankAcc = 0), (player.serverRankPP = 0))
-        player.topPP = playerData.topPP
+        ;((player.serverRankAcc = 0), (player.serverRankPoints = 0))
+        player.topScore = playerData.topScore
         await player.save()
 
         const playerServerRanking = await this.getPlayerServerRanking(
@@ -128,7 +109,7 @@ export default class Players {
             playerData.id
         )
         player.serverRankAcc = playerServerRanking.serverRankAcc
-        player.serverRankPP = playerServerRanking.serverRankPP
+        player.serverRankPoints = playerServerRanking.serverRankPoints
         await player.save()
 
         return player
@@ -157,12 +138,12 @@ export default class Players {
         // Récupération du classement
         const p = await PlayerModel.findAll({
             where: { leaderboard: leaderboardName },
-            order: [['pp', 'ASC']]
+            order: [['points', 'ASC']]
         })
 
         // Récupération des rangs Discord du membre
-        const serverRankPP = p
-            .sort((a, b) => b.pp - a.pp)
+        const serverRankPoints = p
+            .sort((a, b) => b.points - a.points)
             .findIndex(
                 (ld) =>
                     ld.playerId === playerId &&
@@ -177,7 +158,7 @@ export default class Players {
             )
 
         return {
-            serverRankPP: serverRankPP + 1,
+            serverRankPoints: serverRankPoints + 1,
             serverRankAcc: serverRankAcc + 1,
             serverLdTotal: p.length
         }

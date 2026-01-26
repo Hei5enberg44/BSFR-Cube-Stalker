@@ -125,6 +125,15 @@ class BeatLeaderError extends Error {
     }
 }
 
+class AccSaberError extends Error {
+    constructor(message: string) {
+        super(message)
+        this.name = 'ACCSABER_ERROR'
+        Error.captureStackTrace(this, this.constructor)
+        Logger.log('AccSaber', 'ERROR', message)
+    }
+}
+
 class BeatSaverError extends Error {
     constructor(message: string) {
         super(message)
@@ -149,5 +158,6 @@ export {
     CooldownError,
     ScoreSaberError,
     BeatLeaderError,
+    AccSaberError,
     BeatSaverError
 }

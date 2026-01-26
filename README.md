@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.34.2-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.35.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
@@ -49,9 +49,9 @@ Permet de lier un profil ScoreSaber ou BeatLeader à votre compte Discord.
 
 **Paramètres :**
 
-| Nom             | Obligatoire | Contenu                                                 |
-| --------------- | :---------: | ------------------------------------------------------- |
-| **leaderboard** |     ☑      | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
+| Nom             | Obligatoire | Contenu                                                            |
+| --------------- | :---------: | ------------------------------------------------------------------ |
+| **leaderboard** |      ☑      | Choix du leaderboard entre `ScoreSaber`,`BeatLeader` et `AccSaber` |
 
 **Exemples :**
 
@@ -68,10 +68,10 @@ Permet de délier le profil ScoreSaber ou BeatLeader d'un membre Discord.
 
 **Paramètres :**
 
-| Nom             | Obligatoire | Contenu                                                 |
-| --------------- | :---------: | ------------------------------------------------------- |
-| **leaderboard** |     ☑      | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
-| **joueur**      |             | Membre de la guild à délier (Staff uniquement)          |
+| Nom             | Obligatoire | Contenu                                                            |
+| --------------- | :---------: | ------------------------------------------------------------------ |
+| **leaderboard** |      ☑      | Choix du leaderboard entre `ScoreSaber`,`BeatLeader` et `AccSaber` |
+| **joueur**      |             | Membre de la guild à délier (Staff uniquement)                     |
 
 **Exemples :**
 
@@ -88,11 +88,11 @@ Permet de lier un profil ScoreSaber ou BeatLeader à un membre Discord.
 
 **Paramètres :**
 
-| Nom                  | Obligatoire | Contenu                                                 |
-| -------------------- | :---------: | ------------------------------------------------------- |
-| **leaderboard**      |     ☑      | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
-| **lien_leaderboard** |     ☑      | Lien du profil ScoreSaber ou BeatLeader                 |
-| **joueur**           |     ☑      | Membre de la guild à lier                               |
+| Nom                  | Obligatoire | Contenu                                                            |
+| -------------------- | :---------: | ------------------------------------------------------------------ |
+| **leaderboard**      |      ☑      | Choix du leaderboard entre `ScoreSaber`,`BeatLeader` et `AccSaber` |
+| **lien_leaderboard** |      ☑      | Lien du profil ScoreSaber ou BeatLeader                            |
+| **joueur**           |      ☑      | Membre de la guild à lier                                          |
 
 **Exemples :**
 
@@ -109,10 +109,10 @@ Permet d'afficher vos informations de joueur ou celles d'un autre joueur.
 
 **Paramètres :**
 
-| Nom             | Obligatoire | Contenu                                                                |
-| --------------- | :---------: | ---------------------------------------------------------------------- |
-| **leaderboard** |             | Choix du leaderboard entre `ScoreSaber` _(par défaut)_ et `BeatLeader` |
-| **joueur**      |             | Joueur pour lequel afficher les informations                           |
+| Nom             | Obligatoire | Contenu                                                            |
+| --------------- | :---------: | ------------------------------------------------------------------ |
+| **leaderboard** |             | Choix du leaderboard entre `ScoreSaber`,`BeatLeader` et `AccSaber` |
+| **joueur**      |             | Joueur pour lequel afficher les informations                       |
 
 **Exemples :**
 
@@ -130,11 +130,11 @@ Permet d'afficher le classement des membres du serveur pour un leaderboard donn�
 
 **Paramètres :**
 
-| Nom             | Obligatoire | Contenu                                                                |
-| --------------- | :---------: | ---------------------------------------------------------------------- |
-| **classement**  |     ☑      | Choix entre `Points de performance` et `Précision`                     |
-| **leaderboard** |             | Choix du leaderboard entre `ScoreSaber` _(par défaut)_ et `BeatLeader` |
-| **page**        |             | Page à afficher                                                        |
+| Nom             | Obligatoire | Contenu                                                            |
+| --------------- | :---------: | ------------------------------------------------------------------ |
+| **classement**  |      ☑      | Choix entre `Points` et `Précision`                                |
+| **leaderboard** |             | Choix du leaderboard entre `ScoreSaber`,`BeatLeader` et `AccSaber` |
+| **page**        |             | Page à afficher                                                    |
 
 **Exemples :**
 
@@ -151,10 +151,10 @@ Permet d'afficher le classement mondial pour un leaderboard donné.
 
 **Paramètres :**
 
-| Nom             | Obligatoire | Contenu                                                                |
-| --------------- | :---------: | ---------------------------------------------------------------------- |
-| **leaderboard** |             | Choix du leaderboard entre `ScoreSaber` _(par défaut)_ et `BeatLeader` |
-| **nombre**      |             | Nombre de joueurs à afficher _(10 par défaut, 20 maximum)_             |
+| Nom             | Obligatoire | Contenu                                                            |
+| --------------- | :---------: | ------------------------------------------------------------------ |
+| **leaderboard** |             | Choix du leaderboard entre `ScoreSaber`,`BeatLeader` et `AccSaber` |
+| **nombre**      |             | Nombre de joueurs à afficher _(10 par défaut, 20 maximum)_         |
 
 **Exemples :**
 
@@ -171,11 +171,11 @@ Permet d'afficher votre position ou celle d'un autre joueur dans le classement m
 
 **Paramètres :**
 
-| Nom             | Obligatoire | Contenu                                                                |
-| --------------- | :---------: | ---------------------------------------------------------------------- |
-| **leaderboard** |             | Choix du leaderboard entre `ScoreSaber` _(par défaut)_ et `BeatLeader` |
-| **joueur\***    |             | Affiche la position d'un autre membre                                  |
-| **rang\***      |             | Affiche la position d'un joueur par rapport à son rang                 |
+| Nom             | Obligatoire | Contenu                                                            |
+| --------------- | :---------: | ------------------------------------------------------------------ |
+| **leaderboard** |             | Choix du leaderboard entre `ScoreSaber`,`BeatLeader` et `AccSaber` |
+| **joueur\***    |             | Affiche la position d'un autre membre                              |
+| **rang\***      |             | Affiche la position d'un joueur par rapport à son rang             |
 
 `*`: Les paramètres **joueur** et **rang** ne peuvent pas être combinés
 
@@ -198,7 +198,7 @@ Permet de s'inscrire au top 1 pays afin que vos tops 1 de votre pays soient publ
 
 | Nom           | Obligatoire | Contenu                                                 |
 | ------------- | :---------: | ------------------------------------------------------- |
-| **subscribe** |     ☑      | Boolean _(`true`: s'inscrire, `false`: se désinscrire)_ |
+| **subscribe** |      ☑      | Boolean _(`true`: s'inscrire, `false`: se désinscrire)_ |
 
 **Exemples :**
 
@@ -265,7 +265,7 @@ Permet d'actualiser les rôles de pp de tous les membres ayant lié leur profil 
 
 | Nom             | Obligatoire | Contenu                                                 |
 | --------------- | :---------: | ------------------------------------------------------- |
-| **leaderboard** |     ☑      | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
+| **leaderboard** |      ☑      | Choix du leaderboard entre `ScoreSaber` et `BeatLeader` |
 
 **Exemples :**
 

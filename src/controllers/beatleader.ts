@@ -117,7 +117,7 @@ export default class BeatLeader {
     static async getPlayerDataByUrl(url: string) {
         try {
             const playerId = url.replace(
-                /^https?:\/\/(?:www\.)?beatleader\.(?:xyz|com)\/u\/(.+)\/?.*$/,
+                /^https?:\/\/(?:www\.)?beatleader\.(?:xyz|com)\/u\/([^\/]+)\/?.*$/,
                 '$1'
             )
             const playerData = await this.getPlayerData(playerId)
@@ -153,11 +153,11 @@ export default class BeatLeader {
 
                 topPP = {
                     rank: topScore.rank,
-                    pp: topScore.pp,
+                    points: topScore.pp,
                     score: topScore.modifiedScore,
                     acc: topScore.accuracy ? topScore.accuracy * 100 : 0,
                     fc: topScore.fullCombo,
-                    stars: topScore.leaderboard.difficulty.stars ?? 0,
+                    rating: topScore.leaderboard.difficulty.stars ?? 0,
                     name:
                         topScore.leaderboard.song.author +
                         ' - ' +
@@ -167,8 +167,7 @@ export default class BeatLeader {
                             : ''),
                     difficulty: difficulty,
                     author: topScore.leaderboard.song.mapper,
-                    cover: topScore.leaderboard.song.coverImage,
-                    replay: `https://replay.beatleader.com/?scoreId=${topScore.id}`
+                    cover: topScore.leaderboard.song.coverImage
                 }
             }
 
@@ -182,7 +181,7 @@ export default class BeatLeader {
                 url: `${BEATLEADER_URL}/u/${playerInfos.id}`,
                 rank: playerInfos.rank,
                 countryRank: playerInfos.countryRank,
-                pp: playerInfos.pp,
+                points: playerInfos.pp,
                 country: playerInfos.country,
                 history: playerInfos.history
                     ? playerInfos.history.map((h) => h.rank).join(',')
@@ -190,7 +189,7 @@ export default class BeatLeader {
                 banned: playerInfos.banned,
                 inactive: playerInfos.inactive,
                 averageRankedAccuracy: scoreStats.averageRankedAccuracy * 100,
-                topPP
+                topScore: topPP
             }
 
             return player
@@ -224,7 +223,7 @@ export default class BeatLeader {
                         url: `${BEATLEADER_URL}/u/${playerInfos.id}`,
                         country: playerInfos.country,
                         rank: playerInfos.rank,
-                        pp: playerInfos.pp
+                        points: playerInfos.pp
                     }
                     players.push(player)
                 }
@@ -364,8 +363,8 @@ export default class BeatLeader {
                         score: ps.playerScore.modifiedScore,
                         unmodififiedScore: ps.playerScore.baseScore,
                         modifiers: ps.playerScore.modifiers,
-                        pp: ps.playerScore.pp,
-                        weight: ps.playerScore.weight,
+                        points: ps.playerScore.pp,
+                        acc: ps.playerScore.baseScore / ps.playerScore.leaderboard.difficulty.maxScore,
                         timeSet: ps.playerScore.timeset,
                         badCuts: ps.playerScore.badCuts,
                         missedNotes: ps.playerScore.missedNotes,
@@ -377,18 +376,15 @@ export default class BeatLeader {
                         songSubName: ps.playerScore.leaderboard.song.subName,
                         songAuthorName: ps.playerScore.leaderboard.song.author,
                         levelAuthorName: ps.playerScore.leaderboard.song.mapper,
-                        difficulty: ps.playerScore.leaderboard.difficulty.value,
-                        difficultyRaw:
+                        difficulty:
                             ps.playerScore.leaderboard.difficulty
                                 .difficultyName,
                         gameMode:
                             ps.playerScore.leaderboard.difficulty.modeName,
-                        maxScore:
-                            ps.playerScore.leaderboard.difficulty.maxScore,
                         ranked: ps.playerScore.leaderboard.difficulty.stars
                             ? true
                             : false,
-                        stars: ps.playerScore.leaderboard.difficulty.stars ?? 0
+                        rating: ps.playerScore.leaderboard.difficulty.stars ?? 0
                     }
                 })
                 .sort((a: PlayerScore, b: PlayerScore) => {

@@ -11,9 +11,9 @@ import {
     MessageFlags,
     hyperlink
 } from 'discord.js'
-import { CommandError } from '../utils/error.js'
 import leaderboard from '../controllers/leaderboard.js'
-import { Leaderboards } from '../controllers/gameLeaderboard.js'
+import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
+import { CommandError } from '../utils/error.js'
 import config from '../../config.json' with { type: 'json' }
 
 export default {
@@ -25,8 +25,9 @@ export default {
                 .setName('leaderboard')
                 .setDescription('Choix du leaderboard')
                 .setChoices(
-                    { name: 'ScoreSaber', value: 'scoresaber' },
-                    { name: 'BeatLeader', value: 'beatleader' }
+                    { name: 'ScoreSaber', value: Leaderboards.ScoreSaber },
+                    { name: 'BeatLeader', value: Leaderboards.BeatLeader },
+                    { name: 'AccSaber', value: Leaderboards.AccSaber }
                 )
                 .setRequired(false)
         )
@@ -61,12 +62,7 @@ export default {
             ) as Guild
 
             // Icône Leaderboard
-            const ldIconName =
-                leaderboardChoice === Leaderboards.ScoreSaber
-                    ? 'ss'
-                    : leaderboardChoice === Leaderboards.BeatLeader
-                      ? 'bl'
-                      : ''
+            const ldIconName = GameLeaderboard.getLdIconName(leaderboardChoice)
             const ldIcon = guild.emojis.cache.find((e) => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 
@@ -79,16 +75,10 @@ export default {
 
             // On affiche le classement
             const containerBuilder = new ContainerBuilder()
-                .setAccentColor(
-                    leaderboardChoice === Leaderboards.ScoreSaber
-                        ? [255, 222, 24]
-                        : leaderboardChoice === Leaderboards.BeatLeader
-                          ? [217, 16, 65]
-                          : undefined
-                )
+                .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
-                        `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Classement Mondial ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`, `https://${leaderboardChoice === Leaderboards.ScoreSaber ? 'scoresaber.com/global' : 'beatleader.com/ranking'}`)}`
+                        `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Classement Mondial ${leaderboardChoice}`, `https://${leaderboardChoice.toLowerCase()}.com/${leaderboardChoice === Leaderboards.ScoreSaber ? 'global' : leaderboardChoice === Leaderboards.BeatLeader ? 'ranking' : 'leaderboards'}`)}`
                     )
                 )
                 .addSeparatorComponents(

@@ -15,6 +15,7 @@ export default class guildMemberRemove {
 
         await players.remove(member.id, Leaderboards.ScoreSaber)
         await players.remove(member.id, Leaderboards.BeatLeader)
+        await players.remove(member.id, Leaderboards.AccSaber)
 
         Logger.log(
             'EventManager',

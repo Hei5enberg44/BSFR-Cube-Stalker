@@ -19,7 +19,6 @@ import {
     SeparatorBuilder,
     SeparatorSpacingSize
 } from 'discord.js'
-import { CommandError, CommandInteractionError } from '../utils/error.js'
 import roles from '../controllers/roles.js'
 import players from '../controllers/players.js'
 import cardgenerator from '../controllers/cardgenerator.js'
@@ -29,6 +28,7 @@ import {
 } from '../controllers/gameLeaderboard.js'
 import { PlayerProgress } from '../interfaces/player.interface.js'
 import { countryCodeEmoji } from '../utils/country-code-emoji.js'
+import { CommandError, CommandInteractionError } from '../utils/error.js'
 import config from '../../config.json' with { type: 'json' }
 
 export default {
@@ -40,8 +40,9 @@ export default {
                 .setName('leaderboard')
                 .setDescription('Choix du leaderboard')
                 .setChoices(
-                    { name: 'ScoreSaber', value: 'scoresaber' },
-                    { name: 'BeatLeader', value: 'beatleader' }
+                    { name: 'ScoreSaber', value: Leaderboards.ScoreSaber },
+                    { name: 'BeatLeader', value: Leaderboards.BeatLeader },
+                    { name: 'AccSaber', value: Leaderboards.AccSaber }
                 )
                 .setRequired(false)
         )
@@ -90,7 +91,8 @@ export default {
                 oldPlayerData = leaderboardChoice
                     ? await players.get(memberId, leaderboardChoice)
                     : (await players.get(memberId, Leaderboards.ScoreSaber)) ||
-                      (await players.get(memberId, Leaderboards.BeatLeader))
+                      (await players.get(memberId, Leaderboards.BeatLeader)) ||
+                      (await players.get(memberId, Leaderboards.AccSaber))
                 if (!leaderboardChoice && oldPlayerData)
                     leaderboardChoice =
                         oldPlayerData.leaderboard as Leaderboards
@@ -98,11 +100,11 @@ export default {
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
                 if (!leaderboardChoice) {
                     throw new CommandInteractionError(
-                        `Aucun profil ScoreSaber ou BeatLeader n'est lié pour le compte Discord ${userMention(memberId)}`
+                        `Aucun profil ScoreSaber/BeatLeader/AccSaber n'est lié pour le compte Discord ${userMention(memberId)}`
                     )
                 } else if (!oldPlayerData) {
                     throw new CommandInteractionError(
-                        `Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié pour le compte Discord ${userMention(memberId)}`
+                        `Aucun profil ${leaderboardChoice} n'est lié pour le compte Discord ${userMention(memberId)}`
                     )
                 }
             } else {
@@ -113,7 +115,8 @@ export default {
                 oldPlayerData = leaderboardChoice
                     ? await players.get(memberId, leaderboardChoice)
                     : (await players.get(memberId, Leaderboards.ScoreSaber)) ||
-                      (await players.get(memberId, Leaderboards.BeatLeader))
+                      (await players.get(memberId, Leaderboards.BeatLeader)) ||
+                      (await players.get(memberId, Leaderboards.AccSaber))
                 if (!leaderboardChoice && oldPlayerData)
                     leaderboardChoice =
                         oldPlayerData.leaderboard as Leaderboards
@@ -124,11 +127,11 @@ export default {
                 ) as ApplicationCommand
                 if (!leaderboardChoice) {
                     throw new CommandInteractionError(
-                        `Aucun profil ScoreSaber ou BeatLeader n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
+                        `Aucun profil ScoreSaber/BeatLeader/AccSaber n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                     )
                 } else if (!oldPlayerData) {
                     throw new CommandInteractionError(
-                        `Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
+                        `Aucun profil ${leaderboardChoice} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                     )
                 }
             }
@@ -151,8 +154,10 @@ export default {
             let playerProgress: PlayerProgress = {
                 rankDiff: newPlayerData.rank - oldPlayerData.rank,
                 countryRankDiff:
-                    newPlayerData.countryRank - oldPlayerData.countryRank,
-                ppDiff: newPlayerData.pp - oldPlayerData.pp,
+                    newPlayerData.countryRank && oldPlayerData.countryRank
+                        ? newPlayerData.countryRank - oldPlayerData.countryRank
+                        : 0,
+                pointsDiff: newPlayerData.points - oldPlayerData.points,
                 accDiff: parseFloat(
                     (
                         parseFloat(
@@ -163,8 +168,9 @@ export default {
                         )
                     ).toFixed(2)
                 ),
-                serverPPDiff:
-                    newPlayerData.serverRankPP - oldPlayerData.serverRankPP,
+                serverPointsDiff:
+                    newPlayerData.serverRankPoints -
+                    oldPlayerData.serverRankPoints,
                 serverAccDiff:
                     newPlayerData.serverRankAcc - oldPlayerData.serverRankAcc
             }
@@ -178,18 +184,24 @@ export default {
 
             // Rank pays
             const countryRankDiff = Math.abs(playerProgress.countryRankDiff)
-            if (newPlayerData.countryRank !== oldPlayerData.countryRank)
-                progressStatus.push(
-                    `${bold(`${newPlayerData.countryRank < oldPlayerData.countryRank ? '+' : '-'}${countryRankDiff} place${countryRankDiff > 1 ? 's' : ''}`)} dans le classement ${countryCodeEmoji(playerData.country)}`
-                )
+            if (
+                newPlayerData.countryRank &&
+                oldPlayerData.countryRank &&
+                playerData.country
+            ) {
+                if (newPlayerData.countryRank !== oldPlayerData.countryRank)
+                    progressStatus.push(
+                        `${bold(`${newPlayerData.countryRank < oldPlayerData.countryRank ? '+' : '-'}${countryRankDiff} place${countryRankDiff > 1 ? 's' : ''}`)} dans le classement ${countryCodeEmoji(playerData.country)}`
+                    )
+            }
 
-            // PP
-            const ppDiff = new Intl.NumberFormat('en-US').format(
-                Math.abs(playerProgress.ppDiff)
+            // Points
+            const pointsDiff = new Intl.NumberFormat('en-US').format(
+                Math.abs(playerProgress.pointsDiff)
             )
-            if (newPlayerData.pp !== oldPlayerData.pp)
+            if (newPlayerData.points !== oldPlayerData.points)
                 progressStatus.push(
-                    `${bold(`${newPlayerData.pp > oldPlayerData.pp ? '+' : '-'}${ppDiff}pp`)}`
+                    `${bold(`${newPlayerData.points > oldPlayerData.points ? '+' : '-'}${pointsDiff}${leaderboardChoice !== Leaderboards.AccSaber ? 'pp' : 'ap'}`)}`
                 )
 
             // Acc
@@ -202,11 +214,14 @@ export default {
                     `${bold(`${newPlayerData.averageRankedAccuracy > oldPlayerData.averageRankedAccuracy ? '+' : '-'}${accDiff}%`)} de précision moyenne en classé`
                 )
 
-            // Rank Server PP
-            const serverPPDiff = Math.abs(playerProgress.serverPPDiff)
-            if (newPlayerData.serverRankPP !== oldPlayerData.serverRankPP)
+            // Rank Server Points
+            const serverPointsDiff = Math.abs(playerProgress.serverPointsDiff)
+            if (
+                newPlayerData.serverRankPoints !==
+                oldPlayerData.serverRankPoints
+            )
                 progressStatus.push(
-                    `${bold(`${newPlayerData.serverRankPP < oldPlayerData.serverRankPP ? '+' : '-'}${serverPPDiff} place${serverPPDiff > 1 ? 's' : ''}`)} dans le classement des points de performance du serveur`
+                    `${bold(`${newPlayerData.serverRankPoints < oldPlayerData.serverRankPoints ? '+' : '-'}${serverPointsDiff} place${serverPointsDiff > 1 ? 's' : ''}`)} dans le classement des points de performance du serveur`
                 )
 
             // Rank Server Acc
@@ -216,16 +231,22 @@ export default {
                     `${bold(`${newPlayerData.serverRankAcc < oldPlayerData.serverRankAcc ? '+' : '-'}${serverAccDiff} place${serverAccDiff > 1 ? 's' : ''}`)} dans le classement de précision moyenne en classé du serveur`
                 )
 
-            // Nouvelle top PP ?
-            let newTopPP = false
-            if (oldPlayerData.topPP === null && newPlayerData.topPP !== null) {
-                newTopPP = true
-            } else if (
-                oldPlayerData.topPP !== null &&
-                newPlayerData.topPP !== null
+            // Nouveau top score ?
+            let newTopScore = false
+            if (
+                oldPlayerData.topScore === null &&
+                newPlayerData.topScore !== null
             ) {
-                if (oldPlayerData.topPP.pp !== newPlayerData.topPP.pp)
-                    newTopPP = true
+                newTopScore = true
+            } else if (
+                oldPlayerData.topScore !== null &&
+                newPlayerData.topScore !== null
+            ) {
+                if (
+                    oldPlayerData.topScore.points !==
+                    newPlayerData.topScore.points
+                )
+                    newTopScore = true
             }
 
             const meCommand = applicationCommands.find(
@@ -244,19 +265,16 @@ export default {
                           (m) => m.id === interaction.user.id
                       )
             ) as GuildMember
-            await roles.updateMemberPpRoles(
-                leaderboardChoice,
-                memberToUpdate,
-                playerData.pp
-            )
+            if (leaderboardChoice !== Leaderboards.AccSaber) {
+                await roles.updateMemberPpRoles(
+                    leaderboardChoice,
+                    memberToUpdate,
+                    playerData.points
+                )
+            }
 
             // On affiche les informations du joueur
-            const ldIconName =
-                leaderboardChoice === Leaderboards.ScoreSaber
-                    ? 'ss'
-                    : leaderboardChoice === 'beatleader'
-                      ? 'bl'
-                      : ''
+            const ldIconName = GameLeaderboard.getLdIconName(leaderboardChoice)
             const ldIcon = guild.emojis.cache.find((e) => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 
@@ -264,7 +282,7 @@ export default {
                 .setAccentColor([241, 196, 15])
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
-                        `### 🛠️ Récupération du profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} en cours...`
+                        `### 🛠️ Récupération du profil ${leaderboardChoice} en cours...`
                     )
                 )
 
@@ -275,7 +293,7 @@ export default {
 
             const date = new Date()
             if (date.getDate() === 1 && date.getMonth() + 1 === 4) {
-                const card = await cardgenerator.getStonkerCard(playerData)
+                const card = await cardgenerator.getStonkerCard(leaderboardChoice, playerData)
 
                 await interaction.editReply({
                     files: [
@@ -300,10 +318,12 @@ export default {
 
                 const containerComponent = new ContainerBuilder()
                     .setAccentColor(
-                        roles.getMemberPpRoleColor(
-                            leaderboardChoice,
-                            memberToUpdate
-                        ) ?? memberToUpdate.displayColor
+                        leaderboardChoice !== Leaderboards.AccSaber
+                            ? (roles.getMemberPpRoleColor(
+                                  leaderboardChoice,
+                                  memberToUpdate
+                              ) ?? memberToUpdate.displayColor)
+                            : [10, 143, 237]
                     )
                     .addTextDisplayComponents(
                         new TextDisplayBuilder().setContent(textContent)
@@ -316,7 +336,7 @@ export default {
                         ])
                     )
 
-                if (newTopPP)
+                if (newTopScore)
                     containerComponent
                         .addSeparatorComponents(
                             new SeparatorBuilder()
@@ -325,7 +345,9 @@ export default {
                         )
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
-                                bold('🏆 Nouvelle Top PP LEZGONGUE !!')
+                                bold(
+                                    `🏆 Nouvelle Top ${leaderboardChoice !== Leaderboards.AccSaber ? 'PP' : 'AP'} LEZGONGUE !!`
+                                )
                             )
                         )
 
@@ -345,6 +367,7 @@ export default {
                 error.name === 'COMMAND_INTERACTION_ERROR' ||
                 error.name === 'SCORESABER_ERROR' ||
                 error.name === 'BEATLEADER_ERROR' ||
+                error.name === 'ACCSABER_ERROR' ||
                 error.name === 'LEADERBOARD_ERROR' ||
                 error.name === 'PLAYER_ERROR'
             ) {
