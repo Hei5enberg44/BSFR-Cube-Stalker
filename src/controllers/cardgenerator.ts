@@ -305,7 +305,7 @@ export default {
         ctx.font = '45px "Poppins-Regular"'
         ctx.fillStyle = '#FFFFFF'
         ctx.fillText(
-            `PP: ${playerServerRanking.serverRankPoints}/${playerServerRanking.serverLdTotal}`,
+            `Points: ${playerServerRanking.serverRankPoints}/${playerServerRanking.serverLdTotal}`,
             separatorLeft + 30,
             235
         )
