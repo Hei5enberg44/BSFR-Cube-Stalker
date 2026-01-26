@@ -39,9 +39,9 @@ export default class Leaderboard {
         const ld = await PlayerModel.findAll({
             where: { leaderboard: leaderboardName },
             order:
-                type === 'pp'
+                type === 'points'
                     ? [
-                          ['pp', 'DESC'],
+                          ['points', 'DESC'],
                           ['id', 'ASC']
                       ]
                     : [
@@ -60,11 +60,11 @@ export default class Leaderboard {
                 .replace(/^#1$/, '🥇')
                 .replace(/^#2$/, '🥈')
                 .replace(/^#3$/, '🥉')
-            const pp = new Intl.NumberFormat('en-US').format(ml.pp) + 'pp'
+            const points = new Intl.NumberFormat('en-US').format(ml.points) + (leaderboardName !== Leaderboards.AccSaber ? 'pp' : 'ap')
             const acc = ml.averageRankedAccuracy.toFixed(2) + '%'
-            const stat = type == 'pp' ? pp : acc
-            const leaderboardUrl = `https://${leaderboardName === Leaderboards.ScoreSaber ? 'scoresaber.com' : 'beatleader.com'}/u/${ml.playerId}`
-            playersList += `${rank} — ${ml.playerCountry !== '' ? countryCodeEmoji(ml.playerCountry) : '🏴‍☠️'} [${ml.playerName}](${leaderboardUrl}) — ${stat}\n`
+            const stat = type == 'points' ? points : acc
+            const leaderboardUrl = `https://${leaderboardName.toLowerCase()}.com/${leaderboardName === Leaderboards.AccSaber ? 'profile' : 'u'}/${ml.playerId}`
+            playersList += `${rank} — ${ml.playerCountry && ml.playerCountry !== '' ? countryCodeEmoji(ml.playerCountry) : '🏴‍☠️'} [${ml.playerName}](${leaderboardUrl}) — ${stat}\n`
         }
 
         return { content: playersList, page, pageCount }
@@ -91,8 +91,8 @@ export default class Leaderboard {
                 .replace(/^#1$/, '🥇')
                 .replace(/^#2$/, '🥈')
                 .replace(/^#3$/, '🥉')
-            const pp = new Intl.NumberFormat('en-US').format(gl.pp ?? 0)
-            playersList += `${r} — ${gl.country && gl.country !== '' ? countryCodeEmoji(gl.country) : '🏴‍☠️'} [${gl.name}](${gl.url}) — ${pp}pp\n`
+            const points = new Intl.NumberFormat('en-US').format(gl.points ?? 0)
+            playersList += `${r} — ${gl.country && gl.country !== '' ? countryCodeEmoji(gl.country) : '🏴‍☠️'} [${gl.name}](${gl.url}) — ${points}${leaderboardName !== Leaderboards.AccSaber ? 'pp' : 'ap'}\n`
         }
 
         return playersList
@@ -153,9 +153,9 @@ export default class Leaderboard {
                 .replace(/^#1$/, '🥇')
                 .replace(/^#2$/, '🥈')
                 .replace(/^#3$/, '🥉')
-            const pp = new Intl.NumberFormat('en-US').format(gl.pp ?? 0)
+            const points = new Intl.NumberFormat('en-US').format(gl.points ?? 0)
             const bold = gl.rank === rank ? '**' : ''
-            playersList += `${bold}${r} — ${gl.country && gl.country !== '' ? countryCodeEmoji(gl.country) : '🏴‍☠️'} [${gl.name}](${gl.url}) — ${pp}pp${bold}\n`
+            playersList += `${bold}${r} — ${gl.country && gl.country !== '' ? countryCodeEmoji(gl.country) : '🏴‍☠️'} [${gl.name}](${gl.url}) — ${points}${leaderboardName !== Leaderboards.AccSaber ? 'pp' : 'ap'}${bold}\n`
         }
 
         return playersList
@@ -210,8 +210,8 @@ export default class Leaderboard {
             const member = members.find((m) => m.id === p.memberId)
 
             if (member) {
-                const pp = playerData.banned ? 0 : playerData.pp
-                await roles.updateMemberPpRoles(leaderboardName, member, pp)
+                const points = playerData.banned ? 0 : playerData.points
+                await roles.updateMemberPpRoles(leaderboardName, member, points)
 
                 Logger.log(
                     'Leaderboard',

@@ -8,9 +8,9 @@ import {
     TextDisplayBuilder,
     MessageFlags
 } from 'discord.js'
-import { CommandError } from '../utils/error.js'
 import leaderboard from '../controllers/leaderboard.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
+import { CommandError } from '../utils/error.js'
 import config from '../../config.json' with { type: 'json' }
 
 export default {
@@ -22,8 +22,8 @@ export default {
                 .setName('leaderboard')
                 .setDescription('Leaderboard a actualiser')
                 .addChoices([
-                    { name: 'ScoreSaber', value: 'scoresaber' },
-                    { name: 'BeatLeader', value: 'beatleader' }
+                    { name: 'ScoreSaber', value: Leaderboards.ScoreSaber },
+                    { name: 'BeatLeader', value: Leaderboards.BeatLeader }
                 ])
                 .setRequired(true)
         )

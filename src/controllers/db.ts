@@ -10,7 +10,8 @@ import { OAuthModel } from '../models/oauth.model.js'
 import { PlayerModel } from '../models/player.model.js'
 import {
     ScoreSaberPlayerScoresModel,
-    BeatLeaderPlayerScoresModel
+    BeatLeaderPlayerScoresModel,
+    AccSaberPlayerScoresModel
 } from '../models/playerScores.model.js'
 import { RankedModel } from '../models/ranked.model.js'
 
@@ -31,6 +32,7 @@ const sequelize = new Sequelize({
         PlayerModel,
         ScoreSaberPlayerScoresModel,
         BeatLeaderPlayerScoresModel,
+        AccSaberPlayerScoresModel,
         RankedModel
     ]
 })

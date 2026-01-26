@@ -47,7 +47,7 @@ export default class Roles {
                     parseInt(r1.name.replace(/(\s|pp)/, '')) -
                     parseInt(r2.name.replace(/(\s|pp)/, ''))
             )
-            return memberPpRolesSorted.last()?.color ?? null
+            return memberPpRolesSorted.last()?.colors.primaryColor ?? null
         }
 
         return null

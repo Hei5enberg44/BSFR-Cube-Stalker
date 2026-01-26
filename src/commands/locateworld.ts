@@ -15,10 +15,10 @@ import {
     hyperlink,
     MessageFlags
 } from 'discord.js'
-import { CommandError, CommandInteractionError } from '../utils/error.js'
 import players from '../controllers/players.js'
 import leaderboard from '../controllers/leaderboard.js'
-import { Leaderboards } from '../controllers/gameLeaderboard.js'
+import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
+import { CommandError, CommandInteractionError } from '../utils/error.js'
 import config from '../../config.json' with { type: 'json' }
 
 export default {
@@ -30,8 +30,9 @@ export default {
                 .setName('leaderboard')
                 .setDescription('Choix du leaderboard')
                 .setChoices(
-                    { name: 'ScoreSaber', value: 'scoresaber' },
-                    { name: 'BeatLeader', value: 'beatleader' }
+                    { name: 'ScoreSaber', value: Leaderboards.ScoreSaber },
+                    { name: 'BeatLeader', value: Leaderboards.BeatLeader },
+                    { name: 'AccSaber', value: Leaderboards.AccSaber }
                 )
                 .setRequired(false)
         )
@@ -91,7 +92,7 @@ export default {
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
                 if (!player) {
                     throw new CommandInteractionError(
-                        `Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié pour le compte Discord ${userMention(memberId)}`
+                        `Aucun profil ${leaderboardChoice} n'est lié pour le compte Discord ${userMention(memberId)}`
                     )
                 }
             } else {
@@ -107,7 +108,7 @@ export default {
                         (c) => c.name === 'link'
                     ) as ApplicationCommand
                     throw new CommandInteractionError(
-                        `Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
+                        `Aucun profil ${leaderboardChoice} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                     )
                 }
             }
@@ -126,27 +127,16 @@ export default {
                   )
 
             // Icône Leaderboard
-            const ldIconName =
-                leaderboardChoice === Leaderboards.ScoreSaber
-                    ? 'ss'
-                    : leaderboardChoice === Leaderboards.BeatLeader
-                      ? 'bl'
-                      : ''
+            const ldIconName = GameLeaderboard.getLdIconName(leaderboardChoice)
             const ldIcon = guild.emojis.cache.find((e) => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 
             // On affiche le classement
             const containerBuilder = new ContainerBuilder()
-                .setAccentColor(
-                    leaderboardChoice === Leaderboards.ScoreSaber
-                        ? [255, 222, 24]
-                        : leaderboardChoice === Leaderboards.BeatLeader
-                          ? [217, 16, 65]
-                          : undefined
-                )
+                .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
-                        `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Classement Mondial ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`, `https://${leaderboardChoice === Leaderboards.ScoreSaber ? 'scoresaber.com/global' : 'beatleader.com/ranking'}`)}`
+                        `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Classement Mondial ${leaderboardChoice}`, `https://${leaderboardChoice.toLowerCase()}.com/${leaderboardChoice === Leaderboards.ScoreSaber ? 'global' : leaderboardChoice === Leaderboards.BeatLeader ? 'ranking' : 'leaderboards'}`)}`
                     )
                 )
                 .addSeparatorComponents(
@@ -167,7 +157,8 @@ export default {
                 error.name === 'COMMAND_INTERACTION_ERROR' ||
                 error.name === 'LEADERBOARD_ERROR' ||
                 error.name === 'SCORESABER_ERROR' ||
-                error.name === 'BEATLEADER_ERROR'
+                error.name === 'BEATLEADER_ERROR' ||
+                error.name === 'ACCSABER_ERROR'
             ) {
                 throw new CommandError(error.message, interaction.commandName)
             } else {

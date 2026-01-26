@@ -18,9 +18,9 @@ import {
     TextInputStyle,
     UserSelectMenuBuilder
 } from 'discord.js'
-import { CommandError, CommandInteractionError } from '../utils/error.js'
 import playlist from '../controllers/playlist.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
+import { CommandError, CommandInteractionError } from '../utils/error.js'
 import config from '../../config.json' with { type: 'json' }
 
 export default {
@@ -96,7 +96,10 @@ export default {
                                         .setDefault(true),
                                     new StringSelectMenuOptionBuilder()
                                         .setLabel('BeatLeader')
-                                        .setValue(Leaderboards.BeatLeader)
+                                        .setValue(Leaderboards.BeatLeader),
+                                    new StringSelectMenuOptionBuilder()
+                                        .setLabel('AccSaber')
+                                        .setValue(Leaderboards.AccSaber)
                                 )
                                 .setRequired(true)
                         )
@@ -226,7 +229,10 @@ export default {
                                         .setDefault(true),
                                     new StringSelectMenuOptionBuilder()
                                         .setLabel('BeatLeader')
-                                        .setValue(Leaderboards.BeatLeader)
+                                        .setValue(Leaderboards.BeatLeader),
+                                    new StringSelectMenuOptionBuilder()
+                                        .setLabel('AccSaber')
+                                        .setValue(Leaderboards.AccSaber)
                                 )
                                 .setRequired(true)
                         )
@@ -317,6 +323,7 @@ export default {
                 error.name === 'COMMAND_INTERACTION_ERROR' ||
                 error.name === 'SCORESABER_ERROR' ||
                 error.name === 'BEATLEADER_ERROR' ||
+                error.name === 'ACCSABER_ERROR' ||
                 error.name === 'BEATSAVER_ERROR'
             ) {
                 throw new CommandError(error.message, interaction.commandName)

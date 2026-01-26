@@ -14,10 +14,10 @@ import {
     hyperlink,
     MessageFlags
 } from 'discord.js'
-import { CommandError } from '../utils/error.js'
 import players from '../controllers/players.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
 import { BeatLeaderOAuth } from '../controllers/beatleader-oauth.js'
+import { CommandError } from '../utils/error.js'
 import Logger from '../utils/logger.js'
 import config from '../../config.json' with { type: 'json' }
 

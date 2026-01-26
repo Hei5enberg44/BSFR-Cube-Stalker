@@ -8,8 +8,8 @@ import {
     ActionRowBuilder,
     TextInputStyle
 } from 'discord.js'
-import { CommandError } from '../utils/error.js'
 import { Leaderboards } from '../controllers/gameLeaderboard.js'
+import { CommandError } from '../utils/error.js'
 import config from '../../config.json' with { type: 'json' }
 
 export default {
@@ -23,8 +23,9 @@ export default {
                 .setName('leaderboard')
                 .setDescription('Choix du leaderboard')
                 .setChoices(
-                    { name: 'ScoreSaber', value: 'scoresaber' },
-                    { name: 'BeatLeader', value: 'beatleader' }
+                    { name: 'ScoreSaber', value: Leaderboards.ScoreSaber },
+                    { name: 'BeatLeader', value: Leaderboards.BeatLeader },
+                    { name: 'AccSaber', value: Leaderboards.AccSaber }
                 )
                 .setRequired(true)
         )
@@ -44,22 +45,14 @@ export default {
             ) as Leaderboards
 
             const modal = new ModalBuilder()
-                .setCustomId(
-                    leaderboardChoice === 'scoresaber'
-                        ? 'linkScoreSaberProfile'
-                        : 'linkBeatLeaderProfile'
-                )
-                .setTitle(
-                    `Lier un profil ${leaderboardChoice === 'scoresaber' ? 'ScoreSaber' : 'BeatLeader'}`
-                )
+                .setCustomId(`link${leaderboardChoice}Profile`)
+                .setTitle(`Lier un profil ${leaderboardChoice}`)
 
             const profilUrlInput = new TextInputBuilder()
                 .setCustomId('url')
                 .setLabel('Lien du profil')
                 .setPlaceholder(
-                    leaderboardChoice === 'scoresaber'
-                        ? 'https://scoresaber.com/u/76561198796531407'
-                        : 'https://beatleader.com/u/76561199233450694'
+                    `https://${leaderboardChoice.toLowerCase()}.com/${leaderboardChoice === Leaderboards.AccSaber ? 'profile' : 'u'}/76561199100396335`
                 )
                 .setMinLength(25)
                 .setMaxLength(100)

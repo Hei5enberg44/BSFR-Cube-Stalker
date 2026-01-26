@@ -16,14 +16,14 @@ import {
     Message,
     ComponentType
 } from 'discord.js'
+import leaderboard from '../controllers/leaderboard.js'
+import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
+import Locales from '../utils/locales.js'
 import {
     CommandError,
     CommandInteractionError,
     PageNotFoundError
 } from '../utils/error.js'
-import leaderboard from '../controllers/leaderboard.js'
-import { Leaderboards } from '../controllers/gameLeaderboard.js'
-import Locales from '../utils/locales.js'
 import config from '../../config.json' with { type: 'json' }
 
 export default {
@@ -35,7 +35,7 @@ export default {
                 .setName('classement')
                 .setDescription('Type de classement à afficher')
                 .setChoices(
-                    { name: 'Points de performance', value: 'pp' },
+                    { name: 'Points', value: 'points' },
                     { name: 'Précision', value: 'acc' }
                 )
                 .setRequired(true)
@@ -45,8 +45,9 @@ export default {
                 .setName('leaderboard')
                 .setDescription('Choix du leaderboard')
                 .setChoices(
-                    { name: 'ScoreSaber', value: 'scoresaber' },
-                    { name: 'BeatLeader', value: 'beatleader' }
+                    { name: 'ScoreSaber', value: Leaderboards.ScoreSaber },
+                    { name: 'BeatLeader', value: Leaderboards.BeatLeader },
+                    { name: 'AccSaber', value: Leaderboards.AccSaber }
                 )
                 .setRequired(false)
         )
@@ -86,16 +87,10 @@ export default {
                     if (page > ld.pageCount) throw new PageNotFoundError()
 
                     const containerBuilder = new ContainerBuilder()
-                        .setAccentColor(
-                            leaderboardChoice === Leaderboards.ScoreSaber
-                                ? [255, 222, 24]
-                                : leaderboardChoice === Leaderboards.BeatLeader
-                                  ? [217, 16, 65]
-                                  : undefined
-                        )
+                        .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
-                                `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} Classement ${classement === 'pp' ? 'PP' : 'Précision'} Serveur`
+                                `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} Classement ${classement === 'points' ? 'Points' : 'Précision'} Serveur`
                             )
                         )
                         .addSeparatorComponents(
@@ -164,12 +159,7 @@ export default {
             const itemsPerPage = 10
 
             // Icône Leaderboard
-            const ldIconName =
-                leaderboardChoice === Leaderboards.ScoreSaber
-                    ? 'ss'
-                    : leaderboardChoice === Leaderboards.BeatLeader
-                      ? 'bl'
-                      : ''
+            const ldIconName = GameLeaderboard.getLdIconName(leaderboardChoice)
             const ldIcon = guild.emojis.cache.find((e) => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 

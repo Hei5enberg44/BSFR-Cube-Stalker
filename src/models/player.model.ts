@@ -12,7 +12,7 @@ import {
     AutoIncrement,
     NotNull
 } from '@sequelize/core/decorators-legacy'
-import { TopPP } from '../interfaces/player.interface.js'
+import { TopScore } from '../interfaces/player.interface.js'
 
 @Table({ tableName: 'players', freezeTableName: true, timestamps: false })
 export class PlayerModel extends Model<
@@ -41,20 +41,18 @@ export class PlayerModel extends Model<
     declare playerName: string
 
     @Attribute(DataTypes.STRING(5))
-    @NotNull
-    declare playerCountry: string
+    declare playerCountry: string | null
 
     @Attribute(DataTypes.DOUBLE)
     @NotNull
-    declare pp: number
+    declare points: number
 
     @Attribute(DataTypes.INTEGER)
     @NotNull
     declare rank: number
 
     @Attribute(DataTypes.INTEGER)
-    @NotNull
-    declare countryRank: number
+    declare countryRank: number | null
 
     @Attribute(DataTypes.DOUBLE)
     @NotNull
@@ -66,10 +64,10 @@ export class PlayerModel extends Model<
 
     @Attribute(DataTypes.INTEGER)
     @NotNull
-    declare serverRankPP: number
+    declare serverRankPoints: number
 
     @Attribute(DataTypes.JSON)
-    declare topPP: TopPP | null
+    declare topScore: TopScore | null
 
     @Attribute(DataTypes.BOOLEAN)
     @NotNull

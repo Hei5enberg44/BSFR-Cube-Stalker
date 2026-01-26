@@ -19,26 +19,27 @@ import {
     ButtonBuilder,
     ButtonStyle
 } from 'discord.js'
-import { CommandError, CommandInteractionError } from '../utils/error.js'
 import cooldown from '../controllers/cooldown.js'
 import players from '../controllers/players.js'
 import roles from '../controllers/roles.js'
-import { Leaderboards } from '../controllers/gameLeaderboard.js'
+import { GameLeaderboard, Leaderboards } from '../controllers/gameLeaderboard.js'
+import { CommandError, CommandInteractionError } from '../utils/error.js'
 import config from '../../config.json' with { type: 'json' }
 
 export default {
     data: new SlashCommandBuilder()
         .setName('unlink')
         .setDescription(
-            "Délie le profil ScoreSaber ou BeatLeader d'un membre Discord"
+            "Délie le profil ScoreSaber/BeatLeader/AccSaber d'un membre Discord"
         )
         .addStringOption((option) =>
             option
                 .setName('leaderboard')
                 .setDescription('Choix du leaderboard')
                 .setChoices(
-                    { name: 'ScoreSaber', value: 'scoresaber' },
-                    { name: 'BeatLeader', value: 'beatleader' }
+                    { name: 'ScoreSaber', value: Leaderboards.ScoreSaber },
+                    { name: 'BeatLeader', value: Leaderboards.BeatLeader },
+                    { name: 'AccSaber', value: Leaderboards.AccSaber }
                 )
                 .setRequired(true)
         )
@@ -82,7 +83,7 @@ export default {
             // Si le membre n'a pas le rôle Admin ou Modérateur et essaye d'exécuter la commande sur un autre membre
             if (!isAdmin && member.id !== interaction.user.id)
                 throw new CommandInteractionError(
-                    "Vous n'êtes pas autorisé à délier le profil ScoreSaber ou BeatLeader d'un autre membre que vous"
+                    "Vous n'êtes pas autorisé à délier le profil ScoreSaber/BeatLeader/AccSaber d'un autre membre que vous"
                 )
 
             const memberToUnlink = await players.get(
@@ -91,30 +92,24 @@ export default {
             )
             if (!memberToUnlink)
                 throw new CommandInteractionError(
-                    `Il n'y a pas de profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} lié au membre ${userMention(member.id)}`
+                    `Il n'y a pas de profil ${leaderboardChoice} lié au membre ${userMention(member.id)}`
                 )
 
             // Si le membre qui exécute la commande n'a pas le rôle Admin ou Modérateur, on lui ajoute un cooldown pour cette commande
             const cd = isAdmin
                 ? null
                 : await cooldown.checkCooldown(
-                      `unlink_${leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : 'bl'}`,
+                      `unlink_${GameLeaderboard.getLdIconName(leaderboardChoice)}`,
                       interaction.user.id,
                       60 * 60 * 24 * 30
                   )
 
             // On demande confirmation pour exécuter la commande
             const containerBuilder = new ContainerBuilder()
-                .setAccentColor(
-                    leaderboardChoice === Leaderboards.ScoreSaber
-                        ? [255, 222, 24]
-                        : leaderboardChoice === Leaderboards.BeatLeader
-                          ? [217, 16, 65]
-                          : undefined
-                )
+                .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
-                        `### Délier un profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`
+                        `### Délier un profil ${leaderboardChoice}`
                     )
                 )
                 .addSeparatorComponents(
@@ -125,8 +120,8 @@ export default {
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
                         member.id === interaction.user.id
-                            ? `⚠️ Êtes-vous sûr(e) de vouloir délier votre profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} ?`
-                            : `⚠️ Êtes-vous sûr(e) de vouloir délier le profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} pour le membre ${userMention(member.id)} ?`
+                            ? `⚠️ Êtes-vous sûr(e) de vouloir délier votre profil ${leaderboardChoice} ?`
+                            : `⚠️ Êtes-vous sûr(e) de vouloir délier le profil ${leaderboardChoice} pour le membre ${userMention(member.id)} ?`
                     )
                 )
 
@@ -178,7 +173,7 @@ export default {
                     // On ajoute le cooldown si le membre exécutant la commande n'a pas le rôle Admin ou Modérateur
                     if (cd)
                         await cooldown.addCooldown(
-                            `unlink_${leaderboardChoice === Leaderboards.ScoreSaber ? 'ss' : 'bl'}`,
+                            `unlink_${GameLeaderboard.getLdIconName(leaderboardChoice)}`,
                             interaction.user.id,
                             cd
                         )
@@ -187,20 +182,22 @@ export default {
                     await players.remove(member.id, leaderboardChoice)
 
                     // On supprime les rôles pp du membre
-                    const memberToUpdate = guild.members.cache.find(
-                        (m) => m.id === member.id
-                    ) as GuildMember
-                    await roles.updateMemberPpRoles(
-                        leaderboardChoice,
-                        memberToUpdate,
-                        0
-                    )
+                    if(leaderboardChoice !== Leaderboards.AccSaber) {
+                        const memberToUpdate = guild.members.cache.find(
+                            (m) => m.id === member.id
+                        ) as GuildMember
+                        await roles.updateMemberPpRoles(
+                            leaderboardChoice,
+                            memberToUpdate,
+                            0
+                        )
+                    }
 
                     const containerBuilder = new ContainerBuilder()
                         .setAccentColor([46, 204, 113])
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
-                                `### Délier un profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`
+                                `### Délier un profil ${leaderboardChoice}`
                             )
                         )
                         .addSeparatorComponents(
@@ -210,7 +207,7 @@ export default {
                         )
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
-                                `✅ Le profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatSaber'} a bien été délié du compte ${userMention(member.id)}`
+                                `✅ Le profil ${leaderboardChoice} a bien été délié du compte ${userMention(member.id)}`
                             )
                         )
 
@@ -231,7 +228,7 @@ export default {
                         .setAccentColor([231, 76, 60])
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
-                                `### Délier un profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`
+                                `### Délier un profil ${leaderboardChoice}`
                             )
                         )
                         .addSeparatorComponents(
@@ -255,7 +252,7 @@ export default {
                     .setAccentColor([231, 76, 60])
                     .addTextDisplayComponents(
                         new TextDisplayBuilder().setContent(
-                            `### Délier un profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'}`
+                            `### Délier un profil ${leaderboardChoice}`
                         )
                     )
                     .addSeparatorComponents(
