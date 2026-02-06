@@ -149,10 +149,7 @@ export default class BeatSaver {
 
         do {
             const params = new URLSearchParams({
-                leaderboard:
-                    leaderboard === Leaderboards.ScoreSaber
-                        ? 'ScoreSaber'
-                        : 'BeatLeader',
+                leaderboard,
                 sortOrder: 'Latest',
                 pageSize: '100'
             }).toString()

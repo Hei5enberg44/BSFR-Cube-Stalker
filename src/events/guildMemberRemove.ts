@@ -13,9 +13,9 @@ export default class guildMemberRemove {
     static async execute(member: GuildMember) {
         this.member = member
 
-        await players.remove(member.id, Leaderboards.ScoreSaber)
-        await players.remove(member.id, Leaderboards.BeatLeader)
-        await players.remove(member.id, Leaderboards.AccSaber)
+        await players.remove(Leaderboards.ScoreSaber, member.id)
+        await players.remove(Leaderboards.BeatLeader, member.id)
+        await players.remove(Leaderboards.AccSaber, member.id)
 
         Logger.log(
             'EventManager',

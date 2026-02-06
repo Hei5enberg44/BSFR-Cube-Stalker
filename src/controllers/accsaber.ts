@@ -27,7 +27,7 @@ export default class AccSaber {
 
         do {
             if (log)
-                Logger.log('AccSaber', 'INFO', `Envoi de la requête "${query}"`)
+                Logger.log(Leaderboards.AccSaber, 'INFO', `Envoi de la requête "${query}"`)
             const res = await fetch(ACCSABER_API_URL, {
                 method: 'POST',
                 headers: {
@@ -42,7 +42,7 @@ export default class AccSaber {
             if (res.ok) {
                 if (log)
                     Logger.log(
-                        'AccSaber',
+                        Leaderboards.AccSaber,
                         'INFO',
                         'Requête envoyée avec succès'
                     )
@@ -62,7 +62,7 @@ export default class AccSaber {
                     )
                 if (res.status === 500) {
                     Logger.log(
-                        'AccSaber',
+                        Leaderboards.AccSaber,
                         'ERROR',
                         'Erreur 500, nouvel essai dans 3 secondes'
                     )
@@ -75,7 +75,7 @@ export default class AccSaber {
                 }
                 if (res.status === 429) {
                     Logger.log(
-                        'AccSaber',
+                        Leaderboards.AccSaber,
                         'ERROR',
                         'Erreur 429, nouvel essai dans 60 secondes'
                     )
@@ -236,7 +236,7 @@ export default class AccSaber {
             return player
         } catch (error) {
             throw new AccSaberError(
-                'Une erreur est survenue lors de la récupération du profil AccSaber'
+                `Une erreur est survenue lors de la récupération du profil ${Leaderboards.AccSaber}`
             )
         }
     }

@@ -16,7 +16,7 @@ export default {
     data: new SlashCommandBuilder()
         .setName('link')
         .setDescription(
-            'Lie votre profil ScoreSaber ou BeatLeader à votre compte Discord'
+            'Lie votre profil ScoreSaber/BeatLeader/AccSaber à votre compte Discord'
         )
         .addStringOption((option) =>
             option
@@ -39,20 +39,20 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const leaderboardChoice = interaction.options.getString(
+            const leaderboardName = interaction.options.getString(
                 'leaderboard',
                 true
             ) as Leaderboards
 
             const modal = new ModalBuilder()
-                .setCustomId(`link${leaderboardChoice}Profile`)
-                .setTitle(`Lier un profil ${leaderboardChoice}`)
+                .setCustomId(`link${leaderboardName}Profile`)
+                .setTitle(`Lier un profil ${leaderboardName}`)
 
             const profilUrlInput = new TextInputBuilder()
                 .setCustomId('url')
                 .setLabel('Lien du profil')
                 .setPlaceholder(
-                    `https://${leaderboardChoice.toLowerCase()}.com/${leaderboardChoice === Leaderboards.AccSaber ? 'profile' : 'u'}/76561199100396335`
+                    `https://${leaderboardName.toLowerCase()}.com/${leaderboardName === Leaderboards.AccSaber ? 'profile' : 'u'}/76561199100396335`
                 )
                 .setMinLength(25)
                 .setMaxLength(100)

@@ -31,28 +31,28 @@ export default {
             subcommand
                 .setName('played')
                 .setDescription(
-                    'Génénérer une playlist à partir de vos maps jouées'
+                    'Générer une playlist à partir de vos maps jouées'
                 )
         )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName('ranked')
                 .setDescription(
-                    'Génénérer une playlist à partir des maps ranked'
+                    'Générer une playlist à partir des maps ranked'
                 )
         )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName('snipe')
                 .setDescription(
-                    "Génénérer une playlist de maps à sniper par rapport aux scores d'un autre joueur"
+                    "Générer une playlist de maps à sniper par rapport aux scores d'un autre joueur"
                 )
         )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName('clan-wars')
                 .setDescription(
-                    'Génénérer une playlist de maps à capturer pour la guerre de clans BeatLeader'
+                    'Générer une playlist de maps à capturer pour la guerre de clans BeatLeader'
                 )
         )
         .setContexts(InteractionContextType.Guild)
@@ -84,7 +84,7 @@ export default {
                         .setCustomId('playlistPlayed')
                         .setTitle('Générer une playlist de maps jouées')
 
-                    const leaderboardChoiceLabel = new LabelBuilder()
+                    const leaderboardNameLabel = new LabelBuilder()
                         .setLabel('Leaderboard')
                         .setStringSelectMenuComponent(
                             new StringSelectMenuBuilder()
@@ -147,7 +147,7 @@ export default {
                         )
 
                     modal.addLabelComponents(
-                        leaderboardChoiceLabel,
+                        leaderboardNameLabel,
                         minStarsLabel,
                         maxStarsLabel,
                         minAccLabel,
@@ -163,7 +163,7 @@ export default {
                         .setCustomId('playlistRanked')
                         .setTitle('Générer une playlist de maps ranked')
 
-                    const leaderboardChoiceLabel = new LabelBuilder()
+                    const leaderboardNameLabel = new LabelBuilder()
                         .setLabel('Leaderboard')
                         .setStringSelectMenuComponent(
                             new StringSelectMenuBuilder()
@@ -203,7 +203,7 @@ export default {
                         )
 
                     modal.addLabelComponents(
-                        leaderboardChoiceLabel,
+                        leaderboardNameLabel,
                         minStarsLabel,
                         maxStarsLabel
                     )
@@ -217,7 +217,7 @@ export default {
                         .setCustomId('playlistSnipe')
                         .setTitle('Générer une playlist pour sniper un joueur')
 
-                    const leaderboardChoiceLabel = new LabelBuilder()
+                    const leaderboardNameLabel = new LabelBuilder()
                         .setLabel('Leaderboard')
                         .setStringSelectMenuComponent(
                             new StringSelectMenuBuilder()
@@ -246,7 +246,7 @@ export default {
                         )
 
                     modal.addLabelComponents(
-                        leaderboardChoiceLabel,
+                        leaderboardNameLabel,
                         playerLabel
                     )
 

@@ -74,7 +74,7 @@ export default {
                     (role) => ['Admin', 'Modérateur'].indexOf(role.name) !== -1
                 ) !== undefined
 
-            const leaderboardChoice = interaction.options.getString(
+            const leaderboardName = interaction.options.getString(
                 'leaderboard'
             ) as Leaderboards
             const member =
@@ -88,28 +88,28 @@ export default {
 
             const memberToUnlink = await players.get(
                 member.id,
-                leaderboardChoice
+                leaderboardName
             )
             if (!memberToUnlink)
                 throw new CommandInteractionError(
-                    `Il n'y a pas de profil ${leaderboardChoice} lié au membre ${userMention(member.id)}`
+                    `Il n'y a pas de profil ${leaderboardName} lié au membre ${userMention(member.id)}`
                 )
 
             // Si le membre qui exécute la commande n'a pas le rôle Admin ou Modérateur, on lui ajoute un cooldown pour cette commande
             const cd = isAdmin
                 ? null
                 : await cooldown.checkCooldown(
-                      `unlink_${GameLeaderboard.getLdIconName(leaderboardChoice)}`,
+                      `unlink_${GameLeaderboard.getLdIconName(leaderboardName)}`,
                       interaction.user.id,
                       60 * 60 * 24 * 30
                   )
 
             // On demande confirmation pour exécuter la commande
             const containerBuilder = new ContainerBuilder()
-                .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
+                .setAccentColor(GameLeaderboard.getLdColor(leaderboardName))
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
-                        `### Délier un profil ${leaderboardChoice}`
+                        `### Délier un profil ${leaderboardName}`
                     )
                 )
                 .addSeparatorComponents(
@@ -120,8 +120,8 @@ export default {
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
                         member.id === interaction.user.id
-                            ? `⚠️ Êtes-vous sûr(e) de vouloir délier votre profil ${leaderboardChoice} ?`
-                            : `⚠️ Êtes-vous sûr(e) de vouloir délier le profil ${leaderboardChoice} pour le membre ${userMention(member.id)} ?`
+                            ? `⚠️ Êtes-vous sûr(e) de vouloir délier votre profil ${leaderboardName} ?`
+                            : `⚠️ Êtes-vous sûr(e) de vouloir délier le profil ${leaderboardName} pour le membre ${userMention(member.id)} ?`
                     )
                 )
 
@@ -173,21 +173,21 @@ export default {
                     // On ajoute le cooldown si le membre exécutant la commande n'a pas le rôle Admin ou Modérateur
                     if (cd)
                         await cooldown.addCooldown(
-                            `unlink_${GameLeaderboard.getLdIconName(leaderboardChoice)}`,
+                            `unlink_${GameLeaderboard.getLdIconName(leaderboardName)}`,
                             interaction.user.id,
                             cd
                         )
 
                     // On délie le profil ScoreSaber ou BeatLeader du membre
-                    await players.remove(member.id, leaderboardChoice)
+                    await players.remove(leaderboardName, member.id)
 
                     // On supprime les rôles pp du membre
-                    if(leaderboardChoice !== Leaderboards.AccSaber) {
+                    if(leaderboardName !== Leaderboards.AccSaber) {
                         const memberToUpdate = guild.members.cache.find(
                             (m) => m.id === member.id
                         ) as GuildMember
                         await roles.updateMemberPpRoles(
-                            leaderboardChoice,
+                            leaderboardName,
                             memberToUpdate,
                             0
                         )
@@ -197,7 +197,7 @@ export default {
                         .setAccentColor([46, 204, 113])
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
-                                `### Délier un profil ${leaderboardChoice}`
+                                `### Délier un profil ${leaderboardName}`
                             )
                         )
                         .addSeparatorComponents(
@@ -207,7 +207,7 @@ export default {
                         )
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
-                                `✅ Le profil ${leaderboardChoice} a bien été délié du compte ${userMention(member.id)}`
+                                `✅ Le profil ${leaderboardName} a bien été délié du compte ${userMention(member.id)}`
                             )
                         )
 
@@ -228,7 +228,7 @@ export default {
                         .setAccentColor([231, 76, 60])
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
-                                `### Délier un profil ${leaderboardChoice}`
+                                `### Délier un profil ${leaderboardName}`
                             )
                         )
                         .addSeparatorComponents(
@@ -252,7 +252,7 @@ export default {
                     .setAccentColor([231, 76, 60])
                     .addTextDisplayComponents(
                         new TextDisplayBuilder().setContent(
-                            `### Délier un profil ${leaderboardChoice}`
+                            `### Délier un profil ${leaderboardName}`
                         )
                     )
                     .addSeparatorComponents(

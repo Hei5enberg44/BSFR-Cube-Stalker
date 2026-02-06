@@ -51,7 +51,7 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const leaderboardChoice =
+            const leaderboardName =
                 (interaction.options.getString(
                     'leaderboard'
                 ) as Leaderboards) ?? Leaderboards.ScoreSaber
@@ -62,23 +62,23 @@ export default {
             ) as Guild
 
             // Icône Leaderboard
-            const ldIconName = GameLeaderboard.getLdIconName(leaderboardChoice)
+            const ldIconName = GameLeaderboard.getLdIconName(leaderboardName)
             const ldIcon = guild.emojis.cache.find((e) => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 
             await interaction.deferReply({ flags: MessageFlags.Ephemeral })
 
             const ld = await leaderboard.getGlobalLeaderboard(
-                leaderboardChoice,
+                leaderboardName,
                 count
             )
 
             // On affiche le classement
             const containerBuilder = new ContainerBuilder()
-                .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
+                .setAccentColor(GameLeaderboard.getLdColor(leaderboardName))
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
-                        `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Classement Mondial ${leaderboardChoice}`, `https://${leaderboardChoice.toLowerCase()}.com/${leaderboardChoice === Leaderboards.ScoreSaber ? 'global' : leaderboardChoice === Leaderboards.BeatLeader ? 'ranking' : 'leaderboards'}`)}`
+                        `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Classement Mondial ${leaderboardName}`, `https://${leaderboardName.toLowerCase()}.com/${leaderboardName === Leaderboards.ScoreSaber ? 'global' : leaderboardName === Leaderboards.BeatLeader ? 'ranking' : 'leaderboards'}`)}`
                     )
                 )
                 .addSeparatorComponents(

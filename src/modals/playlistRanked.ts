@@ -19,15 +19,15 @@ export default {
      */
     async execute(interaction: ModalSubmitInteraction) {
         try {
-            const leaderboardChoiceSelectValues =
+            const leaderboardNameSelectValues =
                 interaction.fields.getStringSelectValues('leaderboard')
             const minStarsSelectValues =
                 interaction.fields.getStringSelectValues('min_stars')
             const maxStarsSelectValues =
                 interaction.fields.getStringSelectValues('max_stars')
 
-            const leaderboardChoice =
-                leaderboardChoiceSelectValues[0] as Leaderboards
+            const leaderboardName =
+                leaderboardNameSelectValues[0] as Leaderboards
             const minStars =
                 minStarsSelectValues.length === 0
                     ? 0
@@ -60,7 +60,7 @@ export default {
 
             // Génération de la playlist
             const playlistData = await playlist.getRanked(
-                leaderboardChoice,
+                leaderboardName,
                 minStars,
                 maxStars
             )
@@ -71,7 +71,7 @@ export default {
             )
 
             containerBuilder = new ContainerBuilder()
-                .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
+                .setAccentColor(GameLeaderboard.getLdColor(leaderboardName))
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
                         '### Ta playlist est prête !'

@@ -61,7 +61,7 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const leaderboardChoice =
+            const leaderboardName =
                 (interaction.options.getString(
                     'leaderboard'
                 ) as Leaderboards) ?? Leaderboards.ScoreSaber
@@ -87,12 +87,12 @@ export default {
                 memberId = targetMember.id
 
                 // Informations sur le joueur
-                player = await players.get(memberId, leaderboardChoice)
+                player = await players.get(leaderboardName, memberId)
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
                 if (!player) {
                     throw new CommandInteractionError(
-                        `Aucun profil ${leaderboardChoice} n'est lié pour le compte Discord ${userMention(memberId)}`
+                        `Aucun profil ${leaderboardName} n'est lié pour le compte Discord ${userMention(memberId)}`
                     )
                 }
             } else {
@@ -100,7 +100,7 @@ export default {
                 memberId = interaction.user.id
 
                 // Informations sur le joueur
-                player = await players.get(memberId, leaderboardChoice)
+                player = await players.get(leaderboardName, memberId)
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
                 if (!player) {
@@ -108,7 +108,7 @@ export default {
                         (c) => c.name === 'link'
                     ) as ApplicationCommand
                     throw new CommandInteractionError(
-                        `Aucun profil ${leaderboardChoice} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
+                        `Aucun profil ${leaderboardName} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                     )
                 }
             }
@@ -118,25 +118,25 @@ export default {
             // Données de classement ScoreSaber du joueur
             const ld = rank
                 ? await leaderboard.getGlobalLeaderboardByPlayerRank(
-                      leaderboardChoice,
+                      leaderboardName,
                       rank
                   )
                 : await leaderboard.getGlobalLeaderboardByPlayerId(
-                      leaderboardChoice,
+                      leaderboardName,
                       player.playerId
                   )
 
             // Icône Leaderboard
-            const ldIconName = GameLeaderboard.getLdIconName(leaderboardChoice)
+            const ldIconName = GameLeaderboard.getLdIconName(leaderboardName)
             const ldIcon = guild.emojis.cache.find((e) => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 
             // On affiche le classement
             const containerBuilder = new ContainerBuilder()
-                .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
+                .setAccentColor(GameLeaderboard.getLdColor(leaderboardName))
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
-                        `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Classement Mondial ${leaderboardChoice}`, `https://${leaderboardChoice.toLowerCase()}.com/${leaderboardChoice === Leaderboards.ScoreSaber ? 'global' : leaderboardChoice === Leaderboards.BeatLeader ? 'ranking' : 'leaderboards'}`)}`
+                        `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} ${hyperlink(`Classement Mondial ${leaderboardName}`, `https://${leaderboardName.toLowerCase()}.com/${leaderboardName === Leaderboards.ScoreSaber ? 'global' : leaderboardName === Leaderboards.BeatLeader ? 'ranking' : 'leaderboards'}`)}`
                     )
                 )
                 .addSeparatorComponents(

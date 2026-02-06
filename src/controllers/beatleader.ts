@@ -1,6 +1,7 @@
 import { components as BeatLeaderAPI } from '../api/beatleader.js'
 import { PlayerData, PlayerScore } from '../interfaces/player.interface.js'
 import { BeatLeaderPlayerScoresModel } from '../models/playerScores.model.js'
+import { Leaderboards } from './gameLeaderboard.js'
 import Logger from '../utils/logger.js'
 import { BeatLeaderError } from '../utils/error.js'
 
@@ -58,13 +59,13 @@ export default class BeatLeader {
 
         do {
             if (log)
-                Logger.log('BeatLeader', 'INFO', `Envoi de la requête "${url}"`)
+                Logger.log(Leaderboards.BeatLeader, 'INFO', `Envoi de la requête "${url}"`)
             const res = await fetch(url)
 
             if (res.ok) {
                 if (log)
                     Logger.log(
-                        'BeatLeader',
+                        Leaderboards.BeatLeader,
                         'INFO',
                         'Requête envoyée avec succès'
                     )
@@ -82,7 +83,7 @@ export default class BeatLeader {
                     )
                 if (res.status === 500) {
                     Logger.log(
-                        'BeatLeader',
+                        Leaderboards.BeatLeader,
                         'ERROR',
                         'Erreur 500, nouvel essai dans 3 secondes'
                     )
@@ -95,7 +96,7 @@ export default class BeatLeader {
                 }
                 if (res.status === 429) {
                     Logger.log(
-                        'BeatLeader',
+                        Leaderboards.BeatLeader,
                         'ERROR',
                         'Erreur 429, nouvel essai dans 60 secondes'
                     )
@@ -195,7 +196,7 @@ export default class BeatLeader {
             return player
         } catch (error) {
             throw new BeatLeaderError(
-                'Une erreur est survenue lors de la récupération du profil BeatLeader'
+                `Une erreur est survenue lors de la récupération du profil ${Leaderboards.BeatLeader}`
             )
         }
     }
@@ -302,7 +303,7 @@ export default class BeatLeader {
      */
     static async getPlayerScores(beatLeaderId: string): Promise<PlayerScore[]> {
         const cachedPlayerScores = await BeatLeaderPlayerScoresModel.findAll({
-            where: { leaderboard: 'beatleader', playerId: beatLeaderId }
+            where: { leaderboard: Leaderboards.BeatLeader, playerId: beatLeaderId }
         })
 
         try {
@@ -342,7 +343,7 @@ export default class BeatLeader {
                             }
                         } else {
                             await BeatLeaderPlayerScoresModel.create({
-                                leaderboard: 'beatleader',
+                                leaderboard: Leaderboards.BeatLeader,
                                 playerId: beatLeaderId,
                                 playerScore: playerScore
                             })
@@ -352,7 +353,7 @@ export default class BeatLeader {
             } while (nextPage)
 
             const playerScores = await BeatLeaderPlayerScoresModel.findAll({
-                where: { leaderboard: 'beatleader', playerId: beatLeaderId }
+                where: { leaderboard: Leaderboards.BeatLeader, playerId: beatLeaderId }
             })
 
             const scores = playerScores

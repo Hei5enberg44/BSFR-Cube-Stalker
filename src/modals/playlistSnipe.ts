@@ -27,13 +27,13 @@ export default {
             const applicationCommands =
                 interaction.client.application.commands.cache
 
-            const leaderboardChoiceSelectValues =
+            const leaderboardNameSelectValues =
                 interaction.fields.getStringSelectValues('leaderboard')
             const targetMemberSelectedUsers =
                 interaction.fields.getSelectedUsers('player', true)
 
-            const leaderboardChoice =
-                leaderboardChoiceSelectValues[0] as Leaderboards
+            const leaderboardName =
+                leaderboardNameSelectValues[0] as Leaderboards
             const targetMember = targetMemberSelectedUsers.first() as User
 
             // Identifiant du membre exécutant la commande
@@ -43,12 +43,12 @@ export default {
             const targetMemberId = targetMember.id
 
             // Informations sur les membres
-            const member = await players.get(memberId, leaderboardChoice)
+            const member = await players.get(leaderboardName, memberId)
 
             // Informations sur les membres
             const memberToSnipe = await players.get(
-                targetMemberId,
-                leaderboardChoice
+                leaderboardName,
+                targetMemberId
             )
 
             // On vérifie ici si les membres (celui exécutant la commande et celui à sniper) ont lié leur compte ScoreSaber ou BeatLeader
@@ -57,11 +57,11 @@ export default {
             ) as ApplicationCommand
             if (!member)
                 throw new ModalSubmissionError(
-                    `Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
+                    `Aucun profil ${leaderboardName} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                 )
             if (!memberToSnipe)
                 throw new ModalSubmissionError(
-                    `Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié pour le compte Discord ${userMention(targetMemberId)}`
+                    `Aucun profil ${leaderboardName} n'est lié pour le compte Discord ${userMention(targetMemberId)}`
                 )
 
             await interaction.deferReply({ flags: MessageFlags.Ephemeral })
@@ -81,7 +81,7 @@ export default {
 
             // Génération de la playlist
             const playlistData = await playlist.getSnipe(
-                leaderboardChoice,
+                leaderboardName,
                 member.playerId,
                 memberToSnipe.playerId
             )
@@ -92,7 +92,7 @@ export default {
             )
 
             containerBuilder = new ContainerBuilder()
-                .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
+                .setAccentColor(GameLeaderboard.getLdColor(leaderboardName))
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
                         '### Ta playlist est prête !'
