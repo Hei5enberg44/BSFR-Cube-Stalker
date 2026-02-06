@@ -51,7 +51,7 @@ export default {
             const memberId = interaction.user.id
 
             // Informations sur le membre
-            const member = await players.get(memberId, Leaderboards.ScoreSaber)
+            const member = await players.get(Leaderboards.ScoreSaber, memberId)
 
             // On vérifie ici si le membre a lié son compte ScoreSaber ou non
             if (!member) {

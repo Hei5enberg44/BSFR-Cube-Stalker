@@ -47,8 +47,8 @@ export default {
             switch (action) {
                 case 'invitation': {
                     const player = await players.get(
-                        interaction.user.id,
-                        Leaderboards.BeatLeader
+                        Leaderboards.BeatLeader,
+                        interaction.user.id
                     )
                     if (player) {
                         await interaction.deferReply({

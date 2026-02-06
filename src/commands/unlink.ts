@@ -87,8 +87,8 @@ export default {
                 )
 
             const memberToUnlink = await players.get(
-                member.id,
-                leaderboardName
+                leaderboardName,
+                member.id
             )
             if (!memberToUnlink)
                 throw new CommandInteractionError(
