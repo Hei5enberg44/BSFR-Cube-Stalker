@@ -37,7 +37,7 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const leaderboardChoice = interaction.options.getString(
+            const leaderboardName = interaction.options.getString(
                 'leaderboard'
             ) as Leaderboards
 
@@ -59,7 +59,7 @@ export default {
             })
 
             const members = guild.members.cache
-            await leaderboard.refreshLeaderboard(leaderboardChoice, members)
+            await leaderboard.refreshLeaderboard(leaderboardName, members)
 
             containerBuilder = new ContainerBuilder()
                 .setAccentColor([46, 204, 113])

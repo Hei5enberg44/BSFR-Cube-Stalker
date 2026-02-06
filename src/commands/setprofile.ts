@@ -59,7 +59,7 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            const leaderboardChoice = interaction.options.getString(
+            const leaderboardName = interaction.options.getString(
                 'leaderboard',
                 true
             ) as Leaderboards
@@ -72,12 +72,12 @@ export default {
 
             await interaction.deferReply()
 
-            if (!url.includes(leaderboardChoice.toLowerCase()))
+            if (!url.includes(leaderboardName.toLowerCase()))
                 throw new CommandInteractionError(
-                    `Le lien entré n\'est pas un lien ${leaderboardChoice} valide`
+                    `Le lien entré n\'est pas un lien ${leaderboardName} valide`
                 )
 
-            const gameLeaderboard = new GameLeaderboard(leaderboardChoice)
+            const gameLeaderboard = new GameLeaderboard(leaderboardName)
             const playerData =
                 await gameLeaderboard.requests.getPlayerDataByUrl(url)
 
@@ -87,15 +87,15 @@ export default {
                     'Impossible de lier le profil de ce joueur car celui-ci est banni'
                 )
 
-            await players.add(member.id, playerData, leaderboardChoice, true)
+            await players.add(member.id, playerData, leaderboardName, true)
 
             // Icône Leaderboard
-            const ldIconName = GameLeaderboard.getLdIconName(leaderboardChoice)
+            const ldIconName = GameLeaderboard.getLdIconName(leaderboardName)
             const ldIcon = guild.emojis.cache.find((e) => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 
             const containerBuilder = new ContainerBuilder()
-                .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
+                .setAccentColor(GameLeaderboard.getLdColor(leaderboardName))
                 .addSectionComponents(
                     new SectionBuilder()
                         .setThumbnailAccessory(
@@ -108,7 +108,7 @@ export default {
                         )
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
-                                `Le profil ${leaderboardChoice} a bien été lié avec le compte Discord de ${userMention(member.id)}`
+                                `Le profil ${leaderboardName} a bien été lié avec le compte Discord de ${userMention(member.id)}`
                             )
                         )
                 )

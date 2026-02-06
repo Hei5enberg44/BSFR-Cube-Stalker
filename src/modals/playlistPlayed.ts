@@ -25,7 +25,7 @@ export default {
             const applicationCommands =
                 interaction.client.application.commands.cache
 
-            const leaderboardChoiceSelectValues =
+            const leaderboardNameSelectValues =
                 interaction.fields.getStringSelectValues('leaderboard')
             const minStarsSelectValues =
                 interaction.fields.getStringSelectValues('min_stars')
@@ -36,8 +36,8 @@ export default {
             const maxAccTextInputValue =
                 interaction.fields.getTextInputValue('max_acc')
 
-            const leaderboardChoice =
-                leaderboardChoiceSelectValues[0] as Leaderboards
+            const leaderboardName =
+                leaderboardNameSelectValues[0] as Leaderboards
             const minStars =
                 minStarsSelectValues.length === 0
                     ? 0
@@ -75,8 +75,8 @@ export default {
 
             // Informations sur le joueur
             const member = await players.get(
-                interaction.user.id,
-                leaderboardChoice
+                leaderboardName,
+                interaction.user.id
             )
 
             // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
@@ -85,7 +85,7 @@ export default {
             ) as ApplicationCommand
             if (!member)
                 throw new ModalSubmissionError(
-                    `Aucun profil ${leaderboardChoice === Leaderboards.ScoreSaber ? 'ScoreSaber' : 'BeatLeader'} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
+                    `Aucun profil ${leaderboardName} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                 )
 
             await interaction.deferReply({ flags: MessageFlags.Ephemeral })
@@ -105,7 +105,7 @@ export default {
 
             // Génération de la playlist
             const playlistData = await playlist.getPlayed(
-                leaderboardChoice,
+                leaderboardName,
                 member.playerId,
                 minStars,
                 maxStars,
@@ -119,7 +119,7 @@ export default {
             )
 
             containerBuilder = new ContainerBuilder()
-                .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
+                .setAccentColor(GameLeaderboard.getLdColor(leaderboardName))
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
                         '### Ta playlist est prête !'

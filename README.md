@@ -1,6 +1,6 @@
 <h1>bsfr-cube-stalker</h1>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-5.35.1-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-5.35.2-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: ISC" src="https://img.shields.io/badge/License-ISC-yellow.svg" />
   </a>
@@ -247,7 +247,7 @@ Permet de générer une playlist de maps à sniper par rapport aux scores d'un a
 
 - ### /playlist clan-wars : Créer une playlist de maps à conquerir
 
-Permet de génénérer une playlist de maps à capturer pour la guerre de clans BeatLeader.
+Permet de générer une playlist de maps à capturer pour la guerre de clans BeatLeader.
 
 **Exemples :**
 

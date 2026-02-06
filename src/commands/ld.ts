@@ -78,7 +78,7 @@ export default {
             ) => {
                 try {
                     const ld = await leaderboard.getLeaderboard(
-                        leaderboardChoice,
+                        leaderboardName,
                         classement,
                         page,
                         itemsPerPage
@@ -87,7 +87,7 @@ export default {
                     if (page > ld.pageCount) throw new PageNotFoundError()
 
                     const containerBuilder = new ContainerBuilder()
-                        .setAccentColor(GameLeaderboard.getLdColor(leaderboardChoice))
+                        .setAccentColor(GameLeaderboard.getLdColor(leaderboardName))
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
                                 `### ${ldIcon ? `<:${ldIconName}:${ldIconId}> ` : ''} Classement ${classement === 'points' ? 'Points' : 'Précision'} Serveur`
@@ -149,7 +149,7 @@ export default {
             }
 
             // Paramètres de la commande
-            const leaderboardChoice =
+            const leaderboardName =
                 (interaction.options.getString(
                     'leaderboard'
                 ) as Leaderboards) ?? Leaderboards.ScoreSaber
@@ -159,7 +159,7 @@ export default {
             const itemsPerPage = 10
 
             // Icône Leaderboard
-            const ldIconName = GameLeaderboard.getLdIconName(leaderboardChoice)
+            const ldIconName = GameLeaderboard.getLdIconName(leaderboardName)
             const ldIcon = guild.emojis.cache.find((e) => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 

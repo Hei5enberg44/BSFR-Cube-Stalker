@@ -62,7 +62,7 @@ export default {
      */
     async execute(interaction: ChatInputCommandInteraction) {
         try {
-            let leaderboardChoice = interaction.options.getString(
+            let leaderboardName = interaction.options.getString(
                 'leaderboard'
             ) as Leaderboards | null
             const targetMember = interaction.options.getUser('joueur')
@@ -88,23 +88,23 @@ export default {
                     )
 
                 // Anciennes données de classement du joueur
-                oldPlayerData = leaderboardChoice
-                    ? await players.get(memberId, leaderboardChoice)
-                    : (await players.get(memberId, Leaderboards.ScoreSaber)) ||
-                      (await players.get(memberId, Leaderboards.BeatLeader)) ||
-                      (await players.get(memberId, Leaderboards.AccSaber))
-                if (!leaderboardChoice && oldPlayerData)
-                    leaderboardChoice =
+                oldPlayerData = leaderboardName
+                    ? await players.get(leaderboardName, memberId)
+                    : (await players.get(Leaderboards.ScoreSaber, memberId)) ||
+                      (await players.get(Leaderboards.BeatLeader, memberId)) ||
+                      (await players.get(Leaderboards.AccSaber, memberId))
+                if (!leaderboardName && oldPlayerData)
+                    leaderboardName =
                         oldPlayerData.leaderboard as Leaderboards
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
-                if (!leaderboardChoice) {
+                if (!leaderboardName) {
                     throw new CommandInteractionError(
                         `Aucun profil ScoreSaber/BeatLeader/AccSaber n'est lié pour le compte Discord ${userMention(memberId)}`
                     )
                 } else if (!oldPlayerData) {
                     throw new CommandInteractionError(
-                        `Aucun profil ${leaderboardChoice} n'est lié pour le compte Discord ${userMention(memberId)}`
+                        `Aucun profil ${leaderboardName} n'est lié pour le compte Discord ${userMention(memberId)}`
                     )
                 }
             } else {
@@ -112,32 +112,32 @@ export default {
                 memberId = interaction.user.id
 
                 // Anciennes données de classement du joueur
-                oldPlayerData = leaderboardChoice
-                    ? await players.get(memberId, leaderboardChoice)
-                    : (await players.get(memberId, Leaderboards.ScoreSaber)) ||
-                      (await players.get(memberId, Leaderboards.BeatLeader)) ||
-                      (await players.get(memberId, Leaderboards.AccSaber))
-                if (!leaderboardChoice && oldPlayerData)
-                    leaderboardChoice =
+                oldPlayerData = leaderboardName
+                    ? await players.get(leaderboardName, memberId)
+                    : (await players.get(Leaderboards.ScoreSaber, memberId)) ||
+                      (await players.get(Leaderboards.BeatLeader, memberId)) ||
+                      (await players.get(Leaderboards.AccSaber, memberId))
+                if (!leaderboardName && oldPlayerData)
+                    leaderboardName =
                         oldPlayerData.leaderboard as Leaderboards
 
                 // On vérifie ici si le membre a lié son compte ScoreSaber ou BeatLeader
                 const linkCommand = applicationCommands.find(
                     (c) => c.name === 'link'
                 ) as ApplicationCommand
-                if (!leaderboardChoice) {
+                if (!leaderboardName) {
                     throw new CommandInteractionError(
                         `Aucun profil ScoreSaber/BeatLeader/AccSaber n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                     )
                 } else if (!oldPlayerData) {
                     throw new CommandInteractionError(
-                        `Aucun profil ${leaderboardChoice} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
+                        `Aucun profil ${leaderboardName} n'est lié avec votre compte Discord\nℹ️ Utilisez la commande ${chatInputApplicationCommandMention(linkCommand.name, linkCommand.id)} afin de lier celui-ci`
                     )
                 }
             }
 
             // Nouvelles données de classement du joueur
-            const gameLeaderboard = new GameLeaderboard(leaderboardChoice)
+            const gameLeaderboard = new GameLeaderboard(leaderboardName)
             const playerData = await gameLeaderboard.requests.getPlayerData(
                 oldPlayerData.playerId
             )
@@ -145,7 +145,7 @@ export default {
             // Mise à jour des données de classement du joueur
             const newPlayerData = await players.update(
                 memberId,
-                leaderboardChoice,
+                leaderboardName,
                 playerData
             )
 
@@ -201,7 +201,7 @@ export default {
             )
             if (newPlayerData.points !== oldPlayerData.points)
                 progressStatus.push(
-                    `${bold(`${newPlayerData.points > oldPlayerData.points ? '+' : '-'}${pointsDiff}${leaderboardChoice !== Leaderboards.AccSaber ? 'pp' : 'ap'}`)}`
+                    `${bold(`${newPlayerData.points > oldPlayerData.points ? '+' : '-'}${pointsDiff}${leaderboardName !== Leaderboards.AccSaber ? 'pp' : 'ap'}`)}`
                 )
 
             // Acc
@@ -265,16 +265,16 @@ export default {
                           (m) => m.id === interaction.user.id
                       )
             ) as GuildMember
-            if (leaderboardChoice !== Leaderboards.AccSaber) {
+            if (leaderboardName !== Leaderboards.AccSaber) {
                 await roles.updateMemberPpRoles(
-                    leaderboardChoice,
+                    leaderboardName,
                     memberToUpdate,
                     playerData.points
                 )
             }
 
             // On affiche les informations du joueur
-            const ldIconName = GameLeaderboard.getLdIconName(leaderboardChoice)
+            const ldIconName = GameLeaderboard.getLdIconName(leaderboardName)
             const ldIcon = guild.emojis.cache.find((e) => e.name === ldIconName)
             const ldIconId = ldIcon?.id
 
@@ -282,7 +282,7 @@ export default {
                 .setAccentColor([241, 196, 15])
                 .addTextDisplayComponents(
                     new TextDisplayBuilder().setContent(
-                        `### 🛠️ Récupération du profil ${leaderboardChoice} en cours...`
+                        `### 🛠️ Récupération du profil ${leaderboardName} en cours...`
                     )
                 )
 
@@ -293,7 +293,7 @@ export default {
 
             const date = new Date()
             if (date.getDate() === 1 && date.getMonth() + 1 === 4) {
-                const card = await cardgenerator.getStonkerCard(leaderboardChoice, playerData)
+                const card = await cardgenerator.getStonkerCard(leaderboardName, playerData)
 
                 await interaction.editReply({
                     files: [
@@ -305,7 +305,7 @@ export default {
                 card.removeCallback()
             } else {
                 const card = await cardgenerator.getCard(
-                    leaderboardChoice,
+                    leaderboardName,
                     memberToUpdate,
                     playerData,
                     playerProgress
@@ -318,9 +318,9 @@ export default {
 
                 const containerComponent = new ContainerBuilder()
                     .setAccentColor(
-                        leaderboardChoice !== Leaderboards.AccSaber
+                        leaderboardName !== Leaderboards.AccSaber
                             ? (roles.getMemberPpRoleColor(
-                                  leaderboardChoice,
+                                  leaderboardName,
                                   memberToUpdate
                               ) ?? memberToUpdate.displayColor)
                             : [10, 143, 237]
@@ -346,7 +346,7 @@ export default {
                         .addTextDisplayComponents(
                             new TextDisplayBuilder().setContent(
                                 bold(
-                                    `🏆 Nouvelle Top ${leaderboardChoice !== Leaderboards.AccSaber ? 'PP' : 'AP'} LEZGONGUE !!`
+                                    `🏆 Nouvelle Top ${leaderboardName !== Leaderboards.AccSaber ? 'PP' : 'AP'} LEZGONGUE !!`
                                 )
                             )
                         )

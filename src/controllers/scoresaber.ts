@@ -1,6 +1,7 @@
 import { components as ScoreSaberAPI } from '../api/scoresaber.js'
 import { PlayerData, PlayerScore } from '../interfaces/player.interface.js'
 import { ScoreSaberPlayerScoresModel } from '../models/playerScores.model.js'
+import { Leaderboards } from './gameLeaderboard.js'
 import Logger from '../utils/logger.js'
 import { ScoreSaberError } from '../utils/error.js'
 
@@ -33,13 +34,13 @@ export default class ScoreSaber {
 
         do {
             if (log)
-                Logger.log('ScoreSaber', 'INFO', `Envoi de la requête "${url}"`)
+                Logger.log(Leaderboards.ScoreSaber, 'INFO', `Envoi de la requête "${url}"`)
             const res = await fetch(url)
 
             if (res.ok) {
                 if (log)
                     Logger.log(
-                        'ScoreSaber',
+                        Leaderboards.ScoreSaber,
                         'INFO',
                         'Requête envoyée avec succès'
                     )
@@ -59,7 +60,7 @@ export default class ScoreSaber {
                     throw Error('Erreur 503 : Service non disponible')
                 if (res.status === 500) {
                     Logger.log(
-                        'ScoreSaber',
+                        Leaderboards.ScoreSaber,
                         'ERROR',
                         'Erreur 500, nouvel essai dans 3 secondes'
                     )
@@ -68,7 +69,7 @@ export default class ScoreSaber {
                 }
                 if (res.status === 429) {
                     Logger.log(
-                        'ScoreSaber',
+                        Leaderboards.ScoreSaber,
                         'ERROR',
                         'Erreur 429, nouvel essai dans 60 secondes'
                     )
@@ -174,7 +175,7 @@ export default class ScoreSaber {
             return player
         } catch (error) {
             throw new ScoreSaberError(
-                'Une erreur est survenue lors de la récupération du profil ScoreSaber'
+                `Une erreur est survenue lors de la récupération du profil ${Leaderboards.ScoreSaber}`
             )
         }
     }
@@ -262,7 +263,7 @@ export default class ScoreSaber {
         try {
             const cachedPlayerScores =
                 await ScoreSaberPlayerScoresModel.findAll({
-                    where: { leaderboard: 'scoresaber', playerId: scoreSaberId }
+                    where: { leaderboard: Leaderboards.ScoreSaber, playerId: scoreSaberId }
                 })
 
             let nextPage = null
@@ -303,7 +304,7 @@ export default class ScoreSaber {
                         }
                     } else {
                         await ScoreSaberPlayerScoresModel.create({
-                            leaderboard: 'scoresaber',
+                            leaderboard: Leaderboards.ScoreSaber,
                             playerId: scoreSaberId,
                             playerScore: playerScore
                         })
@@ -312,7 +313,7 @@ export default class ScoreSaber {
             } while (nextPage)
 
             const playerScores = await ScoreSaberPlayerScoresModel.findAll({
-                where: { leaderboard: 'scoresaber', playerId: scoreSaberId }
+                where: { leaderboard: Leaderboards.ScoreSaber, playerId: scoreSaberId }
             })
 
             const scores = playerScores

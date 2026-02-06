@@ -6,13 +6,13 @@ import { PlayerError } from '../utils/error.js'
 export default class Players {
     /**
      * Récupère un joueur depuis la table « players »
-     * @param memberId identifiant Discord du membre
      * @param leaderboardName nom du leaderboard
+     * @param memberId identifiant Discord du membre
      * @returns informations du joueur
      */
-    static async get(memberId: string, leaderboardName: Leaderboards) {
+    static async get(leaderboardName: Leaderboards, memberId: string) {
         return await PlayerModel.findOne({
-            where: { memberId: memberId, leaderboard: leaderboardName }
+            where: { leaderboard: leaderboardName, memberId: memberId }
         })
     }
 
@@ -79,7 +79,6 @@ export default class Players {
      * @param memberId identifiant Discord du membre
      * @param leaderboardName nom du leaderboard
      * @param playerData données du profil ScoreSaber ou BeatLeader du joueur
-     * @param playerRanking données de classement serveur du joueur
      * @returns informations du joueur
      */
     static async update(
@@ -117,11 +116,12 @@ export default class Players {
 
     /**
      * Suppression des données d'un joueur
+     * @param leaderboardName choix du leaderboard
      * @param memberId identifiant Discord du membre
      */
-    static async remove(memberId: string, leaderboardChoice: Leaderboards) {
+    static async remove(leaderboardName: Leaderboards, memberId: string) {
         await PlayerModel.destroy({
-            where: { memberId: memberId, leaderboard: leaderboardChoice }
+            where: { memberId: memberId, leaderboard: leaderboardName }
         })
     }
 
